@@ -1,11 +1,15 @@
+
+"use client";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Award, BookCopy, BarChart, Users, Star } from "lucide-react";
+import { Award, BookCopy, BarChart, Users, Star, User, MessageCircle, FileText } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, BarChart as RechartsBarChart } from "@/components/ui/chart";
 import { Bar } from "recharts";
+import { Button } from "@/components/ui/button";
 
 const enrolledCourses = [
   { title: "Modern Web Development", progress: 75 },
@@ -14,9 +18,24 @@ const enrolledCourses = [
 ];
 
 const achievements = [
-  { title: "Course Connoisseur", description: "Complete 5 courses" },
-  { title: "Web Wizard", description: "Finish the Web Dev track" },
+  { title: "Digital Starter", description: "Complete your first course" },
+  { title: "Freelance Ready", description: "Build your freelance profile" },
   { title: "Perfect Start", description: "Complete your first lesson" },
+];
+
+const certificates = [
+  { title: "Web Development Fundamentals", date: "June 2024" },
+  { title: "AI for Everyone", date: "July 2024" },
+];
+
+const mentors = [
+    { name: "Jahangir Alam", expertise: "Freelance Web Developer"},
+    { name: "Fatima Akhtar", expertise: "E-commerce Specialist"},
+];
+
+const liveSessions = [
+    { topic: "Client Communication Tips", time: "Wednesday, 7 PM"},
+    { topic: "Pricing Your Services", time: "Friday, 8 PM"},
 ];
 
 const instructorCourses = [
@@ -56,8 +75,8 @@ export default function DashboardPage() {
 
         {/* Student Dashboard */}
         <TabsContent value="student" className="mt-8">
-          <div className="grid gap-8 md:grid-cols-2">
-            <Card>
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <Card className="lg:col-span-2">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>My Courses</CardTitle>
                 <BookCopy className="w-6 h-6 text-primary" />
@@ -77,12 +96,63 @@ export default function DashboardPage() {
                 <CardTitle>My Achievements</CardTitle>
                 <Award className="w-6 h-6 text-accent" />
               </CardHeader>
-              <CardContent className="flex flex-wrap gap-4">
+              <CardContent className="flex flex-wrap gap-2">
                 {achievements.map(ach => (
-                  <Badge key={ach.title} variant="secondary" className="text-lg py-2 px-4 border-2 border-accent/50">
+                  <Badge key={ach.title} variant="secondary" className="py-2 px-3 border-2 border-accent/50">
                     <Award className="w-4 h-4 mr-2 text-accent" />
                     {ach.title}
                   </Badge>
+                ))}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>My Certificates</CardTitle>
+                <FileText className="w-6 h-6 text-primary" />
+              </CardHeader>
+              <CardContent>
+                {certificates.map(cert => (
+                  <div key={cert.title} className="flex justify-between items-center mb-2 pb-2 border-b last:border-0 last:pb-0 last:mb-0">
+                    <div>
+                      <p className="font-semibold">{cert.title}</p>
+                      <p className="text-sm text-muted-foreground">Issued: {cert.date}</p>
+                    </div>
+                    <Button variant="outline" size="sm">Download</Button>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Find a Mentor</CardTitle>
+                <Users className="w-6 h-6 text-primary" />
+              </CardHeader>
+              <CardContent>
+                 {mentors.map(mentor => (
+                  <div key={mentor.name} className="flex justify-between items-center mb-2 pb-2 border-b last:border-0 last:pb-0 last:mb-0">
+                    <div>
+                      <p className="font-semibold">{mentor.name}</p>
+                      <p className="text-sm text-muted-foreground">{mentor.expertise}</p>
+                    </div>
+                    <Button variant="outline" size="sm">Connect</Button>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+             <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle>Live Q&A Sessions</CardTitle>
+                <MessageCircle className="w-6 h-6 text-primary" />
+              </CardHeader>
+              <CardContent>
+                 {liveSessions.map(session => (
+                  <div key={session.topic} className="flex justify-between items-center mb-2 pb-2 border-b last:border-0 last:pb-0 last:mb-0">
+                    <div>
+                      <p className="font-semibold">{session.topic}</p>
+                      <p className="text-sm text-muted-foreground">{session.time}</p>
+                    </div>
+                    <Button variant="outline" size="sm">Join</Button>
+                  </div>
                 ))}
               </CardContent>
             </Card>
