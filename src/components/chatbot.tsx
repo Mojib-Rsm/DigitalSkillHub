@@ -26,7 +26,8 @@ export default function Chatbot() {
   const [messages, setMessages] = useState<Message[]>([initialBotMessage]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const scrollViewportRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     // Load messages from session storage when component mounts
@@ -79,9 +80,9 @@ export default function Chatbot() {
   };
 
   useEffect(() => {
-    if (scrollAreaRef.current) {
-        scrollAreaRef.current.parentElement?.scrollTo({
-            top: scrollAreaRef.current.scrollHeight,
+    if (scrollViewportRef.current) {
+        scrollViewportRef.current.scrollTo({
+            top: scrollViewportRef.current.scrollHeight,
             behavior: 'smooth'
         });
     }
@@ -114,8 +115,8 @@ export default function Chatbot() {
               সহকারী হেল্প ডেস্ক
             </SheetTitle>
           </SheetHeader>
-          <ScrollArea className="flex-grow p-4" >
-            <div className="space-y-4" ref={scrollAreaRef}>
+          <ScrollArea className="flex-grow p-4" viewportRef={scrollViewportRef}>
+            <div className="space-y-4">
               {messages.map((msg, index) => (
                 <div key={index} className={cn("flex items-start gap-3", msg.role === 'user' ? 'justify-end' : '')}>
                   {msg.role === 'model' && (
