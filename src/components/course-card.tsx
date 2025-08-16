@@ -22,11 +22,25 @@ type CourseCardProps = {
   course: Course;
 };
 
+// A simple slugify function
+const slugify = (text: string) => {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-')       // Replace spaces with -
+    .replace(/[^\w\-]+/g, '')   // Remove all non-word chars
+    .replace(/\-\-+/g, '-')     // Replace multiple - with single -
+    .replace(/^-+/, '')          // Trim - from start of text
+    .replace(/-+$/, '');         // Trim - from end of text
+};
+
+
 export default function CourseCard({ course }: CourseCardProps) {
+  const courseSlug = slugify(course.title);
   return (
     <Card className="flex flex-col overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
       <CardHeader className="p-0 relative">
-        <Link href="#" className="block">
+        <Link href={`/courses/${courseSlug}`} className="block">
             <Image
             src={course.image}
             alt={course.title}
@@ -50,7 +64,7 @@ export default function CourseCard({ course }: CourseCardProps) {
             </div>
         </div>
         <CardTitle className="text-lg font-bold leading-tight h-12">
-          <Link href="#" className="hover:text-primary transition-colors">
+          <Link href={`/courses/${courseSlug}`} className="hover:text-primary transition-colors">
             {course.title}
           </Link>
         </CardTitle>
@@ -65,9 +79,9 @@ export default function CourseCard({ course }: CourseCardProps) {
       <CardFooter className="p-4 flex justify-between items-center bg-muted/50">
         <p className="text-2xl font-bold text-primary">{course.price > 0 ? `$${course.price.toFixed(2)}` : 'ফ্রি'}</p>
         <Button asChild>
-          <Link href="#">
+          <Link href={`/courses/${courseSlug}`}>
             <ShoppingCart className="mr-2 h-4 w-4" />
-            {course.price > 0 ? 'কার্টে যোগ করুন' : 'এখনই ভর্তি হন'}
+            {course.price > 0 ? 'কার্টে যোগ করুন' : 'বিস্তারিত দেখুন'}
           </Link>
         </Button>
       </CardFooter>
