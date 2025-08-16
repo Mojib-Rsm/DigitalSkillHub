@@ -1,108 +1,137 @@
 
+"use client";
+
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image, DollarSign, Wand, FileSignature } from "lucide-react";
 import Link from "next/link";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from '@/lib/utils';
 
-const aiTools = [
+const allTools = [
   {
     title: "কোর্স রিকমেন্ডার",
     description: "আপনার আগ্রহের উপর ভিত্তি করে ব্যক্তিগতকৃত কোর্স সাজেশন পান।",
     href: "/ai-tools/course-recommender",
     icon: <GraduationCap className="w-8 h-8 text-primary" />,
+    category: "শিক্ষামূলক",
   },
   {
     title: "কুইজ জেনারেটর",
     description: "আপনার জ্ঞান পরীক্ষা করার জন্য যেকোনো পাঠ্য থেকে একটি কুইজ তৈরি করুন।",
     href: "/ai-tools/quiz-generator",
     icon: <HelpCircle className="w-8 h-8 text-primary" />,
+    category: "শিক্ষামূলক",
   },
   {
     title: "নোট সারাংশকারী",
     description: "দীর্ঘ পাঠ্যকে সংক্ষিপ্ত নোটে পরিণত করুন।",
     href: "/ai-tools/note-summarizer",
     icon: <BookCheck className="w-8 h-8 text-primary" />,
+    category: "শিক্ষামূলক",
   },
   {
     title: "ব্লগ টপিক জেনারেটর",
     description: "আপনার আগ্রহের উপর ভিত্তি করে সৃজনশীল ব্লগ পোস্টের ধারণা তৈরি করুন।",
     href: "/ai-tools/blog-topic-generator",
     icon: <PenSquare className="w-8 h-8 text-primary" />,
+    category: "কনটেন্ট তৈরি",
   },
   {
     title: "পণ্যের বিবরণ জেনারেটর",
     description: "আপনার ই-কমার্স পণ্যের জন্য আকর্ষণীয় বিবরণ তৈরি করুন।",
     href: "/ai-tools/product-description-generator",
     icon: <ShoppingCart className="w-8 h-8 text-primary" />,
+    category: "কনটেন্ট তৈরি",
   },
   {
     title: "বাংলা কনটেন্ট অনুবাদক",
     description: "ইংরেজি এবং বাংলার মধ্যে পাঠ্য অনুবাদ করুন।",
     href: "/ai-tools/bengali-translator",
     icon: <Languages className="w-8 h-8 text-primary" />,
+    category: "যোগাযোগ",
   },
   {
     title: "সোশ্যাল মিডিয়া পোস্ট জেনারেটর",
     description: "ফেসবুক, ইনস্টাগ্রাম এবং আরও অনেক কিছুর জন্য আকর্ষণীয় পোস্ট তৈরি করুন।",
     href: "/ai-tools/social-media-post-generator",
     icon: <Hash className="w-8 h-8 text-primary" />,
+    category: "কনটেন্ট তৈরি",
   },
   {
     title: "জীবনবৃত্তান্ত/সিভি সহায়ক",
     description: "একটি পেশাদার এবং কার্যকর জীবনবৃত্তান্ত লিখতে সহায়তা পান।",
     href: "/ai-tools/resume-helper",
     icon: <FileText className="w-8 h-8 text-primary" />,
+    category: "ফ্রিল্যান্সিং",
   },
   {
     title: "পেশাদার ইমেল লেখক",
     description: "ক্লায়েন্ট এবং সহকর্মীদের জন্য পেশাদার ইমেল ড্রাফ্ট করুন।",
     href: "/ai-tools/professional-email-writer",
     icon: <Mail className="w-8 h-8 text-primary" />,
+    category: "যোগাযোগ",
   },
   {
     title: "ব্যবসার নাম জেনারেটর",
     description: "আপনার নতুন ব্যবসা বা ব্র্যান্ডের জন্য সেরা নামটি খুঁজুন।",
     href: "/ai-tools/business-name-generator",
     icon: <Lightbulb className="w-8 h-8 text-primary" />,
+    category: "ফ্রিল্যান্সিং",
   },
   {
     title: "এসইও কীওয়ার্ড সাজেশনকারী",
     description: "আপনার অনলাইন দৃশ্যমানতা উন্নত করতে কীওয়ার্ড আবিষ্কার করুন।",
     href: "/ai-tools/seo-keyword-suggester",
     icon: <BarChart className="w-8 h-8 text-primary" />,
+    category: "ফ্রিল্যান্সিং",
   },
   {
     title: "ইন্টারভিউ প্রশ্ন অনুশীলন",
     description: "আপনার পরবর্তী চাকরির ইন্টারভিউর জন্য অনুশীলন প্রশ্ন তৈরি করুন।",
     href: "/ai-tools/interview-question-practice",
     icon: <Briefcase className="w-8 h-8 text-primary" />,
+    category: "ফ্রিল্যান্সিং",
   },
   {
     title: "এআই ইমেজ জেনারেটর",
     description: "পাঠ্য থেকে লোগো, ব্যানার এবং অন্যান্য ছবি তৈরি করুন।",
     href: "/ai-tools/image-generator",
     icon: <Image className="w-8 h-8 text-primary" />,
+    category: "কনটেন্ট তৈরি",
   },
   {
     title: "ফ্রিল্যান্স আইডিয়া জেনারেটর",
     description: "আপনার দক্ষতার উপর ভিত্তি করে প্রকল্পের ধারণা পান।",
     href: "/ai-tools/freelance-idea-generator",
     icon: <Wand className="w-8 h-8 text-primary" />,
+    category: "ফ্রিল্যান্সিং",
   },
   {
     title: "মূল্য/রেট ক্যালকুলেটর",
     description: "আপনার ফ্রিল্যান্স পরিষেবার জন্য একটি ন্যায্য মূল্য গণনা করুন।",
     href: "/ai-tools/price-rate-calculator",
     icon: <DollarSign className="w-8 h-8 text-primary" />,
+    category: "ফ্রিল্যান্সিং",
   },
   {
     title: "কভার লেটার জেনারেটর",
     description: "কয়েক সেকেন্ডের মধ্যে একটি পেশাদার কভার লেটার তৈরি করুন।",
     href: "/ai-tools/cover-letter-generator",
     icon: <FileSignature className="w-8 h-8 text-primary" />,
+    category: "ফ্রিল্যান্সিং",
   },
 ];
 
+const categories = ["সকল টুল", "শিক্ষামূলক", "ফ্রিল্যান্সিং", "কনটেন্ট তৈরি", "যোগাযোগ"];
+
 export default function AiToolsPage() {
+  const [selectedCategory, setSelectedCategory] = useState("সকল টুল");
+
+  const filteredTools = selectedCategory === "সকল টুল"
+    ? allTools
+    : allTools.filter(tool => tool.category === selectedCategory);
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">
@@ -115,8 +144,18 @@ export default function AiToolsPage() {
         </p>
       </div>
 
+      <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full mb-8">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 max-w-2xl mx-auto h-auto">
+          {categories.map((category) => (
+            <TabsTrigger key={category} value={category} className="text-base py-2">
+              {category}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-        {aiTools.map((tool) => (
+        {filteredTools.map((tool) => (
             <Link href={tool.href} key={tool.title} className="group">
                 <Card  className="h-full flex flex-col justify-between shadow-md hover:shadow-xl hover:border-primary transition-all duration-300 transform hover:-translate-y-1">
                     <CardHeader className="flex flex-row items-start gap-4">
