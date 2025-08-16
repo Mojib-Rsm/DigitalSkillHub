@@ -16,25 +16,54 @@ type Message = {
   content: string;
 };
 
+const initialBotMessage: Message = {
+  role: "model",
+  content: "স্বাগতম! আমি আপনার ডিজিটাল স্কিল হাব সহকারী। আমি কীভাবে আপনাকে সাহায্য করতে পারি?",
+};
+
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([initialBotMessage]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Load messages from session storage when component mounts
+    try {
+      const storedMessages = sessionStorage.getItem("chatMessages");
+      if (storedMessages) {
+        setMessages(JSON.parse(storedMessages));
+      }
+    } catch (error) {
+      console.error("Failed to parse messages from session storage", error);
+      sessionStorage.removeItem("chatMessages");
+    }
+  }, []);
+
+  // Save messages to session storage whenever they change
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("chatMessages", JSON.stringify(messages));
+    } catch (error) {
+      console.error("Failed to save messages to session storage", error);
+    }
+  }, [messages]);
+
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { role: "user", content: input };
-    setMessages((prev) => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setInput("");
     setIsLoading(true);
 
     try {
       const result = await chatbotAction({
-        history: messages,
+        history: newMessages.slice(1), // Exclude initial welcome message from history
         message: input,
       });
       
@@ -58,6 +87,14 @@ export default function Chatbot() {
     }
   }, [messages]);
 
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (!open) {
+        // Optional: clear history on close, or keep it for the session.
+        // For now, we keep it.
+    }
+  };
+
   return (
     <>
       <Button
@@ -69,7 +106,7 @@ export default function Chatbot() {
         <span className="sr-only">চ্যাটবট খুলুন</span>
       </Button>
 
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <Sheet open={isOpen} onOpenChange={handleOpenChange}>
         <SheetContent className="flex flex-col p-0">
           <SheetHeader className="p-4 border-b">
             <SheetTitle className="flex items-center gap-2">
@@ -130,5 +167,3 @@ export default function Chatbot() {
     </>
   );
 }
-
-    
