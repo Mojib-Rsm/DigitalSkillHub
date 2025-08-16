@@ -29,7 +29,7 @@ const navLinks = [
   { href: "/courses", label: "Courses", icon: <BookOpen className="w-5 h-5" /> },
   { href: "/community", label: "Work Hub", icon: <Briefcase className="w-5 h-5" /> },
   { href: "/blog", label: "Blog", icon: <PenSquare className="w-5 h-5" /> },
-  { href: "/ai-tool", label: "AI Tool", icon: <Bot className="w-5 h-5" /> },
+  { href: "/ai-tools", label: "AI Tools", icon: <Bot className="w-5 h-5" /> },
   { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
 ];
 

@@ -1,6 +1,7 @@
+
 "use server";
 
-import { blogTopicGenerator, BlogTopicGeneratorInput } from "@/ai/flows/blog-topic-generator";
+import { blogTopicGenerator } from "@/ai/flows/blog-topic-generator";
 import { z } from "zod";
 
 const BlogTopicGeneratorActionSchema = z.object({
