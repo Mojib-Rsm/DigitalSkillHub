@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Sprout, Menu, BookOpen, Users, Bot, LayoutDashboard, PenSquare, AudioWaveform, Contrast, Text, Accessibility, PlayCircle, Phone } from "lucide-react";
+import { Sprout, Menu, BookOpen, Users, Bot, LayoutDashboard, PenSquare, AudioWaveform, Contrast, Text, Accessibility, PlayCircle, Phone, Briefcase } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -27,8 +27,8 @@ import { textToSpeechAction } from "@/app/actions/tts";
 
 const navLinks = [
   { href: "/courses", label: "Courses", icon: <BookOpen className="w-5 h-5" /> },
+  { href: "/community", label: "Work Hub", icon: <Briefcase className="w-5 h-5" /> },
   { href: "/blog", label: "Blog", icon: <PenSquare className="w-5 h-5" /> },
-  { href: "/community", label: "Community", icon: <Users className="w-5 h-5" /> },
   { href: "/ai-tool", label: "AI Tool", icon: <Bot className="w-5 h-5" /> },
   { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
 ];
@@ -258,5 +258,3 @@ export default function Header() {
     </header>
   );
 }
-
-    
