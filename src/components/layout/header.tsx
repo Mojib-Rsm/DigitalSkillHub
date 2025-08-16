@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Sprout, Menu, BookOpen, Users, Bot, LayoutDashboard, PenSquare, AudioWaveform, Contrast, TextSize, Accessibility } from "lucide-react";
+import { Sprout, Menu, BookOpen, Users, Bot, LayoutDashboard, PenSquare, AudioWaveform, Contrast, Text, Accessibility } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -64,7 +64,7 @@ export default function Header() {
         <DropdownMenuLabel>Accessibility</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-            <TextSize className="mr-2 h-4 w-4" />
+            <Text className="mr-2 h-4 w-4" />
             <span>Increase Text Size</span>
         </DropdownMenuItem>
         <DropdownMenuItem>
@@ -130,5 +130,3 @@ export default function Header() {
     </header>
   );
 }
-
-    
