@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Sprout, Menu, BookOpen, Users, Bot, LayoutDashboard, PenSquare, AudioWaveform, Contrast, Text, Accessibility } from "lucide-react";
+import { Sprout, Menu, BookOpen, Users, Bot, LayoutDashboard, PenSquare, AudioWaveform, Contrast, Text, Accessibility, PlayCircle } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import React, { useEffect, useState } from "react";
+import { textToSpeech } from "@/app/actions/tts";
 
 const navLinks = [
   { href: "/courses", label: "Courses", icon: <BookOpen className="w-5 h-5" /> },
@@ -32,6 +34,82 @@ const navLinks = [
 
 export default function Header() {
   const pathname = usePathname();
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isAudioMode, setIsAudioMode] = useState(false);
+  const [audioSrc, setAudioSrc] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = React.useRef<HTMLAudioElement>(null);
+
+
+  useEffect(() => {
+    const isDark = localStorage.getItem("theme") === "dark";
+    setIsDarkMode(isDark);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    const newIsDarkMode = !isDarkMode;
+    setIsDarkMode(newIsDarkMode);
+    if (newIsDarkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  };
+
+  const toggleAudioMode = async () => {
+    const newIsAudioMode = !isAudioMode;
+    setIsAudioMode(newIsAudioMode);
+
+    if (newIsAudioMode) {
+      const mainContent = document.querySelector('main')?.innerText;
+      if (mainContent) {
+        try {
+          const result = await textToSpeech(mainContent);
+          if (result && result.media) {
+            setAudioSrc(result.media);
+          }
+        } catch (error) {
+          console.error("Error generating audio:", error);
+          setIsAudioMode(false);
+        }
+      }
+    } else {
+      setAudioSrc(null);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      }
+    }
+  };
+  
+   useEffect(() => {
+    if (audioSrc && audioRef.current) {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  }, [audioSrc]);
+
+  const togglePlayback = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const increaseTextSize = () => {
+    const currentSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    document.documentElement.style.fontSize = `${currentSize * 1.1}px`;
+  };
+
 
   const NavLink = ({ href, label }: { href: string; label: string }) => (
     <Link
@@ -63,17 +141,17 @@ export default function Header() {
         <DropdownMenuContent align="end">
         <DropdownMenuLabel>Accessibility</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onSelect={increaseTextSize}>
             <Text className="mr-2 h-4 w-4" />
             <span>Increase Text Size</span>
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem onSelect={toggleDarkMode}>
             <Contrast className="mr-2 h-4 w-4" />
-            <span>High Contrast</span>
+            <span>{isDarkMode ? 'Disable' : 'Enable'} High Contrast</span>
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem onSelect={toggleAudioMode}>
             <AudioWaveform className="mr-2 h-4 w-4" />
-            <span>Audio Mode</span>
+            <span>{isAudioMode ? 'Disable' : 'Enable'} Audio Mode</span>
         </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>
@@ -127,6 +205,14 @@ export default function Header() {
           </Sheet>
         </div>
       </div>
+       {isAudioMode && audioSrc && (
+        <div className="fixed bottom-4 right-4 z-50 bg-background border rounded-full p-2 shadow-lg flex items-center gap-2">
+          <audio ref={audioRef} src={audioSrc} onEnded={() => setIsPlaying(false)} />
+          <Button onClick={togglePlayback} size="icon" variant="ghost" className="rounded-full">
+            <PlayCircle className={cn("h-8 w-8 text-primary", isPlaying ? "fill-primary" : "")} />
+          </Button>
+        </div>
+      )}
     </header>
   );
 }
