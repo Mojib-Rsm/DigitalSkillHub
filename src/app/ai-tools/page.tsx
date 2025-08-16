@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, Mic, Eye, Camera, BarChart, FileText, GraduationCap, HelpCircle, BookCheck } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, Mic, Eye, Camera, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image } from "lucide-react";
 import Link from "next/link";
 
 const aiTools = [
@@ -75,6 +75,12 @@ const aiTools = [
     description: "Generate practice questions for your next job interview.",
     href: "/ai-tools/interview-question-practice",
     icon: <Briefcase className="w-8 h-8 text-primary" />,
+  },
+  {
+    title: "AI Image Generator",
+    description: "Create logos, banners, and other images from text.",
+    href: "/ai-tools/image-generator",
+    icon: <Image className="w-8 h-8 text-primary" />,
   },
 ];
 

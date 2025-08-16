@@ -16,3 +16,4 @@ import '@/ai/flows/interview-question-practice.ts';
 import '@/ai/flows/course-recommender.ts';
 import '@/ai/flows/quiz-generator.ts';
 import '@/ai/flows/note-summarizer.ts';
+import '@/ai/flows/image-generator.ts';
