@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useRef, useEffect, useActionState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
@@ -51,7 +51,7 @@ export default function Chatbot() {
 
   useEffect(() => {
     if (scrollAreaRef.current) {
-        scrollAreaRef.current.scrollTo({
+        scrollAreaRef.current.parentElement?.scrollTo({
             top: scrollAreaRef.current.scrollHeight,
             behavior: 'smooth'
         });
@@ -66,7 +66,7 @@ export default function Chatbot() {
         size="icon"
       >
         <MessageSquare className="h-8 w-8" />
-        <span className="sr-only">Open Chatbot</span>
+        <span className="sr-only">চ্যাটবট খুলুন</span>
       </Button>
 
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -74,11 +74,11 @@ export default function Chatbot() {
           <SheetHeader className="p-4 border-b">
             <SheetTitle className="flex items-center gap-2">
               <Bot />
-              Help Assistant
+              সহকারী হেল্প ডেস্ক
             </SheetTitle>
           </SheetHeader>
-          <ScrollArea className="flex-grow p-4" ref={scrollAreaRef}>
-            <div className="space-y-4">
+          <ScrollArea className="flex-grow p-4" >
+            <div className="space-y-4" ref={scrollAreaRef}>
               {messages.map((msg, index) => (
                 <div key={index} className={cn("flex items-start gap-3", msg.role === 'user' ? 'justify-end' : '')}>
                   {msg.role === 'model' && (
@@ -106,7 +106,7 @@ export default function Chatbot() {
                     </Avatar>
                     <div className="rounded-lg p-3 bg-muted flex items-center gap-2">
                         <Sparkles className="w-4 h-4 animate-spin"/>
-                        <p className="text-sm text-muted-foreground">Thinking...</p>
+                        <p className="text-sm text-muted-foreground">ভাবছি...</p>
                     </div>
                 </div>
                )}
