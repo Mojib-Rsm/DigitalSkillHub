@@ -5,10 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Award, BookCopy, BarChart, Users, Star, User, MessageCircle, FileText } from "lucide-react";
+import { Award, BookCopy, Users, Star, User, MessageCircle, FileText } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, BarChart as RechartsBarChart } from "@/components/ui/chart";
-import { Bar } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { BarChart, Bar } from "recharts";
 import { Button } from "@/components/ui/button";
 
 const enrolledCourses = [
@@ -169,10 +169,10 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                     <ChartContainer config={chartConfig} className="h-64">
-                      <RechartsBarChart accessibilityLayer data={chartData}>
+                      <BarChart accessibilityLayer data={chartData}>
                         <Bar dataKey="students" fill="var(--color-students)" radius={4} />
                         <ChartTooltip content={<ChartTooltipContent />} />
-                      </RechartsBarChart>
+                      </BarChart>
                     </ChartContainer>
                 </CardContent>
               </Card>
