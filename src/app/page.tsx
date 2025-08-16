@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,7 +11,7 @@ import {
 } from "@/components/ui/carousel";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, BookOpen, Brush, LineChart, Code, Search, Star, Award, Users, Briefcase } from "lucide-react";
+import { ArrowRight, BookOpen, Brush, LineChart, Code, Search, Star, Award, Users, Briefcase, ShoppingBag } from "lucide-react";
 import CourseCard from "@/components/course-card";
 import { Input } from "@/components/ui/input";
 
@@ -91,6 +92,30 @@ const testimonials = [
   },
 ];
 
+const marketplaceProducts = [
+  {
+    title: "Hand-stitched Nakshi Kantha",
+    seller: "Rahima Begum",
+    price: "24.99",
+    image: "https://placehold.co/600x400.png",
+    dataAiHint: "stitched fabric quilt",
+  },
+  {
+    title: "Jute & Bamboo Craft Basket",
+    seller: "Anwara's Creations",
+    price: "15.00",
+    image: "https://placehold.co/600x400.png",
+    dataAiHint: "jute basket handmade",
+  },
+  {
+    title: "Organic Turmeric Powder",
+    seller: "Cox's Bazar Organics",
+    price: "9.99",
+    image: "https://placehold.co/600x400.png",
+    dataAiHint: "spices turmeric powder",
+  },
+];
+
 
 export default function Home() {
   return (
@@ -98,17 +123,17 @@ export default function Home() {
       {/* Hero Section */}
       <section className="py-20 md:py-32 bg-background">
         <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight">
-              Unlock Your Potential with <span className="text-primary">Digital Skills</span>
+              নারী, তরুণ ও প্রতিবন্ধীদের জন্য <span className="text-primary">ডিজিটাল দক্ষতা সহজ ভাষায়</span>
             </h1>
             <p className="text-lg text-muted-foreground mt-6">
-              Join Digital Skill Hub to master in-demand skills, from web development to AI tools. Learn from industry experts and grow your career or freelancing business.
+              মোবাইল দিয়েই শিখুন, আয় করুন
             </p>
             <div className="mt-8">
-              <Button asChild size="lg" className="transition-transform transform hover:scale-105">
+              <Button asChild size="lg" className="transition-transform transform hover:scale-105 text-lg">
                 <Link href="/courses">
-                  Start Learning Today <ArrowRight className="ml-2 h-5 w-5" />
+                  👉 এখনই কোর্স শুরু করুন (ফ্রি বেসিক ট্রেনিং)
                 </Link>
               </Button>
             </div>
@@ -146,6 +171,49 @@ export default function Home() {
               View All Courses <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
+        </div>
+      </section>
+
+      {/* Made in Cox's Bazar Section */}
+      <section className="py-20 bg-muted">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="font-headline text-4xl font-bold mb-4">Made in Cox’s Bazar</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto mb-12">
+            Support local artisans and entrepreneurs. Products by talented women and people with disabilities.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {marketplaceProducts.map((product) => (
+              <Card key={product.title} className="flex flex-col overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-1">
+                <CardHeader className="p-0 relative">
+                    <Image
+                    src={product.image}
+                    alt={product.title}
+                    width={600}
+                    height={400}
+                    className="object-cover w-full h-48"
+                    data-ai-hint={product.dataAiHint}
+                    />
+                </CardHeader>
+                <CardContent className="p-4 flex-grow">
+                    <CardTitle className="text-lg font-bold leading-tight h-12">
+                        {product.title}
+                    </CardTitle>
+                    <div className="flex items-center gap-2 mt-3 text-muted-foreground text-sm">
+                        <span className="font-medium text-foreground">Sold by: {product.seller}</span>
+                    </div>
+                </CardContent>
+                <CardFooter className="p-4 flex justify-between items-center bg-background/50">
+                    <p className="text-2xl font-bold text-primary">${product.price}</p>
+                    <Button asChild>
+                    <Link href="#">
+                        <ShoppingBag className="mr-2 h-4 w-4" />
+                        View Product
+                    </Link>
+                    </Button>
+                </CardFooter>
+            </Card>
+            ))}
+          </div>
         </div>
       </section>
       
@@ -239,3 +307,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
