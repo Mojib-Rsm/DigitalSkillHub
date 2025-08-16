@@ -1,6 +1,7 @@
 
 "use client";
 
+import React from "react";
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { generateQuiz } from "@/app/ai-tools/quiz-generator/actions";

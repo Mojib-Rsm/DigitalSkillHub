@@ -1,6 +1,7 @@
 
 "use client";
 
+import React from "react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { generateNames } from "@/app/ai-tools/business-name-generator/actions";

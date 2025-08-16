@@ -1,6 +1,7 @@
 
 "use client";
 
+import React from "react";
 import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { summarizeText } from "@/app/ai-tools/note-summarizer/actions";

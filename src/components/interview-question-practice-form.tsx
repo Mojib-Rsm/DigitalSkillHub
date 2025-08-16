@@ -1,6 +1,7 @@
 
 "use client";
 
+import React from "react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { generateQuestions } from "@/app/ai-tools/interview-question-practice/actions";

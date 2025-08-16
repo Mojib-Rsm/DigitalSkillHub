@@ -1,6 +1,7 @@
 
 "use client";
 
+import React from "react";
 import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { recommendCourses } from "@/app/ai-tools/course-recommender/actions";

@@ -1,6 +1,7 @@
 
 "use client";
 
+import React from "react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { generatePost } from "@/app/ai-tools/social-media-post-generator/actions";
