@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Translate, Hash, Briefcase, Mail, Lightbulb, Mic, Eye, Camera, BarChart, FileText } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, Mic, Eye, Camera, BarChart, FileText } from "lucide-react";
 import Link from "next/link";
 
 const aiTools = [
@@ -20,7 +20,7 @@ const aiTools = [
     title: "Bengali Content Translator",
     description: "Translate text between English and Bengali.",
     href: "#",
-    icon: <Translate className="w-8 h-8 text-primary" />,
+    icon: <Languages className="w-8 h-8 text-primary" />,
   },
   {
     title: "Social Media Post Generator",
