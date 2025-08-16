@@ -1,0 +1,56 @@
+
+'use server';
+
+/**
+ * @fileOverview AI tool to help users write professional emails.
+ *
+ * - professionalEmailWriter - A function that drafts emails.
+ * - ProfessionalEmailWriterInput - The input type for the professionalEmailWriter function.
+ * - ProfessionalEmailWriterOutput - The return type for the professionalEmailWriter function.
+ */
+
+import {ai} from '@/ai/genkit';
+import {z} from 'genkit';
+
+const ProfessionalEmailWriterInputSchema = z.object({
+  recipient: z.string().describe('The recipient of the email.'),
+  purpose: z.string().describe('The purpose or main point of the email.'),
+  tone: z.string().describe('The desired tone (e.g., Formal, Persuasive, Appreciative).'),
+});
+export type ProfessionalEmailWriterInput = z.infer<typeof ProfessionalEmailWriterInputSchema>;
+
+const ProfessionalEmailWriterOutputSchema = z.object({
+  emailDraft: z.string().describe('The generated email draft, including subject and body.'),
+});
+export type ProfessionalEmailWriterOutput = z.infer<typeof ProfessionalEmailWriterOutputSchema>;
+
+export async function professionalEmailWriter(input: ProfessionalEmailWriterInput): Promise<ProfessionalEmailWriterOutput> {
+  return professionalEmailWriterFlow(input);
+}
+
+const prompt = ai.definePrompt({
+  name: 'professionalEmailWriterPrompt',
+  input: {schema: ProfessionalEmailWriterInputSchema},
+  output: {schema: ProfessionalEmailWriterOutputSchema},
+  prompt: `You are an expert in business communication.
+
+Draft a professional email based on the following information.
+
+Recipient: {{{recipient}}}
+Purpose: {{{purpose}}}
+Tone: {{{tone}}}
+
+Generate a complete email draft, including a suitable subject line and a clear, concise body.`,
+});
+
+const professionalEmailWriterFlow = ai.defineFlow(
+  {
+    name: 'professionalEmailWriterFlow',
+    inputSchema: ProfessionalEmailWriterInputSchema,
+    outputSchema: ProfessionalEmailWriterOutputSchema,
+  },
+  async input => {
+    const {output} = await prompt(input);
+    return output!;
+  }
+);
