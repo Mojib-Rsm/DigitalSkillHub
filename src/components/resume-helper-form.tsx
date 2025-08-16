@@ -1,8 +1,7 @@
 
 "use client";
 
-import React from "react";
-import { useActionState } from "react";
+import React, { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { getSuggestions } from "@/app/ai-tools/resume-helper/actions";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Clipboard, FileText } from "lucide-react";
-import { useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 function SubmitButton() {

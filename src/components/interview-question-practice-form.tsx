@@ -1,8 +1,7 @@
 
 "use client";
 
-import React from "react";
-import { useActionState } from "react";
+import React, { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { generateQuestions } from "@/app/ai-tools/interview-question-practice/actions";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Briefcase, HelpCircle } from "lucide-react";
-import { useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
@@ -114,3 +112,4 @@ export default function InterviewQuestionPracticeForm() {
     </Card>
   );
 }
+
