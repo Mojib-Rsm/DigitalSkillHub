@@ -9,6 +9,25 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { getCourses, Course } from '@/services/course-service';
+
+const getCourseInfoTool = ai.defineTool(
+    {
+        name: 'getCourseInfo',
+        description: 'Get information about available courses on the Digital Skill Hub platform. Use this to answer questions about course names, prices, categories, and other details.',
+        inputSchema: z.object({
+            courseName: z.string().optional().describe('The name of the course to get information about. If not provided, information about all courses will be returned.'),
+        }),
+        outputSchema: z.array(z.custom<Course>()),
+    },
+    async (input) => {
+        const courses = getCourses();
+        if (input.courseName) {
+            return courses.filter(c => c.title.toLowerCase().includes(input.courseName!.toLowerCase()));
+        }
+        return courses;
+    }
+)
 
 const ChatbotInputSchema = z.object({
   history: z.array(z.object({
@@ -32,6 +51,7 @@ const prompt = ai.definePrompt({
   name: 'chatbotPrompt',
   input: {schema: ChatbotInputSchema},
   output: {schema: ChatbotOutputSchema},
+  tools: [getCourseInfoTool],
   prompt: `You are a friendly and helpful chatbot for an online learning platform called "Digital Skill Hub".
 Your purpose is to assist users, particularly women, youth, and people with disabilities in Bangladesh.
 Your primary language for communication is Bengali.
@@ -40,13 +60,15 @@ Here is some important information about the company:
 - CEO: Mojibur Rahman
 - Office Address: 53, Near M.R Computer, East Dhechua Palong, Ramu, Cox's Bazar
 
-You should be able to answer basic questions about the platform, such as:
+You should be able to answer questions about the platform, such as:
 - Who is the CEO?
 - What is the office address?
 - How to register
 - How to enroll in a course
-- What courses are available
+- What courses are available and what are their prices
 - Information about the "Made in Cox's Bazar" marketplace
+
+When asked about courses, use the getCourseInfo tool to get the most up-to-date information.
 
 Here is the conversation history:
 {{#each history}}
@@ -70,5 +92,3 @@ const chatbotFlow = ai.defineFlow(
     return output!;
   }
 );
-
-    
