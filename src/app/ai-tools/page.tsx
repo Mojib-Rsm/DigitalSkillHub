@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, AudioWaveform, Code, Presentation, Palette, FileAnalytics, Gamepad } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from '@/lib/utils';
@@ -36,6 +36,13 @@ const allTools = [
         href: "/ai-tools/image-generator",
         icon: <ImageIcon className="w-8 h-8 text-primary" />,
         category: "Image Generation",
+    },
+    {
+        title: "এআই ভিডিও জেনারেটর",
+        description: "পাঠ্য প্রম্পট থেকে ছোট ভিডিও তৈরি করুন।",
+        href: "/ai-tools/video-generator",
+        icon: <Film className="w-8 h-8 text-primary" />,
+        category: "Video & Animation",
     },
     {
         title: "পেশাদার ইমেল লেখক",
@@ -134,6 +141,7 @@ const categories = [
     { id: "all", name: "সকল টুল" },
     { id: "Content & Writing", name: "কনটেন্ট ও লেখা" },
     { id: "Image Generation", name: "ছবি তৈরি" },
+    { id: "Video & Animation", name: "ভিডিও ও অ্যানিমেশন" },
     { id: "SEO & Marketing", name: "এসইও ও মার্কেটিং" },
     { id: "Productivity & Business", name: "ব্যবসা ও প্রোডাক্টিভিটি" },
 ];
@@ -158,7 +166,7 @@ export default function AiToolsPage() {
       </div>
 
       <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full mb-8">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 max-w-4xl mx-auto h-auto">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 max-w-5xl mx-auto h-auto">
           {categories.map((category) => (
             <TabsTrigger key={category.id} value={category.id} className="text-base py-2">
               {category.name}

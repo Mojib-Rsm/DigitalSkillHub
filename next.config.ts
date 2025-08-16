@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -17,6 +18,15 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '4mb', // Increase body size limit for video uploads if needed
+    },
+  },
+  // Increase server action timeout to 2 minutes for video generation
+  serverActions: {
+    bodySizeLimit: '4mb',
   },
 };
 
