@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { generateQuestions } from "@/app/ai-tools/interview-question-practice/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +34,7 @@ function SubmitButton() {
 
 export default function InterviewQuestionPracticeForm() {
   const initialState = { message: "", questions: [], issues: [], fields: {} };
-  const [state, formAction] = useFormState(generateQuestions, initialState);
+  const [state, formAction] = useActionState(generateQuestions, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 

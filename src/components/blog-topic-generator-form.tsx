@@ -1,15 +1,15 @@
 
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { generateTopics } from "@/app/ai-tools/blog-topic-generator/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Terminal, Sparkles, Lightbulb } from "lucide-react";
+import { Sparkles, Lightbulb } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -35,7 +35,7 @@ function SubmitButton() {
 
 export default function BlogTopicGeneratorForm() {
   const initialState = { message: "", topics: [], issues: [], fields: {} };
-  const [state, formAction] = useFormState(generateTopics, initialState);
+  const [state, formAction] = useActionState(generateTopics, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 

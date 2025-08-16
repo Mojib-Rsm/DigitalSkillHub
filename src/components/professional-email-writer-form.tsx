@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { writeEmail } from "@/app/ai-tools/professional-email-writer/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,7 +35,7 @@ function SubmitButton() {
 
 export default function ProfessionalEmailWriterForm() {
   const initialState = { message: "", emailDraft: "", issues: [], fields: {} };
-  const [state, formAction] = useFormState(writeEmail, initialState);
+  const [state, formAction] = useActionState(writeEmail, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 

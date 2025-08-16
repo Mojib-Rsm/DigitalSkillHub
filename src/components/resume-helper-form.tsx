@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { getSuggestions } from "@/app/ai-tools/resume-helper/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +34,7 @@ function SubmitButton() {
 
 export default function ResumeHelperForm() {
   const initialState = { message: "", suggestions: "", issues: [], fields: {} };
-  const [state, formAction] = useFormState(getSuggestions, initialState);
+  const [state, formAction] = useActionState(getSuggestions, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 

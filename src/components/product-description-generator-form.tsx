@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { generateDescription } from "@/app/ai-tools/product-description-generator/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +34,7 @@ function SubmitButton() {
 
 export default function ProductDescriptionGeneratorForm() {
   const initialState = { message: "", description: "", issues: [], fields: {} };
-  const [state, formAction] = useFormState(generateDescription, initialState);
+  const [state, formAction] = useActionState(generateDescription, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 

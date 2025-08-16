@@ -1,12 +1,12 @@
 
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import { generatePost } from "@/app/ai-tools/social-media-post-generator/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Clipboard, Hash } from "lucide-react";
 import { useEffect, useRef } from "react";
@@ -34,7 +34,7 @@ function SubmitButton() {
 
 export default function SocialMediaPostGeneratorForm() {
   const initialState = { message: "", post: "", issues: [], fields: {} };
-  const [state, formAction] = useFormState(generatePost, initialState);
+  const [state, formAction] = useActionState(generatePost, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
