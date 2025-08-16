@@ -5,7 +5,7 @@ import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 
 export const metadata: Metadata = {
-  title: 'Skill Sprout - Grow Your Digital Skills',
+  title: 'Digital Skill Hub - Grow Your Digital Skills',
   description:
     'An online learning and freelancing skill development platform. Learn Web Development, Graphics Design, SEO, Digital Marketing, and more.',
 };

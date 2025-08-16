@@ -48,7 +48,7 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <Sprout className="h-7 w-7 text-primary" />
-          <span className="text-xl font-bold font-headline">Skill Sprout</span>
+          <span className="text-xl font-bold font-headline">Digital Skill Hub</span>
         </Link>
         <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
@@ -72,7 +72,7 @@ export default function Header() {
                 <SheetTitle>
                   <Link href="/" className="flex items-center gap-2 mb-8">
                     <Sprout className="h-7 w-7 text-primary" />
-                    <span className="text-xl font-bold font-headline">Skill Sprout</span>
+                    <span className="text-xl font-bold font-headline">Digital Skill Hub</span>
                   </Link>
                 </SheetTitle>
               </SheetHeader>
