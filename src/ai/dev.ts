@@ -13,3 +13,6 @@ import '@/ai/flows/professional-email-writer.ts';
 import '@/ai/flows/business-name-generator.ts';
 import '@/ai/flows/seo-keyword-suggester.ts';
 import '@/ai/flows/interview-question-practice.ts';
+import '@/ai/flows/course-recommender.ts';
+import '@/ai/flows/quiz-generator.ts';
+import '@/ai/flows/note-summarizer.ts';

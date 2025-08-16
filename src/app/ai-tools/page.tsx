@@ -1,9 +1,27 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, Mic, Eye, Camera, BarChart, FileText } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, Mic, Eye, Camera, BarChart, FileText, GraduationCap, HelpCircle, BookCheck } from "lucide-react";
 import Link from "next/link";
 
 const aiTools = [
+  {
+    title: "Course Recommender",
+    description: "Get personalized course suggestions based on your interests.",
+    href: "/ai-tools/course-recommender",
+    icon: <GraduationCap className="w-8 h-8 text-primary" />,
+  },
+  {
+    title: "Quiz Generator",
+    description: "Create a quiz from any text to test your knowledge.",
+    href: "/ai-tools/quiz-generator",
+    icon: <HelpCircle className="w-8 h-8 text-primary" />,
+  },
+  {
+    title: "Note Summarizer",
+    description: "Summarize long texts into concise notes.",
+    href: "/ai-tools/note-summarizer",
+    icon: <BookCheck className="w-8 h-8 text-primary" />,
+  },
   {
     title: "Blog Topic Generator",
     description: "Generate creative blog post ideas based on your interests.",
