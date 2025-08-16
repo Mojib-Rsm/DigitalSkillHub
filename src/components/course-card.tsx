@@ -63,11 +63,11 @@ export default function CourseCard({ course }: CourseCardProps) {
         </div>
       </CardContent>
       <CardFooter className="p-4 flex justify-between items-center bg-muted/50">
-        <p className="text-2xl font-bold text-primary">{course.price > 0 ? `$${course.price.toFixed(2)}` : 'Free'}</p>
+        <p className="text-2xl font-bold text-primary">{course.price > 0 ? `$${course.price.toFixed(2)}` : 'ফ্রি'}</p>
         <Button asChild>
           <Link href="#">
             <ShoppingCart className="mr-2 h-4 w-4" />
-            {course.price > 0 ? 'Add to Cart' : 'Enroll Now'}
+            {course.price > 0 ? 'কার্টে যোগ করুন' : 'এখনই ভর্তি হন'}
           </Link>
         </Button>
       </CardFooter>

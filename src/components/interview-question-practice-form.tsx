@@ -19,12 +19,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Generating...
+          জেনারেট করা হচ্ছে...
         </>
       ) : (
         <>
           <Briefcase className="mr-2 h-5 w-5" />
-          Generate Questions
+          প্রশ্ন জেনারেট করুন
         </>
       )}
     </Button>
@@ -44,7 +44,7 @@ export default function InterviewQuestionPracticeForm() {
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -53,19 +53,19 @@ export default function InterviewQuestionPracticeForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Practice for Your Interview</CardTitle>
+        <CardTitle>আপনার ইন্টারভিউর জন্য অনুশীলন করুন</CardTitle>
         <CardDescription>
-          Get a list of common interview questions for your target role.
+          আপনার লক্ষ্য ভূমিকার জন্য সাধারণ ইন্টারভিউ প্রশ্নগুলির একটি তালিকা পান।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form ref={formRef} action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="jobTitle">Job Title</Label>
+            <Label htmlFor="jobTitle">পদের নাম</Label>
             <Input
               id="jobTitle"
               name="jobTitle"
-              placeholder="e.g., Customer Service Representative"
+              placeholder="যেমন, কাস্টমার সার্ভিস প্রতিনিধি"
               defaultValue={state.fields?.jobTitle}
               required
             />
@@ -74,16 +74,16 @@ export default function InterviewQuestionPracticeForm() {
               .map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="experienceLevel">Experience Level</Label>
+            <Label htmlFor="experienceLevel">অভিজ্ঞতার স্তর</Label>
             <Select name="experienceLevel" defaultValue={state.fields?.experienceLevel}>
                 <SelectTrigger id="experienceLevel">
-                    <SelectValue placeholder="Select level" />
+                    <SelectValue placeholder="স্তর নির্বাচন করুন" />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="Entry-Level">Entry-Level</SelectItem>
-                    <SelectItem value="Mid-Level">Mid-Level</SelectItem>
-                    <SelectItem value="Senior">Senior</SelectItem>
-                    <SelectItem value="Manager">Manager</SelectItem>
+                    <SelectItem value="Entry-Level">এন্ট্রি-লেভেল</SelectItem>
+                    <SelectItem value="Mid-Level">মধ্য-স্তর</SelectItem>
+                    <SelectItem value="Senior">সিনিয়র</SelectItem>
+                    <SelectItem value="Manager">ম্যানেজার</SelectItem>
                 </SelectContent>
             </Select>
              {state.issues
@@ -95,7 +95,7 @@ export default function InterviewQuestionPracticeForm() {
 
         {state.questions && state.questions.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Practice Questions</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">অনুশীলন প্রশ্ন</h3>
             <div className="space-y-3">
               {state.questions.map((question, index) => (
                 <Card key={index} className="bg-background/50">
@@ -112,4 +112,3 @@ export default function InterviewQuestionPracticeForm() {
     </Card>
   );
 }
-

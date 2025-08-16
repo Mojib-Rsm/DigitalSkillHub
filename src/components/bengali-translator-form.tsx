@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Clipboard, Languages } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
@@ -21,12 +21,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Translating...
+          অনুবাদ করা হচ্ছে...
         </>
       ) : (
         <>
           <Languages className="mr-2 h-5 w-5" />
-          Translate
+          অনুবাদ করুন
         </>
       )}
     </Button>
@@ -42,7 +42,7 @@ export default function BengaliTranslatorForm() {
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -52,8 +52,8 @@ export default function BengaliTranslatorForm() {
     if (state.translatedText) {
       navigator.clipboard.writeText(state.translatedText);
       toast({
-        title: "Copied!",
-        description: "Translated text copied to clipboard.",
+        title: "কপি করা হয়েছে!",
+        description: "অনूदিত পাঠ্য ক্লিপবোর্ডে কপি করা হয়েছে।",
       });
     }
   };
@@ -61,19 +61,19 @@ export default function BengaliTranslatorForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Translate Content</CardTitle>
+        <CardTitle>কনটেন্ট অনুবাদ করুন</CardTitle>
         <CardDescription>
-          Enter text and select the target language.
+          পাঠ্য লিখুন এবং লক্ষ্য ভাষা নির্বাচন করুন।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="textToTranslate">Text to Translate</Label>
+            <Label htmlFor="textToTranslate">অনুবাদ করার জন্য পাঠ্য</Label>
             <Textarea
               id="textToTranslate"
               name="textToTranslate"
-              placeholder="Enter text here..."
+              placeholder="এখানে পাঠ্য লিখুন..."
               defaultValue={state.fields?.textToTranslate}
               required
               rows={5}
@@ -84,15 +84,15 @@ export default function BengaliTranslatorForm() {
           </div>
           
           <div className="space-y-2">
-            <Label>Translate to</Label>
+            <Label>অনুবাদ করুন</Label>
             <RadioGroup name="targetLanguage" defaultValue="Bengali" className="flex gap-4">
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="Bengali" id="bengali" />
-                <Label htmlFor="bengali">Bengali</Label>
+                <Label htmlFor="bengali">বাংলা</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="English" id="english" />
-                <Label htmlFor="english">English</Label>
+                <Label htmlFor="english">ইংরেজি</Label>
               </div>
             </RadioGroup>
           </div>
@@ -102,7 +102,7 @@ export default function BengaliTranslatorForm() {
 
         {state.translatedText && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Translated Text</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">অনूदিত পাঠ্য</h3>
             <Card className="bg-muted/50 relative">
               <CardContent className="p-4">
                 <p className="text-muted-foreground whitespace-pre-wrap">{state.translatedText}</p>

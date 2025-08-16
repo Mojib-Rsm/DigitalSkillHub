@@ -9,9 +9,9 @@ export default function ProductDescriptionGeneratorPage() {
         <div className="inline-block bg-primary/10 p-4 rounded-full mb-4">
             <ShoppingCart className="w-12 h-12 text-primary" />
         </div>
-        <h1 className="font-headline text-5xl font-bold">Product Description Generator</h1>
+        <h1 className="font-headline text-5xl font-bold">পণ্যের বিবরণ জেনারেটর</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          Create persuasive and effective product descriptions for your online store in seconds.
+          আপনার অনলাইন স্টোরের জন্য সেকেন্ডের মধ্যে प्रेरक এবং কার্যকর পণ্যের বিবরণ তৈরি করুন।
         </p>
       </div>
 

@@ -9,9 +9,9 @@ export default function BlogTopicGeneratorPage() {
         <div className="inline-block bg-primary/10 p-4 rounded-full mb-4">
             <PenSquare className="w-12 h-12 text-primary" />
         </div>
-        <h1 className="font-headline text-5xl font-bold">Blog Topic Generator</h1>
+        <h1 className="font-headline text-5xl font-bold">ব্লগ টপিক জেনারেটর</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          Stuck on what to write? Use our AI tool to generate relevant blog topic ideas based on trending skills and your interests.
+          কি লিখবেন তা নিয়ে ভাবছেন? ট্রেন্ডিং দক্ষতার এবং আপনার আগ্রহের উপর ভিত্তি করে প্রাসঙ্গিক ব্লগ বিষয়ের ধারণা তৈরি করতে আমাদের এআই টুল ব্যবহার করুন।
         </p>
       </div>
 

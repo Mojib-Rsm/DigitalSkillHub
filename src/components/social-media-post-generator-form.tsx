@@ -21,12 +21,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Generating...
+          জেনারেট করা হচ্ছে...
         </>
       ) : (
         <>
           <Hash className="mr-2 h-5 w-5" />
-          Generate Post
+          পোস্ট জেনারেট করুন
         </>
       )}
     </Button>
@@ -46,7 +46,7 @@ export default function SocialMediaPostGeneratorForm() {
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -56,8 +56,8 @@ export default function SocialMediaPostGeneratorForm() {
     if (state.post) {
       navigator.clipboard.writeText(state.post);
       toast({
-        title: "Copied!",
-        description: "Social media post copied to clipboard.",
+        title: "কপি করা হয়েছে!",
+        description: "সোশ্যাল মিডিয়া পোস্ট ক্লিপবোর্ডে কপি করা হয়েছে।",
       });
     }
   };
@@ -65,19 +65,19 @@ export default function SocialMediaPostGeneratorForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Generate a Social Media Post</CardTitle>
+        <CardTitle>একটি সোশ্যাল মিডিয়া পোস্ট তৈরি করুন</CardTitle>
         <CardDescription>
-          Enter a topic and let AI craft the perfect post for your audience.
+          একটি বিষয় লিখুন এবং এআইকে আপনার দর্শকদের জন্য সেরা পোস্টটি তৈরি করতে দিন।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form ref={formRef} action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="topic">Post Topic</Label>
+            <Label htmlFor="topic">পোস্টের বিষয়</Label>
             <Input
               id="topic"
               name="topic"
-              placeholder="e.g., Launching a new handmade jewelry collection"
+              placeholder="যেমন, একটি নতুন হস্তনির্মিত গহনা সংগ্রহ চালু করা"
               defaultValue={state.fields?.topic}
               required
             />
@@ -87,16 +87,16 @@ export default function SocialMediaPostGeneratorForm() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="platform">Platform</Label>
+              <Label htmlFor="platform">প্ল্যাটফর্ম</Label>
               <Select name="platform" defaultValue={state.fields?.platform}>
                   <SelectTrigger id="platform">
-                      <SelectValue placeholder="Select platform" />
+                      <SelectValue placeholder="প্ল্যাটফর্ম নির্বাচন করুন" />
                   </SelectTrigger>
                   <SelectContent>
-                      <SelectItem value="Facebook">Facebook</SelectItem>
-                      <SelectItem value="Instagram">Instagram</SelectItem>
-                      <SelectItem value="Twitter">Twitter</SelectItem>
-                      <SelectItem value="LinkedIn">LinkedIn</SelectItem>
+                      <SelectItem value="Facebook">ফেসবুক</SelectItem>
+                      <SelectItem value="Instagram">ইনস্টাগ্রাম</SelectItem>
+                      <SelectItem value="Twitter">টুইটার</SelectItem>
+                      <SelectItem value="LinkedIn">লিঙ্কডইন</SelectItem>
                   </SelectContent>
               </Select>
                {state.issues
@@ -104,16 +104,16 @@ export default function SocialMediaPostGeneratorForm() {
                 .map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
             </div>
             <div className="space-y-2">
-                <Label htmlFor="tone">Tone</Label>
+                <Label htmlFor="tone">ধরণ</Label>
                 <Select name="tone" defaultValue={state.fields?.tone}>
                     <SelectTrigger id="tone">
-                        <SelectValue placeholder="Select tone" />
+                        <SelectValue placeholder="ধরণ নির্বাচন করুন" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="Casual">Casual</SelectItem>
-                        <SelectItem value="Formal">Formal</SelectItem>
-                        <SelectItem value="Funny">Funny</SelectItem>
-                        <SelectItem value="Inspirational">Inspirational</SelectItem>
+                        <SelectItem value="Casual">সাধারণ</SelectItem>
+                        <SelectItem value="Formal">ফরমাল</SelectItem>
+                        <SelectItem value="Funny">মজাদার</SelectItem>
+                        <SelectItem value="Inspirational">অনুপ্রেরণামূলক</SelectItem>
                     </SelectContent>
                 </Select>
                  {state.issues
@@ -126,7 +126,7 @@ export default function SocialMediaPostGeneratorForm() {
 
         {state.post && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Generated Post</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">জেনারেটেড পোস্ট</h3>
             <Card className="bg-muted/50 relative">
               <CardContent className="p-4">
                 <p className="text-muted-foreground whitespace-pre-wrap">{state.post}</p>

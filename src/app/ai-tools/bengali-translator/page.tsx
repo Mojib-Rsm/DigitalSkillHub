@@ -9,9 +9,9 @@ export default function BengaliTranslatorPage() {
         <div className="inline-block bg-primary/10 p-4 rounded-full mb-4">
             <Languages className="w-12 h-12 text-primary" />
         </div>
-        <h1 className="font-headline text-5xl font-bold">Bengali Content Translator</h1>
+        <h1 className="font-headline text-5xl font-bold">বাংলা কনটেন্ট অনুবাদক</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          Easily translate text between English and Bengali for your content needs.
+          আপনার কনটেন্টের জন্য সহজেই ইংরেজি এবং বাংলার মধ্যে টেক্সট অনুবাদ করুন।
         </p>
       </div>
 

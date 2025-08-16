@@ -9,9 +9,9 @@ export default function NoteSummarizerPage() {
         <div className="inline-block bg-primary/10 p-4 rounded-full mb-4">
             <BookCheck className="w-12 h-12 text-primary" />
         </div>
-        <h1 className="font-headline text-5xl font-bold">Note Summarizer</h1>
+        <h1 className="font-headline text-5xl font-bold">নোট সারাংশকারী</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          Turn long articles or documents into concise, easy-to-digest notes.
+          দীর্ঘ নিবন্ধ বা নথিগুলিকে সংক্ষিপ্ত, সহজে হজমযোগ্য নোটগুলিতে পরিণত করুন।
         </p>
       </div>
 

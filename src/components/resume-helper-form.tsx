@@ -19,12 +19,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Analyzing...
+          বিশ্লেষণ করা হচ্ছে...
         </>
       ) : (
         <>
           <FileText className="mr-2 h-5 w-5" />
-          Get Suggestions
+          সুপারিশ পান
         </>
       )}
     </Button>
@@ -44,7 +44,7 @@ export default function ResumeHelperForm() {
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -54,8 +54,8 @@ export default function ResumeHelperForm() {
     if (state.suggestions) {
       navigator.clipboard.writeText(state.suggestions);
       toast({
-        title: "Copied!",
-        description: "Resume suggestions copied to clipboard.",
+        title: "কপি করা হয়েছে!",
+        description: "জীবনবৃত্তান্তের পরামর্শ ক্লিপবোর্ডে কপি করা হয়েছে।",
       });
     }
   };
@@ -63,19 +63,19 @@ export default function ResumeHelperForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Improve Your Resume</CardTitle>
+        <CardTitle>আপনার জীবনবৃত্তান্ত উন্নত করুন</CardTitle>
         <CardDescription>
-          Enter your details and get AI-powered feedback to improve your resume.
+          আপনার বিবরণ লিখুন এবং আপনার জীবনবৃত্তান্ত উন্নত করার জন্য এআই-চালিত প্রতিক্রিয়া পান।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form ref={formRef} action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="jobTitle">Target Job Title</Label>
+            <Label htmlFor="jobTitle">লক্ষ্য পদের নাম</Label>
             <Input
               id="jobTitle"
               name="jobTitle"
-              placeholder="e.g., Junior Web Developer"
+              placeholder="যেমন, জুনিয়র ওয়েব ডেভেলপার"
               defaultValue={state.fields?.jobTitle}
               required
             />
@@ -84,11 +84,11 @@ export default function ResumeHelperForm() {
               .map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
            <div className="space-y-2">
-            <Label htmlFor="skills">Your Skills (comma-separated)</Label>
+            <Label htmlFor="skills">আপনার দক্ষতা (কমা দ্বারা পৃথক)</Label>
             <Input
               id="skills"
               name="skills"
-              placeholder="e.g., HTML, CSS, JavaScript, React, Node.js"
+              placeholder="যেমন, এইচটিএমএল, সিএসএস, জাভাস্ক্রিপ্ট, রিঅ্যাক্ট, নোড.জেএস"
               defaultValue={state.fields?.skills}
               required
             />
@@ -97,11 +97,11 @@ export default function ResumeHelperForm() {
               .map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="experience">Work Experience</Label>
+            <Label htmlFor="experience">কাজের অভিজ্ঞতা</Label>
             <Textarea
               id="experience"
               name="experience"
-              placeholder="Paste your current work experience section here..."
+              placeholder="আপনার বর্তমান কাজের অভিজ্ঞতা বিভাগটি এখানে পেস্ট করুন..."
               defaultValue={state.fields?.experience}
               required
               rows={8}
@@ -115,7 +115,7 @@ export default function ResumeHelperForm() {
 
         {state.suggestions && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">AI Suggestions</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">এআই পরামর্শ</h3>
             <Card className="bg-muted/50 relative">
               <CardContent className="p-4">
                 <p className="text-muted-foreground whitespace-pre-wrap">{state.suggestions}</p>

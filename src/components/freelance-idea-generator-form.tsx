@@ -19,12 +19,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Generating...
+          জেনারেট করা হচ্ছে...
         </>
       ) : (
         <>
           <Wand className="mr-2 h-5 w-5" />
-          Generate Ideas
+          আইডিয়া জেনারেট করুন
         </>
       )}
     </Button>
@@ -44,7 +44,7 @@ export default function FreelanceIdeaGeneratorForm() {
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -53,19 +53,19 @@ export default function FreelanceIdeaGeneratorForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Get Freelance Project Ideas</CardTitle>
+        <CardTitle>ফ্রিল্যান্স প্রকল্পের আইডিয়া পান</CardTitle>
         <CardDescription>
-          Enter your skills and we'll suggest some services you could offer.
+          আপনার দক্ষতা লিখুন এবং আমরা আপনার জন্য কিছু পরিষেবা সুপারিশ করব।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form ref={formRef} action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="skills">Your Skills (comma-separated)</Label>
+            <Label htmlFor="skills">আপনার দক্ষতা (কমা দ্বারা পৃথক)</Label>
             <Input
               id="skills"
               name="skills"
-              placeholder="e.g., graphic design, canva, video editing, content writing"
+              placeholder="যেমন, গ্রাফিক ডিজাইন, ক্যানভা, ভিডিও এডিটিং, কনটেন্ট লেখা"
               defaultValue={state.fields?.skills}
               required
             />
@@ -76,7 +76,7 @@ export default function FreelanceIdeaGeneratorForm() {
 
         {state.ideas && state.ideas.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Here are some ideas...</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">এখানে কিছু ধারণা দেওয়া হলো...</h3>
             <div className="space-y-3">
               {state.ideas.map((idea, index) => (
                 <Card key={index} className="bg-background/50">

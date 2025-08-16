@@ -9,9 +9,9 @@ export default function CourseRecommenderPage() {
         <div className="inline-block bg-primary/10 p-4 rounded-full mb-4">
             <GraduationCap className="w-12 h-12 text-primary" />
         </div>
-        <h1 className="font-headline text-5xl font-bold">Course Recommender</h1>
+        <h1 className="font-headline text-5xl font-bold">কোর্স রিকমেন্ডার</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          Not sure where to start? Tell us your interests, and we'll suggest the perfect courses for you.
+          কোথায় শুরু করবেন নিশ্চিত নন? আপনার আগ্রহ আমাদের জানান, এবং আমরা আপনার জন্য সেরা কোর্সগুলো সুপারিশ করব।
         </p>
       </div>
 

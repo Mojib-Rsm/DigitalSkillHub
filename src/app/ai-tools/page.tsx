@@ -5,98 +5,98 @@ import Link from "next/link";
 
 const aiTools = [
   {
-    title: "Course Recommender",
-    description: "Get personalized course suggestions based on your interests.",
+    title: "কোর্স রিকমেন্ডার",
+    description: "আপনার আগ্রহের উপর ভিত্তি করে ব্যক্তিগতকৃত কোর্স সাজেশন পান।",
     href: "/ai-tools/course-recommender",
     icon: <GraduationCap className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Quiz Generator",
-    description: "Create a quiz from any text to test your knowledge.",
+    title: "কুইজ জেনারেটর",
+    description: "আপনার জ্ঞান পরীক্ষা করার জন্য যেকোনো পাঠ্য থেকে একটি কুইজ তৈরি করুন।",
     href: "/ai-tools/quiz-generator",
     icon: <HelpCircle className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Note Summarizer",
-    description: "Summarize long texts into concise notes.",
+    title: "নোট সারাংশকারী",
+    description: "দীর্ঘ পাঠ্যকে সংক্ষিপ্ত নোটে পরিণত করুন।",
     href: "/ai-tools/note-summarizer",
     icon: <BookCheck className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Blog Topic Generator",
-    description: "Generate creative blog post ideas based on your interests.",
+    title: "ব্লগ টপিক জেনারেটর",
+    description: "আপনার আগ্রহের উপর ভিত্তি করে সৃজনশীল ব্লগ পোস্টের ধারণা তৈরি করুন।",
     href: "/ai-tools/blog-topic-generator",
     icon: <PenSquare className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Product Description Generator",
-    description: "Create compelling descriptions for your e-commerce products.",
+    title: "পণ্যের বিবরণ জেনারেটর",
+    description: "আপনার ই-কমার্স পণ্যের জন্য আকর্ষণীয় বিবরণ তৈরি করুন।",
     href: "/ai-tools/product-description-generator",
     icon: <ShoppingCart className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Bengali Content Translator",
-    description: "Translate text between English and Bengali.",
+    title: "বাংলা কনটেন্ট অনুবাদক",
+    description: "ইংরেজি এবং বাংলার মধ্যে পাঠ্য অনুবাদ করুন।",
     href: "/ai-tools/bengali-translator",
     icon: <Languages className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Social Media Post Generator",
-    description: "Create engaging posts for Facebook, Instagram, and more.",
+    title: "সোশ্যাল মিডিয়া পোস্ট জেনারেটর",
+    description: "ফেসবুক, ইনস্টাগ্রাম এবং আরও অনেক কিছুর জন্য আকর্ষণীয় পোস্ট তৈরি করুন।",
     href: "/ai-tools/social-media-post-generator",
     icon: <Hash className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Resume/CV Helper",
-    description: "Get help writing a professional and effective resume.",
+    title: "জীবনবৃত্তান্ত/সিভি সহায়ক",
+    description: "একটি পেশাদার এবং কার্যকর জীবনবৃত্তান্ত লিখতে সহায়তা পান।",
     href: "/ai-tools/resume-helper",
     icon: <FileText className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Professional Email Writer",
-    description: "Draft professional emails for clients and colleagues.",
+    title: "পেশাদার ইমেল লেখক",
+    description: "ক্লায়েন্ট এবং সহকর্মীদের জন্য পেশাদার ইমেল ড্রাফ্ট করুন।",
     href: "/ai-tools/professional-email-writer",
     icon: <Mail className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Business Name Generator",
-    description: "Find the perfect name for your new business or brand.",
+    title: "ব্যবসার নাম জেনারেটর",
+    description: "আপনার নতুন ব্যবসা বা ব্র্যান্ডের জন্য সেরা নামটি খুঁজুন।",
     href: "/ai-tools/business-name-generator",
     icon: <Lightbulb className="w-8 h-8 text-primary" />,
   },
   {
-    title: "SEO Keyword Suggester",
-    description: "Discover keywords to improve your online visibility.",
+    title: "এসইও কীওয়ার্ড সাজেশনকারী",
+    description: "আপনার অনলাইন দৃশ্যমানতা উন্নত করতে কীওয়ার্ড আবিষ্কার করুন।",
     href: "/ai-tools/seo-keyword-suggester",
     icon: <BarChart className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Interview Question Practice",
-    description: "Generate practice questions for your next job interview.",
+    title: "ইন্টারভিউ প্রশ্ন অনুশীলন",
+    description: "আপনার পরবর্তী চাকরির ইন্টারভিউর জন্য অনুশীলন প্রশ্ন তৈরি করুন।",
     href: "/ai-tools/interview-question-practice",
     icon: <Briefcase className="w-8 h-8 text-primary" />,
   },
   {
-    title: "AI Image Generator",
-    description: "Create logos, banners, and other images from text.",
+    title: "এআই ইমেজ জেনারেটর",
+    description: "পাঠ্য থেকে লোগো, ব্যানার এবং অন্যান্য ছবি তৈরি করুন।",
     href: "/ai-tools/image-generator",
     icon: <Image className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Freelance Idea Generator",
-    description: "Get project ideas based on your skills.",
+    title: "ফ্রিল্যান্স আইডিয়া জেনারেটর",
+    description: "আপনার দক্ষতার উপর ভিত্তি করে প্রকল্পের ধারণা পান।",
     href: "/ai-tools/freelance-idea-generator",
     icon: <Wand className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Price/Rate Calculator",
-    description: "Calculate a fair price for your freelance services.",
+    title: "মূল্য/রেট ক্যালকুলেটর",
+    description: "আপনার ফ্রিল্যান্স পরিষেবার জন্য একটি ন্যায্য মূল্য গণনা করুন।",
     href: "/ai-tools/price-rate-calculator",
     icon: <DollarSign className="w-8 h-8 text-primary" />,
   },
   {
-    title: "Cover Letter Generator",
-    description: "Create a professional cover letter in seconds.",
+    title: "কভার লেটার জেনারেটর",
+    description: "কয়েক সেকেন্ডের মধ্যে একটি পেশাদার কভার লেটার তৈরি করুন।",
     href: "/ai-tools/cover-letter-generator",
     icon: <FileSignature className="w-8 h-8 text-primary" />,
   },
@@ -109,9 +109,9 @@ export default function AiToolsPage() {
         <div className="inline-block bg-primary/10 p-4 rounded-full mb-4">
             <Bot className="w-12 h-12 text-primary" />
         </div>
-        <h1 className="font-headline text-5xl font-bold">AI Tools</h1>
+        <h1 className="font-headline text-5xl font-bold">এআই টুলস</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          Leverage the power of AI to boost your productivity and creativity.
+          আপনার উৎপাদনশীলতা এবং সৃজনশীলতা বাড়াতে এআই-এর শক্তি ব্যবহার করুন।
         </p>
       </div>
 

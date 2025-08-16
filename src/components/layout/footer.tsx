@@ -11,10 +11,10 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center gap-2 mb-4 md:mb-0">
             <Sprout className="h-7 w-7 text-primary" />
-            <span className="text-xl font-bold font-headline">Digital Skill Hub</span>
+            <span className="text-xl font-bold font-headline">ডিজিটাল স্কিল হাব</span>
           </div>
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Digital Skill Hub. All rights reserved.
+            © {new Date().getFullYear()} ডিজিটাল স্কিল হাব। সর্বস্বত্ব সংরক্ষিত।
           </p>
           <div className="flex items-center gap-4 mt-4 md:mt-0">
             <Link href="#" aria-label="Twitter">
@@ -34,5 +34,3 @@ export default function Footer() {
     </>
   );
 }
-
-    

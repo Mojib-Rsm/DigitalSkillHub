@@ -19,12 +19,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Recommending...
+          সুপারিশ করা হচ্ছে...
         </>
       ) : (
         <>
           <GraduationCap className="mr-2 h-5 w-5" />
-          Find Courses
+          কোর্স খুঁজুন
         </>
       )}
     </Button>
@@ -44,7 +44,7 @@ export default function CourseRecommenderForm() {
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -53,19 +53,19 @@ export default function CourseRecommenderForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Get Course Recommendations</CardTitle>
+        <CardTitle>কোর্স সুপারিশ পান</CardTitle>
         <CardDescription>
-          Enter your interests and we'll suggest some courses for you.
+          আপনার আগ্রহ লিখুন এবং আমরা আপনার জন্য কিছু কোর্স সুপারিশ করব।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form ref={formRef} action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="interests">Your Interests or Desired Skills</Label>
+            <Label htmlFor="interests">আপনার আগ্রহ বা কাঙ্ক্ষিত দক্ষতা</Label>
             <Input
               id="interests"
               name="interests"
-              placeholder="e.g., selling clothes online, graphic design, basic computer skills"
+              placeholder="যেমন, অনলাইনে কাপড় বিক্রি, গ্রাফিক ডিজাইন, বেসিক কম্পিউটার স্কিলস"
               defaultValue={state.fields?.interests}
               required
             />
@@ -78,7 +78,7 @@ export default function CourseRecommenderForm() {
 
         {state.recommendations && state.recommendations.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Our Recommendations</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">আমাদের সুপারিশ</h3>
             <div className="space-y-3">
               {state.recommendations.map((rec, index) => (
                 <Card key={index} className="bg-background/50">

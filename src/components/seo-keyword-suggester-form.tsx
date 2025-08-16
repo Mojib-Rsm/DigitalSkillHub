@@ -20,12 +20,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Suggesting...
+          সুপারিশ করা হচ্ছে...
         </>
       ) : (
         <>
           <BarChart className="mr-2 h-5 w-5" />
-          Suggest Keywords
+          কীওয়ার্ড সুপারিশ করুন
         </>
       )}
     </Button>
@@ -45,7 +45,7 @@ export default function SeoKeywordSuggesterForm() {
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -54,19 +54,19 @@ export default function SeoKeywordSuggesterForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Find SEO Keywords</CardTitle>
+        <CardTitle>এসইও কীওয়ার্ড খুঁজুন</CardTitle>
         <CardDescription>
-          Enter your topic and target audience to get a list of SEO-friendly keywords.
+          এসইও-বান্ধব কীওয়ার্ডগুলির একটি তালিকা পেতে আপনার বিষয় এবং লক্ষ্য দর্শক লিখুন।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form ref={formRef} action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="topic">Topic / Niche</Label>
+            <Label htmlFor="topic">বিষয় / বিশেষত্ব</Label>
             <Input
               id="topic"
               name="topic"
-              placeholder="e.g., Handmade soap in Bangladesh"
+              placeholder="যেমন, বাংলাদেশে হাতে তৈরি সাবান"
               defaultValue={state.fields?.topic}
               required
             />
@@ -75,11 +75,11 @@ export default function SeoKeywordSuggesterForm() {
               .map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="targetAudience">Target Audience</Label>
+            <Label htmlFor="targetAudience">লক্ষ্য দর্শক</Label>
             <Input
               id="targetAudience"
               name="targetAudience"
-              placeholder="e.g., Eco-conscious women in Dhaka"
+              placeholder="যেমন, ঢাকার পরিবেশ-সচেতন নারী"
               defaultValue={state.fields?.targetAudience}
               required
             />
@@ -92,7 +92,7 @@ export default function SeoKeywordSuggesterForm() {
 
         {state.keywords && state.keywords.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Suggested Keywords</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">সুপারিশকৃত কীওয়ার্ড</h3>
             <div className="flex flex-wrap gap-2 justify-center">
               {state.keywords.map((keyword, index) => (
                 <div key={index} className="bg-muted text-muted-foreground rounded-full px-4 py-2 text-sm font-medium flex items-center gap-2">

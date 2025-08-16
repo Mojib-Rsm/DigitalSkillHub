@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -48,9 +49,9 @@ export default function BlogPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">
-        <h1 className="font-headline text-5xl font-bold">Skill Sprout Blog</h1>
+        <h1 className="font-headline text-5xl font-bold">দক্ষতার স্প্রাউট ব্লগ</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          Insights, tutorials, and news from the world of digital skills and freelancing.
+          ডিজিটাল দক্ষতা এবং ফ্রিল্যান্সিং জগত থেকে অন্তর্দৃষ্টি, টিউটোরিয়াল এবং খবর।
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -87,7 +88,7 @@ export default function BlogPage() {
                 </div>
               </div>
               <Link href="#" className="text-primary font-semibold hover:underline flex items-center gap-1">
-                Read More <ArrowRight className="w-4 h-4"/>
+                আরও পড়ুন <ArrowRight className="w-4 h-4"/>
               </Link>
             </CardFooter>
           </Card>

@@ -20,12 +20,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Summarizing...
+          সারাংশ করা হচ্ছে...
         </>
       ) : (
         <>
           <BookCheck className="mr-2 h-5 w-5" />
-          Summarize Text
+          পাঠ্য সারাংশ করুন
         </>
       )}
     </Button>
@@ -41,7 +41,7 @@ export default function NoteSummarizerForm() {
     if (state.message && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -51,8 +51,8 @@ export default function NoteSummarizerForm() {
     if (state.summary) {
       navigator.clipboard.writeText(state.summary);
       toast({
-        title: "Copied!",
-        description: "Summary copied to clipboard.",
+        title: "কপি করা হয়েছে!",
+        description: "সারাংশ ক্লিপবোর্ডে কপি করা হয়েছে।",
       });
     }
   };
@@ -60,19 +60,19 @@ export default function NoteSummarizerForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Summarize Your Notes</CardTitle>
+        <CardTitle>আপনার নোট সারাংশ করুন</CardTitle>
         <CardDescription>
-          Paste any text and choose your desired summary format.
+          যেকোনো পাঠ্য পেস্ট করুন এবং আপনার পছন্দসই সারাংশ বিন্যাস চয়ন করুন।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="text">Text to Summarize</Label>
+            <Label htmlFor="text">সারাংশ করার জন্য পাঠ্য</Label>
             <Textarea
               id="text"
               name="text"
-              placeholder="Paste your text here..."
+              placeholder="আপনার পাঠ্য এখানে পেস্ট করুন..."
               defaultValue={state.fields?.text}
               required
               rows={10}
@@ -81,15 +81,15 @@ export default function NoteSummarizerForm() {
           </div>
           
           <div className="space-y-2">
-            <Label>Summary Format</Label>
+            <Label>সারাংশ বিন্যাস</Label>
             <RadioGroup name="format" defaultValue="bullet_points" className="flex gap-4">
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="bullet_points" id="bullet_points" />
-                <Label htmlFor="bullet_points">Bullet Points</Label>
+                <Label htmlFor="bullet_points">বুলেট পয়েন্ট</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="paragraph" id="paragraph" />
-                <Label htmlFor="paragraph">Paragraph</Label>
+                <Label htmlFor="paragraph">অনুচ্ছেদ</Label>
               </div>
             </RadioGroup>
           </div>
@@ -99,7 +99,7 @@ export default function NoteSummarizerForm() {
 
         {state.summary && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Summary</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">সারাংশ</h3>
             <Card className="bg-muted/50 relative">
               <CardContent className="p-4">
                 <div className="text-muted-foreground whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: state.summary.replace(/\n/g, '<br />') }} />

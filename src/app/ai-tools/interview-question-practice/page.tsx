@@ -9,9 +9,9 @@ export default function InterviewQuestionPracticePage() {
         <div className="inline-block bg-primary/10 p-4 rounded-full mb-4">
             <Briefcase className="w-12 h-12 text-primary" />
         </div>
-        <h1 className="font-headline text-5xl font-bold">Interview Question Practice</h1>
+        <h1 className="font-headline text-5xl font-bold">ইন্টারভিউ প্রশ্ন অনুশীলন</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          Prepare for your next job interview by practicing with AI-generated questions.
+          এআই-জেনারেটেড প্রশ্নগুলির সাথে অনুশীলন করে আপনার পরবর্তী চাকরির ইন্টারভিউর জন্য প্রস্তুতি নিন।
         </p>
       </div>
 
@@ -21,4 +21,3 @@ export default function InterviewQuestionPracticePage() {
     </div>
   );
 }
-

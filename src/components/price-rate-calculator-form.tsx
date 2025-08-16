@@ -21,12 +21,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Calculating...
+          হিসাব করা হচ্ছে...
         </>
       ) : (
         <>
           <DollarSign className="mr-2 h-5 w-5" />
-          Calculate Price
+          মূল্য হিসাব করুন
         </>
       )}
     </Button>
@@ -46,7 +46,7 @@ export default function PriceRateCalculatorForm() {
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -55,19 +55,19 @@ export default function PriceRateCalculatorForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Calculate Your Project Rate</CardTitle>
+        <CardTitle>আপনার প্রকল্পের হার গণনা করুন</CardTitle>
         <CardDescription>
-          Answer a few questions to get a suggested price range for your work.
+          আপনার কাজের জন্য একটি প্রস্তাবিত মূল্য পরিসীমা পেতে কয়েকটি প্রশ্নের উত্তর দিন।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form ref={formRef} action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="projectType">Project Type</Label>
+            <Label htmlFor="projectType">প্রকল্পের ধরন</Label>
             <Input
               id="projectType"
               name="projectType"
-              placeholder="e.g., 5-page website design, 1000-word blog post"
+              placeholder="যেমন, ৫-পৃষ্ঠার ওয়েবসাইট ডিজাইন, ১০০০-শব্দের ব্লগ পোস্ট"
               defaultValue={state.fields?.projectType}
               required
             />
@@ -76,29 +76,29 @@ export default function PriceRateCalculatorForm() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="complexity">Complexity</Label>
+              <Label htmlFor="complexity">জটিলতা</Label>
               <Select name="complexity" defaultValue={state.fields?.complexity}>
                 <SelectTrigger id="complexity">
-                  <SelectValue placeholder="Select complexity" />
+                  <SelectValue placeholder="জটিলতা নির্বাচন করুন" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Low">Low</SelectItem>
-                  <SelectItem value="Medium">Medium</SelectItem>
-                  <SelectItem value="High">High</SelectItem>
+                  <SelectItem value="Low">কম</SelectItem>
+                  <SelectItem value="Medium">মাঝারি</SelectItem>
+                  <SelectItem value="High">উচ্চ</SelectItem>
                 </SelectContent>
               </Select>
               {state.issues?.filter((issue) => issue.toLowerCase().includes("complexity")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="experienceLevel">Your Experience Level</Label>
+              <Label htmlFor="experienceLevel">আপনার অভিজ্ঞতার স্তর</Label>
               <Select name="experienceLevel" defaultValue={state.fields?.experienceLevel}>
                 <SelectTrigger id="experienceLevel">
-                  <SelectValue placeholder="Select experience level" />
+                  <SelectValue placeholder="অভিজ্ঞতার স্তর নির্বাচন করুন" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Beginner">Beginner</SelectItem>
-                  <SelectItem value="Intermediate">Intermediate</SelectItem>
-                  <SelectItem value="Expert">Expert</SelectItem>
+                  <SelectItem value="Beginner">শিক্ষানবিশ</SelectItem>
+                  <SelectItem value="Intermediate">মধ্যবর্তী</SelectItem>
+                  <SelectItem value="Expert">বিশেষজ্ঞ</SelectItem>
                 </SelectContent>
               </Select>
               {state.issues?.filter((issue) => issue.toLowerCase().includes("experience")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
@@ -110,7 +110,7 @@ export default function PriceRateCalculatorForm() {
 
         {state.priceRange && state.justification && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Suggested Price</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">প্রস্তাবিত মূল্য</h3>
             <Alert>
               <DollarSign className="h-4 w-4" />
               <AlertTitle className="text-2xl font-bold text-primary">{state.priceRange}</AlertTitle>

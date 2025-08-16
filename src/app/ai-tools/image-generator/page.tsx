@@ -9,9 +9,9 @@ export default function ImageGeneratorPage() {
         <div className="inline-block bg-primary/10 p-4 rounded-full mb-4">
             <Image className="w-12 h-12 text-primary" />
         </div>
-        <h1 className="font-headline text-5xl font-bold">AI Image Generator</h1>
+        <h1 className="font-headline text-5xl font-bold">এআই ইমেজ জেনারেটর</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          Create logos, banners, or any image you can imagine with a simple text prompt.
+          একটি সাধারণ টেক্সট প্রম্পট দিয়ে লোগো, ব্যানার বা আপনার কল্পনার যেকোনো ছবি তৈরি করুন।
         </p>
       </div>
 

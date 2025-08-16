@@ -22,12 +22,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Generating...
+          জেনারেট করা হচ্ছে...
         </>
       ) : (
         <>
           <Sparkles className="mr-2 h-5 w-5" />
-          Generate Topics
+          টপিক জেনারেট করুন
         </>
       )}
     </Button>
@@ -47,7 +47,7 @@ export default function BlogTopicGeneratorForm() {
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -56,19 +56,19 @@ export default function BlogTopicGeneratorForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Generate Your Next Idea</CardTitle>
+        <CardTitle>আপনার পরবর্তী ধারণা তৈরি করুন</CardTitle>
         <CardDescription>
-          Provide some keywords and let our AI do the creative work.
+          কিছু কীওয়ার্ড সরবরাহ করুন এবং আমাদের এআইকে সৃজনশীল কাজটি করতে দিন।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form ref={formRef} action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="digitalSkills">Trending Digital Skills</Label>
+            <Label htmlFor="digitalSkills">ট্রেন্ডিং ডিজিটাল স্কিলস</Label>
             <Input
               id="digitalSkills"
               name="digitalSkills"
-              placeholder="e.g., Web Development, SEO, AI Tools"
+              placeholder="যেমন, ওয়েব ডেভেলপমেন্ট, এসইও, এআই টুলস"
               defaultValue={state.fields?.digitalSkills}
               required
             />
@@ -77,11 +77,11 @@ export default function BlogTopicGeneratorForm() {
               .map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="userInterests">Your Interests</Label>
+            <Label htmlFor="userInterests">আপনার আগ্রহ</Label>
             <Textarea
               id="userInterests"
               name="userInterests"
-              placeholder="e.g., Python, Freelancing, Side Hustles"
+              placeholder="যেমন, পাইথন, ফ্রিল্যান্সিং, সাইড হাসল"
               defaultValue={state.fields?.userInterests}
               required
             />
@@ -94,7 +94,7 @@ export default function BlogTopicGeneratorForm() {
 
         {state.topics && state.topics.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Generated Topics</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">জেনারেটেড টপিকস</h3>
             <div className="space-y-3">
               {state.topics.map((topic, index) => (
                 <Card key={index} className="bg-background/50">

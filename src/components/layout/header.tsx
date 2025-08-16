@@ -26,11 +26,11 @@ import React, { useEffect, useState } from "react";
 import { textToSpeechAction } from "@/app/actions/tts";
 
 const navLinks = [
-  { href: "/courses", label: "Courses", icon: <BookOpen className="w-5 h-5" /> },
-  { href: "/community", label: "Work Hub", icon: <Briefcase className="w-5 h-5" /> },
-  { href: "/blog", label: "Blog", icon: <PenSquare className="w-5 h-5" /> },
-  { href: "/ai-tools", label: "AI Tools", icon: <Bot className="w-5 h-5" /> },
-  { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
+  { href: "/courses", label: "কোর্সসমূহ", icon: <BookOpen className="w-5 h-5" /> },
+  { href: "/community", label: "কাজের সুযোগ", icon: <Briefcase className="w-5 h-5" /> },
+  { href: "/blog", label: "ব্লগ", icon: <PenSquare className="w-5 h-5" /> },
+  { href: "/ai-tools", label: "এআই টুলস", icon: <Bot className="w-5 h-5" /> },
+  { href: "/dashboard", label: "ড্যাশবোর্ড", icon: <LayoutDashboard className="w-5 h-5" /> },
 ];
 
 const GoogleIcon = () => (
@@ -152,23 +152,23 @@ export default function Header() {
         <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
             <Accessibility className="h-6 w-6" />
-            <span className="sr-only">Accessibility Settings</span>
+            <span className="sr-only">সহজলভ্যতা সেটিংস</span>
         </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Accessibility</DropdownMenuLabel>
+        <DropdownMenuLabel>সহজলভ্যতা</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={increaseTextSize}>
             <Text className="mr-2 h-4 w-4" />
-            <span>Increase Text Size</span>
+            <span>লেখার আকার বাড়ান</span>
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={toggleDarkMode}>
             <Contrast className="mr-2 h-4 w-4" />
-            <span>{isDarkMode ? 'Disable' : 'Enable'} High Contrast</span>
+            <span>{isDarkMode ? 'অক্ষম' : 'সক্ষম'} করুন হাই কনট্রাস্ট</span>
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={toggleAudioMode}>
             <AudioWaveform className="mr-2 h-4 w-4" />
-            <span>{isAudioMode ? 'Disable' : 'Enable'} Audio Mode</span>
+            <span>{isAudioMode ? 'অক্ষম' : 'সক্ষম'} করুন অডিও মোড</span>
         </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>
@@ -177,23 +177,23 @@ export default function Header() {
   const AuthButtons = () => (
      <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button>Sign Up / Sign In</Button>
+          <Button>সাইন আপ / সাইন ইন</Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel>Join Digital Skill Hub</DropdownMenuLabel>
+          <DropdownMenuLabel>ডিজিটাল স্কিল হাবে যোগ দিন</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <GoogleIcon />
-              <span>Sign in with Google</span>
+              <span>গুগল দিয়ে সাইন ইন</span>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <FacebookIcon />
-              <span>Sign in with Facebook</span>
+              <span>ফেসবুক দিয়ে সাইন ইন</span>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Phone />
-              <span>Sign in with Phone</span>
+              <span>ফোন দিয়ে সাইন ইন</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>
@@ -206,7 +206,7 @@ export default function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <Sprout className="h-7 w-7 text-primary" />
-          <span className="text-xl font-bold font-headline">Digital Skill Hub</span>
+          <span className="text-xl font-bold font-headline">ডিজিটাল স্কিল হাব</span>
         </Link>
         <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
@@ -223,7 +223,7 @@ export default function Header() {
             <SheetTrigger asChild>
               <Button variant="outline" size="icon">
                 <Menu className="h-6 w-6" />
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">মেনু খুলুন</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
@@ -231,7 +231,7 @@ export default function Header() {
                 <SheetTitle>
                   <Link href="/" className="flex items-center gap-2 mb-8">
                     <Sprout className="h-7 w-7 text-primary" />
-                    <span className="text-xl font-bold font-headline">Digital Skill Hub</span>
+                    <span className="text-xl font-bold font-headline">ডিজিটাল স্কিল হাব</span>
                   </Link>
                 </SheetTitle>
               </SheetHeader>

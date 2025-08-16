@@ -21,12 +21,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Generating...
+          জেনারেট করা হচ্ছে...
         </>
       ) : (
         <>
           <ImageIcon className="mr-2 h-5 w-5" />
-          Generate Image
+          ছবি জেনারেট করুন
         </>
       )}
     </Button>
@@ -42,7 +42,7 @@ export default function ImageGeneratorForm() {
     if (state.message && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -51,19 +51,19 @@ export default function ImageGeneratorForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Image Generation Prompt</CardTitle>
+        <CardTitle>ছবি তৈরির প্রম্পট</CardTitle>
         <CardDescription>
-          Describe the image you want to create in detail.
+          আপনি যে ছবিটি তৈরি করতে চান তার বিস্তারিত বর্ণনা দিন।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="prompt">Prompt</Label>
+            <Label htmlFor="prompt">প্রম্পট</Label>
             <Textarea
               id="prompt"
               name="prompt"
-              placeholder="e.g., A minimalist logo for a brand called 'Skill Sprout', featuring a single green sprout growing from a digital circuit. Clean, modern, vector art."
+              placeholder="যেমন, 'স্কিল স্প্রাউট' ব্র্যান্ডের জন্য একটি মিনিমালিস্ট লোগো, যেখানে একটি ডিজিটাল সার্কিট থেকে একটি সবুজ চারা গজিয়েছে। পরিষ্কার, আধুনিক, ভেক্টর আর্ট।"
               defaultValue={state.fields?.prompt}
               required
               rows={5}
@@ -76,20 +76,20 @@ export default function ImageGeneratorForm() {
         {useFormStatus().pending && (
              <div className="mt-8 text-center">
                 <div className="inline-block bg-muted/50 p-4 rounded-lg">
-                    <p className="text-muted-foreground animate-pulse">Generating your image, this may take a moment...</p>
+                    <p className="text-muted-foreground animate-pulse">আপনার ছবি তৈরি হচ্ছে, এটি কিছু সময় নিতে পারে...</p>
                 </div>
             </div>
         )}
 
         {state.imageUrl && !useFormStatus().pending &&(
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Generated Image</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">জেনারেটেড ছবি</h3>
             <Card className="bg-muted/50 relative overflow-hidden">
                 <Image src={state.imageUrl} alt="Generated image" width={1024} height={1024} className="w-full object-contain"/>
             </Card>
             <Button asChild className="w-full mt-4" size="lg">
                 <a href={state.imageUrl} download="generated-image.png">
-                    Download Image
+                    ছবি ডাউনলোড করুন
                 </a>
             </Button>
           </div>

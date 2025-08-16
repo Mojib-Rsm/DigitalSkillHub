@@ -17,82 +17,79 @@ import { Input } from "@/components/ui/input";
 
 const featuredCourses = [
   {
-    title: "Modern Web Development",
-    category: "Web Development",
-    instructor: "Jane Doe",
+    title: "স্মার্টফোন ও ইন্টারনেট বেসিকস",
+    category: "ডিজিটাল লিটারেসি",
+    instructor: "ডিজিটাল স্কিল হাব",
+    price: 0,
+    level: "শিক্ষানবিশ",
+    duration: "4 ঘন্টা",
+    image: "https://placehold.co/600x400.png",
+    dataAiHint: "smartphone learning",
+  },
+  {
+    title: "বাংলায় ফ্রিল্যান্সিং শুরু",
+    category: "ফ্রিল্যান্সিং",
+    instructor: "আবুল কালাম",
     price: 49.99,
-    level: "Beginner",
-    duration: "10 hours",
+    level: "শিক্ষানবিশ",
+    duration: "12 ঘন্টা",
     image: "https://placehold.co/600x400.png",
-    dataAiHint: "web development",
-    icon: <Code className="w-8 h-8 text-primary" />,
+    dataAiHint: "freelancing laptop home",
   },
   {
-    title: "Advanced Graphic Design",
-    category: "Graphics Design",
-    instructor: "John Smith",
-    price: 59.99,
-    level: "Advanced",
-    duration: "15 hours",
+    title: "ফেসবুক ও হোয়াটসঅ্যাপে ব্যবসা",
+    category: "ই-কমার্স",
+    instructor: "ফাতেমা আক্তার",
+    price: 29.99,
+    level: "শিক্ষানবিশ",
+    duration: "8 ঘন্টা",
     image: "https://placehold.co/600x400.png",
-    dataAiHint: "graphic design",
-    icon: <Brush className="w-8 h-8 text-primary" />,
-  },
-  {
-    title: "SEO & Digital Marketing Masterclass",
-    category: "Digital Marketing",
-    instructor: "Emily White",
-    price: 79.99,
-    level: "Intermediate",
-    duration: "20 hours",
-    image: "https://placehold.co/600x400.png",
-    dataAiHint: "digital marketing",
-    icon: <LineChart className="w-8 h-8 text-primary" />,
+    dataAiHint: "social media business",
   },
 ];
 
 const whyChooseUsPoints = [
     {
       icon: <Award className="w-10 h-10 text-primary" />,
-      title: "Expert Instructors",
-      description: "Learn from industry professionals with real-world experience and a passion for teaching.",
+      title: "বিশেষজ্ঞ প্রশিক্ষক",
+      description: "বাস্তব অভিজ্ঞতা সম্পন্ন এবং শেখানোর প্রতি অনুরাগী শিল্প পেশাদারদের কাছ থেকে শিখুন।",
     },
     {
       icon: <BookOpen className="w-10 h-10 text-primary" />,
-      title: "Comprehensive Curriculum",
-      description: "Our courses are designed to be thorough, up-to-date, and practical for today's job market.",
+      title: "বিস্তৃত পাঠ্যক্রম",
+      description: "আমাদের কোর্সগুলি আজকের চাকরির বাজারের জন্য পুঙ্খানুপুঙ্খ, আপ-টু-ডেট এবং ব্যবহারিক হতে ডিজাইন করা হয়েছে।",
     },
     {
       icon: <Users className="w-10 h-10 text-primary" />,
-      title: "Supportive Community",
-      description: "Connect with fellow learners and mentors in our active community forums.",
+      title: "সহায়ক কমিউনিটি",
+      description: "আমাদের সক্রিয় কমিউনিটি ফোরামে সহপাঠী এবং পরামর্শকদের সাথে সংযোগ স্থাপন করুন।",
     },
     {
       icon: <Briefcase className="w-10 h-10 text-primary" />,
-      title: "Career Focused",
-      description: "Gain the skills you need to land a new job, get a promotion, or start your own business.",
+      title: "ক্যারিয়ার কেন্দ্রিক",
+      description: "একটি নতুন চাকরি পেতে, পদোন্নতি পেতে বা আপনার নিজের ব্যবসা শুরু করার জন্য প্রয়োজনীয় দক্ষতা অর্জন করুন।",
     },
   ];
 
 const testimonials = [
   {
-    name: "Alex Johnson",
-    role: "Web Developer",
-    testimonial: "Digital Skill Hub transformed my career. The courses are top-notch and the community is incredibly supportive. I landed my dream job within 3 months!",
+    name: "আলেক্স জনসন",
+    role: "ওয়েব ডেভেলপার",
+    testimonial: "ডিজিটাল স্কিল হাব আমার ক্যারিয়ার বদলে দিয়েছে। কোর্সগুলো শীর্ষস্থানীয় এবং কমিউনিটি অবিশ্বাস্যভাবে সহায়ক। আমি ৩ মাসের মধ্যে আমার স্বপ্নের চাকরি পেয়েছি!",
     avatar: "https://placehold.co/100x100.png",
     dataAiHint: "person portrait",
   },
   {
-    name: "Samantha Lee",
-    role: "Freelance Designer",
-    testimonial: "The graphic design courses are fantastic. I learned so much and was able to build a strong portfolio that attracts high-paying clients.",
+    name: "সামান্থা লি",
+    role: "ফ্রিল্যান্স ডিজাইনার",
+    testimonial: "গ্রাফিক ডিজাইন কোর্সগুলো অসাধারণ। আমি অনেক কিছু শিখেছি এবং একটি শক্তিশালী পোর্টফোলিও তৈরি করতে পেরেছি যা উচ্চ বেতনের ক্লায়েন্টদের আকর্ষণ করে।",
     avatar: "https://placehold.co/100x100.png",
     dataAiHint: "woman portrait",
   },
   {
-    name: "Michael Chen",
-    role: "Marketing Strategist",
-    testimonial: "I highly recommend the Digital Marketing track. The content is up-to-date with the latest industry trends, which gave me a real edge.",
+    name: "মাইকেল চেন",
+    role: "মার্কেটিং স্ট্র্যাটেজিস্ট",
+    testimonial: "আমি ডিজিটাল মার্কেটিং ট্র্যাকটি অত্যন্ত সুপারিশ করছি। বিষয়বস্তু সর্বশেষ শিল্পের প্রবণতার সাথে আপ-টু-ডেট, যা আমাকে একটি আসল সুবিধা দিয়েছে।",
     avatar: "https://placehold.co/100x100.png",
     dataAiHint: "man smiling",
   },
@@ -100,22 +97,22 @@ const testimonials = [
 
 const marketplaceProducts = [
   {
-    title: "Hand-stitched Nakshi Kantha",
-    seller: "Rahima Begum",
+    title: "হাতে সেলাই করা নকশি কাঁথা",
+    seller: "রহিমা বেগম",
     price: "24.99",
     image: "https://placehold.co/600x400.png",
     dataAiHint: "stitched fabric quilt",
   },
   {
-    title: "Jute & Bamboo Craft Basket",
-    seller: "Anwara's Creations",
+    title: "পাট ও বাঁশের কারুশিল্পের ঝুড়ি",
+    seller: "আনোয়ারার সৃষ্টি",
     price: "15.00",
     image: "https://placehold.co/600x400.png",
     dataAiHint: "jute basket handmade",
   },
   {
-    title: "Organic Turmeric Powder",
-    seller: "Cox's Bazar Organics",
+    title: "অর্গানিক হলুদ গুঁড়ো",
+    seller: "কক্সবাজার অর্গানিক্স",
     price: "9.99",
     image: "https://placehold.co/600x400.png",
     dataAiHint: "spices turmeric powder",
@@ -168,8 +165,8 @@ export default function Home() {
           <div className="max-w-2xl mx-auto">
              <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground" />
-                <Input placeholder="Search for courses or skills..." className="pl-14 h-16 text-lg w-full" />
-                <Button className="absolute right-2 top-1/2 -translate-y-1/2 h-12 px-6" size="lg">Search</Button>
+                <Input placeholder="কোর্স বা দক্ষতা খুঁজুন..." className="pl-14 h-16 text-lg w-full" />
+                <Button className="absolute right-2 top-1/2 -translate-y-1/2 h-12 px-6" size="lg">অনুসন্ধান</Button>
              </div>
           </div>
         </div>
@@ -178,23 +175,18 @@ export default function Home() {
       {/* Featured Courses Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="font-headline text-4xl font-bold mb-4">Highlighted Courses</h2>
+          <h2 className="font-headline text-4xl font-bold mb-4">বিশেষ কোর্সসমূহ</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-12">
-            Hand-picked courses to help you get started on your learning journey.
+            আপনার শেখার যাত্রা শুরু করতে সাহায্য করার জন্য হাতে বাছাই করা কোর্স।
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredCourses.map((course) => (
-              <CourseCard key={course.title} course={{
-                ...course,
-                price: parseFloat(course.price as unknown as string),
-                level: 'Beginner',
-                duration: '10 hours',
-              }} />
+              <CourseCard key={course.title} course={course} />
             ))}
           </div>
           <Button asChild variant="link" size="lg" className="mt-12 text-lg">
             <Link href="/courses">
-              View All Courses <ArrowRight className="ml-2 h-5 w-5" />
+              সব কোর্স দেখুন <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
         </div>
@@ -241,9 +233,9 @@ export default function Home() {
       {/* Made in Cox's Bazar Section */}
       <section className="py-20 bg-muted">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="font-headline text-4xl font-bold mb-4">Made in Cox’s Bazar</h2>
+          <h2 className="font-headline text-4xl font-bold mb-4">মেড ইন কক্সবাজার</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto mb-12">
-            Support local artisans and entrepreneurs. Products by talented women and people with disabilities.
+            স্থানীয় কারিগর এবং উদ্যোক্তাদের সমর্থন করুন। প্রতিভাবান নারী ও প্রতিবন্ধী ব্যক্তিদের দ্বারা তৈরি পণ্য।
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {marketplaceProducts.map((product) => (
@@ -263,7 +255,7 @@ export default function Home() {
                         {product.title}
                     </CardTitle>
                     <div className="flex items-center gap-2 mt-3 text-muted-foreground text-sm">
-                        <span className="font-medium text-foreground">Sold by: {product.seller}</span>
+                        <span className="font-medium text-foreground">বিক্রেতা: {product.seller}</span>
                     </div>
                 </CardContent>
                 <CardFooter className="p-4 flex justify-between items-center bg-background/50">
@@ -271,7 +263,7 @@ export default function Home() {
                     <Button asChild>
                     <Link href="#">
                         <ShoppingBag className="mr-2 h-4 w-4" />
-                        View Product
+                        পণ্য দেখুন
                     </Link>
                     </Button>
                 </CardFooter>
@@ -285,9 +277,9 @@ export default function Home() {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center">
-            <h2 className="font-headline text-4xl font-bold mb-4">Why Choose Digital Skill Hub?</h2>
+            <h2 className="font-headline text-4xl font-bold mb-4">কেন ডিজিটাল স্কিল হাব বেছে নেবেন?</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto mb-12">
-              We are dedicated to providing the best learning experience to help you achieve your goals.
+              আপনার লক্ষ্য অর্জনে সহায়তা করার জন্য আমরা সেরা শেখার অভিজ্ঞতা প্রদানে নিবেদিত।
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -311,7 +303,7 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="font-headline text-4xl font-bold text-center mb-12">
-            Success Stories from Our Students
+            আমাদের শিক্ষার্থীদের সাফল্যের গল্প
           </h2>
           <Carousel
             opts={{
@@ -357,22 +349,22 @@ export default function Home() {
       {/* Final CTA Section */}
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
-            <h2 className="font-headline text-4xl font-bold mb-4">Ready to Start Your Journey?</h2>
+            <h2 className="font-headline text-4xl font-bold mb-4">আপনার যাত্রা শুরু করতে প্রস্তুত?</h2>
             <p className="text-lg text-primary-foreground/90 max-w-2xl mx-auto mb-8">
-                Join thousands of learners and take the next step in your digital career.
+                হাজার হাজার শিক্ষার্থীর সাথে যোগ দিন এবং আপনার ডিজিটাল ক্যারিয়ারে পরবর্তী পদক্ষেপ নিন।
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button size="lg" variant="secondary" className="transition-transform transform hover:scale-105 w-full sm:w-auto">
                     <GoogleIcon />
-                    Sign Up with Google
+                    গুগল দিয়ে সাইন আপ করুন
                 </Button>
                 <Button size="lg" variant="secondary" className="transition-transform transform hover:scale-105 w-full sm:w-auto bg-[#1877F2] hover:bg-[#166fe5]">
                     <FacebookIcon />
-                    Sign Up with Facebook
+                    ফেসবুক দিয়ে সাইন আপ করুন
                 </Button>
                  <Button size="lg" variant="secondary" className="transition-transform transform hover:scale-105 w-full sm:w-auto bg-foreground text-background hover:bg-foreground/90">
                     <Phone />
-                    Sign Up with Phone
+                    ফোন দিয়ে সাইন আপ করুন
                 </Button>
             </div>
         </div>
@@ -380,5 +372,3 @@ export default function Home() {
     </div>
   );
 }
-
-    

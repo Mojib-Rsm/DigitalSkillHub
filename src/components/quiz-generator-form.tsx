@@ -21,12 +21,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Generating...
+          জেনারেট করা হচ্ছে...
         </>
       ) : (
         <>
           <HelpCircle className="mr-2 h-5 w-5" />
-          Generate Quiz
+          কুইজ জেনারেট করুন
         </>
       )}
     </Button>
@@ -51,7 +51,7 @@ export default function QuizGeneratorForm() {
     if (state.message && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         });
     }
@@ -75,19 +75,19 @@ export default function QuizGeneratorForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Create a Quiz</CardTitle>
+        <CardTitle>একটি কুইজ তৈরি করুন</CardTitle>
         <CardDescription>
-          Provide some text and the number of questions to generate.
+          একটি পাঠ্য এবং প্রশ্নের সংখ্যা সরবরাহ করুন।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="text">Source Text</Label>
+            <Label htmlFor="text">উৎস পাঠ্য</Label>
             <Textarea
               id="text"
               name="text"
-              placeholder="Paste the text you want to create a quiz from..."
+              placeholder="আপনি যে পাঠ্য থেকে কুইজ তৈরি করতে চান তা এখানে পেস্ট করুন..."
               defaultValue={state.fields?.text as string}
               required
               rows={8}
@@ -95,7 +95,7 @@ export default function QuizGeneratorForm() {
             {state.issues?.map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="numQuestions">Number of Questions: {numQuestions}</Label>
+            <Label htmlFor="numQuestions">প্রশ্নের সংখ্যা: {numQuestions}</Label>
             <input type="hidden" name="numQuestions" value={numQuestions} />
             <Slider
               id="numQuestions"
@@ -111,7 +111,7 @@ export default function QuizGeneratorForm() {
 
         {state.questions && state.questions.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Generated Quiz</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">জেনারেটেড কুইজ</h3>
             <div className="space-y-6">
               {state.questions.map((q, qIndex) => (
                 <Card key={qIndex} className="bg-background/50">
@@ -143,11 +143,11 @@ export default function QuizGeneratorForm() {
               ))}
             </div>
             {!submitted ? (
-                 <Button onClick={() => setSubmitted(true)} size="lg" className="w-full mt-6">Submit Quiz</Button>
+                 <Button onClick={() => setSubmitted(true)} size="lg" className="w-full mt-6">কুইজ জমা দিন</Button>
             ) : (
                 <Card className="mt-6 bg-muted">
                     <CardContent className="p-4 text-center">
-                        <p className="text-lg font-bold">Your Score: {calculateScore()} / {state.questions.length}</p>
+                        <p className="text-lg font-bold">আপনার স্কোর: {calculateScore()} / {state.questions.length}</p>
                     </CardContent>
                 </Card>
             )}

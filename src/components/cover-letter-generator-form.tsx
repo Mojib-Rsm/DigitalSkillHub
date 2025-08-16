@@ -21,12 +21,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Generating...
+          জেনারেট করা হচ্ছে...
         </>
       ) : (
         <>
           <FileSignature className="mr-2 h-5 w-5" />
-          Generate Cover Letter
+          কভার লেটার জেনারেট করুন
         </>
       )}
     </Button>
@@ -46,7 +46,7 @@ export default function CoverLetterGeneratorForm() {
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -56,8 +56,8 @@ export default function CoverLetterGeneratorForm() {
     if (state.coverLetter) {
       navigator.clipboard.writeText(state.coverLetter);
       toast({
-        title: "Copied!",
-        description: "Cover letter copied to clipboard.",
+        title: "কপি করা হয়েছে!",
+        description: "কভার লেটার ক্লিপবোর্ডে কপি করা হয়েছে।",
       });
     }
   };
@@ -65,31 +65,31 @@ export default function CoverLetterGeneratorForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Generate a Cover Letter</CardTitle>
+        <CardTitle>একটি কভার লেটার তৈরি করুন</CardTitle>
         <CardDescription>
-          Fill in the details below to get a personalized, professional cover letter.
+          একটি ব্যক্তিগতকৃত, পেশাদার কভার লেটার পেতে নীচের বিবরণগুলি পূরণ করুন।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form ref={formRef} action={formAction} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="jobTitle">Job Title</Label>
+              <Label htmlFor="jobTitle">পদের নাম</Label>
               <Input
                 id="jobTitle"
                 name="jobTitle"
-                placeholder="e.g., Social Media Manager"
+                placeholder="যেমন, সোশ্যাল মিডিয়া ম্যানেজার"
                 defaultValue={state.fields?.jobTitle}
                 required
               />
               {state.issues?.filter((issue) => issue.toLowerCase().includes("job")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="companyName">Company Name</Label>
+              <Label htmlFor="companyName">কোম্পানির নাম</Label>
               <Input
                 id="companyName"
                 name="companyName"
-                placeholder="e.g., Digital Marketing Ltd."
+                placeholder="যেমন, ডিজিটাল মার্কেটিং লিমিটেড"
                 defaultValue={state.fields?.companyName}
                 required
               />
@@ -97,22 +97,22 @@ export default function CoverLetterGeneratorForm() {
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="userSkills">Your Relevant Skills (comma-separated)</Label>
+            <Label htmlFor="userSkills">আপনার প্রাসঙ্গিক দক্ষতা (কমা দ্বারা পৃথক)</Label>
             <Input
               id="userSkills"
               name="userSkills"
-              placeholder="e.g., Content Creation, Canva, Facebook Ads"
+              placeholder="যেমন, কনটেন্ট তৈরি, ক্যানভা, ফেসবুক বিজ্ঞাপন"
               defaultValue={state.fields?.userSkills}
               required
             />
             {state.issues?.filter((issue) => issue.toLowerCase().includes("skill")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="userExperience">Briefly Describe Your Experience</Label>
+            <Label htmlFor="userExperience">আপনার অভিজ্ঞতা সংক্ষেপে বর্ণনা করুন</Label>
             <Textarea
               id="userExperience"
               name="userExperience"
-              placeholder="e.g., Managed Facebook pages for 3 local businesses, growing their following by 20% on average."
+              placeholder="যেমন, ৩টি স্থানীয় ব্যবসার জন্য ফেসবুক পেজ পরিচালনা করেছি, তাদের ফলোয়ার গড়ে ২০% বাড়িয়েছি।"
               defaultValue={state.fields?.userExperience}
               required
               rows={4}
@@ -124,7 +124,7 @@ export default function CoverLetterGeneratorForm() {
 
         {state.coverLetter && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Generated Cover Letter</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">জেনারেটেড কভার লেটার</h3>
             <Card className="bg-muted/50 relative">
               <CardContent className="p-4">
                 <p className="text-muted-foreground whitespace-pre-wrap">{state.coverLetter}</p>

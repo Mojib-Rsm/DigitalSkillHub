@@ -21,12 +21,12 @@ function SubmitButton() {
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Generating...
+          জেনারেট করা হচ্ছে...
         </>
       ) : (
         <>
           <Sparkles className="mr-2 h-5 w-5" />
-          Generate Description
+          বিবরণ জেনারেট করুন
         </>
       )}
     </Button>
@@ -46,7 +46,7 @@ export default function ProductDescriptionGeneratorForm() {
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: "Error",
+            title: "ত্রুটি",
             description: state.message,
         })
     }
@@ -56,8 +56,8 @@ export default function ProductDescriptionGeneratorForm() {
     if (state.description) {
       navigator.clipboard.writeText(state.description);
       toast({
-        title: "Copied!",
-        description: "Product description copied to clipboard.",
+        title: "কপি করা হয়েছে!",
+        description: "পণ্যের বিবরণ ক্লিপবোর্ডে কপি করা হয়েছে।",
       });
     }
   };
@@ -65,19 +65,19 @@ export default function ProductDescriptionGeneratorForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>Describe Your Product</CardTitle>
+        <CardTitle>আপনার পণ্যের বর্ণনা দিন</CardTitle>
         <CardDescription>
-          Enter your product details and let AI write a compelling description for you.
+          আপনার পণ্যের বিবরণ লিখুন এবং এআই আপনার জন্য একটি আকর্ষণীয় বিবরণ লিখবে।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form ref={formRef} action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="productName">Product Name</Label>
+            <Label htmlFor="productName">পণ্যের নাম</Label>
             <Input
               id="productName"
               name="productName"
-              placeholder="e.g., Hand-stitched Nakshi Kantha"
+              placeholder="যেমন, হাতে সেলাই করা নকশি কাঁথা"
               defaultValue={state.fields?.productName}
               required
             />
@@ -86,11 +86,11 @@ export default function ProductDescriptionGeneratorForm() {
               .map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="productFeatures">Key Features (comma-separated)</Label>
+            <Label htmlFor="productFeatures">মূল বৈশিষ্ট্য (কমা দ্বারা পৃথক)</Label>
             <Textarea
               id="productFeatures"
               name="productFeatures"
-              placeholder="e.g., Pure cotton, traditional design, vibrant colors"
+              placeholder="যেমন, খাঁটি সুতি, ঐতিহ্যবাহী ডিজাইন, উজ্জ্বল রঙ"
               defaultValue={state.fields?.productFeatures}
               required
             />
@@ -99,11 +99,11 @@ export default function ProductDescriptionGeneratorForm() {
               .map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
            <div className="space-y-2">
-            <Label htmlFor="targetAudience">Target Audience</Label>
+            <Label htmlFor="targetAudience">লক্ষ্য দর্শক</Label>
             <Input
               id="targetAudience"
               name="targetAudience"
-              placeholder="e.g., Women who love traditional crafts, home decor enthusiasts"
+              placeholder="যেমন, ঐতিহ্যবাহী কারুশিল্প পছন্দকারী নারী, বাড়ির সাজসজ্জার শৌখিন"
               defaultValue={state.fields?.targetAudience}
               required
             />
@@ -116,7 +116,7 @@ export default function ProductDescriptionGeneratorForm() {
 
         {state.description && (
           <div className="mt-8">
-            <h3 className="text-2xl font-bold font-headline mb-4 text-center">Generated Description</h3>
+            <h3 className="text-2xl font-bold font-headline mb-4 text-center">জেনারেটেড বিবরণ</h3>
             <Card className="bg-muted/50 relative">
               <CardContent className="p-4">
                 <p className="text-muted-foreground">{state.description}</p>

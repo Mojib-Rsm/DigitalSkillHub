@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
@@ -5,9 +6,9 @@ import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 
 export const metadata: Metadata = {
-  title: 'Digital Skill Hub - Grow Your Digital Skills',
+  title: 'ডিজিটাল স্কিল হাব - আপনার ডিজিটাল দক্ষতা বৃদ্ধি করুন',
   description:
-    'Empowering women, youth, and people with disabilities through accessible digital skills training for freelancing and e-commerce. Learn with us, right from your mobile.',
+    'ফ্রিল্যান্সিং এবং ই-কমার্সের জন্য সহজলভ্য ডিজিটাল দক্ষতা প্রশিক্ষণের মাধ্যমে নারী, যুবক এবং প্রতিবন্ধী ব্যক্তিদের ক্ষমতায়ন। আমাদের সাথে শিখুন, সরাসরি আপনার মোবাইল থেকে।',
   manifest: '/manifest.json'
 };
 
@@ -17,11 +18,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="bn">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Tiro+Bangla:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
         <div className="flex flex-col min-h-screen">
