@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, Mic, Eye, Camera, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image, DollarSign, Wand, FileSignature } from "lucide-react";
 import Link from "next/link";
 
 const aiTools = [
@@ -81,6 +81,24 @@ const aiTools = [
     description: "Create logos, banners, and other images from text.",
     href: "/ai-tools/image-generator",
     icon: <Image className="w-8 h-8 text-primary" />,
+  },
+  {
+    title: "Freelance Idea Generator",
+    description: "Get project ideas based on your skills.",
+    href: "/ai-tools/freelance-idea-generator",
+    icon: <Wand className="w-8 h-8 text-primary" />,
+  },
+  {
+    title: "Price/Rate Calculator",
+    description: "Calculate a fair price for your freelance services.",
+    href: "/ai-tools/price-rate-calculator",
+    icon: <DollarSign className="w-8 h-8 text-primary" />,
+  },
+  {
+    title: "Cover Letter Generator",
+    description: "Create a professional cover letter in seconds.",
+    href: "/ai-tools/cover-letter-generator",
+    icon: <FileSignature className="w-8 h-8 text-primary" />,
   },
 ];
 
