@@ -20,4 +20,5 @@ import '@/ai/flows/image-generator.ts';
 import '@/ai/flows/freelance-idea-generator.ts';
 import '@/ai/flows/price-rate-calculator.ts';
 import '@/ai/flows/cover-letter-generator.ts';
+import '@/ai/flows/domain-name-suggester.ts';
 

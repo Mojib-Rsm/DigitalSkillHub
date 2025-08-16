@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image, DollarSign, Wand, FileSignature } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image, DollarSign, Wand, FileSignature, Globe } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from '@/lib/utils';
@@ -119,6 +119,13 @@ const allTools = [
     description: "কয়েক সেকেন্ডের মধ্যে একটি পেশাদার কভার লেটার তৈরি করুন।",
     href: "/ai-tools/cover-letter-generator",
     icon: <FileSignature className="w-8 h-8 text-primary" />,
+    category: "ফ্রিল্যান্সিং",
+  },
+  {
+    title: "ডোমেইন নেম সাজেশনকারী",
+    description: "আপনার ব্যবসা বা ওয়েবসাইটের জন্য সেরা ডোমেইন নামটি খুঁজুন।",
+    href: "/ai-tools/domain-name-suggester",
+    icon: <Globe className="w-8 h-8 text-primary" />,
     category: "ফ্রিল্যান্সিং",
   },
 ];
