@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Sprout, Menu, BookOpen, Users, Bot, LayoutDashboard, PenSquare, AudioWaveform, Contrast, Text, Accessibility, PlayCircle } from "lucide-react";
+import { Sprout, Menu, BookOpen, Users, Bot, LayoutDashboard, PenSquare, AudioWaveform, Contrast, Text, Accessibility, PlayCircle, Phone } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -18,6 +18,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu"
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -31,6 +32,22 @@ const navLinks = [
   { href: "/ai-tool", label: "AI Tool", icon: <Bot className="w-5 h-5" /> },
   { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
 ];
+
+const GoogleIcon = () => (
+  <svg className="w-5 h-5" viewBox="0 0 48 48">
+    <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039L38.828 14.04C34.524 10.372 29.626 8 24 8C12.955 8 4 16.955 4 28s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" />
+    <path fill="#FF3D00" d="M6.306 14.691L14.613 21.1c1.761-4.36 6.096-7.5 11.387-7.5c2.563 0 4.935.89 6.852 2.451L32.486 9.8C29.232 7.234 25.272 6 21 6C14.34 6 8.361 9.772 6.306 14.691z" />
+    <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-8.197-6.556C27.027 34.091 25.561 35 24 35c-4.781 0-8.84-2.733-10.74-6.556l-8.313 6.701C9.06 39.068 15.86 44 24 44z" />
+    <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571l8.197 6.556C41.427 36.657 44 32.617 44 28c0-1.341-.138-2.65-.389-3.917z" />
+  </svg>
+);
+
+const FacebookIcon = () => (
+    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.323-1.325z"/>
+    </svg>
+);
+
 
 export default function Header() {
   const pathname = usePathname();
@@ -156,6 +173,33 @@ export default function Header() {
         </DropdownMenuContent>
     </DropdownMenu>
   );
+  
+  const AuthButtons = () => (
+     <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button>Sign Up / Sign In</Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuLabel>Join Digital Skill Hub</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              <GoogleIcon />
+              <span>Sign in with Google</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <FacebookIcon />
+              <span>Sign in with Facebook</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Phone />
+              <span>Sign in with Phone</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+  )
+
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -171,8 +215,7 @@ export default function Header() {
         </nav>
         <div className="hidden md:flex items-center gap-4">
           <AccessibilityMenu />
-          <Button variant="ghost">Sign In</Button>
-          <Button>Sign Up</Button>
+          <AuthButtons />
         </div>
         <div className="md:hidden flex items-center gap-2">
           <AccessibilityMenu />
@@ -198,8 +241,7 @@ export default function Header() {
                 ))}
               </div>
               <div className="mt-8 flex flex-col gap-4">
-                 <Button variant="outline" size="lg">Sign In</Button>
-                 <Button size="lg">Sign Up</Button>
+                 <AuthButtons />
               </div>
             </SheetContent>
           </Sheet>
@@ -216,3 +258,5 @@ export default function Header() {
     </header>
   );
 }
+
+    
