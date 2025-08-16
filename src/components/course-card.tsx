@@ -63,7 +63,7 @@ export default function CourseCard({ course }: CourseCardProps) {
         </div>
       </CardContent>
       <CardFooter className="p-4 flex justify-between items-center bg-muted/50">
-        <p className="text-2xl font-bold text-primary">${course.price}</p>
+        <p className="text-2xl font-bold text-primary">${course.price.toFixed(2)}</p>
         <Button asChild>
           <Link href="#">
             <ShoppingCart className="mr-2 h-4 w-4" />

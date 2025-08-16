@@ -7,7 +7,7 @@ import Footer from '@/components/layout/footer';
 export const metadata: Metadata = {
   title: 'Digital Skill Hub - Grow Your Digital Skills',
   description:
-    'An online learning and freelancing skill development platform. Learn Web Development, Graphics Design, SEO, Digital Marketing, and more.',
+    'Empowering women, youth, and people with disabilities through accessible digital skills training for freelancing and e-commerce. Learn with us, right from your mobile.',
 };
 
 export default function RootLayout({

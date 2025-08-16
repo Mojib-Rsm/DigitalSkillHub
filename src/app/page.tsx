@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Carousel,
@@ -20,7 +20,9 @@ const featuredCourses = [
     title: "Modern Web Development",
     category: "Web Development",
     instructor: "Jane Doe",
-    price: "49.99",
+    price: 49.99,
+    level: "Beginner",
+    duration: "10 hours",
     image: "https://placehold.co/600x400.png",
     dataAiHint: "web development",
     icon: <Code className="w-8 h-8 text-primary" />,
@@ -29,7 +31,9 @@ const featuredCourses = [
     title: "Advanced Graphic Design",
     category: "Graphics Design",
     instructor: "John Smith",
-    price: "59.99",
+    price: 59.99,
+    level: "Advanced",
+    duration: "15 hours",
     image: "https://placehold.co/600x400.png",
     dataAiHint: "graphic design",
     icon: <Brush className="w-8 h-8 text-primary" />,
@@ -38,7 +42,9 @@ const featuredCourses = [
     title: "SEO & Digital Marketing Masterclass",
     category: "Digital Marketing",
     instructor: "Emily White",
-    price: "79.99",
+    price: 79.99,
+    level: "Intermediate",
+    duration: "20 hours",
     image: "https://placehold.co/600x400.png",
     dataAiHint: "digital marketing",
     icon: <LineChart className="w-8 h-8 text-primary" />,
@@ -163,7 +169,12 @@ export default function Home() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featuredCourses.map((course) => (
-              <CourseCard key={course.title} course={course} />
+              <CourseCard key={course.title} course={{
+                ...course,
+                price: parseFloat(course.price),
+                level: 'Beginner',
+                duration: '10 hours',
+              }} />
             ))}
           </div>
           <Button asChild variant="link" size="lg" className="mt-12 text-lg">
@@ -307,5 +318,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
