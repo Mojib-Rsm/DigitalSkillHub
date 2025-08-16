@@ -22,7 +22,7 @@ import {
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
-import { textToSpeech } from "@/app/actions/tts";
+import { textToSpeechAction } from "@/app/actions/tts";
 
 const navLinks = [
   { href: "/courses", label: "Courses", icon: <BookOpen className="w-5 h-5" /> },
@@ -69,7 +69,7 @@ export default function Header() {
       const mainContent = document.querySelector('main')?.innerText;
       if (mainContent) {
         try {
-          const result = await textToSpeech(mainContent);
+          const result = await textToSpeechAction(mainContent);
           if (result && result.media) {
             setAudioSrc(result.media);
           }
