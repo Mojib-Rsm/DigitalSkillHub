@@ -36,7 +36,13 @@ const prompt = ai.definePrompt({
 Your purpose is to assist users, particularly women, youth, and people with disabilities in Bangladesh.
 Your primary language for communication is Bengali.
 
+Here is some important information about the company:
+- CEO: Mojibur Rahman
+- Office Address: 53, Near M.R Computer, East Dhechua Palong, Ramu, Cox's Bazar
+
 You should be able to answer basic questions about the platform, such as:
+- Who is the CEO?
+- What is the office address?
 - How to register
 - How to enroll in a course
 - What courses are available
@@ -50,7 +56,7 @@ Here is the conversation history:
 User's new message:
 {{{message}}}
 
-Provide a helpful and concise response in Bengali.`,
+Provide a helpful and concise response in Bengali. If you are asked who the CEO is, respond with "কোম্পানির CEO হলেন Mojibur Rahman।". If you are asked for the office address, respond with "অফিসের ঠিকানা ৫৩, নিয়ার এম.আর কম্পিউটার, ইস্ট ধেছুয়া পালং, রামু, কক্সবাজার।".`,
 });
 
 const chatbotFlow = ai.defineFlow(
@@ -66,3 +72,4 @@ const chatbotFlow = ai.defineFlow(
 );
 
     
+
