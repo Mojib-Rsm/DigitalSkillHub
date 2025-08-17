@@ -31,7 +31,8 @@ const FacebookCommentGeneratorActionSchema = z.object({
 
 type FormState = {
   message: string;
-  suggestions?: string[];
+  bengaliSuggestions?: string[];
+  englishSuggestions?: string[];
   fields?: Record<string, string>;
   issues?: string[];
 };
@@ -66,10 +67,11 @@ export async function generateFacebookComments(
 
     const result = await facebookCommentGenerator({ postContent, goal, photoDataUri });
 
-    if (result.suggestions && result.suggestions.length > 0) {
+    if ((result.bengaliSuggestions && result.bengaliSuggestions.length > 0) || (result.englishSuggestions && result.englishSuggestions.length > 0)) {
       return {
         message: "success",
-        suggestions: result.suggestions,
+        bengaliSuggestions: result.bengaliSuggestions,
+        englishSuggestions: result.englishSuggestions,
       };
     } else {
         return { message: "No suggestions generated. Please try a different input." }

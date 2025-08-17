@@ -25,7 +25,8 @@ const FacebookCommentGeneratorInputSchema = z.object({
 export type FacebookCommentGeneratorInput = z.infer<typeof FacebookCommentGeneratorInputSchema>;
 
 const FacebookCommentGeneratorOutputSchema = z.object({
-  suggestions: z.array(z.string()).describe('A list of 3-5 suggested comments or replies.'),
+  bengaliSuggestions: z.array(z.string()).describe('A list of 3-5 suggested comments or replies in Bengali.'),
+  englishSuggestions: z.array(z.string()).describe('A list of 3-5 suggested comments or replies in English.'),
 });
 export type FacebookCommentGeneratorOutput = z.infer<typeof FacebookCommentGeneratorOutputSchema>;
 
@@ -39,7 +40,7 @@ const prompt = ai.definePrompt({
   output: {schema: FacebookCommentGeneratorOutputSchema},
   prompt: `You are an expert social media manager specializing in engaging Facebook communication.
 
-Generate a list of 3-5 appropriate comments or replies based on the following information. The tone should be suitable for Facebook and match the user's goal.
+Generate lists of appropriate comments, replies, or captions based on the following information.
 
 Facebook Post Content:
 {{{postContent}}}
@@ -47,7 +48,8 @@ Facebook Post Content:
 {{#if photoDataUri}}
 The post also includes this image:
 {{media url=photoDataUri}}
-Analyze the image content as part of the post's context.
+Analyze the image content as part of the post's context. When an image is provided, your primary goal is to generate captions for it.
+You MUST provide two lists of suggestions: one in Bengali and one in English. Generate 3-5 suggestions for each language.
 {{/if}}
 
 {{#if goal}}
@@ -57,7 +59,12 @@ User's Goal:
 The user has not specified a goal. Generate general, engaging comments that are relevant to the post content and image (if provided).
 {{/if}}
 
-Provide helpful, concise, and engaging suggestions.`,
+{{#unless photoDataUri}}
+If no image is provided, generate a single list of suggestions in Bengali and return it in the 'bengaliSuggestions' field. The 'englishSuggestions' field can be an empty array.
+{{/unless}}
+
+
+Provide helpful, concise, and engaging suggestions suitable for Facebook.`,
 });
 
 const facebookCommentGeneratorFlow = ai.defineFlow(
