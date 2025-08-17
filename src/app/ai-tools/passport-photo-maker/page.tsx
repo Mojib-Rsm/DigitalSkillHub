@@ -1,5 +1,3 @@
-"use client";
-
 import PassportPhotoMakerForm from "@/components/passport-photo-maker-form";
 import { UserCircle } from "lucide-react";
 
