@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Film } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 function SubmitButton() {
@@ -36,6 +36,7 @@ export default function VideoGeneratorForm() {
   const initialState = { message: "", videoUrl: "", issues: [], fields: {} };
   const [state, formAction] = useActionState(generateVideo, initialState);
   const { toast } = useToast();
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (state.message && state.message !== "success" && state.message !== "Validation Error") {
@@ -56,7 +57,7 @@ export default function VideoGeneratorForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={formAction} className="space-y-6">
+        <form ref={formRef} action={formAction} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="prompt">প্রম্পট</Label>
             <Textarea
