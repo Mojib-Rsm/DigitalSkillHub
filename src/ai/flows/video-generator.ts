@@ -57,33 +57,40 @@ const videoGeneratorFlow = ai.defineFlow(
     outputSchema: VideoGeneratorOutputSchema,
   },
   async (input) => {
-    let { operation } = await ai.generate({
-      model: googleAI.model('veo-3.0-generate-preview'),
-      prompt: input.prompt,
-    });
+    try {
+        let { operation } = await ai.generate({
+          model: googleAI.model('veo-3.0-generate-preview'),
+          prompt: input.prompt,
+        });
 
-    if (!operation) {
-      throw new Error('Expected the model to return an operation');
+        if (!operation) {
+          throw new Error('Expected the model to return an operation');
+        }
+
+        // Wait until the operation completes. Note that this may take some time.
+        while (!operation.done) {
+          await new Promise((resolve) => setTimeout(resolve, 5000));
+          operation = await ai.checkOperation(operation);
+        }
+
+        if (operation.error) {
+          throw new Error('failed to generate video: ' + operation.error.message);
+        }
+
+        const video = operation.output?.message?.content.find((p) => !!p.media);
+        if (!video || !video.media?.url) {
+          throw new Error('Failed to find the generated video');
+        }
+
+        const videoDataUri = await downloadVideo(video as MediaPart);
+
+        return { videoUrl: videoDataUri };
+    } catch (error) {
+        console.error("Error in videoGeneratorFlow:", error);
+        if (error instanceof Error) {
+            throw new Error(`Failed to generate video: ${error.message}`);
+        }
+        throw new Error("An unknown error occurred during video generation.");
     }
-
-    // Wait until the operation completes. Note that this may take some time.
-    while (!operation.done) {
-      operation = await ai.checkOperation(operation);
-      // Sleep for 5 seconds before checking again.
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-    }
-
-    if (operation.error) {
-      throw new Error('failed to generate video: ' + operation.error.message);
-    }
-
-    const video = operation.output?.message?.content.find((p) => !!p.media);
-    if (!video || !video.media?.url) {
-      throw new Error('Failed to find the generated video');
-    }
-
-    const videoDataUri = await downloadVideo(video as MediaPart);
-
-    return { videoUrl: videoDataUri };
   }
 );

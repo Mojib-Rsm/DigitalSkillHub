@@ -45,9 +45,8 @@ export async function generateVideo(
         return { message: "Failed to generate video. Please try again." }
     }
   } catch (error) {
-    console.error(error);
+    console.error("Error in generateVideo action:", error);
     if (error instanceof Error) {
-        // Check for specific API disabled error from the JSON payload
         if (error.message.includes("SERVICE_DISABLED") || error.message.includes("Generative Language API has not been used")) {
              return { message: "The required Google API is not enabled. Please enable the 'Generative Language API' in your Google Cloud project and try again." };
         }
