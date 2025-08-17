@@ -38,28 +38,36 @@ const passportPhotoMakerFlow = ai.defineFlow(
     outputSchema: PassportPhotoMakerOutputSchema,
   },
   async ({ photoDataUri, backgroundColor }) => {
-    const {media} = await ai.generate({
-      model: 'googleai/gemini-2.0-flash-preview-image-generation',
-      prompt: `You are an expert passport photo processor. Your task is to convert the user's uploaded photo into a standard passport-size photo.
+    try {
+      const {media} = await ai.generate({
+        model: 'googleai/gemini-2.0-flash-preview-image-generation',
+        prompt: `You are an expert passport photo processor. Your task is to convert the user's uploaded photo into a standard passport-size photo.
 
-      Follow these instructions precisely:
-      1.  **Face and Shoulders:** The output image must be a close-up of the person's head and shoulders.
-      2.  **Expression:** The person should have a neutral facial expression with their eyes open and looking directly at the camera. Do not add a smile.
-      3.  **Background:** Replace the existing background with a plain, uniform {{{backgroundColor}}} background. There should be no shadows or patterns.
-      4.  **No Accessories:** Remove any hats, sunglasses, or non-religious head coverings. Prescription glasses are acceptable but should not have glare.
-      5.  **Format:** The final image should be a high-quality portrait suitable for official documents.
+        Follow these instructions precisely:
+        1.  **Face and Shoulders:** The output image must be a close-up of the person's head and shoulders.
+        2.  **Expression:** The person should have a neutral facial expression with their eyes open and looking directly at the camera. Do not add a smile.
+        3.  **Background:** Replace the existing background with a plain, uniform {{{backgroundColor}}} background. There should be no shadows or patterns.
+        4.  **No Accessories:** Remove any hats, sunglasses, or non-religious head coverings. Prescription glasses are acceptable but should not have glare.
+        5.  **Format:** The final image should be a high-quality portrait suitable for official documents.
 
-      User's photo to process:
-      {{media url=photoDataUri}}`,
-      config: {
-        responseModalities: ['TEXT', 'IMAGE'],
-      },
-    });
-    
-    if (!media.url) {
-        throw new Error('Image generation failed.');
+        User's photo to process:
+        {{media url=photoDataUri}}`,
+        config: {
+          responseModalities: ['TEXT', 'IMAGE'],
+        },
+      });
+      
+      if (!media?.url) {
+          throw new Error('Image generation failed to produce a URL.');
+      }
+
+      return {imageUrl: media.url};
+    } catch (error) {
+       console.error("Error in passportPhotoMakerFlow:", error);
+       if (error instanceof Error) {
+         throw new Error(`Failed to generate passport photo: ${error.message}`);
+       }
+       throw new Error("An unknown error occurred during passport photo generation.");
     }
-
-    return {imageUrl: media.url};
   }
 );
