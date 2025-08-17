@@ -48,7 +48,7 @@ Facebook Post Content:
 {{#if photoDataUri}}
 The post also includes this image:
 {{media url=photoDataUri}}
-Analyze the image content as part of the post's context. When an image is provided, your primary goal is to generate captions for it.
+Analyze the image content, including any text within it, as part of the post's context. Your primary goal is to generate captions or relevant comments based on the image.
 You MUST provide two lists of suggestions: one in Bengali and one in English. Generate 3-5 suggestions for each language.
 {{/if}}
 
@@ -60,7 +60,7 @@ The user has not specified a goal. Generate general, engaging comments that are 
 {{/if}}
 
 {{#unless photoDataUri}}
-If no image is provided, generate a single list of suggestions in Bengali and return it in the 'bengaliSuggestions' field. The 'englishSuggestions' field can be an empty array.
+If no image is provided, your primary goal is to generate comments or replies based on the 'postContent'. You should generate a single list of suggestions in Bengali and return it in the 'bengaliSuggestions' field. The 'englishSuggestions' field should be an empty array.
 {{/unless}}
 
 
