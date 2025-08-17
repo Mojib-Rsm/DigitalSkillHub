@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from '@/lib/utils';
@@ -35,6 +35,13 @@ const allTools = [
         description: "যেকোনো ফেসবুক পোস্টের জন্য প্রাসঙ্গিক কমেন্ট এবং রিপ্লাই তৈরি করুন।",
         href: "/ai-tools/facebook-comment-generator",
         icon: <MessageSquare className="w-8 h-8 text-primary" />,
+        category: "Content & Writing",
+    },
+    {
+        title: "ফেসবুক রিপ্লাই জেনারেটর",
+        description: "একটি নির্দিষ্ট ফেসবুক কমেন্টের জন্য বুদ্ধিদীপ্ত উত্তর তৈরি করুন।",
+        href: "/ai-tools/facebook-reply-generator",
+        icon: <CornerDownRight className="w-8 h-8 text-primary" />,
         category: "Content & Writing",
     },
     {
