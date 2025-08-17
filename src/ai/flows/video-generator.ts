@@ -32,9 +32,9 @@ async function downloadVideo(video: MediaPart): Promise<string> {
     const videoUrl = video.media!.url!.includes('?') ? `${video.media!.url}&key=${process.env.GEMINI_API_KEY}` : `${video.media!.url}?key=${process.env.GEMINI_API_KEY}`;
     const videoDownloadResponse = await fetch(videoUrl);
 
-    if (!videoDownloadResponse || videoDownloadResponse.status !== 200 || !videoDownloadResponse.body) {
+    if (!videoDownloadResponse.ok) {
         const errorBody = await videoDownloadResponse.text();
-        console.error('Failed to fetch video:', videoDownloadResponse.status, errorBody);
+        console.error('Failed to fetch video:', videoDownloadResponse.status, errorBody, `URL: ${videoUrl}`);
         throw new Error(`Failed to fetch generated video. Status: ${videoDownloadResponse.status}. Body: ${errorBody}`);
     }
 
@@ -101,3 +101,4 @@ const videoGeneratorFlow = ai.defineFlow(
     }
   }
 );
+
