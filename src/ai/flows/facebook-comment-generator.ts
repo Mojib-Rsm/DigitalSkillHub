@@ -14,7 +14,7 @@ import {z} from 'genkit';
 
 const FacebookCommentGeneratorInputSchema = z.object({
   postContent: z.string().describe('The content of the Facebook post to comment on.'),
-  goal: z.string().describe('The user\'s goal for the comment (e.g., "Write a supportive comment", "Ask a question", "Reply to a customer complaint").'),
+  goal: z.string().optional().describe('The user\'s goal for the comment (e.g., "Write a supportive comment", "Ask a question", "Reply to a customer complaint"). This is optional.'),
 });
 export type FacebookCommentGeneratorInput = z.infer<typeof FacebookCommentGeneratorInputSchema>;
 
@@ -38,8 +38,12 @@ Generate a list of 3-5 appropriate comments or replies based on the following in
 Facebook Post Content:
 {{{postContent}}}
 
+{{#if goal}}
 User's Goal:
 {{{goal}}}
+{{else}}
+The user has not specified a goal. Generate general, engaging comments that are relevant to the post content.
+{{/if}}
 
 Provide helpful, concise, and engaging suggestions.`,
 });

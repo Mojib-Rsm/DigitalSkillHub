@@ -82,13 +82,12 @@ export default function FacebookCommentGeneratorForm() {
             {state.issues?.filter((issue) => issue.toLowerCase().includes("post")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="goal">আপনার লক্ষ্য</Label>
+            <Label htmlFor="goal">আপনার লক্ষ্য (ঐচ্ছিক)</Label>
             <Input
               id="goal"
               name="goal"
               placeholder="যেমন, একটি ইতিবাচক কমেন্ট লিখুন, একটি প্রশ্ন জিজ্ঞাসা করুন..."
               defaultValue={state.fields?.goal}
-              required
             />
             {state.issues?.filter((issue) => issue.toLowerCase().includes("goal")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>

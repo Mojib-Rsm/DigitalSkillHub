@@ -6,7 +6,7 @@ import { z } from "zod";
 
 const FacebookCommentGeneratorActionSchema = z.object({
   postContent: z.string().min(10, { message: "Please enter at least 10 characters for the post content." }),
-  goal: z.string().min(3, { message: "Please enter a goal for the comment." }),
+  goal: z.string().optional(),
 });
 
 type FormState = {
