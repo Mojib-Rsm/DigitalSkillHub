@@ -76,9 +76,16 @@ const videoGeneratorFlow = ai.defineFlow(
         if (operation.error) {
           throw new Error('failed to generate video: ' + operation.error.message);
         }
+        
+        // Add robust checking for the operation output.
+        if (!operation.output?.message?.content) {
+            console.error("Incomplete operation output:", JSON.stringify(operation));
+            throw new Error("Video generation operation finished but did not produce the expected output format.");
+        }
 
-        const video = operation.output?.message?.content.find((p) => !!p.media);
+        const video = operation.output.message.content.find((p) => !!p.media);
         if (!video || !video.media?.url) {
+          console.error("No video media found in operation output:", JSON.stringify(operation.output));
           throw new Error('Failed to find the generated video in the operation output.');
         }
 
