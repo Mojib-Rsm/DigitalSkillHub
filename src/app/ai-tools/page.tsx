@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from '@/lib/utils';
@@ -28,6 +28,13 @@ const allTools = [
         description: "ফেসবুক, ইনস্টাগ্রাম এবং আরও অনেক কিছুর জন্য আকর্ষণীয় পোস্ট তৈরি করুন।",
         href: "/ai-tools/social-media-post-generator",
         icon: <Hash className="w-8 h-8 text-primary" />,
+        category: "Content & Writing",
+    },
+    {
+        title: "ফেসবুক কমেন্ট জেনারেটর",
+        description: "যেকোনো ফেসবুক পোস্টের জন্য প্রাসঙ্গিক কমেন্ট এবং রিপ্লাই তৈরি করুন।",
+        href: "/ai-tools/facebook-comment-generator",
+        icon: <MessageSquare className="w-8 h-8 text-primary" />,
         category: "Content & Writing",
     },
     {
