@@ -71,12 +71,17 @@ export default function FacebookCommentGeneratorForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [pastedFile, setPastedFile] = useState<File | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     if (state.message === "success") {
       formRef.current?.reset();
       setPreviewUrl(null);
+      setPastedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
      if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
@@ -87,8 +92,7 @@ export default function FacebookCommentGeneratorForm() {
     }
   }, [state, toast]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFileChange = (file: File | null) => {
     if (file) {
       if (file.size > 4 * 1024 * 1024) {
           toast({
@@ -100,32 +104,64 @@ export default function FacebookCommentGeneratorForm() {
               fileInputRef.current.value = "";
           }
           setPreviewUrl(null);
+          setPastedFile(null);
           return;
       }
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
+      setPastedFile(file);
     } else {
       setPreviewUrl(null);
+      setPastedFile(null);
     }
   };
 
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    handleFileChange(file || null);
+  }
+
   const handleRemoveImage = () => {
     setPreviewUrl(null);
+    setPastedFile(null);
     if(fileInputRef.current) {
         fileInputRef.current.value = "";
     }
   }
 
+  const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+    const items = event.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+            const file = items[i].getAsFile();
+            if (file) {
+                handleFileChange(file);
+                // Prevent the image from being pasted into the textarea
+                event.preventDefault(); 
+            }
+        }
+    }
+  };
+
+  const customFormAction = (formData: FormData) => {
+    if(pastedFile) {
+        // If a file was pasted, it won't be in the form's file input.
+        // We need to append it to the FormData object manually.
+        formData.set('photo', pastedFile);
+    }
+    formAction(formData);
+  }
+
   return (
-    <Card className="shadow-lg">
+    <Card className="shadow-lg" onPaste={handlePaste}>
       <CardHeader>
         <CardTitle>কমেন্ট বা রিপ্লাই তৈরি করুন</CardTitle>
         <CardDescription>
-          পোস্টের বিষয়বস্তু এবং আপনার লক্ষ্য দিন, এআই বাকিটা করবে। ছবিও আপলোড করতে পারেন।
+          পোস্টের বিষয়বস্তু দিন, ছবি পেস্ট করুন এবং আপনার লক্ষ্য জানান। এআই বাকিটা করবে।
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form ref={formRef} action={formAction} className="space-y-6">
+        <form ref={formRef} action={customFormAction} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="postContent">পোস্টের বিষয়বস্তু</Label>
             <Textarea
@@ -139,14 +175,14 @@ export default function FacebookCommentGeneratorForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="photo">ছবি (ঐচ্ছিক, সর্বোচ্চ 4MB)</Label>
+            <Label htmlFor="photo">ছবি আপলোড করুন বা পেস্ট করুন (ঐচ্ছিক, সর্বোচ্চ 4MB)</Label>
             <Input
                 id="photo"
                 name="photo"
                 type="file"
                 accept="image/*"
                 ref={fileInputRef}
-                onChange={handleFileChange}
+                onChange={onFileChange}
                 className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
             />
             {previewUrl && (
@@ -184,3 +220,5 @@ export default function FacebookCommentGeneratorForm() {
     </Card>
   );
 }
+
+    
