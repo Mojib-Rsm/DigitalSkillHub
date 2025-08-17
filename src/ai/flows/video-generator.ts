@@ -35,7 +35,7 @@ async function downloadVideo(video: MediaPart): Promise<string> {
     if (!videoDownloadResponse || videoDownloadResponse.status !== 200 || !videoDownloadResponse.body) {
         const errorBody = await videoDownloadResponse.text();
         console.error('Failed to fetch video:', videoDownloadResponse.status, errorBody);
-        throw new Error('Failed to fetch generated video.');
+        throw new Error(`Failed to fetch generated video. Status: ${videoDownloadResponse.status}. Body: ${errorBody}`);
     }
 
     const videoBuffer = await videoDownloadResponse.arrayBuffer();
@@ -79,7 +79,7 @@ const videoGeneratorFlow = ai.defineFlow(
 
         const video = operation.output?.message?.content.find((p) => !!p.media);
         if (!video || !video.media?.url) {
-          throw new Error('Failed to find the generated video');
+          throw new Error('Failed to find the generated video in the operation output.');
         }
 
         const videoDataUri = await downloadVideo(video as MediaPart);
