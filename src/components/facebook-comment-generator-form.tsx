@@ -78,13 +78,11 @@ export default function FacebookCommentGeneratorForm() {
       formRef.current?.reset();
       setPreviewUrl(null);
     }
-    if (state.message !== "" && state.message !== "success") {
-        const title = state.message === "Validation Error" ? "ইনপুট ত্রুটি" : "ত্রুটি";
-        const description = state.issues?.join(", ") ?? state.message;
+     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
-            title: title,
-            description: description,
+            title: "ত্রুটি",
+            description: state.message,
         })
     }
   }, [state, toast]);
@@ -92,6 +90,17 @@ export default function FacebookCommentGeneratorForm() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      if (file.size > 4 * 1024 * 1024) {
+          toast({
+              variant: "destructive",
+              title: "ফাইল ძალიან বড়",
+              description: "ছবির আকার 4MB এর বেশি হতে পারবে না।",
+          });
+          if(fileInputRef.current) {
+              fileInputRef.current.value = "";
+          }
+          return;
+      }
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
     } else {
@@ -129,7 +138,7 @@ export default function FacebookCommentGeneratorForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="photo">ছবি (ঐচ্ছিক)</Label>
+            <Label htmlFor="photo">ছবি (ঐচ্ছিক, সর্বোচ্চ 4MB)</Label>
             <Input
                 id="photo"
                 name="photo"
