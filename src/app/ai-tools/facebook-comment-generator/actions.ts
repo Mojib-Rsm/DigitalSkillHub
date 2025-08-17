@@ -12,10 +12,10 @@ const FacebookCommentGeneratorActionSchema = z.object({
   goal: z.string().optional(),
   photo: z
     .any()
-    .refine((file) => !file || file.size === 0 || file.size <= MAX_FILE_SIZE, `Max image size is 4MB.`)
+    .refine((file) => !file || file.size === 0 || file.size <= MAX_FILE_SIZE, `ছবির আকার 4MB এর বেশি হতে পারবে না।`)
     .refine(
       (file) => !file || file.size === 0 || ACCEPTED_IMAGE_TYPES.includes(file.type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported."
+      "শুধুমাত্র .jpg, .jpeg, .png এবং .webp ফরম্যাট সমর্থিত।"
     ).optional(),
 }).refine(data => {
     // If there is no photo, postContent must have at least 10 characters.
@@ -25,7 +25,7 @@ const FacebookCommentGeneratorActionSchema = z.object({
     }
     return true;
 }, {
-    message: "Please enter at least 10 characters for the post content if no image is provided.",
+    message: "কোনো ছবি না দিলে পোস্টের বিষয়বস্তু কমপক্ষে ১০ অক্ষরের হতে হবে।",
     path: ["postContent"], // Set the error path to the postContent field.
 });
 
@@ -51,7 +51,7 @@ export async function generateFacebookComments(
     const { errors } = validatedFields.error;
     return {
       message: "Validation Error",
-      issues: errors.map((issue) => issue.path.includes('photo') ? `Photo error: ${issue.message}`: issue.message),
+      issues: errors.map((issue) => issue.message),
       fields: Object.fromEntries(formData.entries()) as Record<string, string>,
     };
   }

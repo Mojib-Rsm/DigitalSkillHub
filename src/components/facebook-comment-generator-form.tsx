@@ -93,12 +93,13 @@ export default function FacebookCommentGeneratorForm() {
       if (file.size > 4 * 1024 * 1024) {
           toast({
               variant: "destructive",
-              title: "ফাইল ძალიან বড়",
+              title: "ফাইল খুবই বড়",
               description: "ছবির আকার 4MB এর বেশি হতে পারবে না।",
           });
           if(fileInputRef.current) {
               fileInputRef.current.value = "";
           }
+          setPreviewUrl(null);
           return;
       }
       const url = URL.createObjectURL(file);
@@ -134,7 +135,7 @@ export default function FacebookCommentGeneratorForm() {
               defaultValue={state.fields?.postContent}
               rows={5}
             />
-            {state.issues?.filter((issue) => issue.toLowerCase().includes("post")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            {state.issues?.filter((issue) => issue.toLowerCase().includes("পোস্ট") || issue.toLowerCase().includes("post")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
 
           <div className="space-y-2">
@@ -156,7 +157,7 @@ export default function FacebookCommentGeneratorForm() {
                     </Button>
                 </div>
             )}
-            {state.issues?.filter((issue) => issue.toLowerCase().includes("photo")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            {state.issues?.filter((issue) => issue.toLowerCase().includes("ছবি") || issue.toLowerCase().includes("image") || issue.toLowerCase().includes("jpg")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
 
           <div className="space-y-2">
