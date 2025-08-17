@@ -30,11 +30,13 @@ async function downloadVideo(video: MediaPart): Promise<string> {
     const fetch = (await import('node-fetch')).default;
     // Add API key before fetching the video.
     const videoUrl = video.media!.url!.includes('?') ? `${video.media!.url}&key=${process.env.GEMINI_API_KEY}` : `${video.media!.url}?key=${process.env.GEMINI_API_KEY}`;
+    console.log(`Downloading video from: ${videoUrl}`);
+
     const videoDownloadResponse = await fetch(videoUrl);
 
     if (!videoDownloadResponse.ok) {
         const errorBody = await videoDownloadResponse.text();
-        console.error('Failed to fetch video:', videoDownloadResponse.status, errorBody, `URL: ${videoUrl}`);
+        console.error('Failed to fetch video:', videoDownloadResponse.status, errorBody, `URL: ${videoUrl.substring(0, 100)}...`);
         throw new Error(`Failed to fetch generated video. Status: ${videoDownloadResponse.status}. Body: ${errorBody}`);
     }
 
@@ -59,8 +61,12 @@ const videoGeneratorFlow = ai.defineFlow(
   async (input) => {
     try {
         let { operation } = await ai.generate({
-          model: googleAI.model('veo-3.0-generate-preview'),
+          model: googleAI.model('veo-2.0-generate-001'),
           prompt: input.prompt,
+          config: {
+            durationSeconds: 5,
+            aspectRatio: '16:9',
+          },
         });
 
         if (!operation) {
@@ -74,6 +80,7 @@ const videoGeneratorFlow = ai.defineFlow(
         }
 
         if (operation.error) {
+          console.error("Video generation operation failed:", JSON.stringify(operation.error));
           throw new Error('failed to generate video: ' + operation.error.message);
         }
         
@@ -101,4 +108,3 @@ const videoGeneratorFlow = ai.defineFlow(
     }
   }
 );
-
