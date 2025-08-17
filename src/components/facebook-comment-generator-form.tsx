@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { generateFacebookComments } from "@/app/ai-tools/facebook-comment-generator/actions";
 import { Button } from "@/components/ui/button";
@@ -10,8 +10,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, MessageSquare } from "lucide-react";
+import { Sparkles, Clipboard, MessageSquare, Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import Image from "next/image";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -36,17 +37,22 @@ export default function FacebookCommentGeneratorForm() {
   const initialState = { message: "", suggestions: [], issues: [], fields: {} };
   const [state, formAction] = useActionState(generateFacebookComments, initialState);
   const formRef = useRef<HTMLFormElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     if (state.message === "success") {
       formRef.current?.reset();
+      setPreviewUrl(null);
     }
-    if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
+    if (state.message !== "" && state.message !== "success") {
+        const title = state.message === "Validation Error" ? "ইনপুট ত্রুটি" : "ত্রুটি";
+        const description = state.issues?.join(", ") ?? state.message;
         toast({
             variant: "destructive",
-            title: "ত্রুটি",
-            description: state.message,
+            title: title,
+            description: description,
         })
     }
   }, [state, toast]);
@@ -58,6 +64,23 @@ export default function FacebookCommentGeneratorForm() {
       description: "সুপারিশটি ক্লিপবোর্ডে কপি করা হয়েছে।",
     });
   };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    } else {
+      setPreviewUrl(null);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setPreviewUrl(null);
+    if(fileInputRef.current) {
+        fileInputRef.current.value = "";
+    }
+  }
 
   return (
     <Card className="shadow-lg">
@@ -81,6 +104,29 @@ export default function FacebookCommentGeneratorForm() {
             />
             {state.issues?.filter((issue) => issue.toLowerCase().includes("post")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="photo">ছবি (ঐচ্ছিক)</Label>
+            <Input
+                id="photo"
+                name="photo"
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+            />
+            {previewUrl && (
+                <div className="mt-2 relative w-32 h-32">
+                    <Image src={previewUrl} alt="Image preview" layout="fill" className="rounded-md object-cover"/>
+                    <Button variant="destructive" size="icon" onClick={handleRemoveImage} className="absolute -top-2 -right-2 h-6 w-6 rounded-full">
+                        <X className="h-4 w-4"/>
+                    </Button>
+                </div>
+            )}
+            {state.issues?.filter((issue) => issue.toLowerCase().includes("photo")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="goal">আপনার লক্ষ্য (ঐচ্ছিক)</Label>
             <Input
