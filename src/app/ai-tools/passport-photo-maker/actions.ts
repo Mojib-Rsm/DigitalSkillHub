@@ -65,10 +65,11 @@ export async function generatePassportPhoto(
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {
-        return { message: `An unexpected error occurred: ${error.message}` };
+        // Provide a more specific error message to the user.
+        return { message: `ছবি তৈরি করতে একটি ত্রুটি ঘটেছে: ${error.message}` };
     }
     return {
-      message: "An unexpected error occurred. Please try again.",
+      message: "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
     };
   }
 }
