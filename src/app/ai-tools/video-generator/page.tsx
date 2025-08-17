@@ -1,6 +1,11 @@
 
-import VideoGeneratorForm from "@/components/video-generator-form";
+"use client";
+
+import dynamic from 'next/dynamic';
 import { Film } from "lucide-react";
+
+// Dynamically import the form component and disable server-side rendering
+const VideoGeneratorForm = dynamic(() => import('@/components/video-generator-form'), { ssr: false });
 
 export default function VideoGeneratorPage() {
   return (
