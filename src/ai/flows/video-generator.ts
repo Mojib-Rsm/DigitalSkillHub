@@ -12,6 +12,9 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import { googleAI } from '@genkit-ai/googleai';
+import type { MediaPart } from 'genkit';
+import { Buffer } from 'buffer';
+
 
 const VideoGeneratorInputSchema = z.object({
   prompt: z.string().describe('The text prompt to generate a video from.'),
@@ -22,6 +25,26 @@ const VideoGeneratorOutputSchema = z.object({
   videoUrl: z.string().describe('The data URI of the generated video.'),
 });
 export type VideoGeneratorOutput = z.infer<typeof VideoGeneratorOutputSchema>;
+
+async function downloadVideo(video: MediaPart): Promise<string> {
+    const fetch = (await import('node-fetch')).default;
+    // Add API key before fetching the video.
+    const videoUrl = video.media!.url!.includes('?') ? `${video.media!.url}&key=${process.env.GEMINI_API_KEY}` : `${video.media!.url}?key=${process.env.GEMINI_API_KEY}`;
+    const videoDownloadResponse = await fetch(videoUrl);
+
+    if (!videoDownloadResponse || videoDownloadResponse.status !== 200 || !videoDownloadResponse.body) {
+        const errorBody = await videoDownloadResponse.text();
+        console.error('Failed to fetch video:', videoDownloadResponse.status, errorBody);
+        throw new Error('Failed to fetch generated video.');
+    }
+
+    const videoBuffer = await videoDownloadResponse.arrayBuffer();
+    const base64Video = Buffer.from(videoBuffer).toString('base64');
+    const contentType = video.media!.contentType || 'video/mp4';
+    
+    return `data:${contentType};base64,${base64Video}`;
+}
+
 
 export async function videoGenerator(input: VideoGeneratorInput): Promise<VideoGeneratorOutput> {
   return videoGeneratorFlow(input);
@@ -63,6 +86,8 @@ const videoGeneratorFlow = ai.defineFlow(
       throw new Error('Failed to find the generated video');
     }
 
-    return { videoUrl: video.media.url };
+    const videoDataUri = await downloadVideo(video as MediaPart);
+
+    return { videoUrl: videoDataUri };
   }
 );
