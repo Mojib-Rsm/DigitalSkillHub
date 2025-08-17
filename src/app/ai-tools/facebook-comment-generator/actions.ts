@@ -8,7 +8,7 @@ const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const FacebookCommentGeneratorActionSchema = z.object({
-  postContent: z.string().min(10, { message: "Please enter at least 10 characters for the post content." }),
+  postContent: z.string(),
   goal: z.string().optional(),
   photo: z
     .any()
@@ -17,6 +17,16 @@ const FacebookCommentGeneratorActionSchema = z.object({
       (file) => !file || file.size === 0 || ACCEPTED_IMAGE_TYPES.includes(file.type),
       "Only .jpg, .jpeg, .png and .webp formats are supported."
     ).optional(),
+}).refine(data => {
+    // If there is no photo, postContent must have at least 10 characters.
+    // If there is a photo, postContent can be empty.
+    if (!data.photo || data.photo.size === 0) {
+        return data.postContent.length >= 10;
+    }
+    return true;
+}, {
+    message: "Please enter at least 10 characters for the post content if no image is provided.",
+    path: ["postContent"], // Set the error path to the postContent field.
 });
 
 type FormState = {
