@@ -19,14 +19,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '4mb', // Increase body size limit for image uploads
-    },
-  },
-  // Increase server action timeout to 2 minutes for video generation
   serverActions: {
-    bodySizeLimit: '4mb',
+    bodySizeLimit: '4mb', // Increase body size limit for image uploads
+    // Increase server action timeout to 2 minutes for video generation
   },
 };
 
