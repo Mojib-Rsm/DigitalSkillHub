@@ -60,18 +60,27 @@ export default function FreeTrialPage() {
         }
     }, [state, toast]);
 
-    const clientAction = async (formData: FormData) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
         const name = formData.get("name") as string;
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
+        
+        // Let server action handle detailed validation
+        const tempState = signupAction(initialState, formData);
+        const validationResult = await tempState;
 
-        // Basic client-side validation
-        if (!name || !email || !password || password.length < 8) {
-            // Let server action handle detailed validation display
+        if (validationResult.message === "Validation Error") {
             formAction(formData);
             return;
         }
 
+        if (!name || !email || !password || password.length < 8) {
+            formAction(formData);
+            return;
+        }
+        
         const auth = getAuth(app);
 
         try {
@@ -131,7 +140,7 @@ export default function FreeTrialPage() {
                                 </AlertDescription>
                             </Alert>
                         ) : (
-                        <form ref={formRef} action={clientAction} className="space-y-6">
+                        <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                              {state.message === "Validation Error" && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
@@ -144,10 +153,10 @@ export default function FreeTrialPage() {
                             )}
 
                             <div className="grid grid-cols-2 gap-4">
-                                <Button variant="outline" className="py-6 text-base">
+                                <Button type="button" variant="outline" className="py-6 text-base">
                                     <Chrome className="mr-2" /> Sign up with Google
                                 </Button>
-                                <Button variant="outline" className="py-6 text-base">
+                                <Button type="button" variant="outline" className="py-6 text-base">
                                     <Github className="mr-2" /> Sign up with GitHub
                                 </Button>
                             </div>
@@ -166,7 +175,7 @@ export default function FreeTrialPage() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password">Password</Label>
-                                <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required defaultValue={state.fields?.password} />
+                                <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} defaultValue={state.fields?.password} />
                             </div>
                             <SubmitButton />
                         </form>

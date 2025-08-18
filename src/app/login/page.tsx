@@ -57,7 +57,9 @@ export default function LoginPage() {
         }
     }, [state, toast]);
     
-    const clientAction = async (formData: FormData) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
 
@@ -113,8 +115,8 @@ export default function LoginPage() {
                         <CardDescription>Enter your credentials to access your account.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form ref={formRef} action={clientAction} className="space-y-6">
-                            {state.message && state.message !== "success" && state.message !== "Validation Error" &&(
+                        <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+                             {state.message && state.message !== "success" && state.message !== "Validation Error" &&(
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
                                     <AlertDescription>
@@ -123,10 +125,10 @@ export default function LoginPage() {
                                 </Alert>
                             )}
                             <div className="grid grid-cols-2 gap-4">
-                                <Button variant="outline" className="py-6 text-base">
+                                <Button variant="outline" className="py-6 text-base" type="button">
                                     <Chrome className="mr-2" /> Login with Google
                                 </Button>
-                                <Button variant="outline" className="py-6 text-base">
+                                <Button variant="outline" className="py-6 text-base" type="button">
                                     <Github className="mr-2" /> Login with GitHub
                                 </Button>
                             </div>
