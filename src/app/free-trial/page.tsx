@@ -60,33 +60,23 @@ export default function FreeTrialPage() {
         }
     }, [state, toast]);
 
-    const handleSubmit = async (formData: FormData) => {
+    const handleSubmitWithAuth = async (prevState: FormState, formData: FormData) => {
         const name = formData.get("name") as string;
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
         
-        // Frontend validation
         if (!name || !email || !password || password.length < 8) {
-            // Let server action handle detailed validation message
-            formAction(formData);
-            return;
+            // Let server action handle detailed validation
+            return signupAction(prevState, formData);
         }
         
         const auth = getAuth(app);
 
         try {
-            // Create user in Firebase Auth
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            
-            // Update user profile with name
             await updateProfile(userCredential.user, { displayName: name });
-            
-            // Add user UID to form data for server action
             formData.append('uid', userCredential.user.uid);
-
-            // Call server action to save to Firestore
-            formAction(formData);
-            
+            return signupAction(prevState, formData);
         } catch (error: any) {
             let description = "An unexpected error occurred.";
             if (error.code === 'auth/email-already-in-use') {
@@ -94,13 +84,25 @@ export default function FreeTrialPage() {
             } else if (error.message) {
                 description = error.message;
             }
-            toast({
+             toast({
                 variant: "destructive",
                 title: "Registration Failed",
                 description: description,
             });
+            return {
+                message: description,
+                issues: [],
+                fields: Object.fromEntries(formData.entries()) as Record<string, string>,
+            }
         }
     };
+    
+    // Wrap the async function for useActionState
+    const wrappedAction = (prevState: FormState, formData: FormData) => {
+        return handleSubmitWithAuth(prevState, formData);
+    };
+
+    const [finalState, finalFormAction] = useActionState(wrappedAction, initialState);
 
 
     return (
@@ -121,7 +123,7 @@ export default function FreeTrialPage() {
 
                 <Card className="shadow-2xl">
                     <CardContent className="p-8">
-                        {state.message === "success" ? (
+                        {finalState.message === "success" ? (
                              <Alert variant="default" className="border-green-500">
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                                 <AlertTitle className="text-green-700">Registration Successful!</AlertTitle>
@@ -133,13 +135,13 @@ export default function FreeTrialPage() {
                                 </AlertDescription>
                             </Alert>
                         ) : (
-                        <form ref={formRef} action={handleSubmit} className="space-y-6">
-                             {state.message === "Validation Error" && (
+                        <form ref={formRef} action={finalFormAction} className="space-y-6">
+                             {finalState.message === "Validation Error" && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
                                     <AlertDescription>
                                         <ul>
-                                            {state.issues?.map(issue => <li key={issue}>- {issue}</li>)}
+                                            {finalState.issues?.map(issue => <li key={issue}>- {issue}</li>)}
                                         </ul>
                                     </AlertDescription>
                                 </Alert>
@@ -160,15 +162,15 @@ export default function FreeTrialPage() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="name">Full Name</Label>
-                                <Input id="name" name="name" type="text" placeholder="e.g., Tanvir Ahmed" required defaultValue={state.fields?.name} />
+                                <Input id="name" name="name" type="text" placeholder="e.g., Tanvir Ahmed" required defaultValue={finalState.fields?.name} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email Address</Label>
-                                <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={state.fields?.email} />
+                                <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={finalState.fields?.email} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password">Password</Label>
-                                <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} defaultValue={state.fields?.password} />
+                                <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} defaultValue={finalState.fields?.password} />
                             </div>
                             <SubmitButton />
                         </form>
