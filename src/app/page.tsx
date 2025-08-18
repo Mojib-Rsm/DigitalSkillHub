@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -124,6 +124,45 @@ export default function Home() {
               আরও টুলস দেখুন <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
+        </div>
+      </section>
+
+      {/* Revolutionary Features Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="font-headline text-4xl font-bold mb-4">Revolutionary Features That Transform Content Creation</h2>
+          <p className="text-muted-foreground max-w-3xl mx-auto mb-12">
+            Experience the next generation of AI-powered content creation with features designed to save time, boost quality, and scale your content strategy like never before.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <Card className="text-center p-8 shadow-md">
+              <div className="flex justify-center mb-4">
+                <div className="bg-primary/10 p-4 rounded-full">
+                  <Clock className="w-10 h-10 text-primary" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-2">90% Time Savings</h3>
+              <p className="text-muted-foreground">Automate repetitive tasks and generate content in seconds, not hours.</p>
+            </Card>
+            <Card className="text-center p-8 shadow-md">
+              <div className="flex justify-center mb-4">
+                <div className="bg-primary/10 p-4 rounded-full">
+                  <TrendingUp className="w-10 h-10 text-primary" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-2">Better SEO Results</h3>
+              <p className="text-muted-foreground">Create optimized content that ranks higher in search engines.</p>
+            </Card>
+            <Card className="text-center p-8 shadow-md">
+              <div className="flex justify-center mb-4">
+                <div className="bg-primary/10 p-4 rounded-full">
+                  <Award className="w-10 h-10 text-primary" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-2">Professional Quality</h3>
+              <p className="text-muted-foreground">Produce high-quality, polished content that engages your audience.</p>
+            </Card>
+          </div>
         </div>
       </section>
 
