@@ -18,7 +18,7 @@ const allTools = [
     tags: ["GDPR", "Privacy", "Legal", "Compliance"],
     icon: <ShieldCheck className="w-8 h-8 text-primary" />,
     status: "Popular",
-    href: "#",
+    href: "/free-tools/privacy-policy-generator",
   },
   {
     title: "Terms of Service Generator",
@@ -27,7 +27,7 @@ const allTools = [
     tags: ["Terms", "Legal", "User Agreement", "TOS"],
     icon: <FileText className="w-8 h-8 text-primary" />,
     status: "New",
-    href: "#",
+    href: "/free-tools/terms-of-service-generator",
   },
   {
     title: "Disclaimer Generator",
@@ -36,7 +36,7 @@ const allTools = [
     tags: ["Disclaimer", "Legal", "Liability", "Protection"],
     icon: <GanttChartSquare className="w-8 h-8 text-primary" />,
     status: "New",
-    href: "#",
+    href: "/free-tools/disclaimer-generator",
   },
 ];
 
@@ -158,8 +158,8 @@ export default function FreeToolsPage() {
                       <p className="text-muted-foreground mt-2 max-w-2xl">Join TotaPakhi AI for advanced content generation, SEO tools, and more powerful features to grow your online presence.</p>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4 shrink-0">
-                      <Button size="lg" className="text-base">Get Started Free</Button>
-                      <Button size="lg" variant="outline" className="text-base">View Pricing</Button>
+                      <Button size="lg" className="text-base" asChild><Link href="/#pricing">Get Started Free</Link></Button>
+                      <Button size="lg" variant="outline" className="text-base" asChild><Link href="/#pricing">View Pricing</Link></Button>
                   </div>
               </CardContent>
           </Card>

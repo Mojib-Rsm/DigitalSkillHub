@@ -6,10 +6,10 @@ import { Button } from "../ui/button";
 
 const footerLinks = {
     products: [
-        { label: "AI Content Generator", href: "#" },
-        { label: "Bulk Generation", href: "#" },
+        { label: "AI Content Generator", href: "/ai-tools" },
+        { label: "Bulk Generation", href: "/ai-tools/blog-topic-generator" },
         { label: "WordPress Integration", href: "#" },
-        { label: "Facebook Captions", href: "#" },
+        { label: "Facebook Captions", href: "/ai-tools/facebook-comment-generator" },
     ],
     support: [
         { label: "Contact Support", href: "#" },
@@ -22,8 +22,8 @@ const footerLinks = {
         { label: "Press Kit", href: "#" },
     ],
     legal: [
-        { label: "Privacy Policy", href: "#" },
-        { label: "Terms of Service", href: "#" },
+        { label: "Privacy Policy", href: "/free-tools/privacy-policy-generator" },
+        { label: "Terms of Service", href: "/free-tools/terms-of-service-generator" },
         { label: "Refund Policy", href: "#" },
         { label: "Cookie Policy", href: "#" },
     ]
@@ -42,7 +42,7 @@ export default function Footer() {
                 </Link>
                 <p className="text-muted-foreground">Revolutionizing Bengali content creation with advanced AI technology. Generate high-quality, culturally relevant content that resonates with your audience.</p>
                 <div className="mt-6 flex gap-4">
-                    <Button>Start Free Trial</Button>
+                    <Button asChild><Link href="/#pricing">Start Free Trial</Link></Button>
                     <Button variant="outline">
                         <MessageCircle className="w-4 h-4 mr-2"/>
                         WhatsApp Support
@@ -116,4 +116,3 @@ export default function Footer() {
     </>
   );
 }
-
