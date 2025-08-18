@@ -60,9 +60,7 @@ export default function FreeTrialPage() {
         }
     }, [state, toast]);
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
+    const handleSubmit = async (formData: FormData) => {
         const name = formData.get("name") as string;
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
@@ -135,7 +133,7 @@ export default function FreeTrialPage() {
                                 </AlertDescription>
                             </Alert>
                         ) : (
-                        <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+                        <form ref={formRef} action={handleSubmit} className="space-y-6">
                              {state.message === "Validation Error" && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
