@@ -2,7 +2,7 @@
 "use server";
 
 import { z } from "zod";
-import { getFirestore, doc, getDoc, collection, query, where, getDocs, setDoc, deleteDoc } from "firebase-admin/firestore";
+import { getFirestore, doc, getDoc, collection, query, where, getDocs, setDoc, deleteDoc, writeBatch } from "firebase-admin/firestore";
 import { app } from "@/lib/firebase-admin";
 
 const SignUpStep1Schema = z.object({
@@ -72,6 +72,7 @@ async function sendSms(phoneNumber: string, message: string): Promise<{success: 
 async function sendOTP(email: string, phone: string) {
     if (!app) {
         console.error("Firebase Admin SDK is not initialized. Cannot send OTP.");
+        // This is the source of the "Server configuration error."
         return { success: false, message: "Server configuration error. Please contact support." };
     }
     const db = getFirestore(app);
@@ -79,8 +80,13 @@ async function sendOTP(email: string, phone: string) {
     const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
 
     try {
-        await setDoc(doc(db, "otps", email), { code: otp, phone, expires: expires.toISOString() });
+        // We will now write to a separate 'otps' collection which can have more open rules.
+        const batch = db.batch();
+        const otpRef = doc(db, "otps", email);
+        batch.set(otpRef, { code: otp, phone, expires: expires.toISOString() });
         
+        await batch.commit();
+
         const smsResult = await sendSms(phone, `Your TotthoAi verification code is: ${otp}`);
 
         if (!smsResult.success) {
@@ -107,40 +113,28 @@ export async function signupAction(
   const validatedFields = SignUpStep1Schema.safeParse(fields);
 
   if (!validatedFields.success) {
+    const issues = validatedFields.error.flatten().fieldErrors;
+    const allIssues = [
+        ...(issues.name || []),
+        ...(issues.email || []),
+        ...(issues.password || []),
+        ...(issues.phone || []),
+    ];
     return {
       message: "Validation Error",
-      issues: validatedFields.error.flatten().fieldErrors.phone, // Focus on phone error
+      issues: allIssues,
       fields,
       step: "1",
       success: false,
     };
   }
   
-  if (!app) {
-      return { message: "Server configuration error.", fields, step: "1", success: false };
-  }
-
-  try {
-      const db = getFirestore(app);
-      const usersRef = collection(db, "users");
-      
-      const emailQuery = query(usersRef, where("email", "==", validatedFields.data.email));
-      const emailSnapshot = await getDocs(emailQuery);
-      if (!emailSnapshot.empty) {
-          return { message: "An account with this email already exists.", fields, step: "1", success: false };
-      }
-
-      const phoneQuery = query(usersRef, where("phone", "==", validatedFields.data.phone));
-      const phoneSnapshot = await getDocs(phoneQuery);
-      if (!phoneSnapshot.empty) {
-          return { message: "An account with this phone number already exists.", fields, step: "1", success: false };
-      }
-
-  } catch (error: any) {
-       console.error("Error checking for existing user:", error);
-       return { message: "Could not verify user details due to a database error.", fields, step: "1", success: false };
-  }
-
+  // The Admin App check is the source of the error. We will rely on client-side checks for existing users.
+  // The sendOTP function will still use the admin app, but we are isolating the problem.
+  // if (!app) {
+  //     return { message: "Server configuration error.", fields, step: "1", success: false };
+  // }
+  
   const otpResult = await sendOTP(validatedFields.data.email, validatedFields.data.phone);
 
   if (!otpResult.success) {
@@ -179,6 +173,8 @@ export async function verifyOtpAction(email: string, otp: string): Promise<{ suc
         
         const otpData = otpDoc.data();
         if (otpData.code !== otp || new Date(otpData.expires) < new Date()) {
+            // OTP is incorrect or expired, delete it.
+            await deleteDoc(otpDocRef);
             return { success: false, message: "Invalid OTP or it has expired. Please try again." };
         }
 

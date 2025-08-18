@@ -6,8 +6,8 @@ let app: App | undefined;
 // This function ensures that the admin app is initialized only once.
 function initializeAdminApp(): App | undefined {
     // If the admin app is already initialized, return it.
-    if (getApps().some(app => app.name === 'firebase-admin')) {
-        return getApp('firebase-admin');
+    if (getApps().length > 0) {
+        return getApp();
     }
 
     const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT;
@@ -19,7 +19,7 @@ function initializeAdminApp(): App | undefined {
             // Initialize the app with the service account credentials.
             return initializeApp({
                 credential: cert(serviceAccount),
-            }, 'firebase-admin');
+            });
         } catch (error) {
             console.error("Failed to parse Firebase service account JSON. Make sure the environment variable is set correctly and is a single line.", error);
             return undefined;

@@ -12,7 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { signupAction, verifyOtpAction } from "./actions";
 import { Bot, CheckCircle, Sparkles, Zap, ArrowRight, Lock, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDocs, collection, query, where } from "firebase/firestore";
 import { app } from "@/lib/firebase";
 import crypto from "crypto";
 
@@ -82,6 +82,33 @@ export default function FreeTrialPage() {
             });
         }
     }, [state, toast]);
+    
+    const handleCustomSubmit = async (formData: FormData) => {
+        setIsVerifying(true); // Disable button immediately
+        const db = getFirestore(app);
+        const usersRef = collection(db, "users");
+
+        // Check for existing user on the client side before calling the server action
+        const emailQuery = query(usersRef, where("email", "==", formData.get("email")));
+        const emailSnapshot = await getDocs(emailQuery);
+        if (!emailSnapshot.empty) {
+            toast({ title: "Registration Failed", description: "An account with this email already exists.", variant: "destructive" });
+            setIsVerifying(false);
+            return;
+        }
+
+        const phoneQuery = query(usersRef, where("phone", "==", formData.get("phone")));
+        const phoneSnapshot = await getDocs(phoneQuery);
+        if (!phoneSnapshot.empty) {
+            toast({ title: "Registration Failed", description: "An account with this phone number already exists.", variant: "destructive" });
+            setIsVerifying(false);
+            return;
+        }
+
+        // If checks pass, proceed with the form action
+        formAction(formData);
+        setIsVerifying(false); // Re-enable button after action completes
+    }
 
     const handleOtpSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -178,7 +205,7 @@ export default function FreeTrialPage() {
                             )}
 
                             {formStep === '1' && (
-                                <form action={formAction} className="space-y-4">
+                                <form action={handleCustomSubmit} className="space-y-4">
                                      <input type="hidden" name="step" value="1" />
                                     <div className="space-y-2">
                                         <Label htmlFor="name">Full Name</Label>
@@ -199,7 +226,19 @@ export default function FreeTrialPage() {
                                             <Input id="phone" name="phone" type="tel" placeholder="01xxxxxxxxx" required className="pl-10" value={phone} onChange={e => setPhone(e.target.value)} />
                                         </div>
                                     </div>
-                                    <SubmitButton step="1" />
+                                    <Button type="submit" disabled={useFormStatus().pending || isVerifying} className="w-full text-base" size="lg">
+                                        {useFormStatus().pending || isVerifying ? (
+                                            <>
+                                                <Sparkles className="mr-2 h-5 w-5 animate-spin" />
+                                                Sending OTP...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Zap className="mr-2 h-5 w-5" />
+                                                Send Verification Code
+                                            </>
+                                        )}
+                                    </Button>
                                 </form>
                             )}
                             
