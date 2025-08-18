@@ -185,14 +185,14 @@ export default function Header() {
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <GoogleIcon />
-              <span>গুগল দিয়ে সাইন ইন</span>
+              <span className="ml-2">গুগল দিয়ে সাইন ইন</span>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <FacebookIcon />
-              <span>ফেসবুক দিয়ে সাইন ইন</span>
+              <span className="ml-2">ফেসবুক দিয়ে সাইন ইন</span>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Phone />
+              <Phone className="mr-2 h-4 w-4" />
               <span>ফোন দিয়ে সাইন ইন</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>

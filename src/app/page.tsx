@@ -1,9 +1,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 
 const featuredTools = [
     {
@@ -162,6 +163,92 @@ export default function Home() {
               <h3 className="text-2xl font-bold mb-2">Professional Quality</h3>
               <p className="text-muted-foreground">Produce high-quality, polished content that engages your audience.</p>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Tools in Action */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-4xl mx-auto">
+            <h2 className="font-headline text-4xl font-bold mb-4">Featured Tools in Action</h2>
+            <p className="text-muted-foreground mb-16">
+              Powerful Tools That Transform Your Workflow. See how our flagship features can revolutionize your content creation process with real examples and live demonstrations.
+            </p>
+          </div>
+
+          <div className="space-y-24">
+            {/* One Click Writer */}
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <Badge variant="secondary" className="py-1 px-3 text-sm">Most Popular</Badge>
+                <h3 className="font-headline text-3xl font-bold">One Click Writer 2.0 ✨</h3>
+                <p className="text-muted-foreground">
+                  Generate high-quality, SEO-optimized articles with a single click. Our AI handles everything from research to formatting, while you maintain complete control over customization options.
+                </p>
+                <ul className="space-y-2">
+                  <li className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-accent"/> Complete articles in under 60 seconds</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-accent"/> Advanced customization with custom prompts</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-accent"/> Multi-language support (Bengali + English)</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-accent"/> Built-in SEO optimization and AI images</li>
+                </ul>
+                <div className="flex gap-8 pt-4">
+                  <div className="text-center">
+                    <p className="font-headline text-4xl font-bold">60s</p>
+                    <p className="text-muted-foreground text-sm">Average generation time</p>
+                  </div>
+                   <div className="text-center">
+                    <p className="font-headline text-4xl font-bold">95%</p>
+                    <p className="text-muted-foreground text-sm">User satisfaction rate</p>
+                  </div>
+                </div>
+                <div className="flex gap-4 pt-4">
+                  <Button size="lg">Try One Click Writer</Button>
+                  <Button size="lg" variant="outline">See Live Demo</Button>
+                </div>
+              </div>
+              <div>
+                <Card className="shadow-2xl">
+                   <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="One Click Writer Interface" className="rounded-lg" data-ai-hint="writing interface application" />
+                </Card>
+              </div>
+            </div>
+
+            {/* Video to Blog Post */}
+             <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="order-last md:order-first">
+                 <Card className="shadow-2xl">
+                   <Image src="https://placehold.co/600x400.png" width={600} height={400} alt="Video to Blog Post Interface" className="rounded-lg" data-ai-hint="video editing interface" />
+                </Card>
+              </div>
+              <div className="space-y-6">
+                <Badge variant="secondary" className="py-1 px-3 text-sm">Trending Feature</Badge>
+                <h3 className="font-headline text-3xl font-bold">Video to Blog Post 📹</h3>
+                <p className="text-muted-foreground">
+                  Transform YouTube videos into comprehensive blog posts with AI. Extract key insights, create engaging content, and maintain the original video's value while making it accessible in written form.
+                </p>
+                 <ul className="space-y-2">
+                  <li className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-accent"/> Convert any YouTube video to blog post</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-accent"/> Automatic key insights extraction</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-accent"/> Enhanced with AI-generated images</li>
+                  <li className="flex items-center gap-2"><CheckCircle className="w-5 h-5 text-accent"/> Perfect for content repurposing</li>
+                </ul>
+                <div className="flex gap-8 pt-4">
+                  <div className="text-center">
+                    <p className="font-headline text-4xl font-bold">60 Sec</p>
+                    <p className="text-muted-foreground text-sm">Video to article time</p>
+                  </div>
+                   <div className="text-center">
+                    <p className="font-headline text-4xl font-bold">3x</p>
+                    <p className="text-muted-foreground text-sm">Content reach increase</p>
+                  </div>
+                </div>
+                <div className="flex gap-4 pt-4">
+                  <Button size="lg">Try Video to Blog</Button>
+                  <Button size="lg" variant="outline">See Live Demo</Button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
