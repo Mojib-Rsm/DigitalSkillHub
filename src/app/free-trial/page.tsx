@@ -120,6 +120,10 @@ export default function FreeTrialPage() {
         const auth = getAuth(app);
         const provider = new GithubAuthProvider();
         
+        provider.setCustomParameters({
+            'redirect_uri': `${window.location.origin}/__/auth/handler`
+        });
+        
         startTransition(async () => {
             try {
                 const result = await signInWithPopup(auth, provider);

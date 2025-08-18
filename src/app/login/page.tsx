@@ -106,6 +106,10 @@ export default function LoginPage() {
     const handleGitHubLogin = () => {
         const auth = getAuth(app);
         const provider = new GithubAuthProvider();
+        
+        provider.setCustomParameters({
+            'redirect_uri': `${window.location.origin}/__/auth/handler`
+        });
 
         startTransition(async () => {
             try {
