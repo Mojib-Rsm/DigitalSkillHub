@@ -84,10 +84,16 @@ export default function LoginPage() {
             formAction(formData);
 
         } catch (error: any) {
+             let description = "An unexpected error occurred. Please try again.";
+             if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                description = "Incorrect email or password. Please check your credentials and try again.";
+             } else if (error.message) {
+                description = error.message;
+             }
              toast({
                 variant: "destructive",
                 title: "Login Failed",
-                description: error.message,
+                description: description,
             });
         }
     };
@@ -139,7 +145,7 @@ export default function LoginPage() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email Address</Label>
-                                <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={state.fields?.email} />
+                                <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={state.fields?.email} suppressHydrationWarning/>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password">Password</Label>
