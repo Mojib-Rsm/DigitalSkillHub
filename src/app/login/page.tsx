@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -38,6 +38,7 @@ export default function LoginPage() {
     const initialState = { message: "", issues: [], fields: {} };
     const [state, formAction] = useActionState(loginAction, initialState);
     const { toast } = useToast();
+    const formRef = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
         if (state.message === "success") {
@@ -56,24 +57,29 @@ export default function LoginPage() {
         }
     }, [state, toast]);
     
-    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
+    const clientAction = async (formData: FormData) => {
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
+
+        if (!email || !password) {
+            toast({
+                variant: "destructive",
+                title: "Login Failed",
+                description: "Email and password are required.",
+            });
+            return;
+        }
 
         const auth = getAuth(app);
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const idToken = await userCredential.user.getIdToken();
             
-            const serverFormData = new FormData();
-            serverFormData.append('idToken', idToken);
-            serverFormData.append('email', userCredential.user.email || '');
-            serverFormData.append('name', userCredential.user.displayName || '');
-            serverFormData.append('uid', userCredential.user.uid);
+            formData.set('idToken', idToken);
+            formData.set('uid', userCredential.user.uid);
+            formData.set('name', userCredential.user.displayName || '');
 
-            formAction(serverFormData);
+            formAction(formData);
 
         } catch (error: any) {
              toast({
@@ -82,7 +88,7 @@ export default function LoginPage() {
                 description: error.message,
             });
         }
-    }
+    };
 
 
     return (
@@ -107,7 +113,7 @@ export default function LoginPage() {
                         <CardDescription>Enter your credentials to access your account.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleLogin} className="space-y-6">
+                        <form ref={formRef} action={clientAction} className="space-y-6">
                             {state.message && state.message !== "success" && state.message !== "Validation Error" &&(
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
