@@ -13,6 +13,7 @@ import { Sparkles, Clipboard, CornerDownRight, PlusCircle, Trash2 } from "lucide
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+import { Input } from "./ui/input";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -140,6 +141,16 @@ export default function FacebookReplyGeneratorForm() {
                 <PlusCircle className="mr-2 h-4 w-4"/>
                 কথোপকথন যোগ করুন
              </Button>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="goal">আপনার লক্ষ্য (ঐচ্ছিক)</Label>
+            <Input
+              id="goal"
+              name="goal"
+              placeholder="যেমন, কথোপকথনটি শেষ করুন, একটি প্রশ্ন জিজ্ঞাসা করুন..."
+              defaultValue={state.fields?.goal}
+            />
           </div>
           
           <SubmitButton />

@@ -10,6 +10,7 @@ const FacebookReplyGeneratorActionSchema = z.object({
     character: z.string(),
     text: z.string().min(1, { message: "কথোপকথনের প্রতিটি অংশের জন্য পাঠ্য প্রয়োজন।" }),
   })).min(1, { message: "অনুগ্রহ করে কমপক্ষে একটি কথোপকথনের অংশ যোগ করুন।" }),
+  goal: z.string().optional(),
 });
 
 type FormState = {
@@ -25,7 +26,6 @@ export async function generateFacebookReplies(
 ): Promise<FormState> {
   const conversationEntries = Array.from(formData.entries()).filter(([key]) => key.startsWith('conversation'));
   
-  const conversation = [];
   const conversationMap: Record<string, { character?: string; text?: string }> = {};
 
   for (const [key, value] of conversationEntries) {
@@ -49,13 +49,14 @@ export async function generateFacebookReplies(
   const validatedFields = FacebookReplyGeneratorActionSchema.safeParse({
     postContent: formData.get("postContent"),
     conversation: parsedConversation,
+    goal: formData.get("goal"),
   });
 
   if (!validatedFields.success) {
     const { errors } = validatedFields.error;
     
     // Create a flat list of fields for easier state restoration
-    const fields: Record<string, any> = { postContent: formData.get("postContent") };
+    const fields: Record<string, any> = { postContent: formData.get("postContent"), goal: formData.get("goal") };
     parsedConversation.forEach((item, index) => {
         fields[`conversation[${index}].character`] = item.character;
         fields[`conversation[${index}].text`] = item.text;

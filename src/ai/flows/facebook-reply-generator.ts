@@ -18,6 +18,7 @@ const FacebookReplyGeneratorInputSchema = z.object({
     character: z.string().describe("The character speaking (e.g., 'Character A', 'Me')."),
     text: z.string().describe("The text of their comment or reply."),
   })).describe('The sequence of the conversation.'),
+  goal: z.string().optional().describe("The user's goal for the reply (e.g., 'be supportive', 'end the conversation politely', 'ask a clarifying question')."),
 });
 export type FacebookReplyGeneratorInput = z.infer<typeof FacebookReplyGeneratorInputSchema>;
 
@@ -47,6 +48,11 @@ Conversation History:
 {{character}}: {{{text}}}
 {{/each}}
 ---
+
+{{#if goal}}
+My Goal for the Reply:
+My primary objective for this reply is to "{{{goal}}}". Please craft the suggestions to meet this specific goal while staying consistent with the conversation's context.
+{{/if}}
 
 Based on the full context, generate a list of 3-5 suitable replies in Bengali for "Me". The replies should be directed at the last character who spoke in the conversation.`,
 });
