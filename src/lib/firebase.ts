@@ -8,7 +8,9 @@ import { getFirestore } from "firebase/firestore";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDbJ-TA0ErywLN8Nc7C9iK1f3_QI35h6YU",
-  authDomain: "map-api-427111.firebaseapp.com",
+  // Dynamically set authDomain for different environments (dev vs. prod)
+  // This is safe to do on the client side.
+  authDomain: typeof window !== 'undefined' ? window.location.hostname : "map-api-427111.firebaseapp.com",
   projectId: "map-api-427111",
   storageBucket: "map-api-427111.firebasestorage.app",
   messagingSenderId: "344837483986",
