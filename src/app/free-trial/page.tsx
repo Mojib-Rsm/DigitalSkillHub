@@ -48,11 +48,11 @@ export default function FreeTrialPage() {
         if (state.message === "success") {
             toast({
                 title: "Account Created!",
-                description: "Welcome to TotthoAi. You will be redirected to the login page.",
+                description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
                 variant: "default",
             });
             setTimeout(() => {
-                window.location.href = "/login";
+                window.location.href = "/dashboard";
             }, 2000);
         } else if (state.message && state.message !== "Validation Error") {
             toast({
@@ -130,6 +130,7 @@ export default function FreeTrialPage() {
                 formData.append('name', user.displayName || user.email?.split('@')[0] || 'User');
                 formData.append('email', user.email!);
                 formData.append('idToken', idToken);
+                formData.append('uid', user.uid);
 
                 formAction(formData);
 
@@ -137,6 +138,8 @@ export default function FreeTrialPage() {
                 let description = "An unexpected error occurred during GitHub sign-up.";
                  if (error.code === 'auth/account-exists-with-different-credential') {
                     description = 'An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.';
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    description = 'This domain is not authorized for OAuth operations. Please add it to the list of authorized domains in your Firebase console.'
                 } else if (error.message) {
                     description = error.message;
                 }
@@ -173,9 +176,9 @@ export default function FreeTrialPage() {
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                                 <AlertTitle className="text-green-700">Registration Successful!</AlertTitle>
                                 <AlertDescription>
-                                    Welcome aboard! You will be redirected to the login page shortly.
+                                    Welcome aboard! You will be redirected to the dashboard shortly.
                                     <Button asChild className="mt-4 w-full">
-                                        <Link href="/login">Go to Login <ArrowRight className="ml-2"/></Link>
+                                        <Link href="/dashboard">Go to Dashboard <ArrowRight className="ml-2"/></Link>
                                     </Button>
                                 </AlertDescription>
                             </Alert>

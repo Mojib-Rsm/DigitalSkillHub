@@ -46,9 +46,8 @@ export default function LoginPage() {
         if (state.message === "success") {
             toast({
                 title: "Login Successful!",
-                description: "Welcome back to TotthoAi.",
+                description: "Welcome back to TotthoAi. Redirecting to dashboard...",
             });
-            // Redirect to dashboard, or handle as needed
             window.location.href = "/dashboard";
         } else if (state.message && state.message !== "Validation Error") {
             toast({
@@ -126,6 +125,8 @@ export default function LoginPage() {
                  let description = "An unexpected error occurred during GitHub sign-in.";
                  if (error.code === 'auth/account-exists-with-different-credential') {
                     description = 'An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.';
+                } else if (error.code === 'auth/unauthorized-domain') {
+                    description = 'This domain is not authorized for OAuth operations. Please add it to the list of authorized domains in your Firebase console.'
                 } else if (error.message) {
                     description = error.message;
                 }
