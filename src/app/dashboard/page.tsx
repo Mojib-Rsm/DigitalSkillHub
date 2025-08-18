@@ -1,235 +1,232 @@
 
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Award, BookCopy, Users, Star, User, MessageCircle, FileText } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { BarChart, Bar } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  Sidebar,
+  SidebarProvider,
+  SidebarTrigger,
+  SidebarContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarInset,
+} from "@/components/ui/sidebar";
 
-const enrolledCourses = [
-  { title: "আধুনিক ওয়েব ডেভেলপমেন্ট", progress: 75 },
-  { title: "এআই টুলের পরিচিতি", progress: 40 },
-  { title: "আপওয়ার্কে ফ্রিল্যান্সিং", progress: 95 },
-];
+import {
+  Bot,
+  RefreshCcw,
+  Sparkles,
+  Video,
+  FileText,
+  Layers,
+  Library,
+  Settings,
+  HelpCircle,
+  PlayCircle,
+  LayoutGrid,
+  ChevronDown,
+  LogOut,
+  Moon,
+  Coins
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const achievements = [
-  { title: "ডিজিটাল স্টার্টার", description: "আপনার প্রথম কোর্স শেষ করুন" },
-  { title: "ফ্রিল্যান্স রেডি", description: "আপনার ফ্রিল্যান্স প্রোফাইল তৈরি করুন" },
-  { title: "পারফেক্ট স্টার্ট", description: "আপনার প্রথম পাঠ শেষ করুন" },
-];
-
-const certificates = [
-  { title: "ওয়েব ডেভেলপমেন্ট ফান্ডামেন্টালস", date: "জুন ২০২৪" },
-  { title: "সবার জন্য এআই", date: "জুলাই ২০২৪" },
-];
-
-const mentors = [
-    { name: "জাহাঙ্গীর আলম", expertise: "ফ্রিল্যান্স ওয়েব ডেভেলপার"},
-    { name: "ফাতেমা আক্তার", expertise: "ই-কমার্স বিশেষজ্ঞ"},
-];
-
-const liveSessions = [
-    { topic: "ক্লায়েন্ট কমিউনিকেশন টিপস", time: "বুধবার, সন্ধ্যা ৭টা"},
-    { topic: "আপনার পরিষেবার মূল্য নির্ধারণ", time: "শুক্রবার, রাত ৮টা"},
-];
-
-const instructorCourses = [
-  { title: "অ্যাডভান্সড গ্রাফিক ডিজাইন", students: 1204, rating: 4.8 },
-  { title: "ইউআই/ইউএক্স ডিজাইন ফান্ডামেন্টালস", students: 859, rating: 4.9 },
-]
-
-const chartData = [
-  { month: "জানুয়ারি", students: 186 },
-  { month: "ফেব্রুয়ারি", students: 305 },
-  { month: "মার্চ", students: 237 },
-  { month: "এপ্রিল", students: 273 },
-  { month: "মে", students: 209 },
-  { month: "জুন", students: 214 },
-];
-
-const chartConfig = {
-  students: {
-    label: "শিক্ষার্থীরা",
-    color: "hsl(var(--primary))",
+const gettingStartedGuides = [
+  {
+    title: "Getting Started Guide",
+    description: "Learn the basics of TotthoAi",
+    image: "https://placehold.co/600x400.png",
+    dataAiHint: "tutorial screen recording"
   },
-};
+  {
+    title: "Advanced Features",
+    description: "Explore advanced content generation features",
+    image: "https://placehold.co/600x400.png",
+    dataAiHint: "dashboard interface"
+  },
+  {
+    title: "Best Practices",
+    description: "Tips and tricks for optimal results",
+    image: "https://placehold.co/600x400.png",
+    dataAiHint: "checklist seo"
+  },
+];
 
-export default function DashboardPage() {
+export default function DashboardLayout() {
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="text-center mb-12">
-        <h1 className="font-headline text-5xl font-bold">আপনার ড্যাশবোর্ড</h1>
-        <p className="text-muted-foreground mt-2">আপনার শেখা এবং শেখানোর যাত্রা পরিচালনা করুন।</p>
-      </div>
-
-      <Tabs defaultValue="student" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto h-12">
-          <TabsTrigger value="student" className="text-base">শিক্ষার্থী</TabsTrigger>
-          <TabsTrigger value="instructor" className="text-base">প্রশিক্ষক</TabsTrigger>
-        </TabsList>
-
-        {/* Student Dashboard */}
-        <TabsContent value="student" className="mt-8">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="lg:col-span-2">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>আমার কোর্সসমূহ</CardTitle>
-                <BookCopy className="w-6 h-6 text-primary" />
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {enrolledCourses.map(course => (
-                  <div key={course.title}>
-                    <p className="font-medium mb-2">{course.title}</p>
-                    <Progress value={course.progress} className="h-3" />
-                    <p className="text-sm text-muted-foreground mt-1 text-right">{course.progress}% সম্পন্ন</p>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>আমার অর্জনসমূহ</CardTitle>
-                <Award className="w-6 h-6 text-accent" />
-              </CardHeader>
-              <CardContent className="flex flex-wrap gap-2">
-                {achievements.map(ach => (
-                  <Badge key={ach.title} variant="secondary" className="py-2 px-3 border-2 border-accent/50">
-                    <Award className="w-4 h-4 mr-2 text-accent" />
-                    {ach.title}
-                  </Badge>
-                ))}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>আমার সার্টিফিকেট</CardTitle>
-                <FileText className="w-6 h-6 text-primary" />
-              </CardHeader>
-              <CardContent>
-                {certificates.map(cert => (
-                  <div key={cert.title} className="flex justify-between items-center mb-2 pb-2 border-b last:border-0 last:pb-0 last:mb-0">
-                    <div>
-                      <p className="font-semibold">{cert.title}</p>
-                      <p className="text-sm text-muted-foreground">ইস্যু: {cert.date}</p>
-                    </div>
-                    <Button variant="outline" size="sm">ডাউনলোড</Button>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>একজন মেন্টর খুঁজুন</CardTitle>
-                <Users className="w-6 h-6 text-primary" />
-              </CardHeader>
-              <CardContent>
-                 {mentors.map(mentor => (
-                  <div key={mentor.name} className="flex justify-between items-center mb-2 pb-2 border-b last:border-0 last:pb-0 last:mb-0">
-                    <div>
-                      <p className="font-semibold">{mentor.name}</p>
-                      <p className="text-sm text-muted-foreground">{mentor.expertise}</p>
-                    </div>
-                    <Button variant="outline" size="sm">সংযোগ করুন</Button>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-             <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>লাইভ প্রশ্নোত্তর সেশন</CardTitle>
-                <MessageCircle className="w-6 h-6 text-primary" />
-              </CardHeader>
-              <CardContent>
-                 {liveSessions.map(session => (
-                  <div key={session.topic} className="flex justify-between items-center mb-2 pb-2 border-b last:border-0 last:pb-0 last:mb-0">
-                    <div>
-                      <p className="font-semibold">{session.topic}</p>
-                      <p className="text-sm text-muted-foreground">{session.time}</p>
-                    </div>
-                    <Button variant="outline" size="sm">যোগ দিন</Button>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
-        {/* Instructor Dashboard */}
-        <TabsContent value="instructor" className="mt-8">
-            <div className="grid gap-8 lg:grid-cols-3">
-              <Card className="lg:col-span-2">
+    <SidebarProvider>
+      <Sidebar side="left" collapsible="icon">
+        <SidebarHeader>
+           <SidebarMenuButton asChild>
+            <Link href="/" className="h-12 justify-start gap-3 px-3">
+              <Bot className="text-primary size-7" />
+              <span className="font-bold text-xl">TotthoAi</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarHeader>
+        <SidebarContent className="p-2">
+            <SidebarGroup>
+                <SidebarMenuItem>
+                  <SidebarMenuButton href="/dashboard" isActive>
+                    <LayoutGrid />
+                    <span>Dashboard</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+            </SidebarGroup>
+            <SidebarGroup>
+                 <SidebarGroupLabel className="flex items-center"><FileText className="mr-2"/> Content Generation <ChevronDown className="ml-auto size-4"/></SidebarGroupLabel>
+                 <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton>
+                        <Sparkles />
+                        <span>One Click Writer</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton>
+                        <Video/>
+                        <span>Video to Blog Post</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                     <SidebarMenuItem>
+                      <SidebarMenuButton>
+                        <FileText />
+                        <span>News Writer</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                     <SidebarMenuItem>
+                      <SidebarMenuButton>
+                        <Layers/>
+                        <span>Bulk Generation</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                     <SidebarMenuItem>
+                      <SidebarMenuButton>
+                        <RefreshCcw/>
+                        <span>Bulk Content Refresh</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                 </SidebarMenu>
+            </SidebarGroup>
+             <SidebarGroup>
+                <SidebarMenuItem>
+                  <SidebarMenuButton>
+                    <Library />
+                    <span>Library</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton href="/free-tools">
+                    <Bot />
+                    <span>Free Tools</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+            </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+           <SidebarGroup>
+                 <SidebarMenuItem>
+                  <SidebarMenuButton>
+                    <Settings />
+                    <span>Account & Billing</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton>
+                    <HelpCircle />
+                    <span>Help</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+           </SidebarGroup>
+           <div className="p-2">
+            <Card className="bg-primary/10 border-primary/50">
                 <CardHeader>
-                  <CardTitle>কোর্স পারফরম্যান্স</CardTitle>
-                  <CardDescription>মাসিক নতুন ছাত্র তালিকাভুক্তি</CardDescription>
+                    <CardTitle className="text-base">Upgrade to Pro</CardTitle>
+                    <CardDescription className="text-xs">Unlock all features and get unlimited access.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <ChartContainer config={chartConfig} className="h-64">
-                      <BarChart accessibilityLayer data={chartData}>
-                        <Bar dataKey="students" fill="var(--color-students)" radius={4} />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                      </BarChart>
-                    </ChartContainer>
+                    <Button size="sm" className="w-full">Upgrade</Button>
                 </CardContent>
-              </Card>
-              <div className="space-y-8">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">মোট শিক্ষার্থী</CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">12,540</div>
-                        <p className="text-xs text-muted-foreground">গত মাস থেকে +12.4%</p>
-                    </CardContent>
-                </Card>
-                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium">গড় রেটিং</CardTitle>
-                        <Star className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">4.85</div>
-                        <p className="text-xs text-muted-foreground">সমস্ত কোর্স জুড়ে</p>
-                    </CardContent>
-                </Card>
-              </div>
+            </Card>
+           </div>
+        </SidebarFooter>
+      </Sidebar>
+      <SidebarInset>
+        <header className="flex h-16 items-center justify-between border-b px-6">
+            <div className="flex items-center gap-2">
+                <SidebarTrigger className="md:hidden"/>
+                <h2 className="text-lg font-semibold">Dashboard</h2>
             </div>
-             <Card className="mt-8">
-                <CardHeader>
-                    <CardTitle>আমার কোর্সসমূহ</CardTitle>
-                    <CardDescription>আপনার প্রকাশিত কোর্স পরিচালনা করুন।</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>কোর্স</TableHead>
-                                <TableHead>শিক্ষার্থী</TableHead>
-                                <TableHead>রেটিং</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {instructorCourses.map(course => (
-                                <TableRow key={course.title}>
-                                    <TableCell className="font-medium">{course.title}</TableCell>
-                                    <TableCell>{course.students.toLocaleString()}</TableCell>
-                                    <TableCell className="flex items-center gap-1">
-                                        {course.rating}
-                                        <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+            <div className="flex items-center gap-4">
+                <Button variant="outline" size="sm">
+                    <Coins className="mr-2 size-4"/>
+                    Credits: 5
+                </Button>
+                <Moon className="size-5" />
+                <Avatar className="h-9 w-9">
+                    <AvatarImage src="https://placehold.co/40x40.png" alt="@mojib" data-ai-hint="man portrait"/>
+                    <AvatarFallback>M</AvatarFallback>
+                </Avatar>
+            </div>
+        </header>
+        <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-muted/50">
+            <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-lg p-8 mb-8 shadow-lg">
+                <h1 className="text-3xl font-bold">Welcome back, Mojib Rsm!</h1>
+                <p className="mt-2 text-primary-foreground/80">Create amazing content with AI-powered tools</p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                    <Button variant="secondary"><Video className="mr-2"/>Video to Blog</Button>
+                    <Button variant="secondary"><Layers className="mr-2"/>Bulk Create</Button>
+                    <Button variant="secondary"><RefreshCcw className="mr-2"/>Refresh Content</Button>
+                    <Button variant="secondary"><Sparkles className="mr-2"/>One Click Writer</Button>
+                </div>
+            </div>
+
+            <div>
+                <div className="flex items-center gap-2 mb-4">
+                    <PlayCircle className="text-accent"/>
+                    <h2 className="text-2xl font-bold">Getting Started</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {gettingStartedGuides.map(guide => (
+                        <Card key={guide.title} className="overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
+                            <CardHeader className="p-0">
+                                <Image src={guide.image} alt={guide.title} width={600} height={400} className="object-cover" data-ai-hint={guide.dataAiHint}/>
+                            </CardHeader>
+                            <CardContent className="p-4">
+                                <h3 className="font-semibold">{guide.title}</h3>
+                                <p className="text-sm text-muted-foreground mt-1">{guide.description}</p>
+                            </CardContent>
+                            <CardFooter className="p-4 pt-0">
+                                <Button variant="outline" size="sm">
+                                    <PlayCircle className="mr-2"/>
+                                    Watch Tutorial
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    ))}
+                </div>
+            </div>
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
