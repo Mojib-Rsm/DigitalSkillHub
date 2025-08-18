@@ -88,10 +88,14 @@ export default function FreeTrialPage() {
             formAction(formData);
             
         } catch (error: any) {
+            let description = error.message;
+            if (error.code === 'auth/email-already-in-use') {
+                description = "This email address is already in use. Please log in instead.";
+            }
             toast({
                 variant: "destructive",
                 title: "Registration Failed",
-                description: error.message,
+                description: description,
             });
         }
     };
