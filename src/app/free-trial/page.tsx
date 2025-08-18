@@ -35,56 +35,11 @@ function SubmitButton() {
     );
 }
 
-type FormState = {
-  message: string;
-  issues?: string[];
-  fields?: Record<string, string>;
-};
-
 export default function FreeTrialPage() {
-    const initialState: FormState = { message: "", issues: [], fields: {} };
+    const initialState = { message: "", issues: [], fields: {} };
+    const [state, formAction] = useActionState(signupAction, initialState);
     const { toast } = useToast();
     const formRef = useRef<HTMLFormElement>(null);
-
-    const handleSubmitWithAuth = async (prevState: FormState, formData: FormData): Promise<FormState> => {
-        const name = formData.get("name") as string;
-        const email = formData.get("email") as string;
-        const password = formData.get("password") as string;
-
-        // Basic client-side validation first
-        if (!name || name.length < 3 || !email || !password || password.length < 8) {
-            // Let server action handle detailed validation message
-            return signupAction(prevState, formData);
-        }
-        
-        const auth = getAuth(app);
-
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await updateProfile(userCredential.user, { displayName: name });
-            
-            // IMPORTANT: Append UID to formData before calling server action
-            formData.append('uid', userCredential.user.uid);
-            
-            return signupAction(prevState, formData);
-
-        } catch (error: any) {
-            let description = "An unexpected error occurred.";
-            if (error.code === 'auth/email-already-in-use') {
-                description = "This email address is already in use. Please log in instead.";
-            } else if (error.message) {
-                description = error.message;
-            }
-            // Return a state object that matches what the action hook expects
-            return {
-                message: description,
-                issues: [],
-                fields: Object.fromEntries(formData.entries()) as Record<string, string>,
-            }
-        }
-    };
-
-    const [state, formAction] = useActionState(handleSubmitWithAuth, initialState);
 
     useEffect(() => {
         if (state.message === "success") {
@@ -104,6 +59,44 @@ export default function FreeTrialPage() {
             });
         }
     }, [state, toast]);
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const name = formData.get("name") as string;
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
+
+        if (!name || name.length < 3 || !email || !password || password.length < 8) {
+            formAction(formData);
+            return;
+        }
+
+        const auth = getAuth(app);
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(userCredential.user, { displayName: name });
+            const idToken = await userCredential.user.getIdToken(true);
+            
+            formData.append('idToken', idToken);
+            
+            formAction(formData);
+
+        } catch (error: any) {
+            let description = "An unexpected error occurred.";
+            if (error.code === 'auth/email-already-in-use') {
+                description = "This email address is already in use. Please log in instead.";
+            } else if (error.message) {
+                description = error.message;
+            }
+             toast({
+                title: "Registration Failed",
+                description: description,
+                variant: "destructive",
+            });
+        }
+    };
 
 
     return (
@@ -136,7 +129,7 @@ export default function FreeTrialPage() {
                                 </AlertDescription>
                             </Alert>
                         ) : (
-                        <form ref={formRef} action={formAction} className="space-y-6">
+                        <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                              {state.message === "Validation Error" && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
