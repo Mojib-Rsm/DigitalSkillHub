@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useTransition } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -16,11 +16,13 @@ import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase
 import { app } from "@/lib/firebase";
 
 
-function SubmitButton() {
+function SubmitButton({ onClick, isPending }: { onClick: (e: React.MouseEvent<HTMLButtonElement>) => void; isPending: boolean }) {
     const { pending } = useFormStatus();
+    const disabled = pending || isPending;
+
     return (
-        <Button type="submit" disabled={pending} className="w-full text-base" size="lg">
-            {pending ? (
+        <Button type="submit" onClick={onClick} disabled={disabled} className="w-full text-base" size="lg">
+            {disabled ? (
                 <>
                     <Sparkles className="mr-2 h-5 w-5 animate-spin" />
                     Creating Account...
@@ -40,7 +42,7 @@ export default function FreeTrialPage() {
     const [state, formAction] = useActionState(signupAction, initialState);
     const { toast } = useToast();
     const formRef = useRef<HTMLFormElement>(null);
-    const idTokenRef = useRef<HTMLInputElement>(null);
+    const [isPending, startTransition] = useTransition();
 
     useEffect(() => {
         if (state.message === "success") {
@@ -61,40 +63,55 @@ export default function FreeTrialPage() {
         }
     }, [state, toast]);
 
-    const handleFormSubmit = async (formData: FormData) => {
+    const handleFormSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+
+        if (!formRef.current) return;
+        const formData = new FormData(formRef.current);
         const name = formData.get("name") as string;
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
 
-        if (!name || name.length < 3 || !email || !password || password.length < 8) {
-             formAction(formData);
-             return;
+        if (!name || name.length < 3) {
+            toast({ variant: "destructive", title: "Invalid Name", description: "Name must be at least 3 characters long." });
+            return;
+        }
+        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+             toast({ variant: "destructive", title: "Invalid Email", description: "Please enter a valid email address." });
+            return;
+        }
+        if (!password || password.length < 8) {
+            toast({ variant: "destructive", title: "Invalid Password", description: "Password must be at least 8 characters long." });
+            return;
         }
 
         const auth = getAuth(app);
 
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await updateProfile(userCredential.user, { displayName: name });
-            const idToken = await userCredential.user.getIdToken(true);
-            
-            formData.set('idToken', idToken);
+        startTransition(async () => {
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await updateProfile(userCredential.user, { displayName: name });
+                const idToken = await userCredential.user.getIdToken(true);
+                
+                formData.set('idToken', idToken);
+                
+                // Now call the server action
+                formAction(formData);
 
-            formAction(formData);
-
-        } catch (error: any) {
-            let description = "An unexpected error occurred.";
-            if (error.code === 'auth/email-already-in-use') {
-                description = "This email address is already in use. Please log in instead.";
-            } else if (error.message) {
-                description = error.message;
+            } catch (error: any) {
+                let description = "An unexpected error occurred.";
+                if (error.code === 'auth/email-already-in-use') {
+                    description = "This email address is already in use. Please log in instead.";
+                } else if (error.message) {
+                    description = error.message;
+                }
+                toast({
+                    title: "Registration Failed",
+                    description: description,
+                    variant: "destructive",
+                });
             }
-             toast({
-                title: "Registration Failed",
-                description: description,
-                variant: "destructive",
-            });
-        }
+        });
     };
 
 
@@ -128,7 +145,7 @@ export default function FreeTrialPage() {
                                 </AlertDescription>
                             </Alert>
                         ) : (
-                        <form ref={formRef} action={handleFormSubmit} className="space-y-6">
+                        <form ref={formRef} className="space-y-6">
                              {state.issues && state.issues.length > 0 && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
@@ -164,7 +181,7 @@ export default function FreeTrialPage() {
                                 <Label htmlFor="password">Password</Label>
                                 <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} defaultValue={state.fields?.password} />
                             </div>
-                            <SubmitButton />
+                            <SubmitButton onClick={handleFormSubmit} isPending={isPending} />
                         </form>
                         )}
                     </CardContent>
