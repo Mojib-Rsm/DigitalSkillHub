@@ -3,14 +3,50 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Deny all reads and writes by default
+
+    // Default rule: Deny all reads and writes unless explicitly allowed.
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // Allow users to read and write their own data in the 'users' collection
+    // Users Collection:
+    // - Authenticated users can read their own document.
+    // - Authenticated users can update their own document.
+    // - Client-side creation and deletion are disallowed for security.
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      allow create, delete: if false;
+    }
+
+    // Courses Collection:
+    // - Anyone can read the list of courses and individual course details.
+    // - Writing (create, update, delete) is restricted to backend/admin logic.
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Blog Collection:
+    // - Anyone can read blog posts.
+    // - Writing is restricted to backend/admin logic.
+    match /blog/{postId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Jobs Collection:
+    // - Anyone can read job postings.
+    // - Writing is restricted to backend/admin logic.
+    match /jobs/{jobId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // OTPs Collection:
+    // - This collection should never be accessible from the client-side.
+    // - All operations must be handled by the trusted server environment.
+    match /otps/{email} {
+        allow read, write: if false;
     }
   }
 }

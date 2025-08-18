@@ -153,14 +153,20 @@ export async function signupAction(
   const emailQuery = query(usersRef, where("email", "==", validatedFields.data.email));
   const phoneQuery = query(usersRef, where("phone", "==", validatedFields.data.phone));
   
-  const [emailSnapshot, phoneSnapshot] = await Promise.all([getDocs(emailQuery), getDocs(phoneQuery)]);
+  try {
+    const [emailSnapshot, phoneSnapshot] = await Promise.all([getDocs(emailQuery), getDocs(phoneQuery)]);
 
-  if (!emailSnapshot.empty) {
-      return { message: "An account with this email already exists.", fields, step: "1", success: false };
+    if (!emailSnapshot.empty) {
+        return { message: "An account with this email already exists.", fields, step: "1", success: false };
+    }
+    if (!phoneSnapshot.empty) {
+        return { message: "An account with this phone number already exists.", fields, step: "1", success: false };
+    }
+  } catch (e) {
+      console.error("Error checking for existing user:", e);
+      return { message: "Could not complete signup. Please try again later.", fields, step: "1", success: false };
   }
-  if (!phoneSnapshot.empty) {
-      return { message: "An account with this phone number already exists.", fields, step: "1", success: false };
-  }
+
 
   const otpResult = await sendOTP(validatedFields.data.email, validatedFields.data.phone);
 
