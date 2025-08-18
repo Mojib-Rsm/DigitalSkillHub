@@ -1,31 +1,31 @@
 
-import { initializeApp, getApps, getApp, cert } from 'firebase-admin/app';
+import { initializeApp, getApps, getApp, cert, App } from 'firebase-admin/app';
 
-const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT
-  ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
-  : undefined;
+let app: App | undefined;
 
-// To prevent the error when FIREBASE_SERVICE_ACCOUNT is not set,
-// we only initialize the admin app if the service account is available.
-// The app should gracefully handle cases where the admin app is not initialized.
-let app;
-if (getApps().length === 0) {
-    if (serviceAccount) {
-        app = initializeApp({
-            credential: cert(serviceAccount),
-        });
+// This function ensures that the admin app is initialized only once.
+function initializeAdminApp() {
+    if (getApps().some(app => app.name === 'firebase-admin')) {
+        return getApp('firebase-admin');
+    }
+
+    const serviceAccountString = process.env.FIREBASE_SERVICE_ACCOUNT;
+    if (serviceAccountString) {
+        try {
+            const serviceAccount = JSON.parse(serviceAccountString);
+            return initializeApp({
+                credential: cert(serviceAccount),
+            }, 'firebase-admin');
+        } catch (error) {
+            console.error("Failed to parse Firebase service account JSON:", error);
+            return undefined;
+        }
     } else {
         console.warn('Firebase service account credentials not found. Server-side Firebase features will be disabled.');
-    }
-} else {
-    // Check if the admin app is already initialized, otherwise get the default app.
-    // This logic might need adjustment depending on how many apps you expect to initialize.
-    try {
-      app = getApp('firebase-admin');
-    } catch(e) {
-      app = getApp();
+        return undefined;
     }
 }
 
+app = initializeAdminApp();
 
 export { app };
