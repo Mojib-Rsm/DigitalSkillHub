@@ -9,7 +9,7 @@ import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: "AIzaSyDbJ-TA0ErywLN8Nc7C9iK1f3_QI35h6YU",
   // The authDomain will be set dynamically on the client side
-  authDomain: "", 
+  authDomain: "map-api-427111.firebaseapp.com",
   projectId: "map-api-427111",
   storageBucket: "map-api-427111.appspot.com",
   messagingSenderId: "344837483986",
