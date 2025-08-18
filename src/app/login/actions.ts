@@ -15,6 +15,7 @@ type FormState = {
   message: string;
   fields?: Record<string, string>;
   issues?: string[];
+  success?: boolean;
 };
 
 // Helper function to verify password
@@ -43,12 +44,13 @@ export async function loginAction(
       message: "Validation Error",
       issues: validatedFields.error.flatten().formErrors,
       fields: Object.fromEntries(formData.entries()) as Record<string, string>,
+      success: false,
     };
   }
   
   if (!app) {
       console.error("Firebase Admin SDK is not initialized.");
-      return { message: "Server configuration error. Please contact support." };
+      return { message: "Server configuration error. Please contact support.", success: false };
   }
 
   const db = getFirestore(app);
@@ -60,36 +62,34 @@ export async function loginAction(
     const querySnapshot = await getDocs(q);
 
     if (querySnapshot.empty) {
-        return { message: "No user found with this email address." };
+        return { message: "No user found with this email address.", success: false };
     }
 
     const userDoc = querySnapshot.docs[0];
     const userData = userDoc.data();
 
     if (!userData.password) {
-        return { message: "This account does not have a password set. Please try another login method or reset your password." };
+        return { message: "This account does not have a password set. Please try another login method or reset your password.", success: false };
     }
 
     const isPasswordValid = verifyPassword(userData.password, password);
 
     if (!isPasswordValid) {
-        return { message: "Incorrect password. Please try again." };
+        return { message: "Incorrect password. Please try again.", success: false };
     }
 
-    // Password is valid. In a real app, you would create a session here.
-    // For this example, we'll just return success.
-    // The client-side will handle the redirect.
     console.log(`User ${userData.name} logged in successfully.`);
 
-    return { message: "success" };
+    return { message: "success", success: true };
 
   } catch (error: any) {
     console.error("Login Error:", error);
     if (error instanceof Error && error.message.includes('permission-denied')) {
-        return { message: "Permission denied. Please check your Firestore security rules." };
+        return { message: "Permission denied. Please check your Firestore security rules.", success: false };
     }
     return {
       message: "An unexpected error occurred during login. Please try again.",
+      success: false
     };
   }
 }

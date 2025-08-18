@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -34,17 +34,16 @@ function SubmitButton() {
 }
 
 export default function LoginPage() {
-    const initialState = { message: "", issues: [], fields: {} };
+    const initialState = { message: "", issues: [], fields: {}, success: false };
     const [state, formAction] = useActionState(loginAction, initialState);
     const { toast } = useToast();
 
     useEffect(() => {
-        if (state.message === "success") {
+        if (state.success) {
             toast({
                 title: "Login Successful!",
                 description: "Welcome back to TotthoAi. Redirecting to dashboard...",
             });
-            // Here you would typically handle session management, e.g., setting a cookie
             window.location.href = "/dashboard";
         } else if (state.message && state.message !== "Validation Error") {
             toast({
@@ -78,15 +77,7 @@ export default function LoginPage() {
                     </CardHeader>
                     <CardContent>
                         <form action={formAction} className="space-y-6">
-                             {state.message && state.message !== "success" && state.message !== "Validation Error" &&(
-                                <Alert variant="destructive">
-                                    <AlertTitle>Error</AlertTitle>
-                                    <AlertDescription>
-                                       {state.message}
-                                    </AlertDescription>
-                                </Alert>
-                            )}
-                             <div className="grid grid-cols-1 gap-4">
+                            <div className="grid grid-cols-1 gap-4">
                                 <Button variant="outline" className="py-6 text-base" type="button" disabled>
                                     <Chrome className="mr-2" /> Login with Google
                                 </Button>
@@ -98,7 +89,7 @@ export default function LoginPage() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email Address</Label>
-                                <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={state.fields?.email} suppressHydrationWarning/>
+                                <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={state.fields?.email} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password">Password</Label>

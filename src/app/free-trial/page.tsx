@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -9,158 +9,93 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { signupAction, verifyOtpAction } from "./actions";
+import { signupAction, verifyAndCreateUserAction } from "./actions";
 import { Bot, CheckCircle, Sparkles, Zap, ArrowRight, Lock, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getFirestore, doc, setDoc, getDocs, collection, query, where } from "firebase/firestore";
-import { app } from "@/lib/firebase";
-import crypto from "crypto";
 
-// This is a placeholder for a more secure hashing mechanism.
-// In a real app, you would use a library like bcrypt.js
-// or PBKDF2 for password hashing.
-function simpleHash(password: string): string {
-    const salt = crypto.randomBytes(16).toString('hex');
-    const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-    return `${salt}:${hash}`;
-}
-
-
-function SubmitButton({ step }: { step: "1" | "2" }) {
+function SignUpSubmitButton() {
     const { pending } = useFormStatus();
-
     return (
         <Button type="submit" disabled={pending} className="w-full text-base" size="lg">
             {pending ? (
                 <>
                     <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-                    {step === "1" ? "Sending OTP..." : "Verifying..."}
-                </>
-            ) : step === "1" ? (
-                <>
-                    <Zap className="mr-2 h-5 w-5" />
-                    Send Verification Code
+                    Sending OTP...
                 </>
             ) : (
                 <>
-                    <Lock className="mr-2 h-5 w-5" />
-                    Verify & Create Account
+                    <Zap className="mr-2 h-5 w-5" />
+                    Send Verification Code
                 </>
             )}
         </Button>
     );
 }
 
+function OtpSubmitButton() {
+    const { pending } = useFormStatus();
+     return (
+        <Button type="submit" disabled={pending} className="w-full text-base" size="lg">
+            {pending ? (
+                <>
+                    <Sparkles className="mr-2 h-5 w-5 animate-spin" />
+                    Verifying & Creating Account...
+                </>
+            ) : (
+                <>
+                    <Lock className="mr-2 h-5 w-5" />
+                    Create Account
+                </>
+            )}
+        </Button>
+    );
+}
+
+
 export default function FreeTrialPage() {
-    const initialState = { message: "", issues: [], fields: {}, step: "1" as "1" | "2", success: false };
-    const [state, formAction] = useActionState(signupAction, initialState);
-    const [isVerifying, setIsVerifying] = useState(false);
+    const [signupState, signupFormAction] = useActionState(signupAction, { message: "", issues: [], fields: {}, step: "1", success: false });
+    const [verifyState, verifyFormAction] = useActionState(verifyAndCreateUserAction, { message: "", success: false });
     
     const { toast } = useToast();
     
-    const [name, setName] = useState(state.fields?.name || '');
-    const [email, setEmail] = useState(state.fields?.email || '');
-    const [password, setPassword] = useState('');
-    const [phone, setPhone] = useState(state.fields?.phone || '');
-    const [otp, setOtp] = useState('');
-
     const [formStep, setFormStep] = useState<"1" | "2" | "success">("1");
 
     useEffect(() => {
-        if (state.step === "2" && state.success) {
+        if (signupState.step === "2" && signupState.success) {
             setFormStep("2");
             toast({
                 title: "OTP Sent!",
-                description: state.message,
+                description: signupState.message,
                 variant: "default",
             });
-        } else if (state.message && state.message !== "Validation Error" && !state.success) {
+        } else if (signupState.message && signupState.message !== "Validation Error" && !signupState.success) {
             toast({
                 title: "Registration Failed",
-                description: state.message,
+                description: signupState.message,
                 variant: "destructive",
             });
         }
-    }, [state, toast]);
-    
-    const handleCustomSubmit = async (formData: FormData) => {
-        setIsVerifying(true); // Disable button immediately
-        const db = getFirestore(app);
-        const usersRef = collection(db, "users");
+    }, [signupState, toast]);
 
-        // Check for existing user on the client side before calling the server action
-        const emailQuery = query(usersRef, where("email", "==", formData.get("email")));
-        const emailSnapshot = await getDocs(emailQuery);
-        if (!emailSnapshot.empty) {
-            toast({ title: "Registration Failed", description: "An account with this email already exists.", variant: "destructive" });
-            setIsVerifying(false);
-            return;
-        }
-
-        const phoneQuery = query(usersRef, where("phone", "==", formData.get("phone")));
-        const phoneSnapshot = await getDocs(phoneQuery);
-        if (!phoneSnapshot.empty) {
-            toast({ title: "Registration Failed", description: "An account with this phone number already exists.", variant: "destructive" });
-            setIsVerifying(false);
-            return;
-        }
-
-        // If checks pass, proceed with the form action
-        formAction(formData);
-        setIsVerifying(false); // Re-enable button after action completes
-    }
-
-    const handleOtpSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if(!email || !otp) {
-            toast({ title: "Error", description: "Email and OTP are required.", variant: "destructive"});
-            return;
-        }
-        setIsVerifying(true);
-
-        const verifyResult = await verifyOtpAction(email, otp);
-
-        if (verifyResult.success) {
-            try {
-                const db = getFirestore(app);
-                const uid = crypto.randomUUID();
-                
-                await setDoc(doc(db, "users", uid), {
-                    uid,
-                    name,
-                    email,
-                    phone,
-                    password: simpleHash(password), // Hashing the password before storing
-                    createdAt: new Date().toISOString(),
-                });
-
-                toast({
-                    title: "Account Created!",
-                    description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
-                });
-                setFormStep("success");
-                 setTimeout(() => {
-                    window.location.href = "/dashboard";
-                }, 2000);
-
-            } catch (dbError) {
-                console.error("Firestore write error:", dbError);
-                toast({
-                    title: "Database Error",
-                    description: "Could not save your account information. Please try again.",
-                    variant: "destructive",
-                });
-            }
-        } else {
-             toast({
-                title: "OTP Verification Failed",
-                description: verifyResult.message,
+    useEffect(() => {
+        if (verifyState.success) {
+            setFormStep("success");
+            toast({
+                title: "Account Created!",
+                description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
+            });
+            setTimeout(() => {
+                window.location.href = "/dashboard";
+            }, 2000);
+        } else if (verifyState.message && !verifyState.success) {
+            toast({
+                title: "Verification Failed",
+                description: verifyState.message,
                 variant: "destructive",
             });
         }
+    }, [verifyState, toast]);
 
-        setIsVerifying(false);
-    };
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4">
@@ -193,74 +128,58 @@ export default function FreeTrialPage() {
                             </Alert>
                         ) : (
                         <div className="space-y-6">
-                            {state.issues && state.issues.length > 0 && (
+                            {signupState.issues && signupState.issues.length > 0 && formStep === '1' && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
                                     <AlertDescription>
                                         <ul>
-                                            {state.issues?.map(issue => <li key={issue}>- {issue}</li>)}
+                                            {signupState.issues?.map(issue => <li key={issue}>- {issue}</li>)}
                                         </ul>
                                     </AlertDescription>
                                 </Alert>
                             )}
 
                             {formStep === '1' && (
-                                <form action={handleCustomSubmit} className="space-y-4">
+                                <form action={signupFormAction} className="space-y-4">
                                      <input type="hidden" name="step" value="1" />
                                     <div className="space-y-2">
                                         <Label htmlFor="name">Full Name</Label>
-                                        <Input id="name" name="name" type="text" placeholder="e.g., Tanvir Ahmed" required value={name} onChange={e => setName(e.target.value)} />
+                                        <Input id="name" name="name" type="text" placeholder="e.g., Tanvir Ahmed" required defaultValue={signupState.fields?.name} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="email">Email Address</Label>
-                                        <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required value={email} onChange={e => setEmail(e.target.value)} />
+                                        <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={signupState.fields?.email} />
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="password">Password</Label>
-                                        <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} value={password} onChange={e => setPassword(e.target.value)}/>
+                                        <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} defaultValue={signupState.fields?.password}/>
                                     </div>
                                      <div className="space-y-2">
                                         <Label htmlFor="phone">Phone Number</Label>
                                         <div className="relative">
                                             <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                            <Input id="phone" name="phone" type="tel" placeholder="01xxxxxxxxx" required className="pl-10" value={phone} onChange={e => setPhone(e.target.value)} />
+                                            <Input id="phone" name="phone" type="tel" placeholder="01xxxxxxxxx" required className="pl-10" defaultValue={signupState.fields?.phone} />
                                         </div>
                                     </div>
-                                    <Button type="submit" disabled={useFormStatus().pending || isVerifying} className="w-full text-base" size="lg">
-                                        {useFormStatus().pending || isVerifying ? (
-                                            <>
-                                                <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-                                                Sending OTP...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Zap className="mr-2 h-5 w-5" />
-                                                Send Verification Code
-                                            </>
-                                        )}
-                                    </Button>
+                                    <SignUpSubmitButton/>
                                 </form>
                             )}
                             
                             {formStep === '2' && (
-                                <form onSubmit={handleOtpSubmit} className="space-y-4 animate-in fade-in-50">
+                                <form action={verifyFormAction} className="space-y-4 animate-in fade-in-50">
+                                    <input type="hidden" name="name" value={signupState.fields?.name || ''} />
+                                    <input type="hidden" name="email" value={signupState.fields?.email || ''} />
+                                    <input type="hidden" name="password" value={signupState.fields?.password || ''} />
+                                    <input type="hidden" name="phone" value={signupState.fields?.phone || ''} />
+                                    <div className="text-center">
+                                        <p className="text-muted-foreground">An OTP has been sent to <strong>{signupState.fields?.phone}</strong>.</p>
+                                        <p className="text-sm text-muted-foreground">Please enter the 6-digit code below.</p>
+                                    </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="otp">Verification Code</Label>
-                                        <Input id="otp" name="otp" type="text" placeholder="Enter the 6-digit code" required maxLength={6} value={otp} onChange={e => setOtp(e.target.value)} />
+                                        <Input id="otp" name="otp" type="text" placeholder="Enter the 6-digit code" required maxLength={6} autoFocus />
                                     </div>
-                                    <Button type="submit" disabled={isVerifying} className="w-full text-base" size="lg">
-                                        {isVerifying ? (
-                                            <>
-                                                <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-                                                Verifying & Creating Account...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Lock className="mr-2 h-5 w-5" />
-                                                Create Account
-                                            </>
-                                        )}
-                                    </Button>
+                                    <OtpSubmitButton/>
                                     <Button variant="link" className="w-full" onClick={() => setFormStep("1")}>Back to registration</Button>
                                 </form>
                             )}
