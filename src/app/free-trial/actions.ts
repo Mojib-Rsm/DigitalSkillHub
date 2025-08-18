@@ -2,11 +2,15 @@
 "use server";
 
 import { z } from "zod";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { app } from "@/lib/firebase";
+
+const db = getFirestore(app);
 
 const SignUpSchema = z.object({
+  uid: z.string().min(1, { message: "User ID is required."}),
   name: z.string().min(3, { message: "Name must be at least 3 characters long." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters long." }),
 });
 
 type FormState = {
@@ -32,11 +36,18 @@ export async function signupAction(
     };
   }
 
-  // TODO: Implement actual user creation logic (e.g., save to database)
-  console.log("New user signed up:", validatedFields.data.name, validatedFields.data.email);
+  const { uid, name, email } = validatedFields.data;
 
-  // For now, we'll just return a success message
-  return {
-    message: "success",
-  };
+  try {
+    // Save user to Firestore
+    await setDoc(doc(db, "users", uid), {
+      name,
+      email,
+      createdAt: new Date(),
+    });
+    return { message: "success" };
+  } catch (error) {
+    console.error("Firestore user creation error:", error);
+    return { message: "An unexpected error occurred while saving user data." };
+  }
 }

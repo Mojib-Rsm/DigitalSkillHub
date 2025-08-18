@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,9 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { signupAction } from "./actions";
 import { Bot, CheckCircle, Sparkles, Zap, ArrowRight, Github, Chrome } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { app } from "@/lib/firebase";
+
 
 function SubmitButton() {
     const { pending } = useFormStatus();
@@ -36,16 +39,62 @@ export default function FreeTrialPage() {
     const initialState = { message: "", issues: [], fields: {} };
     const [state, formAction] = useActionState(signupAction, initialState);
     const { toast } = useToast();
+    const formRef = useRef<HTMLFormElement>(null);
 
     useEffect(() => {
         if (state.message === "success") {
             toast({
                 title: "Account Created!",
-                description: "Welcome to TotthoAi. You can now log in.",
+                description: "Welcome to TotthoAi. You will be redirected to the login page.",
                 variant: "default",
+            });
+            setTimeout(() => {
+                window.location.href = "/login";
+            }, 2000);
+        } else if (state.message && state.message !== "Validation Error") {
+            toast({
+                title: "Registration Failed",
+                description: state.message,
+                variant: "destructive",
             });
         }
     }, [state, toast]);
+
+    const clientAction = async (formData: FormData) => {
+        const name = formData.get("name") as string;
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
+
+        // Basic client-side validation
+        if (!name || !email || !password || password.length < 8) {
+            // Let server action handle detailed validation display
+            formAction(formData);
+            return;
+        }
+
+        const auth = getAuth(app);
+
+        try {
+            // Create user in Firebase Auth
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            
+            // Update user profile with name
+            await updateProfile(userCredential.user, { displayName: name });
+            
+            // Add user UID to form data for server action
+            formData.append('uid', userCredential.user.uid);
+
+            // Call server action to save to Firestore
+            formAction(formData);
+            
+        } catch (error: any) {
+            toast({
+                variant: "destructive",
+                title: "Registration Failed",
+                description: error.message,
+            });
+        }
+    };
 
 
     return (
@@ -71,14 +120,14 @@ export default function FreeTrialPage() {
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                                 <AlertTitle className="text-green-700">Registration Successful!</AlertTitle>
                                 <AlertDescription>
-                                    Welcome aboard! You can now log in to your dashboard and start creating content.
+                                    Welcome aboard! You will be redirected to the login page shortly.
                                     <Button asChild className="mt-4 w-full">
-                                        <Link href="/dashboard">Go to Dashboard <ArrowRight className="ml-2"/></Link>
+                                        <Link href="/login">Go to Login <ArrowRight className="ml-2"/></Link>
                                     </Button>
                                 </AlertDescription>
                             </Alert>
                         ) : (
-                        <form action={formAction} className="space-y-6">
+                        <form ref={formRef} action={clientAction} className="space-y-6">
                              {state.message === "Validation Error" && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
