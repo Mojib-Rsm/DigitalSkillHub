@@ -101,7 +101,7 @@ export default function Home() {
                     </Link>
                 </Button>
                 <Button size="lg" variant="outline" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base" asChild>
-                    <Link href="#">
+                    <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">
                         <PlayCircle className="mr-2 h-5 w-5"/>
                         Watch Demo
                     </Link>
