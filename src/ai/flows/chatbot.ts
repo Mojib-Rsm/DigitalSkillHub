@@ -21,7 +21,7 @@ const getCourseInfoTool = ai.defineTool(
         outputSchema: z.array(z.custom<Course>()),
     },
     async (input) => {
-        const courses = getCourses();
+        const courses = await getCourses();
         if (input.courseName) {
             return courses.filter(c => c.title.toLowerCase().includes(input.courseName!.toLowerCase()));
         }

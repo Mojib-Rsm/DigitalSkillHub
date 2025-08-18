@@ -1,46 +1,39 @@
+
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Briefcase, DollarSign, PlusCircle, UserCheck } from "lucide-react";
+import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+import { app } from "@/lib/firebase";
 
-const jobPostings = [
-  {
-    title: "ফেসবুক পেজের জন্য সহজ পোস্ট ডিজাইন",
-    client: "Local Fashion House",
-    avatar: "https://placehold.co/100x100.png",
-    dataAiHint: "fashion logo",
-    budget: "৳৫০০",
-    skills: ["Canva", "Design"],
-  },
-  {
-    title: "বাংলা ডেটা এন্ট্রি (১০টি পেজ)",
-    client: "NGO Health Project",
-    avatar: "https://placehold.co/100x100.png",
-    dataAiHint: "ngo logo",
-    budget: "৳৮০০",
-    skills: ["Data Entry", "Typing"],
-  },
-  {
-    title: "কাস্টমার সাপোর্টের জন্য উত্তর লেখা",
-    client: "E-commerce Shop",
-    avatar: "https://placehold.co/100x100.png",
-    dataAiHint: "shopping cart icon",
-    budget: "৳১০০০",
-    skills: ["Communication"],
-  },
-  {
-    title: "হস্তশিল্পের ছবি তোলা ও এডিট করা",
-    client: "Crafts Seller",
-    avatar: "https://placehold.co/100x100.png",
-    dataAiHint: "handmade craft",
-    budget: "৳১২০০",
-    skills: ["Photography", "Photo Editing"],
-  },
-];
+type JobPosting = {
+    id: string;
+    title: string;
+    client: string;
+    avatar: string;
+    dataAiHint: string;
+    budget: string;
+    skills: string[];
+};
 
-export default function CommunityPage() {
+async function getJobPostings(): Promise<JobPosting[]> {
+  try {
+    const db = getFirestore(app);
+    const jobsCol = collection(db, 'jobs');
+    const jobSnapshot = await getDocs(jobsCol);
+    const jobList = jobSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as JobPosting));
+    return jobList;
+  } catch (error) {
+    console.error("Error fetching job postings from Firestore:", error);
+    return [];
+  }
+}
+
+export default async function CommunityPage() {
+  const jobPostings = await getJobPostings();
+  
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
@@ -58,7 +51,7 @@ export default function CommunityPage() {
 
       <div className="space-y-4">
         {jobPostings.map((job) => (
-          <Card key={job.title} className="hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md">
+          <Card key={job.id} className="hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md">
             <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4 flex-1">
                 <Avatar className="h-12 w-12">

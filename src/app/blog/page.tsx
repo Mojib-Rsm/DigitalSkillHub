@@ -5,47 +5,38 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { getFirestore, collection, getDocs, orderBy, query } from 'firebase/firestore/lite';
+import { app } from "@/lib/firebase";
 
-const blogPosts = [
-  {
-    title: "10 Essential Skills for Modern Web Developers",
-    category: "Web Development",
-    image: "https://placehold.co/600x400.png",
-    dataAiHint: "developer computer code",
-    author: "Jane Doe",
-    date: "July 16, 2024",
-    excerpt: "The web development landscape is always evolving. Here are the 10 skills you need to stay ahead of the curve in today's market.",
-  },
-  {
-    title: "The Rise of AI: How to Leverage AI Tools for Productivity",
-    category: "AI Tools",
-    image: "https://placehold.co/600x400.png",
-    dataAiHint: "artificial intelligence brain",
-    author: "Sarah Green",
-    date: "July 12, 2024",
-    excerpt: "Artificial intelligence is no longer science fiction. Discover practical AI tools that can automate tasks and boost your productivity.",
-  },
-  {
-    title: "Building a Strong Freelance Profile That Wins Clients",
-    category: "Freelancing",
-    image: "https://placehold.co/600x400.png",
-    dataAiHint: "freelancer laptop cafe",
-    author: "Michael Brown",
-    date: "July 10, 2024",
-    excerpt: "Your freelance profile is your digital storefront. Learn the secrets to crafting a compelling profile that attracts high-value clients.",
-  },
-  {
-    title: "Color Theory for Graphic Designers: A Beginner's Guide",
-    category: "Graphics Design",
-    image: "https://placehold.co/600x400.png",
-    dataAiHint: "color wheel design",
-    author: "John Smith",
-    date: "July 8, 2024",
-    excerpt: "Understand the fundamentals of color theory to create visually stunning and emotionally resonant designs.",
+type BlogPost = {
+  id: string;
+  title: string;
+  category: string;
+  image: string;
+  dataAiHint: string;
+  author: string;
+  date: string;
+  excerpt: string;
+};
+
+async function getBlogPosts(): Promise<BlogPost[]> {
+  try {
+    const db = getFirestore(app);
+    const blogCol = collection(db, 'blog');
+    const q = query(blogCol, orderBy('date', 'desc'));
+    const blogSnapshot = await getDocs(q);
+    const blogList = blogSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as BlogPost));
+    return blogList;
+  } catch (error) {
+    console.error("Error fetching blog posts from Firestore:", error);
+    return [];
   }
-];
+}
 
-export default function BlogPage() {
+
+export default async function BlogPage() {
+  const blogPosts = await getBlogPosts();
+
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">
@@ -56,7 +47,7 @@ export default function BlogPage() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {blogPosts.map((post) => (
-          <Card key={post.title} className="flex flex-col overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+          <Card key={post.id} className="flex flex-col overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
             <CardHeader className="p-0">
               <Image
                 src={post.image}
@@ -84,7 +75,7 @@ export default function BlogPage() {
                 </Avatar>
                 <div>
                   <p className="font-semibold text-foreground">{post.author}</p>
-                  <p>{post.date}</p>
+                  <p>{new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 </div>
               </div>
               <Link href="#" className="text-primary font-semibold hover:underline flex items-center gap-1">

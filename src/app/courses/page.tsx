@@ -1,25 +1,35 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CourseCard from "@/components/course-card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, ListFilter } from "lucide-react";
-import { getCourses } from '@/services/course-service';
-
-const allCourses = getCourses();
-
-
-const categories = ["All", ...new Set(allCourses.map(c => c.category))];
-const levels = ["All", ...new Set(allCourses.map(c => c.level))];
-const priceRanges = ["All", "Free", "Under $50", "$50 - $100"];
+import { getCourses, Course } from '@/services/course-service';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function CoursesPage() {
+    const [allCourses, setAllCourses] = useState<Course[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [category, setCategory] = useState('All');
     const [level, setLevel] = useState('All');
     const [price, setPrice] = useState('All');
+
+    useEffect(() => {
+        async function fetchCourses() {
+            setIsLoading(true);
+            const courses = await getCourses();
+            setAllCourses(courses);
+            setIsLoading(false);
+        }
+        fetchCourses();
+    }, []);
+
+    const categories = ["All", ...new Set(allCourses.map(c => c.category))];
+    const levels = ["All", ...new Set(allCourses.map(c => c.level))];
+    const priceRanges = ["All", "Free", "Under $50", "$50 - $100"];
 
     const filteredCourses = allCourses.filter(course => {
         const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || course.instructor.toLowerCase().includes(searchTerm.toLowerCase());
@@ -80,10 +90,27 @@ export default function CoursesPage() {
         </div>
       </div>
       
-      {filteredCourses.length > 0 ? (
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {[...Array(8)].map((_, i) => (
+                <Card key={i}>
+                    <Skeleton className="h-48 w-full" />
+                    <CardContent className="p-4 space-y-2">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-6 w-full" />
+                        <Skeleton className="h-4 w-1/2" />
+                    </CardContent>
+                    <CardFooter className="p-4 flex justify-between items-center">
+                        <Skeleton className="h-8 w-1/4" />
+                        <Skeleton className="h-10 w-1/2" />
+                    </CardFooter>
+                </Card>
+            ))}
+        </div>
+      ) : filteredCourses.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {filteredCourses.map((course) => (
-            <CourseCard key={course.title} course={course} />
+            <CourseCard key={course.id} course={course} />
             ))}
         </div>
       ) : (

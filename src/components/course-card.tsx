@@ -6,17 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Clock, BarChart, ShoppingCart } from "lucide-react";
+import { Course } from "@/services/course-service";
 
-type Course = {
-  title: string;
-  category: string;
-  instructor: string;
-  price: number;
-  level: string;
-  duration: string;
-  image: string;
-  dataAiHint: string;
-};
 
 type CourseCardProps = {
   course: Course;

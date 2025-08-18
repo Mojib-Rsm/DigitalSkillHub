@@ -28,4 +28,5 @@ import '@/ai/flows/passport-photo-maker.ts';
 import '@/ai/flows/privacy-policy-generator.ts';
 import '@/ai/flows/terms-of-service-generator.ts';
 import '@/ai/flows/disclaimer-generator.ts';
+import '@/ai/flows/seed-data.ts';
 
