@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,38 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { signupAction } from "./actions";
+import { signupAction, verifyOtpAction } from "./actions";
 import { Bot, CheckCircle, Sparkles, Zap, ArrowRight, Lock, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { app } from "@/lib/firebase";
+import crypto from "crypto";
+
+// This function needs to be available on the client, so we define it here.
+// In a real app, you might share this logic or use a library.
+function clientSideHash(password: string): string {
+    // This is a simplified example. In a real-world scenario, you would
+    // use a more robust client-side hashing library like bcrypt.js
+    // or rely on a server-side hashing mechanism before storing.
+    // For this demo, we'll simulate a simple hash.
+    try {
+       const buffer = new TextEncoder().encode(password);
+       const hashBuffer = crypto.subtle.digest('SHA-256', buffer);
+       // Convert buffer to hex string
+       const hashArray = Array.from(new Uint8Array(hashBuffer as ArrayBuffer));
+       const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+       return `client:${hashHex}`;
+    } catch (e) {
+        // Fallback for non-secure contexts where crypto.subtle is unavailable
+        let hash = 0;
+        for (let i = 0; i < password.length; i++) {
+            const char = password.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return `fallback:${hash}`;
+    }
+}
 
 function SubmitButton({ step }: { step: "1" | "2" }) {
     const { pending } = useFormStatus();
@@ -21,7 +50,7 @@ function SubmitButton({ step }: { step: "1" | "2" }) {
             {pending ? (
                 <>
                     <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-                    {step === "1" ? "Sending OTP..." : "Verifying & Creating Account..."}
+                    {step === "1" ? "Sending OTP..." : "Verifying..."}
                 </>
             ) : step === "1" ? (
                 <>
@@ -31,7 +60,7 @@ function SubmitButton({ step }: { step: "1" | "2" }) {
             ) : (
                 <>
                     <Lock className="mr-2 h-5 w-5" />
-                    Create Account
+                    Verify & Create Account
                 </>
             )}
         </Button>
@@ -39,31 +68,87 @@ function SubmitButton({ step }: { step: "1" | "2" }) {
 }
 
 export default function FreeTrialPage() {
-    const initialState = { message: "", issues: [], fields: {}, step: "1" as "1" | "2" };
+    const initialState = { message: "", issues: [], fields: {}, step: "1" as "1" | "2", success: false };
     const [state, formAction] = useActionState(signupAction, initialState);
+    const [isVerifying, setIsVerifying] = useState(false);
+    
     const { toast } = useToast();
-    const formRef = useRef<HTMLFormElement>(null);
+    
+    const [name, setName] = useState(state.fields?.name || '');
+    const [email, setEmail] = useState(state.fields?.email || '');
+    const [password, setPassword] = useState('');
+    const [phone, setPhone] = useState(state.fields?.phone || '');
+    const [otp, setOtp] = useState('');
+
+    const [formStep, setFormStep] = useState<"1" | "2" | "success">("1");
 
     useEffect(() => {
-        if (state.step === "success") {
+        if (state.step === "2" && state.success) {
+            setFormStep("2");
             toast({
-                title: "Account Created!",
-                description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
+                title: "OTP Sent!",
+                description: state.message,
                 variant: "default",
             });
-            setTimeout(() => {
-                window.location.href = "/dashboard";
-            }, 2000);
-        } else if (state.message && state.message !== "Validation Error") {
+        } else if (state.message && state.message !== "Validation Error" && !state.success) {
             toast({
-                title: state.step === "2" ? "OTP Sent" : "Registration Failed",
+                title: "Registration Failed",
                 description: state.message,
-                variant: state.step === "2" ? "default" : "destructive",
+                variant: "destructive",
             });
         }
     }, [state, toast]);
 
-    const isOtpStep = state.step === "2";
+    const handleOtpSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsVerifying(true);
+
+        const verifyResult = await verifyOtpAction(email, otp);
+
+        if (verifyResult.success) {
+            try {
+                const db = getFirestore(app);
+                const uid = crypto.randomUUID();
+
+                // NOTE: Storing plain or lightly-hashed passwords on the client is NOT recommended
+                // for production. This is a temporary measure to bypass server-side issues.
+                // A proper implementation would have the server handle hashing and storage.
+                await setDoc(doc(db, "users", uid), {
+                    uid,
+                    name,
+                    email,
+                    phone,
+                    password: clientSideHash(password), // Example hashing
+                    createdAt: new Date().toISOString(),
+                });
+
+                toast({
+                    title: "Account Created!",
+                    description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
+                });
+                setFormStep("success");
+                 setTimeout(() => {
+                    window.location.href = "/dashboard";
+                }, 2000);
+
+            } catch (dbError) {
+                console.error("Firestore write error:", dbError);
+                toast({
+                    title: "Database Error",
+                    description: "Could not save your account information. Please try again.",
+                    variant: "destructive",
+                });
+            }
+        } else {
+             toast({
+                title: "OTP Verification Failed",
+                description: verifyResult.message,
+                variant: "destructive",
+            });
+        }
+
+        setIsVerifying(false);
+    };
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4">
@@ -83,7 +168,7 @@ export default function FreeTrialPage() {
 
                 <Card className="shadow-2xl">
                     <CardContent className="p-8">
-                        {state.step === "success" ? (
+                        {formStep === "success" ? (
                              <Alert variant="default" className="border-green-500">
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                                 <AlertTitle className="text-green-700">Registration Successful!</AlertTitle>
@@ -95,8 +180,8 @@ export default function FreeTrialPage() {
                                 </AlertDescription>
                             </Alert>
                         ) : (
-                        <form ref={formRef} action={formAction} className="space-y-6">
-                             {state.issues && state.issues.length > 0 && (
+                        <div className="space-y-6">
+                            {state.issues && state.issues.length > 0 && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
                                     <AlertDescription>
@@ -106,46 +191,56 @@ export default function FreeTrialPage() {
                                     </AlertDescription>
                                 </Alert>
                             )}
-                            <input type="hidden" name="step" value={isOtpStep ? "2" : "1"} />
-                            <input type="hidden" name="name" value={state.fields?.name || ""} />
-                            <input type="hidden" name="email" value={state.fields?.email || ""} />
-                            <input type="hidden" name="password" value={state.fields?.password || ""} />
-                            <input type="hidden" name="phone" value={state.fields?.phone || ""} />
 
-                            <div className={isOtpStep ? "hidden" : "space-y-4"}>
-                                <div className="space-y-2">
-                                    <Label htmlFor="name">Full Name</Label>
-                                    <Input id="name" name="name" type="text" placeholder="e.g., Tanvir Ahmed" required defaultValue={state.fields?.name} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">Email Address</Label>
-                                    <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={state.fields?.email} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="password">Password</Label>
-                                    <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} />
-                                </div>
-                                 <div className="space-y-2">
-                                    <Label htmlFor="phone">Phone Number</Label>
-                                    <div className="relative">
-                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                        <Input id="phone" name="phone" type="tel" placeholder="01xxxxxxxxx" required defaultValue={state.fields?.phone} className="pl-10" />
+                            {formStep === '1' && (
+                                <form action={formAction} className="space-y-4">
+                                     <input type="hidden" name="step" value="1" />
+                                    <div className="space-y-2">
+                                        <Label htmlFor="name">Full Name</Label>
+                                        <Input id="name" name="name" type="text" placeholder="e.g., Tanvir Ahmed" required value={name} onChange={e => setName(e.target.value)} />
                                     </div>
-                                </div>
-                            </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="email">Email Address</Label>
+                                        <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required value={email} onChange={e => setEmail(e.target.value)} />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="password">Password</Label>
+                                        <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} value={password} onChange={e => setPassword(e.target.value)}/>
+                                    </div>
+                                     <div className="space-y-2">
+                                        <Label htmlFor="phone">Phone Number</Label>
+                                        <div className="relative">
+                                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Input id="phone" name="phone" type="tel" placeholder="01xxxxxxxxx" required className="pl-10" value={phone} onChange={e => setPhone(e.target.value)} />
+                                        </div>
+                                    </div>
+                                    <SubmitButton step="1" />
+                                </form>
+                            )}
                             
-                            {isOtpStep && (
-                                <div className="space-y-2 animate-in fade-in-50">
-                                    <Label htmlFor="otp">Verification Code</Label>
-                                    <Input id="otp" name="otp" type="text" placeholder="Enter the 6-digit code" required maxLength={6} />
-                                </div>
+                            {formStep === '2' && (
+                                <form onSubmit={handleOtpSubmit} className="space-y-4 animate-in fade-in-50">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="otp">Verification Code</Label>
+                                        <Input id="otp" name="otp" type="text" placeholder="Enter the 6-digit code" required maxLength={6} value={otp} onChange={e => setOtp(e.target.value)} />
+                                    </div>
+                                    <Button type="submit" disabled={isVerifying} className="w-full text-base" size="lg">
+                                        {isVerifying ? (
+                                            <>
+                                                <Sparkles className="mr-2 h-5 w-5 animate-spin" />
+                                                Verifying & Creating Account...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Lock className="mr-2 h-5 w-5" />
+                                                Create Account
+                                            </>
+                                        )}
+                                    </Button>
+                                    <Button variant="link" className="w-full" onClick={() => setFormStep("1")}>Back to registration</Button>
+                                </form>
                             )}
-
-                            <SubmitButton step={isOtpStep ? "2" : "1"} />
-                            {isOtpStep && (
-                                <Button variant="link" className="w-full" onClick={() => window.location.reload()}>Back to registration</Button>
-                            )}
-                        </form>
+                        </div>
                         )}
                     </CardContent>
                     <CardFooter className="bg-muted/50 p-6 border-t">
@@ -158,3 +253,4 @@ export default function FreeTrialPage() {
         </div>
     );
 }
+

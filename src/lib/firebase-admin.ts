@@ -21,13 +21,13 @@ function initializeAdminApp(): App | undefined {
                 credential: cert(serviceAccount),
             }, 'firebase-admin');
         } catch (error) {
-            console.error("Failed to parse Firebase service account JSON. Make sure the environment variable is set correctly.", error);
+            console.error("Failed to parse Firebase service account JSON. Make sure the environment variable is set correctly and is a single line.", error);
             return undefined;
         }
     } else {
         // Warn the developer if the credentials are not found.
         // This is crucial for debugging server-side operations.
-        console.warn('FIREBASE_SERVICE_ACCOUNT environment variable not found. Server-side Firebase features (like Firestore access in server actions) will be disabled.');
+        console.warn('FIREBASE_SERVICE_ACCOUNT environment variable not found. Server-side Firebase features will be disabled.');
         return undefined;
     }
 }
