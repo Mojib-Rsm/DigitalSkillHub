@@ -40,6 +40,7 @@ export default function FreeTrialPage() {
     const [state, formAction] = useActionState(signupAction, initialState);
     const { toast } = useToast();
     const formRef = useRef<HTMLFormElement>(null);
+    const idTokenRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (state.message === "success") {
@@ -60,7 +61,7 @@ export default function FreeTrialPage() {
         }
     }, [state, toast]);
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const name = formData.get("name") as string;
@@ -68,8 +69,9 @@ export default function FreeTrialPage() {
         const password = formData.get("password") as string;
 
         if (!name || name.length < 3 || !email || !password || password.length < 8) {
-            formAction(formData);
-            return;
+            // Basic client-side check, server will do the rest.
+             formAction(formData); // This will trigger validation errors if any.
+             return;
         }
 
         const auth = getAuth(app);
@@ -79,9 +81,12 @@ export default function FreeTrialPage() {
             await updateProfile(userCredential.user, { displayName: name });
             const idToken = await userCredential.user.getIdToken(true);
             
-            formData.append('idToken', idToken);
-            
-            formAction(formData);
+            if (idTokenRef.current) {
+                idTokenRef.current.value = idToken;
+            }
+
+            // Now submit the form programmatically to trigger the server action
+            formRef.current?.requestSubmit();
 
         } catch (error: any) {
             let description = "An unexpected error occurred.";
@@ -129,8 +134,8 @@ export default function FreeTrialPage() {
                                 </AlertDescription>
                             </Alert>
                         ) : (
-                        <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-                             {state.message === "Validation Error" && (
+                        <form ref={formRef} action={formAction} onSubmit={handleFormSubmit} className="space-y-6">
+                             {state.issues && state.issues.length > 0 && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
                                     <AlertDescription>
@@ -140,7 +145,7 @@ export default function FreeTrialPage() {
                                     </AlertDescription>
                                 </Alert>
                             )}
-
+                            <input type="hidden" name="idToken" ref={idTokenRef} />
                             <div className="grid grid-cols-2 gap-4">
                                 <Button type="button" variant="outline" className="py-6 text-base">
                                     <Chrome className="mr-2" /> Sign up with Google

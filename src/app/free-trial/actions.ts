@@ -2,12 +2,9 @@
 "use server";
 
 import { z } from "zod";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc } from "firebase/firestore/lite";
 import { getAuth } from "firebase-admin/auth";
 import { app } from "@/lib/firebase-admin";
-
-const db = getFirestore(app);
-const auth = getAuth(app);
 
 const SignUpSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters long." }),
@@ -38,6 +35,15 @@ export async function signupAction(
     };
   }
 
+  // Check if admin app is initialized
+  if (!app) {
+      console.error("Firebase Admin SDK is not initialized.");
+      return { message: "Server configuration error. Please contact support." };
+  }
+  
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
   const { name, email, idToken } = validatedFields.data;
 
   try {
@@ -48,7 +54,7 @@ export async function signupAction(
     await setDoc(doc(db, "users", uid), {
       name,
       email,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     });
 
     return { message: "success" };
@@ -56,6 +62,9 @@ export async function signupAction(
     console.error("Firestore user creation error:", error);
     if (error instanceof Error && error.message.includes('permission-denied')) {
         return { message: "Permission denied. Please check your Firestore security rules." };
+    }
+     if (error instanceof Error && error.message.includes('invalid-credential')) {
+        return { message: "Invalid credentials provided for server authentication." };
     }
     return { message: "An unexpected error occurred while saving user data." };
   }
