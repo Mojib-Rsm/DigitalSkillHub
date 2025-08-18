@@ -106,6 +106,10 @@ export default function LoginPage() {
     const handleGitHubLogin = () => {
         const auth = getAuth(app);
         const provider = new GithubAuthProvider();
+        provider.setCustomParameters({
+            'client_id': process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID!,
+            'client_secret': process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET!,
+        });
 
         startTransition(async () => {
             try {
