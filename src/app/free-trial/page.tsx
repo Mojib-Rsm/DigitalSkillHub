@@ -130,7 +130,6 @@ export default function FreeTrialPage() {
                 formData.append('name', user.displayName || user.email?.split('@')[0] || 'User');
                 formData.append('email', user.email!);
                 formData.append('idToken', idToken);
-                formData.append('uid', user.uid);
 
                 formAction(formData);
 
