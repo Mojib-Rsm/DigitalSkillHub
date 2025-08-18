@@ -80,20 +80,20 @@ export default function Home() {
                 <SparklesIcon className="w-4 h-4 mr-2"/>
                 LIMITED TIME! • Get 25% OFF with code LAUNCH25
             </Badge>
-            <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tight max-w-4xl mx-auto mt-4">
+            <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tight max-w-4xl mx-auto mt-4 animate-fade-in-up">
               Create Professional Content 10x Faster with AI 2.0
             </h1>
-            <p className="text-lg text-muted-foreground mt-6 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground mt-6 max-w-2xl mx-auto animate-fade-in-up [animation-delay:200ms]">
              Generate 10x faster with TotaPakhi AI 2.0. Save 90% time, boost SEO rankings, and reach a global audience in 150+ languages.
             </p>
             
-             <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-muted-foreground font-semibold">
+             <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-muted-foreground font-semibold animate-fade-in-up [animation-delay:400ms]">
                 <span><Check className="w-4 h-4 inline-block mr-1 text-primary"/>SEO-optimized content</span>
                 <span><Check className="w-4 h-4 inline-block mr-1 text-primary"/>AI-generated images included</span>
                 <span><Check className="w-4 h-4 inline-block mr-1 text-primary"/>Bulk generation ready</span>
             </div>
 
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up [animation-delay:600ms]">
                 <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
                     <Link href="/free-trial">
                         <Zap className="mr-2 h-5 w-5"/>
@@ -108,7 +108,7 @@ export default function Home() {
                 </Button>
             </div>
              
-             <div className="mt-8 text-center text-sm text-muted-foreground space-y-2">
+             <div className="mt-8 text-center text-sm text-muted-foreground space-y-2 animate-fade-in-up [animation-delay:800ms]">
                 <p>⭐ Trusted by 3,000+ content creators • 600,000+ articles generated</p>
                 <p>🔒 Free trial • No setup fees • Cancel anytime</p>
              </div>
@@ -119,13 +119,13 @@ export default function Home() {
       <section id="whats-new" className="py-16 md:py-24 bg-muted/50">
         <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto">
-                <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">What's New in TotaPakhi AI 2.0</h2>
-                <p className="text-lg text-muted-foreground mt-4">
+                <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">What's New in TotaPakhi AI 2.0</h2>
+                <p className="text-lg text-muted-foreground mt-4 animate-fade-in-up [animation-delay:200ms]">
                     Experience the next generation of AI-powered content creation with features designed to save time, boost quality, and scale your content strategy like never before.
                 </p>
             </div>
             <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                 <Card className="text-center shadow-lg p-4">
+                 <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:400ms]">
                     <CardHeader>
                         <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
                             <Clock className="w-8 h-8 text-primary" />
@@ -136,7 +136,7 @@ export default function Home() {
                         <p className="text-muted-foreground text-sm">Automate tedious tasks and generate high-quality content in seconds, not hours.</p>
                     </CardContent>
                 </Card>
-                <Card className="text-center shadow-lg p-4">
+                <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:600ms]">
                     <CardHeader>
                         <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
                             <TrendingUp className="w-8 h-8 text-primary" />
@@ -147,7 +147,7 @@ export default function Home() {
                         <p className="text-muted-foreground text-sm">Create content that is optimized for search engines to rank higher and drive more traffic.</p>
                     </CardContent>
                 </Card>
-                <Card className="text-center shadow-lg p-4">
+                <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:800ms]">
                     <CardHeader>
                         <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
                             <Award className="w-8 h-8 text-primary" />
@@ -165,60 +165,60 @@ export default function Home() {
        {/* Detailed Features */}
        <section id="features" className="py-16 md:py-24">
             <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                 <div className="md:col-span-2 lg:col-span-1 lg:pr-8">
+                 <div className="md:col-span-2 lg:col-span-1 lg:pr-8 animate-fade-in-up">
                     <Badge variant="destructive">🔥 HOT NEW FEATURE</Badge>
                     <h3 className="text-3xl font-bold mt-2">Video to Blog Post</h3>
                     <p className="text-muted-foreground mt-4">Transform any YouTube video into a comprehensive, SEO-optimized blog post in minutes. Extract insights, create outlines, and generate complete articles from video content.</p>
                  </div>
                  <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-8">
-                    <div className="space-y-2">
+                    <div className="space-y-2 animate-fade-in-up [animation-delay:200ms]">
                         <ImageIcon className="w-8 h-8 text-primary"/>
                         <h4 className="font-semibold">Enhanced AI Images 2.0</h4>
                         <p className="text-sm text-muted-foreground">Generate stunning, contextual images that boost engagement by 300%.</p>
                     </div>
-                     <div className="space-y-2">
+                     <div className="space-y-2 animate-fade-in-up [animation-delay:300ms]">
                         <Link href="#" className="w-8 h-8 text-primary"/>
                         <h4 className="font-semibold">Smart Internal Linking</h4>
                         <p className="text-sm text-muted-foreground">Automatically create SEO-friendly internal links to improve site authority.</p>
                     </div>
-                     <div className="space-y-2">
+                     <div className="space-y-2 animate-fade-in-up [animation-delay:400ms]">
                         <SparklesIcon className="w-8 h-8 text-primary"/>
                         <h4 className="font-semibold">Custom AI Prompts</h4>
                         <p className="text-sm text-muted-foreground">Train the AI with your unique voice and style for brand consistency.</p>
                     </div>
-                     <div className="space-y-2">
+                     <div className="space-y-2 animate-fade-in-up [animation-delay:500ms]">
                         <Languages className="w-8 h-8 text-primary"/>
                         <h4 className="font-semibold">150+ Languages Support</h4>
                         <p className="text-sm text-muted-foreground">Create content in Bengali, English, Hindi, Arabic, and more.</p>
                     </div>
-                     <div className="space-y-2">
+                     <div className="space-y-2 animate-fade-in-up [animation-delay:600ms]">
                         <Layers className="w-8 h-8 text-primary"/>
                         <h4 className="font-semibold">Bulk Generation 2.0</h4>
                         <p className="text-sm text-muted-foreground">Create hundreds of articles simultaneously with our advanced engine.</p>
                     </div>
-                     <div className="space-y-2">
+                     <div className="space-y-2 animate-fade-in-up [animation-delay:700ms]">
                         <RefreshCcw className="w-8 h-8 text-primary"/>
                         <h4 className="font-semibold">Content Refresh Tool</h4>
                         <p className="text-sm text-muted-foreground">Instantly update old content with fresh information and improved SEO.</p>
                     </div>
-                      <div className="space-y-2">
+                      <div className="space-y-2 animate-fade-in-up [animation-delay:800ms]">
                         <TowerControl className="w-8 h-8 text-primary"/>
                         <h4 className="font-semibold">Topical Authority Builder</h4>
                         <p className="text-sm text-muted-foreground">Build topic clusters to establish your site as a niche authority.</p>
                     </div>
-                      <div className="space-y-2">
+                      <div className="space-y-2 animate-fade-in-up [animation-delay:900ms]">
                         <PenSquare className="w-8 h-8 text-primary"/>
                         <h4 className="font-semibold">One-Click Writer 2.0</h4>
                         <p className="text-sm text-muted-foreground">Generate publication-ready articles with just one click.</p>
                     </div>
-                      <div className="space-y-2">
+                      <div className="space-y-2 animate-fade-in-up [animation-delay:1000ms]">
                         <FileText className="w-8 h-8 text-primary"/>
                         <h4 className="font-semibold">News Writer 2.0</h4>
                         <p className="text-sm text-muted-foreground">Create timely, accurate news articles with real-time data integration.</p>
                     </div>
                  </div>
             </div>
-             <div className="text-center mt-16">
+             <div className="text-center mt-16 animate-fade-in-up [animation-delay:1100ms]">
                  <Button size="lg" asChild>
                     <Link href="/free-trial">
                         <Zap className="mr-2 h-5 w-5"/>
@@ -231,13 +231,13 @@ export default function Home() {
       {/* AI-Generated Visuals Section */}
       <section className="py-16 md:py-24 bg-muted/50">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Enhance Your Content with AI-Generated Images</h2>
-          <p className="text-lg text-muted-foreground mt-4 max-w-3xl mx-auto">
+          <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Enhance Your Content with AI-Generated Images</h2>
+          <p className="text-lg text-muted-foreground mt-4 max-w-3xl mx-auto animate-fade-in-up [animation-delay:200ms]">
             Our AI can create stunning visuals to complement your blog posts, making your content more engaging and professional.
           </p>
           <div className="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[...Array(6)].map((_, i) => (
-              <Card key={i} className="overflow-hidden group relative">
+              <Card key={i} className="overflow-hidden group relative animate-fade-in-up" style={{animationDelay: `${400 + i * 100}ms`}}>
                 <Image src="https://placehold.co/300x400.png" alt="AI Generated Islamic Art" width={300} height={400} className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-300" data-ai-hint="islamic art" />
                 <div className="absolute inset-0 bg-black/50 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <p className="text-white text-sm font-semibold">AI-Generated</p>
@@ -245,7 +245,7 @@ export default function Home() {
               </Card>
             ))}
           </div>
-          <p className="text-muted-foreground mt-8 max-w-3xl mx-auto">
+          <p className="text-muted-foreground mt-8 max-w-3xl mx-auto animate-fade-in-up">
             These images are entirely generated by AI and can be seamlessly integrated into your blog posts, social media content, and marketing materials to enhance visual appeal and engagement.
           </p>
         </div>
@@ -255,18 +255,18 @@ export default function Home() {
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
-            <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Success Stories with TotaPakhi AI 2.0</h2>
-            <p className="text-lg text-muted-foreground mt-4">
+            <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Success Stories with TotaPakhi AI 2.0</h2>
+            <p className="text-lg text-muted-foreground mt-4 animate-fade-in-up [animation-delay:200ms]">
               Real Results from Real Users. See how content creators, marketers, and businesses are achieving extraordinary results with our new 2.0 features.
             </p>
-             <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+             <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center animate-fade-in-up [animation-delay:400ms]">
                 <p className="font-semibold text-lg">Avg. 90% time savings</p>
                 <p className="font-semibold text-lg">300% faster creation</p>
                 <p className="font-semibold text-lg">2x better SEO results</p>
             </div>
           </div>
           <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="shadow-lg">
+            <Card className="shadow-lg animate-fade-in-up [animation-delay:600ms]">
                 <CardHeader>
                     <CardTitle className="text-xl">Bulk Generation 2.0</CardTitle>
                 </CardHeader>
@@ -285,7 +285,7 @@ export default function Home() {
                     </div>
                 </CardFooter>
             </Card>
-             <Card className="shadow-lg">
+             <Card className="shadow-lg animate-fade-in-up [animation-delay:700ms]">
                 <CardHeader>
                     <CardTitle className="text-xl">Content Refresh Tool</CardTitle>
                 </CardHeader>
@@ -304,7 +304,7 @@ export default function Home() {
                     </div>
                 </CardFooter>
             </Card>
-             <Card className="shadow-lg">
+             <Card className="shadow-lg animate-fade-in-up [animation-delay:800ms]">
                 <CardHeader>
                     <CardTitle className="text-xl">Authority Builder</CardTitle>
                 </CardHeader>
@@ -323,7 +323,7 @@ export default function Home() {
                     </div>
                 </CardFooter>
             </Card>
-             <Card className="shadow-lg">
+             <Card className="shadow-lg animate-fade-in-up [animation-delay:900ms]">
                 <CardHeader>
                     <CardTitle className="text-xl">One-Click Writer 2.0</CardTitle>
                 </CardHeader>
@@ -343,7 +343,7 @@ export default function Home() {
                 </CardFooter>
             </Card>
           </div>
-            <div className="text-center mt-12">
+            <div className="text-center mt-12 animate-fade-in-up">
                  <Button size="lg" asChild>
                     <Link href="/#pricing">
                         Start Your Success Story
@@ -375,7 +375,7 @@ export default function Home() {
 
               <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
                   {/* Alpha Plan */}
-                  <Card className="shadow-lg flex flex-col h-full">
+                  <Card className="shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300">
                       <CardHeader>
                           <CardTitle className="text-2xl font-bold">Alpha Plan</CardTitle>
                           <div className="flex items-baseline gap-2">
@@ -418,7 +418,7 @@ export default function Home() {
                   </Card>
 
                   {/* Beta Plan - Most Popular */}
-                  <Card className="shadow-lg flex flex-col h-full border-2 border-primary relative">
+                  <Card className="shadow-lg flex flex-col h-full border-2 border-primary relative transform hover:-translate-y-2 transition-transform duration-300">
                        <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR + 25% OFF</Badge>
                       <CardHeader>
                           <CardTitle className="text-2xl font-bold">Beta Plan</CardTitle>
@@ -466,7 +466,7 @@ export default function Home() {
                   </Card>
 
                   {/* Sigma Plan */}
-                  <Card className="shadow-lg flex flex-col h-full">
+                  <Card className="shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300">
                       <CardHeader>
                           <CardTitle className="text-2xl font-bold">Sigma Plan</CardTitle>
                           <div className="flex items-baseline gap-2">
