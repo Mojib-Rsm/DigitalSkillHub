@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect, useRef, useTransition } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -10,27 +10,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { signupAction } from "./actions";
-import { Bot, CheckCircle, Sparkles, Zap, ArrowRight, Github, Chrome } from "lucide-react";
+import { Bot, CheckCircle, Sparkles, Zap, ArrowRight, Lock, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getAuth, createUserWithEmailAndPassword, updateProfile, GithubAuthProvider, signInWithPopup, User } from "firebase/auth";
-import { app } from "@/lib/firebase";
 
-
-function SubmitButton({ onClick, isPending }: { onClick: (e: React.MouseEvent<HTMLButtonElement>) => void; isPending: boolean }) {
+function SubmitButton({ step }: { step: "1" | "2" }) {
     const { pending } = useFormStatus();
-    const disabled = pending || isPending;
 
     return (
-        <Button type="submit" onClick={onClick} disabled={disabled} className="w-full text-base" size="lg">
-            {disabled ? (
+        <Button type="submit" disabled={pending} className="w-full text-base" size="lg">
+            {pending ? (
                 <>
                     <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-                    Creating Account...
+                    {step === "1" ? "Sending OTP..." : "Verifying & Creating Account..."}
+                </>
+            ) : step === "1" ? (
+                <>
+                    <Zap className="mr-2 h-5 w-5" />
+                    Send Verification Code
                 </>
             ) : (
                 <>
-                    <Zap className="mr-2 h-5 w-5" />
-                    Start Writing for Free
+                    <Lock className="mr-2 h-5 w-5" />
+                    Create Account
                 </>
             )}
         </Button>
@@ -38,14 +39,13 @@ function SubmitButton({ onClick, isPending }: { onClick: (e: React.MouseEvent<HT
 }
 
 export default function FreeTrialPage() {
-    const initialState = { message: "", issues: [], fields: {} };
+    const initialState = { message: "", issues: [], fields: {}, step: "1" as "1" | "2" };
     const [state, formAction] = useActionState(signupAction, initialState);
     const { toast } = useToast();
     const formRef = useRef<HTMLFormElement>(null);
-    const [isPending, startTransition] = useTransition();
 
     useEffect(() => {
-        if (state.message === "success") {
+        if (state.step === "success") {
             toast({
                 title: "Account Created!",
                 description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
@@ -56,65 +56,14 @@ export default function FreeTrialPage() {
             }, 2000);
         } else if (state.message && state.message !== "Validation Error") {
             toast({
-                title: "Registration Failed",
+                title: state.step === "2" ? "OTP Sent" : "Registration Failed",
                 description: state.message,
-                variant: "destructive",
+                variant: state.step === "2" ? "default" : "destructive",
             });
         }
     }, [state, toast]);
 
-    const handleFormSubmitWithEmail = async (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-
-        if (!formRef.current) return;
-        const formData = new FormData(formRef.current);
-        const name = formData.get("name") as string;
-        const email = formData.get("email") as string;
-        const password = formData.get("password") as string;
-
-        if (!name || name.length < 3) {
-            toast({ variant: "destructive", title: "Invalid Name", description: "Name must be at least 3 characters long." });
-            return;
-        }
-        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-             toast({ variant: "destructive", title: "Invalid Email", description: "Please enter a valid email address." });
-            return;
-        }
-        if (!password || password.length < 8) {
-            toast({ variant: "destructive", title: "Invalid Password", description: "Password must be at least 8 characters long." });
-            return;
-        }
-
-        const auth = getAuth(app);
-
-        startTransition(async () => {
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                await updateProfile(userCredential.user, { displayName: name });
-                const idToken = await userCredential.user.getIdToken(true);
-                
-                const finalFormData = new FormData();
-                finalFormData.append('name', name);
-                finalFormData.append('email', email);
-                finalFormData.append('idToken', idToken);
-                
-                formAction(finalFormData);
-
-            } catch (error: any) {
-                let description = "An unexpected error occurred.";
-                if (error.code === 'auth/email-already-in-use') {
-                    description = "This email address is already in use. Please log in instead.";
-                } else if (error.message) {
-                    description = error.message;
-                }
-                toast({
-                    title: "Registration Failed",
-                    description: description,
-                    variant: "destructive",
-                });
-            }
-        });
-    };
+    const isOtpStep = state.step === "2";
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4">
@@ -128,13 +77,13 @@ export default function FreeTrialPage() {
                         Start Your Free Trial
                     </h1>
                     <p className="text-lg text-muted-foreground mt-3">
-                        No credit card required. Instantly access all features.
+                        No credit card required. Verify your phone number to get started.
                     </p>
                 </div>
 
                 <Card className="shadow-2xl">
                     <CardContent className="p-8">
-                        {state.message === "success" ? (
+                        {state.step === "success" ? (
                              <Alert variant="default" className="border-green-500">
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                                 <AlertTitle className="text-green-700">Registration Successful!</AlertTitle>
@@ -146,7 +95,7 @@ export default function FreeTrialPage() {
                                 </AlertDescription>
                             </Alert>
                         ) : (
-                        <form ref={formRef} className="space-y-6">
+                        <form ref={formRef} action={formAction} className="space-y-6">
                              {state.issues && state.issues.length > 0 && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
@@ -157,29 +106,45 @@ export default function FreeTrialPage() {
                                     </AlertDescription>
                                 </Alert>
                             )}
-                            <div className="grid grid-cols-1 gap-4">
-                                <Button type="button" variant="outline" className="py-6 text-base" disabled={isPending}>
-                                    <Chrome className="mr-2" /> Sign up with Google
-                                </Button>
+                            <input type="hidden" name="step" value={isOtpStep ? "2" : "1"} />
+                            <input type="hidden" name="name" value={state.fields?.name || ""} />
+                            <input type="hidden" name="email" value={state.fields?.email || ""} />
+                            <input type="hidden" name="password" value={state.fields?.password || ""} />
+                            <input type="hidden" name="phone" value={state.fields?.phone || ""} />
+
+                            <div className={isOtpStep ? "hidden" : "space-y-4"}>
+                                <div className="space-y-2">
+                                    <Label htmlFor="name">Full Name</Label>
+                                    <Input id="name" name="name" type="text" placeholder="e.g., Tanvir Ahmed" required defaultValue={state.fields?.name} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="email">Email Address</Label>
+                                    <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={state.fields?.email} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="password">Password</Label>
+                                    <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} />
+                                </div>
+                                 <div className="space-y-2">
+                                    <Label htmlFor="phone">Phone Number</Label>
+                                    <div className="relative">
+                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                        <Input id="phone" name="phone" type="tel" placeholder="01xxxxxxxxx" required defaultValue={state.fields?.phone} className="pl-10" />
+                                    </div>
+                                </div>
                             </div>
-                            <div className="flex items-center">
-                                <div className="flex-grow border-t border-muted"></div>
-                                <span className="mx-4 text-muted-foreground text-sm">OR</span>
-                                <div className="flex-grow border-t border-muted"></div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="name">Full Name</Label>
-                                <Input id="name" name="name" type="text" placeholder="e.g., Tanvir Ahmed" required defaultValue={state.fields?.name} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="email">Email Address</Label>
-                                <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={state.fields?.email} />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="password">Password</Label>
-                                <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} defaultValue={state.fields?.password} />
-                            </div>
-                            <SubmitButton onClick={handleFormSubmitWithEmail} isPending={isPending} />
+                            
+                            {isOtpStep && (
+                                <div className="space-y-2 animate-in fade-in-50">
+                                    <Label htmlFor="otp">Verification Code</Label>
+                                    <Input id="otp" name="otp" type="text" placeholder="Enter the 6-digit code" required maxLength={6} />
+                                </div>
+                            )}
+
+                            <SubmitButton step={isOtpStep ? "2" : "1"} />
+                            {isOtpStep && (
+                                <Button variant="link" className="w-full" onClick={() => window.location.reload()}>Back to registration</Button>
+                            )}
                         </form>
                         )}
                     </CardContent>
