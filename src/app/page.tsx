@@ -1,10 +1,12 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 
 const featuredTools = [
     {
@@ -59,6 +61,45 @@ const generatedImages = [
     { src: "https://placehold.co/600x400.png", alt: "AI-Generated Islamic Image Sample 5", hint: "crescent moon" },
     { src: "https://placehold.co/600x400.png", alt: "AI-Generated Islamic Image Sample 6", hint: "lantern" },
 ];
+
+const successStories = [
+    {
+        feature: "Bulk Generation 2.0",
+        icon: <Layers className="w-6 h-6 text-primary"/>,
+        quote: "TotaPakhi AI 2.0's bulk generation feature is incredible! I created 50 blog posts in one afternoon using the new CSV upload. The AI images are so contextual that my engagement increased by 300%. This is the future of content creation.",
+        metric: "300% engagement boost",
+        name: "Tanvir Ahmed",
+        title: "Content Creator & Blogger",
+        avatarHint: "male blogger portrait"
+    },
+    {
+        feature: "Content Refresh Tool",
+        icon: <RefreshCcw className="w-6 h-6 text-primary"/>,
+        quote: "The Content Refresh tool saved my business! I had 200+ old articles that needed updating. TotaPakhi AI 2.0 refreshed them all with current information and better SEO in just 2 hours. My organic traffic doubled in 3 weeks.",
+        metric: "2x organic traffic",
+        name: "Sharmin Akter",
+        title: "Education Platform Owner",
+        avatarHint: "female education professional"
+    },
+    {
+        feature: "Authority Builder",
+        icon: <TowerControl className="w-6 h-6 text-primary"/>,
+        quote: "The Topical Authority Builder is a game-changer! It created a complete content cluster around 'digital marketing in Bangladesh' with 25 interconnected articles. We now rank #1 for multiple keywords and our domain authority increased by 15 points.",
+        metric: "15 point DA increase",
+        name: "Fahim Rahman",
+        title: "News Website Owner",
+        avatarHint: "male news editor"
+    },
+    {
+        feature: "One-Click Writer 2.0",
+        icon: <SparklesIcon className="w-6 h-6 text-primary"/>,
+        quote: "One-Click Writer 2.0 is pure magic! My team generates client content 10x faster now. The custom prompts feature ensures every piece matches our clients' brand voice perfectly. We've scaled from 5 to 50 clients without hiring more writers.",
+        metric: "10x faster content",
+        name: "Nusrat Jahan",
+        title: "Digital Marketing Agency",
+        avatarHint: "female marketing professional"
+    }
+]
 
 
 const GoogleIcon = () => (
@@ -310,6 +351,63 @@ export default function Home() {
           </p>
         </div>
       </section>
+      
+      {/* Success Stories Section */}
+        <section className="py-20 bg-background">
+            <div className="container mx-auto px-4">
+                <div className="text-center max-w-3xl mx-auto mb-12">
+                    <h2 className="font-headline text-4xl font-bold mb-4">Success Stories with TotaPakhi AI 2.0</h2>
+                    <p className="text-muted-foreground">Real Results from Real Users. See how content creators, marketers, and businesses are achieving extraordinary results with our new 2.0 features.</p>
+                </div>
+
+                <div className="grid lg:grid-cols-2 gap-8 mb-12 items-center">
+                    <div className="space-y-4 text-center lg:text-left">
+                        <Badge variant="outline">Average 90% time savings</Badge>
+                        <Badge variant="outline" className="ml-2">300% faster content creation</Badge>
+                        <Badge variant="outline" className="ml-2">2x better SEO results</Badge>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {successStories.map((story, index) => (
+                        <Card key={index} className="flex flex-col justify-between shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
+                            <CardHeader>
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="bg-primary/10 p-2 rounded-md">
+                                        {story.icon}
+                                    </div>
+                                    <CardTitle className="text-lg font-semibold">{story.feature}</CardTitle>
+                                </div>
+                                <p className="text-muted-foreground italic">"{story.quote}"</p>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex items-center justify-center py-2 px-4 rounded-full bg-accent/20 text-accent-foreground mx-auto">
+                                    <Star className="w-5 h-5 mr-2 text-accent" />
+                                    <span className="font-bold">{story.metric}</span>
+                                </div>
+                            </CardContent>
+                            <CardFooter className="flex items-center gap-4 bg-muted/50 p-4">
+                                <Avatar className="w-12 h-12">
+                                    <AvatarImage src={`https://placehold.co/100x100.png`} data-ai-hint={story.avatarHint} />
+                                    <AvatarFallback>{story.name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                    <p className="font-bold text-foreground">{story.name}</p>
+                                    <p className="text-sm text-muted-foreground">{story.title}</p>
+                                </div>
+                            </CardFooter>
+                        </Card>
+                    ))}
+                </div>
+
+                <div className="text-center mt-16">
+                    <Button size="lg" className="transition-transform transform hover:scale-105">
+                        Start Your Success Story <ArrowRight className="ml-2 h-5 w-5"/>
+                    </Button>
+                </div>
+            </div>
+        </section>
+
 
       {/* Final CTA Section */}
       <section className="py-20 bg-primary text-primary-foreground">
