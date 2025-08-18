@@ -12,7 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { signupAction } from "./actions";
 import { Bot, CheckCircle, Sparkles, Zap, ArrowRight, Github, Chrome } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile, GithubAuthProvider, signInWithPopup, User } from "firebase/auth";
 import { app } from "@/lib/firebase";
 
 
@@ -63,7 +63,7 @@ export default function FreeTrialPage() {
         }
     }, [state, toast]);
 
-    const handleFormSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleFormSubmitWithEmail = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
 
         if (!formRef.current) return;
@@ -93,10 +93,12 @@ export default function FreeTrialPage() {
                 await updateProfile(userCredential.user, { displayName: name });
                 const idToken = await userCredential.user.getIdToken(true);
                 
-                formData.set('idToken', idToken);
+                const finalFormData = new FormData();
+                finalFormData.append('name', name);
+                finalFormData.append('email', email);
+                finalFormData.append('idToken', idToken);
                 
-                // Now call the server action
-                formAction(formData);
+                formAction(finalFormData);
 
             } catch (error: any) {
                 let description = "An unexpected error occurred.";
@@ -107,6 +109,39 @@ export default function FreeTrialPage() {
                 }
                 toast({
                     title: "Registration Failed",
+                    description: description,
+                    variant: "destructive",
+                });
+            }
+        });
+    };
+    
+    const handleGitHubSignUp = () => {
+        const auth = getAuth(app);
+        const provider = new GithubAuthProvider();
+        
+        startTransition(async () => {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                const idToken = await user.getIdToken(true);
+                
+                const formData = new FormData();
+                formData.append('name', user.displayName || user.email?.split('@')[0] || 'User');
+                formData.append('email', user.email!);
+                formData.append('idToken', idToken);
+
+                formAction(formData);
+
+            } catch (error: any) {
+                let description = "An unexpected error occurred during GitHub sign-up.";
+                 if (error.code === 'auth/account-exists-with-different-credential') {
+                    description = 'An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.';
+                } else if (error.message) {
+                    description = error.message;
+                }
+                toast({
+                    title: "GitHub Sign-Up Failed",
                     description: description,
                     variant: "destructive",
                 });
@@ -157,10 +192,10 @@ export default function FreeTrialPage() {
                                 </Alert>
                             )}
                             <div className="grid grid-cols-2 gap-4">
-                                <Button type="button" variant="outline" className="py-6 text-base">
+                                <Button type="button" variant="outline" className="py-6 text-base" disabled={isPending}>
                                     <Chrome className="mr-2" /> Sign up with Google
                                 </Button>
-                                <Button type="button" variant="outline" className="py-6 text-base">
+                                <Button type="button" variant="outline" className="py-6 text-base" onClick={handleGitHubSignUp} disabled={isPending}>
                                     <Github className="mr-2" /> Sign up with GitHub
                                 </Button>
                             </div>
@@ -181,7 +216,7 @@ export default function FreeTrialPage() {
                                 <Label htmlFor="password">Password</Label>
                                 <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} defaultValue={state.fields?.password} />
                             </div>
-                            <SubmitButton onClick={handleFormSubmit} isPending={isPending} />
+                            <SubmitButton onClick={handleFormSubmitWithEmail} isPending={isPending} />
                         </form>
                         )}
                     </CardContent>
