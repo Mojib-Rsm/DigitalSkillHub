@@ -38,7 +38,7 @@ export default function Footer() {
             <div className="lg:col-span-2 pr-8">
                 <Link href="/" className="flex items-center gap-2 mb-4">
                     <Bot className="h-8 w-8 text-primary" />
-                    <span className="text-2xl font-bold font-headline">TotaPakhi AI</span>
+                    <span className="text-2xl font-bold font-headline">TotthoAi</span>
                 </Link>
                 <p className="text-muted-foreground">Revolutionizing Bengali content creation with advanced AI technology. Generate high-quality, culturally relevant content that resonates with your audience.</p>
                 <div className="mt-6 flex gap-4">
@@ -92,7 +92,7 @@ export default function Footer() {
 
         <div className="border-t mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
              <p className="text-sm text-muted-foreground">
-                © {new Date().getFullYear()} TotaPakhi AI. All rights reserved. Made with ❤️ in Bangladesh.
+                © {new Date().getFullYear()} TotthoAi. All rights reserved. Made with ❤️ in Bangladesh.
              </p>
              <div className="flex items-center gap-4">
                 <p className="text-sm text-green-600 font-semibold">All systems operational</p>

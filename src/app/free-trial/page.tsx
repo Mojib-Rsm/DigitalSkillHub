@@ -41,7 +41,7 @@ export default function FreeTrialPage() {
         if (state.message === "success") {
             toast({
                 title: "Account Created!",
-                description: "Welcome to TotaPakhi AI. You can now log in.",
+                description: "Welcome to TotthoAi. You can now log in.",
                 variant: "default",
             });
         }
@@ -54,7 +54,7 @@ export default function FreeTrialPage() {
                  <div className="text-center mb-8">
                     <Link href="/" className="flex items-center gap-2 justify-center mb-4">
                         <Bot className="h-10 w-10 text-primary" />
-                        <span className="text-4xl font-bold font-headline">TotaPakhi AI</span>
+                        <span className="text-4xl font-bold font-headline">TotthoAi</span>
                     </Link>
                     <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
                         Start Your Free Trial

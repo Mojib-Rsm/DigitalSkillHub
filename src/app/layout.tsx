@@ -6,7 +6,7 @@ import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 
 export const metadata: Metadata = {
-  title: 'ডিজিটাল স্কিল হাব - আপনার এআই টুলবক্স',
+  title: 'TotthoAi - আপনার এআই টুলবক্স',
   description:
     'আপনার উৎপাদনশীলতা এবং সৃজনশীলতা বাড়াতে বিভিন্ন ধরণের এআই টুল ব্যবহার করুন। লেখা, ছবি তৈরি, কোডিং এবং আরও অনেক কিছুর জন্য আমাদের টুলস আপনাকে সাহায্য করবে।',
   manifest: '/manifest.json'

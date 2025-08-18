@@ -155,7 +155,7 @@ export default function FreeToolsPage() {
               <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
                   <div>
                       <CardTitle className="text-3xl font-bold">Need More Advanced Features?</CardTitle>
-                      <p className="text-muted-foreground mt-2 max-w-2xl">Join TotaPakhi AI for advanced content generation, SEO tools, and more powerful features to grow your online presence.</p>
+                      <p className="text-muted-foreground mt-2 max-w-2xl">Join TotthoAi for advanced content generation, SEO tools, and more powerful features to grow your online presence.</p>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-4 shrink-0">
                       <Button size="lg" className="text-base" asChild><Link href="/#pricing">Get Started Free</Link></Button>

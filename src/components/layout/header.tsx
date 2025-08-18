@@ -111,7 +111,7 @@ export default function Header() {
       <div className="container mx-auto flex h-20 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
           <Bot className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold font-headline">TotaPakhi AI</span>
+          <span className="text-2xl font-bold font-headline">TotthoAi</span>
         </Link>
         <nav className="hidden lg:flex items-center gap-6">
           {navLinks.map((link) => (
@@ -149,7 +149,7 @@ export default function Header() {
                 <SheetTitle>
                   <Link href="/" className="flex items-center gap-2 mb-8">
                     <Bot className="h-7 w-7 text-primary" />
-                    <span className="text-xl font-bold font-headline">TotaPakhi AI</span>
+                    <span className="text-xl font-bold font-headline">TotthoAi</span>
                   </Link>
                 </SheetTitle>
               </SheetHeader>
