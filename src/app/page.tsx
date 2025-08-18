@@ -94,13 +94,17 @@ export default function Home() {
             </div>
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg">
-                    <Zap className="mr-2 h-5 w-5"/>
-                    Start Free Trial - No Credit Card
+                <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
+                    <Link href="/#pricing">
+                        <Zap className="mr-2 h-5 w-5"/>
+                        Start Free Trial - No Credit Card
+                    </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base">
-                    <PlayCircle className="mr-2 h-5 w-5"/>
-                    Watch Demo
+                <Button size="lg" variant="outline" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base" asChild>
+                    <Link href="#">
+                        <PlayCircle className="mr-2 h-5 w-5"/>
+                        Watch Demo
+                    </Link>
                 </Button>
             </div>
              
@@ -215,9 +219,11 @@ export default function Home() {
                  </div>
             </div>
              <div className="text-center mt-16">
-                 <Button size="lg">
-                    <Zap className="mr-2 h-5 w-5"/>
-                    Start Free Trial
+                 <Button size="lg" asChild>
+                    <Link href="/#pricing">
+                        <Zap className="mr-2 h-5 w-5"/>
+                        Start Free Trial
+                    </Link>
                 </Button>
             </div>
        </section>
@@ -339,7 +345,7 @@ export default function Home() {
           </div>
             <div className="text-center mt-12">
                  <Button size="lg" asChild>
-                    <Link href="#">
+                    <Link href="/#pricing">
                         Start Your Success Story
                     </Link>
                 </Button>
@@ -405,7 +411,9 @@ export default function Home() {
                           </div>
                       </CardContent>
                       <CardFooter>
-                          <Button size="lg" className="w-full">GET STARTED</Button>
+                          <Button size="lg" className="w-full" asChild>
+                            <Link href="/#pricing">GET STARTED</Link>
+                          </Button>
                       </CardFooter>
                   </Card>
 
@@ -451,7 +459,9 @@ export default function Home() {
                           </div>
                       </CardContent>
                       <CardFooter>
-                          <Button size="lg" className="w-full">GET STARTED</Button>
+                           <Button size="lg" className="w-full" asChild>
+                             <Link href="/#pricing">GET STARTED</Link>
+                           </Button>
                       </CardFooter>
                   </Card>
 
@@ -497,7 +507,9 @@ export default function Home() {
                           </div>
                       </CardContent>
                       <CardFooter>
-                          <Button size="lg" className="w-full">GET STARTED</Button>
+                          <Button size="lg" className="w-full" asChild>
+                            <Link href="/#pricing">GET STARTED</Link>
+                          </Button>
                       </CardFooter>
                   </Card>
               </div>
@@ -514,7 +526,9 @@ export default function Home() {
                               <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> WordPress publishing</div>
                           </div>
                       </div>
-                      <Button size="lg" className="text-base shrink-0">Start Writing for FREE</Button>
+                      <Button size="lg" className="text-base shrink-0" asChild>
+                        <Link href="/#pricing">Start Writing for FREE</Link>
+                      </Button>
                   </CardContent>
               </Card>
               
