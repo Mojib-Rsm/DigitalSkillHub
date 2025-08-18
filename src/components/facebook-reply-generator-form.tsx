@@ -146,7 +146,7 @@ export default function FacebookReplyGeneratorForm() {
 
           <div className="space-y-2">
             <Label htmlFor="goal">আপনার লক্ষ্য (ঐচ্ছিক)</Label>
-            <Select name="goal" defaultValue={state.fields?.goal}>
+            <Select name="goal" defaultValue={state.fields?.goal as string}>
                 <SelectTrigger id="goal">
                     <SelectValue placeholder="একটি লক্ষ্য নির্বাচন করুন..." />
                 </SelectTrigger>

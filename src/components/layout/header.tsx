@@ -26,9 +26,9 @@ import { Badge } from "../ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const navLinks = [
-  { href: "#features", label: "Features" },
-  { href: "#whats-new", label: "What's New" },
-  { href: "#pricing", label: "Pricing" },
+  { href: "/#features", label: "Features" },
+  { href: "/#whats-new", label: "What's New" },
+  { href: "/#pricing", label: "Pricing" },
   { href: "/free-tools", label: "Free Tools" },
 ];
 
