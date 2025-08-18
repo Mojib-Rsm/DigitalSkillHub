@@ -3,8 +3,35 @@
 
 import { z } from "zod";
 import { getFirestore, doc, getDoc, collection, query, where, getDocs, setDoc, deleteDoc, writeBatch } from "firebase-admin/firestore";
-import { app } from "@/lib/firebase-admin";
+import { initializeApp, getApps, cert, App } from "firebase-admin/app";
 import crypto from "crypto";
+
+// --- Firebase Admin SDK Initialization ---
+// IMPORTANT: This configuration is now hardcoded to bypass environment variable issues.
+const serviceAccount = {
+  "type": "service_account",
+  "project_id": "map-api-427111",
+  "private_key_id": "your_private_key_id", // Replace with your actual private key ID
+  "private_key": "your_private_key", // Replace with your actual private key
+  "client_email": "firebase-adminsdk-your-sdk-id@map-api-427111.iam.gserviceaccount.com", // Replace with your client email
+  "client_id": "your_client_id", // Replace with your client ID
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-your-sdk-id%40map-api-427111.iam.gserviceaccount.com" // Replace with your cert url
+};
+
+
+let app: App;
+if (!getApps().length) {
+    app = initializeApp({
+        credential: cert(serviceAccount)
+    });
+} else {
+    app = getApps()[0];
+}
+// --- End Firebase Admin SDK Initialization ---
+
 
 const SignUpStep1Schema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters long." }),
