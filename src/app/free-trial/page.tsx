@@ -61,16 +61,13 @@ export default function FreeTrialPage() {
         }
     }, [state, toast]);
 
-    const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
+    const handleFormSubmit = async (formData: FormData) => {
         const name = formData.get("name") as string;
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
 
         if (!name || name.length < 3 || !email || !password || password.length < 8) {
-            // Basic client-side check, server will do the rest.
-             formAction(formData); // This will trigger validation errors if any.
+             formAction(formData);
              return;
         }
 
@@ -81,12 +78,9 @@ export default function FreeTrialPage() {
             await updateProfile(userCredential.user, { displayName: name });
             const idToken = await userCredential.user.getIdToken(true);
             
-            if (idTokenRef.current) {
-                idTokenRef.current.value = idToken;
-            }
+            formData.set('idToken', idToken);
 
-            // Now submit the form programmatically to trigger the server action
-            formRef.current?.requestSubmit();
+            formAction(formData);
 
         } catch (error: any) {
             let description = "An unexpected error occurred.";
@@ -134,7 +128,7 @@ export default function FreeTrialPage() {
                                 </AlertDescription>
                             </Alert>
                         ) : (
-                        <form ref={formRef} action={formAction} onSubmit={handleFormSubmit} className="space-y-6">
+                        <form ref={formRef} action={handleFormSubmit} className="space-y-6">
                              {state.issues && state.issues.length > 0 && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
@@ -145,7 +139,6 @@ export default function FreeTrialPage() {
                                     </AlertDescription>
                                 </Alert>
                             )}
-                            <input type="hidden" name="idToken" ref={idTokenRef} />
                             <div className="grid grid-cols-2 gap-4">
                                 <Button type="button" variant="outline" className="py-6 text-base">
                                     <Chrome className="mr-2" /> Sign up with Google
