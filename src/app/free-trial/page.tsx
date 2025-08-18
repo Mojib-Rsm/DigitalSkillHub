@@ -67,16 +67,9 @@ export default function FreeTrialPage() {
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
         
-        // Let server action handle detailed validation
-        const tempState = signupAction(initialState, formData);
-        const validationResult = await tempState;
-
-        if (validationResult.message === "Validation Error") {
-            formAction(formData);
-            return;
-        }
-
+        // Frontend validation
         if (!name || !email || !password || password.length < 8) {
+            // Let server action handle detailed validation message
             formAction(formData);
             return;
         }
@@ -97,9 +90,11 @@ export default function FreeTrialPage() {
             formAction(formData);
             
         } catch (error: any) {
-            let description = error.message;
+            let description = "An unexpected error occurred.";
             if (error.code === 'auth/email-already-in-use') {
                 description = "This email address is already in use. Please log in instead.";
+            } else if (error.message) {
+                description = error.message;
             }
             toast({
                 variant: "destructive",
