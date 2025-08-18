@@ -120,8 +120,8 @@ export default function FreeTrialPage() {
         const auth = getAuth(app);
         const provider = new GithubAuthProvider();
         provider.setCustomParameters({
-            'client_id': process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID!,
-            'client_secret': process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET!,
+            'client_id': "Ov23liHB5irTSxi9x4OK",
+            'client_secret': "294df629c8df777d08bb90bac2487a6141919218",
         });
         
         startTransition(async () => {
