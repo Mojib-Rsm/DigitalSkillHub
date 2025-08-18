@@ -35,11 +35,50 @@ function SubmitButton() {
     );
 }
 
+type FormState = {
+  message: string;
+  issues?: string[];
+  fields?: Record<string, string>;
+};
+
 export default function FreeTrialPage() {
-    const initialState = { message: "", issues: [], fields: {} };
-    const [state, formAction] = useActionState(signupAction, initialState);
+    const initialState: FormState = { message: "", issues: [], fields: {} };
     const { toast } = useToast();
     const formRef = useRef<HTMLFormElement>(null);
+
+    const handleSubmitWithAuth = async (prevState: FormState, formData: FormData): Promise<FormState> => {
+        const name = formData.get("name") as string;
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
+        
+        if (!name || name.length < 3 || !email || !password || password.length < 8) {
+            // Let server action handle detailed validation
+            return signupAction(prevState, formData);
+        }
+        
+        const auth = getAuth(app);
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(userCredential.user, { displayName: name });
+            formData.append('uid', userCredential.user.uid);
+            return signupAction(prevState, formData);
+        } catch (error: any) {
+            let description = "An unexpected error occurred.";
+            if (error.code === 'auth/email-already-in-use') {
+                description = "This email address is already in use. Please log in instead.";
+            } else if (error.message) {
+                description = error.message;
+            }
+            return {
+                message: description,
+                issues: [],
+                fields: Object.fromEntries(formData.entries()) as Record<string, string>,
+            }
+        }
+    };
+
+    const [state, formAction] = useActionState(handleSubmitWithAuth, initialState);
 
     useEffect(() => {
         if (state.message === "success") {
@@ -60,50 +99,6 @@ export default function FreeTrialPage() {
         }
     }, [state, toast]);
 
-    const handleSubmitWithAuth = async (prevState: FormState, formData: FormData) => {
-        const name = formData.get("name") as string;
-        const email = formData.get("email") as string;
-        const password = formData.get("password") as string;
-        
-        if (!name || !email || !password || password.length < 8) {
-            // Let server action handle detailed validation
-            return signupAction(prevState, formData);
-        }
-        
-        const auth = getAuth(app);
-
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            await updateProfile(userCredential.user, { displayName: name });
-            formData.append('uid', userCredential.user.uid);
-            return signupAction(prevState, formData);
-        } catch (error: any) {
-            let description = "An unexpected error occurred.";
-            if (error.code === 'auth/email-already-in-use') {
-                description = "This email address is already in use. Please log in instead.";
-            } else if (error.message) {
-                description = error.message;
-            }
-             toast({
-                variant: "destructive",
-                title: "Registration Failed",
-                description: description,
-            });
-            return {
-                message: description,
-                issues: [],
-                fields: Object.fromEntries(formData.entries()) as Record<string, string>,
-            }
-        }
-    };
-    
-    // Wrap the async function for useActionState
-    const wrappedAction = (prevState: FormState, formData: FormData) => {
-        return handleSubmitWithAuth(prevState, formData);
-    };
-
-    const [finalState, finalFormAction] = useActionState(wrappedAction, initialState);
-
 
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4">
@@ -123,7 +118,7 @@ export default function FreeTrialPage() {
 
                 <Card className="shadow-2xl">
                     <CardContent className="p-8">
-                        {finalState.message === "success" ? (
+                        {state.message === "success" ? (
                              <Alert variant="default" className="border-green-500">
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                                 <AlertTitle className="text-green-700">Registration Successful!</AlertTitle>
@@ -135,13 +130,13 @@ export default function FreeTrialPage() {
                                 </AlertDescription>
                             </Alert>
                         ) : (
-                        <form ref={formRef} action={finalFormAction} className="space-y-6">
-                             {finalState.message === "Validation Error" && (
+                        <form ref={formRef} action={formAction} className="space-y-6">
+                             {state.message === "Validation Error" && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
                                     <AlertDescription>
                                         <ul>
-                                            {finalState.issues?.map(issue => <li key={issue}>- {issue}</li>)}
+                                            {state.issues?.map(issue => <li key={issue}>- {issue}</li>)}
                                         </ul>
                                     </AlertDescription>
                                 </Alert>
@@ -162,15 +157,15 @@ export default function FreeTrialPage() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="name">Full Name</Label>
-                                <Input id="name" name="name" type="text" placeholder="e.g., Tanvir Ahmed" required defaultValue={finalState.fields?.name} />
+                                <Input id="name" name="name" type="text" placeholder="e.g., Tanvir Ahmed" required defaultValue={state.fields?.name} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="email">Email Address</Label>
-                                <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={finalState.fields?.email} />
+                                <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={state.fields?.email} />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password">Password</Label>
-                                <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} defaultValue={finalState.fields?.password} />
+                                <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} defaultValue={state.fields?.password} />
                             </div>
                             <SubmitButton />
                         </form>
