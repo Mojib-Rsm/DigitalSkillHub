@@ -16,31 +16,15 @@ import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { app } from "@/lib/firebase";
 import crypto from "crypto";
 
-// This function needs to be available on the client, so we define it here.
-// In a real app, you might share this logic or use a library.
-function clientSideHash(password: string): string {
-    // This is a simplified example. In a real-world scenario, you would
-    // use a more robust client-side hashing library like bcrypt.js
-    // or rely on a server-side hashing mechanism before storing.
-    // For this demo, we'll simulate a simple hash.
-    try {
-       const buffer = new TextEncoder().encode(password);
-       const hashBuffer = crypto.subtle.digest('SHA-256', buffer);
-       // Convert buffer to hex string
-       const hashArray = Array.from(new Uint8Array(hashBuffer as ArrayBuffer));
-       const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-       return `client:${hashHex}`;
-    } catch (e) {
-        // Fallback for non-secure contexts where crypto.subtle is unavailable
-        let hash = 0;
-        for (let i = 0; i < password.length; i++) {
-            const char = password.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash; // Convert to 32bit integer
-        }
-        return `fallback:${hash}`;
-    }
+// This is a placeholder for a more secure hashing mechanism.
+// In a real app, you would use a library like bcrypt.js
+// or PBKDF2 for password hashing.
+function simpleHash(password: string): string {
+    const salt = crypto.randomBytes(16).toString('hex');
+    const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+    return `${salt}:${hash}`;
 }
+
 
 function SubmitButton({ step }: { step: "1" | "2" }) {
     const { pending } = useFormStatus();
@@ -101,6 +85,10 @@ export default function FreeTrialPage() {
 
     const handleOtpSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if(!email || !otp) {
+            toast({ title: "Error", description: "Email and OTP are required.", variant: "destructive"});
+            return;
+        }
         setIsVerifying(true);
 
         const verifyResult = await verifyOtpAction(email, otp);
@@ -109,16 +97,13 @@ export default function FreeTrialPage() {
             try {
                 const db = getFirestore(app);
                 const uid = crypto.randomUUID();
-
-                // NOTE: Storing plain or lightly-hashed passwords on the client is NOT recommended
-                // for production. This is a temporary measure to bypass server-side issues.
-                // A proper implementation would have the server handle hashing and storage.
+                
                 await setDoc(doc(db, "users", uid), {
                     uid,
                     name,
                     email,
                     phone,
-                    password: clientSideHash(password), // Example hashing
+                    password: simpleHash(password), // Hashing the password before storing
                     createdAt: new Date().toISOString(),
                 });
 
@@ -253,4 +238,3 @@ export default function FreeTrialPage() {
         </div>
     );
 }
-

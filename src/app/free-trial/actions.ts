@@ -4,8 +4,6 @@
 import { z } from "zod";
 import { getFirestore, doc, getDoc, collection, query, where, getDocs, setDoc, deleteDoc } from "firebase-admin/firestore";
 import { app } from "@/lib/firebase-admin";
-import { sendSms } from "@/services/sms-service";
-import crypto from "crypto";
 
 const SignUpStep1Schema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters long." }),
@@ -29,6 +27,47 @@ type FormState = {
   success?: boolean;
 };
 
+// Moved sendSms logic directly here to avoid process.env issues in the service file.
+async function sendSms(phoneNumber: string, message: string): Promise<{success: boolean, message: string}> {
+  const apiKey = "LkcuBmpXSgO77LgytC9w";
+  const senderId = "8809617614208";
+
+  if (!apiKey || !senderId) {
+    const errorMessage = "SMS API Key or Sender ID is not configured.";
+    console.error(errorMessage);
+    return { success: false, message: errorMessage };
+  }
+
+  try {
+    const response = await fetch('http://bulksmsbd.net/api/smsapi', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: apiKey,
+        senderid: senderId,
+        number: phoneNumber,
+        message: message,
+      }),
+    });
+    
+    const result: { code: string; message: string } = await response.json();
+
+    if (result.code === "ok") {
+        console.log("SMS sent successfully to:", phoneNumber);
+        return { success: true, message: "SMS sent successfully." };
+    } else {
+        console.error("Failed to send SMS:", result.message);
+        return { success: false, message: `Failed to send SMS: ${result.message}` };
+    }
+  } catch (error) {
+    console.error('Error sending SMS:', error);
+    if (error instanceof Error) {
+        return { success: false, message: `An unexpected error occurred: ${error.message}`};
+    }
+    return { success: false, message: 'An unexpected error occurred while sending SMS.' };
+  }
+}
+
 
 async function sendOTP(email: string, phone: string) {
     if (!app) {
@@ -46,8 +85,7 @@ async function sendOTP(email: string, phone: string) {
 
         if (!smsResult.success) {
             console.error("SMS Sending failed:", smsResult.message);
-            // In production, this should likely return an error. For now, we log it.
-             return { success: false, message: `Failed to send SMS. Gateway response: ${smsResult.message}` };
+            return { success: false, message: `Failed to send SMS. Gateway response: ${smsResult.message}` };
         }
         
         console.log(`OTP for ${phone} is ${otp}`); // Log OTP for testing/debugging
@@ -71,7 +109,7 @@ export async function signupAction(
   if (!validatedFields.success) {
     return {
       message: "Validation Error",
-      issues: validatedFields.error.flatten().formErrors,
+      issues: validatedFields.error.flatten().fieldErrors.phone, // Focus on phone error
       fields,
       step: "1",
       success: false,
