@@ -6,14 +6,16 @@ import { z } from "zod";
 
 const FacebookReplyGeneratorActionSchema = z.object({
   postContent: z.string().min(10, { message: "অনুগ্রহ করে পোস্টের বিষয়বস্তু লিখুন (কমপক্ষে ১০ অক্ষর)।" }),
-  commentToReply: z.string().min(1, { message: "অনুগ্রহ করে যে কমেন্টের উত্তর দিতে চান তা লিখুন।" }),
-  conversationHistory: z.string().optional(),
+  conversation: z.array(z.object({
+    character: z.string(),
+    text: z.string().min(1, { message: "কথোপকথনের প্রতিটি অংশের জন্য পাঠ্য প্রয়োজন।" }),
+  })).min(1, { message: "অনুগ্রহ করে কমপক্ষে একটি কথোপকথনের অংশ যোগ করুন।" }),
 });
 
 type FormState = {
   message: string;
   suggestions?: string[];
-  fields?: Record<string, string>;
+  fields?: Record<string, any>;
   issues?: string[];
 };
 
@@ -21,18 +23,49 @@ export async function generateFacebookReplies(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
+  const conversationEntries = Array.from(formData.entries()).filter(([key]) => key.startsWith('conversation'));
+  
+  const conversation = [];
+  const conversationMap: Record<string, { character?: string; text?: string }> = {};
+
+  for (const [key, value] of conversationEntries) {
+      const match = key.match(/conversation\[(\d+)\]\.(character|text)/);
+      if (match) {
+          const index = match[1];
+          const field = match[2];
+          if (!conversationMap[index]) {
+              conversationMap[index] = {};
+          }
+          conversationMap[index][field as 'character' | 'text'] = value as string;
+      }
+  }
+
+  const parsedConversation = Object.values(conversationMap).map(item => ({
+      character: item.character || '',
+      text: item.text || '',
+  }));
+
+
   const validatedFields = FacebookReplyGeneratorActionSchema.safeParse({
     postContent: formData.get("postContent"),
-    commentToReply: formData.get("commentToReply"),
-    conversationHistory: formData.get("conversationHistory"),
+    conversation: parsedConversation,
   });
 
   if (!validatedFields.success) {
     const { errors } = validatedFields.error;
+    
+    // Create a flat list of fields for easier state restoration
+    const fields: Record<string, any> = { postContent: formData.get("postContent") };
+    parsedConversation.forEach((item, index) => {
+        fields[`conversation[${index}].character`] = item.character;
+        fields[`conversation[${index}].text`] = item.text;
+    });
+    fields.conversationLength = parsedConversation.length;
+
     return {
       message: "Validation Error",
-      issues: errors.map((issue) => issue.message),
-      fields: Object.fromEntries(formData.entries()) as Record<string, string>,
+      issues: errors.flatMap(e => e.path.length > 1 ? `Conversaton part #${Number(e.path[1])+1}: ${e.message}` : e.message),
+      fields,
     };
   }
   

@@ -2,7 +2,7 @@
 'use server';
 
 /**
- * @fileOverview AI tool to generate replies to Facebook comments.
+ * @fileOverview AI tool to generate replies to Facebook comments in a conversation.
  *
  * - facebookReplyGenerator - A function that generates replies.
  * - FacebookReplyGeneratorInput - The input type for the function.
@@ -14,8 +14,10 @@ import {z} from 'genkit';
 
 const FacebookReplyGeneratorInputSchema = z.object({
   postContent: z.string().describe('The content of the original Facebook post.'),
-  commentToReply: z.string().describe('The specific comment that needs a reply.'),
-  conversationHistory: z.string().optional().describe('The preceding conversation thread to provide context for the reply. This could include the user\'s original comment and the post author\'s reply.'),
+  conversation: z.array(z.object({
+    character: z.string().describe("The character speaking (e.g., 'Character A', 'Me')."),
+    text: z.string().describe("The text of their comment or reply."),
+  })).describe('The sequence of the conversation.'),
 });
 export type FacebookReplyGeneratorInput = z.infer<typeof FacebookReplyGeneratorInputSchema>;
 
@@ -34,22 +36,19 @@ const prompt = ai.definePrompt({
   output: {schema: FacebookReplyGeneratorOutputSchema},
   prompt: `You are an expert social media manager, skilled in crafting thoughtful and engaging replies in Bengali.
 
-Your task is to generate 3 to 5 appropriate replies to a specific comment on a Facebook post. The replies should be relevant to the original post, the comment, and any provided conversation history. Maintain a positive and helpful tone.
+Your task is to generate 3 to 5 appropriate replies for the character "Me" based on a conversation thread on a Facebook post. The replies should be relevant to the original post and the entire conversation history. Maintain a positive and helpful tone.
 
 Original Post Content:
 {{{postContent}}}
 
-{{#if conversationHistory}}
-Here is the conversation history leading up to the comment we are replying to:
+Conversation History:
 ---
-{{{conversationHistory}}}
+{{#each conversation}}
+{{character}}: {{{text}}}
+{{/each}}
 ---
-{{/if}}
 
-Comment to Reply To:
-{{{commentToReply}}}
-
-Based on the full context, generate a list of 3-5 suitable replies in Bengali. The replies should be directed at the person who wrote the "Comment to Reply To".`,
+Based on the full context, generate a list of 3-5 suitable replies in Bengali for "Me". The replies should be directed at the last character who spoke in the conversation.`,
 });
 
 const facebookReplyGeneratorFlow = ai.defineFlow(
