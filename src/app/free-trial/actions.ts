@@ -2,7 +2,7 @@
 "use server";
 
 import { z } from "zod";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore/lite";
+import { getFirestore, doc, setDoc, getDoc } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
 import { app } from "@/lib/firebase-admin";
 import { sendSms } from "@/services/sms-service";
