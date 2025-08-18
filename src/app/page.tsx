@@ -253,6 +253,25 @@ export default function Home() {
         </div>
       </section>
 
+      {/* New CTA Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 text-center">
+            <h2 className="font-headline text-4xl font-bold mb-4">Ready to Experience These Powerful Tools?</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+                Join thousands of content creators who are already using these features to transform their workflow and scale their content production.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto">
+                    Start Free Trial - Access All Tools
+                </Button>
+                <Button size="lg" variant="outline" className="transition-transform transform hover:scale-105 w-full sm:w-auto">
+                    View Pricing Plans
+                </Button>
+            </div>
+        </div>
+      </section>
+
+
       {/* Final CTA Section */}
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
