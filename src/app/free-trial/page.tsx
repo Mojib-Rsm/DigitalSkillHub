@@ -116,46 +116,6 @@ export default function FreeTrialPage() {
         });
     };
     
-    const handleGitHubSignUp = () => {
-        const auth = getAuth(app);
-        const provider = new GithubAuthProvider();
-        
-        provider.setCustomParameters({
-            'redirect_uri': `${window.location.origin}/__/auth/handler`
-        });
-        
-        startTransition(async () => {
-            try {
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-                const idToken = await user.getIdToken(true);
-                
-                const formData = new FormData();
-                formData.append('name', user.displayName || user.email?.split('@')[0] || 'User');
-                formData.append('email', user.email!);
-                formData.append('idToken', idToken);
-
-                formAction(formData);
-
-            } catch (error: any) {
-                let description = "An unexpected error occurred during GitHub sign-up.";
-                 if (error.code === 'auth/account-exists-with-different-credential') {
-                    description = 'An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.';
-                } else if (error.code === 'auth/unauthorized-domain') {
-                    description = 'This domain is not authorized for OAuth operations. Please add it to the list of authorized domains in your Firebase console.'
-                } else if (error.message) {
-                    description = error.message;
-                }
-                toast({
-                    title: "GitHub Sign-Up Failed",
-                    description: description,
-                    variant: "destructive",
-                });
-            }
-        });
-    };
-
-
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4">
             <div className="w-full max-w-4xl">
@@ -197,12 +157,9 @@ export default function FreeTrialPage() {
                                     </AlertDescription>
                                 </Alert>
                             )}
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-4">
                                 <Button type="button" variant="outline" className="py-6 text-base" disabled={isPending}>
                                     <Chrome className="mr-2" /> Sign up with Google
-                                </Button>
-                                <Button type="button" variant="outline" className="py-6 text-base" onClick={handleGitHubSignUp} disabled={isPending}>
-                                    <Github className="mr-2" /> Sign up with GitHub
                                 </Button>
                             </div>
                             <div className="flex items-center">

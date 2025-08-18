@@ -103,47 +103,6 @@ export default function LoginPage() {
         });
     };
     
-    const handleGitHubLogin = () => {
-        const auth = getAuth(app);
-        const provider = new GithubAuthProvider();
-        
-        provider.setCustomParameters({
-            'redirect_uri': `${window.location.origin}/__/auth/handler`
-        });
-
-        startTransition(async () => {
-            try {
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-                const idToken = await user.getIdToken(true);
-                
-                const formData = new FormData();
-                formData.append('idToken', idToken);
-                formData.append('uid', user.uid);
-                formData.append('email', user.email!);
-                formData.append('name', user.displayName || '');
-                
-                formAction(formData);
-
-            } catch (error: any) {
-                 let description = "An unexpected error occurred during GitHub sign-in.";
-                 if (error.code === 'auth/account-exists-with-different-credential') {
-                    description = 'An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.';
-                } else if (error.code === 'auth/unauthorized-domain') {
-                    description = 'This domain is not authorized for OAuth operations. Please add it to the list of authorized domains in your Firebase console.'
-                } else if (error.message) {
-                    description = error.message;
-                }
-                toast({
-                    title: "GitHub Sign-In Failed",
-                    description: description,
-                    variant: "destructive",
-                });
-            }
-        });
-    };
-
-
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
@@ -175,12 +134,9 @@ export default function LoginPage() {
                                     </AlertDescription>
                                 </Alert>
                             )}
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-4">
                                 <Button variant="outline" className="py-6 text-base" type="button" disabled={isPending}>
                                     <Chrome className="mr-2" /> Login with Google
-                                </Button>
-                                <Button variant="outline" className="py-6 text-base" type="button" onClick={handleGitHubLogin} disabled={isPending}>
-                                    <Github className="mr-2" /> Login with GitHub
                                 </Button>
                             </div>
                             <div className="flex items-center">
