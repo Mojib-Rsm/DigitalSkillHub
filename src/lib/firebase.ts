@@ -10,9 +10,9 @@ const firebaseConfig = {
   apiKey: "AIzaSyDbJ-TA0ErywLN8Nc7C9iK1f3_QI35h6YU",
   // Dynamically set authDomain for different environments (dev vs. prod)
   // This is safe to do on the client side.
-  authDomain: typeof window !== 'undefined' ? window.location.hostname : "map-api-427111.firebaseapp.com",
+  authDomain: "9000-firebase-studio-1755339718602.cluster-bg6uurscprhn6qxr6xwtrhvkf6.cloudworkstations.dev",
   projectId: "map-api-427111",
-  storageBucket: "map-api-427111.firebasestorage.app",
+  storageBucket: "map-api-427111.appspot.com",
   messagingSenderId: "344837483986",
   appId: "1:344837483986:web:87d80ba6ca000a16f8ec0b",
   measurementId: "G-9W8TPF1Q3D"
