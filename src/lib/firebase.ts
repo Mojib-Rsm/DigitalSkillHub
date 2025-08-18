@@ -18,6 +18,16 @@ const firebaseConfig = {
 
 // Initialize Firebase
 let app: FirebaseApp;
+
+// Check if running in a browser environment before accessing window
+if (typeof window !== 'undefined') {
+    // Dynamically set authDomain for dev environments
+    if (window.location.hostname.includes('cloudworkstations.dev')) {
+        firebaseConfig.authDomain = window.location.hostname;
+    }
+}
+
+
 if (getApps().length === 0) {
     app = initializeApp(firebaseConfig);
 } else {
