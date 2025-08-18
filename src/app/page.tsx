@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, Check, PlayCircle, Users } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, Check, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -214,8 +214,57 @@ export default function Home() {
         </div>
       </section>
 
-      {/* AI-Generated Visuals Section */}
+       {/* Free Tools Section */}
       <section className="py-16 md:py-24 bg-muted/50">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Free Tools to Boost Your Workflow</h2>
+            <p className="text-lg text-muted-foreground mt-4">
+              Explore our collection of free, high-quality tools designed to help you with common tasks—no registration required.
+            </p>
+          </div>
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="flex flex-col text-center items-center p-6 shadow-lg">
+                <div className="bg-primary/10 p-4 rounded-full w-fit mb-4">
+                    <ShieldCheck className="w-10 h-10 text-primary" />
+                </div>
+                <CardTitle className="text-xl font-bold">Privacy Policy Generator</CardTitle>
+                <p className="text-muted-foreground mt-2 flex-grow">Create GDPR-compliant privacy policies for your website in minutes.</p>
+                <Button variant="outline" asChild className="mt-4 w-full">
+                    <Link href="/free-tools">Use Tool</Link>
+                </Button>
+            </Card>
+            <Card className="flex flex-col text-center items-center p-6 shadow-lg">
+                <div className="bg-primary/10 p-4 rounded-full w-fit mb-4">
+                    <FileText className="w-10 h-10 text-primary" />
+                </div>
+                <CardTitle className="text-xl font-bold">Terms of Service Generator</CardTitle>
+                <p className="text-muted-foreground mt-2 flex-grow">Generate comprehensive terms of service for your website or app.</p>
+                <Button variant="outline" asChild className="mt-4 w-full">
+                    <Link href="/free-tools">Use Tool</Link>
+                </Button>
+            </Card>
+            <Card className="flex flex-col text-center items-center p-6 shadow-lg">
+                <div className="bg-primary/10 p-4 rounded-full w-fit mb-4">
+                    <GanttChartSquare className="w-10 h-10 text-primary" />
+                </div>
+                <CardTitle className="text-xl font-bold">Disclaimer Generator</CardTitle>
+                <p className="text-muted-foreground mt-2 flex-grow">Create professional disclaimers to protect your business.</p>
+                <Button variant="outline" asChild className="mt-4 w-full">
+                    <Link href="/free-tools">Use Tool</Link>
+                </Button>
+            </Card>
+          </div>
+           <div className="text-center mt-12">
+                <Button asChild size="lg">
+                    <Link href="/free-tools">Explore All Free Tools <ArrowRight className="ml-2 w-5 h-5"/></Link>
+                </Button>
+            </div>
+        </div>
+      </section>
+
+      {/* AI-Generated Visuals Section */}
+      <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
           <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Enhance Your Content with AI-Generated Images</h2>
           <p className="text-lg text-muted-foreground mt-4 max-w-3xl mx-auto">
@@ -238,7 +287,7 @@ export default function Home() {
       </section>
       
       {/* Success Stories Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-16 md:py-24 bg-muted/50">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Success Stories with TotaPakhi AI 2.0</h2>
@@ -333,7 +382,7 @@ export default function Home() {
       </section>
 
        {/* Pricing Section */}
-      <section className="py-16 md:py-24 bg-muted/50">
+      <section className="py-16 md:py-24">
           <div className="container mx-auto px-4">
               <div className="text-center max-w-3xl mx-auto">
                   <Badge variant="secondary" className="text-sm py-1 px-3 border-2 border-primary/50 text-primary mb-4">
@@ -517,3 +566,4 @@ export default function Home() {
     </div>
   );
 }
+

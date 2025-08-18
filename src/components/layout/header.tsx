@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Sprout, Menu, BookOpen, Users, Bot, LayoutDashboard, PenSquare, AudioWaveform, Contrast, Text, Accessibility, PlayCircle, Phone, Briefcase, Home } from "lucide-react";
+import { Sprout, Menu, BookOpen, Users, Bot, LayoutDashboard, PenSquare, AudioWaveform, Contrast, Text, Accessibility, PlayCircle, Phone, Briefcase, Home, Wrench } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -28,6 +28,7 @@ import { textToSpeechAction } from "@/app/actions/tts";
 const navLinks = [
   { href: "/", label: "হোম", icon: <Home className="w-5 h-5" /> },
   { href: "/ai-tools", label: "এআই টুলস", icon: <Bot className="w-5 h-5" /> },
+  { href: "/free-tools", label: "ফ্রি টুলস", icon: <Wrench className="w-5 h-5" /> },
   { href: "/community", label: "কাজের সুযোগ", icon: <Briefcase className="w-5 h-5" /> },
   { href: "/blog", label: "ব্লগ", icon: <PenSquare className="w-5 h-5" /> },
   { href: "/dashboard", label: "ড্যাশবোর্ড", icon: <LayoutDashboard className="w-5 h-5" /> },
