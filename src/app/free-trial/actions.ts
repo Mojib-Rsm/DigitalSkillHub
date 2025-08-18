@@ -35,7 +35,6 @@ export async function signupAction(
     };
   }
 
-  // Check if admin app is initialized
   if (!app) {
       console.error("Firebase Admin SDK is not initialized.");
       return { message: "Server configuration error. Please contact support." };
@@ -55,6 +54,7 @@ export async function signupAction(
       name,
       email,
       createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString(),
     });
 
     return { message: "success" };

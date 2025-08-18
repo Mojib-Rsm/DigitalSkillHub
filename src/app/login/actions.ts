@@ -2,10 +2,8 @@
 "use server";
 
 import { z } from "zod";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
-import { app } from "@/lib/firebase";
-
-const db = getFirestore(app);
+import { getFirestore, doc, setDoc } from "firebase/firestore/lite";
+import { app } from "@/lib/firebase-admin";
 
 const LoginSchema = z.object({
   uid: z.string(),
@@ -34,6 +32,13 @@ export async function loginAction(
       issues: validatedFields.error.flatten().fieldErrors.idToken,
     };
   }
+  
+  if (!app) {
+      console.error("Firebase Admin SDK is not initialized.");
+      return { message: "Server configuration error. Please contact support." };
+  }
+
+  const db = getFirestore(app);
 
   const { uid, email, name } = validatedFields.data;
 
@@ -42,15 +47,16 @@ export async function loginAction(
     await setDoc(doc(db, "users", uid), {
       email,
       name: name || email.split('@')[0],
-      lastLogin: new Date(),
+      lastLogin: new Date().toISOString(),
     }, { merge: true });
 
-    // Here you would typically set a cookie or session for the user
-    // For this example, we'll just return success
     return { message: "success" };
 
   } catch (error: any) {
     console.error("Firestore Error:", error);
+     if (error instanceof Error && error.message.includes('permission-denied')) {
+        return { message: "Permission denied. Please check your Firestore security rules." };
+    }
     return {
       message: "Failed to save user data. Please try again.",
     };
