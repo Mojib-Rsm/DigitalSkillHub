@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Sparkles, Clipboard, MessageSquare, Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -199,18 +198,12 @@ export default function FacebookCommentGeneratorForm() {
 
           <div className="space-y-2">
             <Label htmlFor="goal">আপনার লক্ষ্য (ঐচ্ছিক)</Label>
-            <Select name="goal" defaultValue={state.fields?.goal}>
-                <SelectTrigger id="goal">
-                    <SelectValue placeholder="একটি লক্ষ্য নির্বাচন করুন..." />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="Write a supportive comment">সহায়ক মন্তব্য লিখুন</SelectItem>
-                    <SelectItem value="Ask a question">প্রশ্ন জিজ্ঞাসা করুন</SelectItem>
-                    <SelectItem value="Share a personal experience">ব্যক্তিগত অভিজ্ঞতা শেয়ার করুন</SelectItem>
-                    <SelectItem value="Write a funny comment">মজার মন্তব্য লিখুন</SelectItem>
-                    <SelectItem value="Reply to a customer complaint">গ্রাহকের অভিযোগের উত্তর দিন</SelectItem>
-                </SelectContent>
-            </Select>
+            <Input
+              id="goal"
+              name="goal"
+              placeholder="যেমন, সহায়ক মন্তব্য লিখুন, প্রশ্ন জিজ্ঞাসা করুন..."
+              defaultValue={state.fields?.goal}
+            />
             {state.issues?.filter((issue) => issue.toLowerCase().includes("goal")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
           <SubmitButton />
