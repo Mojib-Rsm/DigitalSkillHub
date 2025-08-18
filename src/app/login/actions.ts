@@ -38,11 +38,11 @@ export async function loginAction(
   const { uid, email, name } = validatedFields.data;
 
   try {
-    // Add user to Firestore
+    // Add or update user in Firestore. `merge: true` creates the doc if it doesn't exist.
     await setDoc(doc(db, "users", uid), {
       email,
       name: name || email.split('@')[0],
-      createdAt: new Date(),
+      lastLogin: new Date(),
     }, { merge: true });
 
     // Here you would typically set a cookie or session for the user
