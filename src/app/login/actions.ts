@@ -19,10 +19,15 @@ type FormState = {
 
 // Helper function to verify password
 function verifyPassword(storedPassword: string, providedPassword: string): boolean {
-    const [salt, hash] = storedPassword.split(':');
-    if (!salt || !hash) return false;
-    const derivedHash = crypto.pbkdf2Sync(providedPassword, salt, 1000, 64, 'sha512').toString('hex');
-    return hash === derivedHash;
+    try {
+        const [salt, hash] = storedPassword.split(':');
+        if (!salt || !hash) return false;
+        const derivedHash = crypto.pbkdf2Sync(providedPassword, salt, 1000, 64, 'sha512').toString('hex');
+        return hash === derivedHash;
+    } catch (e) {
+        console.error("Error verifying password:", e);
+        return false;
+    }
 }
 
 export async function loginAction(
@@ -36,7 +41,7 @@ export async function loginAction(
   if (!validatedFields.success) {
     return {
       message: "Validation Error",
-      issues: validatedFields.error.flatten().formErrors.formErrors,
+      issues: validatedFields.error.flatten().formErrors,
       fields: Object.fromEntries(formData.entries()) as Record<string, string>,
     };
   }
