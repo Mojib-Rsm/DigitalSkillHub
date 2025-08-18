@@ -5,21 +5,8 @@ import { z } from "zod";
 import { getFirestore, collection, query, where, getDocs } from "firebase-admin/firestore";
 import { initializeApp, getApps, cert, App } from "firebase-admin/app";
 import crypto from "crypto";
-
-// --- Firebase Admin SDK Initialization ---
-// IMPORTANT: This configuration is now hardcoded to bypass environment variable issues.
-const serviceAccount = {
-  "type": "service_account",
-  "project_id": "map-api-427111",
-  "private_key_id": "your_private_key_id", // Replace with your actual private key ID
-  "private_key": "your_private_key", // Replace with your actual private key
-  "client_email": "firebase-adminsdk-your-sdk-id@map-api-427111.iam.gserviceaccount.com", // Replace with your client email
-  "client_id": "your_client_id", // Replace with your client ID
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-your-sdk-id%40map-api-427111.iam.gserviceaccount.com" // Replace with your cert url
-};
+// @ts-ignore
+import serviceAccount from "../../../service-account.json";
 
 let app: App;
 if (!getApps().length) {
@@ -29,7 +16,7 @@ if (!getApps().length) {
         });
     } catch (e: any) {
         if (e.code === 'invalid-credential') {
-            console.error("Firebase Admin SDK initialization failed: The service account credentials are not valid. Please check your configuration.");
+            console.error("Firebase Admin SDK initialization failed: The service account credentials in service-account.json are not valid. Please check your configuration.");
         } else {
             console.error("Firebase Admin SDK initialization failed:", e.message);
         }
@@ -37,7 +24,6 @@ if (!getApps().length) {
 } else {
     app = getApps()[0];
 }
-// --- End Firebase Admin SDK Initialization ---
 
 
 const LoginSchema = z.object({
@@ -85,7 +71,7 @@ export async function loginAction(
   // @ts-ignore
   if (!app) {
       console.error("Firebase Admin SDK is not initialized.");
-      return { message: "Server configuration error. Please contact support.", success: false };
+      return { message: "Server configuration error. Please check your service-account.json file.", success: false };
   }
 
   const db = getFirestore(app);
