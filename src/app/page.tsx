@@ -95,7 +95,7 @@ export default function Home() {
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
-                    <Link href="/#pricing">
+                    <Link href="/free-trial">
                         <Zap className="mr-2 h-5 w-5"/>
                         Start Free Trial - No Credit Card
                     </Link>
@@ -220,7 +220,7 @@ export default function Home() {
             </div>
              <div className="text-center mt-16">
                  <Button size="lg" asChild>
-                    <Link href="/#pricing">
+                    <Link href="/free-trial">
                         <Zap className="mr-2 h-5 w-5"/>
                         Start Free Trial
                     </Link>
@@ -527,7 +527,7 @@ export default function Home() {
                           </div>
                       </div>
                       <Button size="lg" className="text-base shrink-0" asChild>
-                        <Link href="/#pricing">Start Writing for FREE</Link>
+                        <Link href="/free-trial">Start Writing for FREE</Link>
                       </Button>
                   </CardContent>
               </Card>

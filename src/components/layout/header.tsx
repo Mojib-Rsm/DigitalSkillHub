@@ -63,9 +63,11 @@ export default function Header() {
 
   const AuthButtons = () => (
      <div className="flex items-center gap-2">
-        <Button variant="ghost">Login</Button>
-        <Button className="shadow-md">
-            Start Free Trial
+        <Button variant="ghost" asChild>
+            <Link href="/login">Login</Link>
+        </Button>
+        <Button className="shadow-md" asChild>
+            <Link href="/free-trial">Start Free Trial</Link>
         </Button>
      </div>
   );
