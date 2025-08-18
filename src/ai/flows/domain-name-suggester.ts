@@ -31,9 +31,9 @@ const prompt = ai.definePrompt({
   name: 'domainNameSuggesterPrompt',
   input: {schema: DomainNameSuggesterInputSchema},
   output: {schema: DomainNameSuggesterOutputSchema},
-  prompt: `You are an expert at creating available and brandable domain names.
+  prompt: `You are an expert at creating available and brandable domain names that sound natural and creative.
 
-Generate a list of 5 creative and catchy domain names based on the following criteria. The suggested domains should be easy to remember and spell.
+Generate a list of 5 creative and catchy domain names based on the following criteria. The suggested domains should be easy to remember, spell, and feel like they were brainstormed by a human, not a machine.
 
 Keywords: {{{keywords}}}
 Preferred TLDs: {{{tlds}}}

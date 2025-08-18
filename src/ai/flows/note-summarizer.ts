@@ -31,7 +31,7 @@ const prompt = ai.definePrompt({
   name: 'noteSummarizerPrompt',
   input: {schema: NoteSummarizerInputSchema},
   output: {schema: NoteSummarizerOutputSchema},
-  prompt: `You are an expert at summarizing text and creating concise notes.
+  prompt: `You are an expert at summarizing text and creating concise, human-readable notes. Your summaries should be clear, capture the key points, and be written in a natural style.
 
 Summarize the following text into a clear and easy-to-understand format.
 

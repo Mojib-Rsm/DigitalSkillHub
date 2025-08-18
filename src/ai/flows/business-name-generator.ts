@@ -32,9 +32,9 @@ const prompt = ai.definePrompt({
   name: 'businessNameGeneratorPrompt',
   input: {schema: BusinessNameGeneratorInputSchema},
   output: {schema: BusinessNameGeneratorOutputSchema},
-  prompt: `You are a branding expert specializing in naming businesses.
+  prompt: `You are a branding expert specializing in naming businesses, known for your creative and human-like suggestions.
 
-Generate a list of 5 creative and memorable business names based on the following criteria.
+Generate a list of 5 creative and memorable business names based on the following criteria. The names should sound natural, be easy to pronounce, and feel like they were created by a branding professional, not a generic algorithm.
 
 Industry: {{{industry}}}
 Keywords: {{{keywords}}}

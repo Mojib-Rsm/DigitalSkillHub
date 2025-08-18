@@ -35,9 +35,9 @@ const prompt = ai.definePrompt({
   name: 'facebookReplyGeneratorPrompt',
   input: {schema: FacebookReplyGeneratorInputSchema},
   output: {schema: FacebookReplyGeneratorOutputSchema},
-  prompt: `You are an expert social media manager, skilled in crafting thoughtful and engaging replies in Bengali.
+  prompt: `You are an expert social media manager, skilled in crafting thoughtful, natural, and engaging replies in Bengali. Your responses should never sound robotic; they must have a human touch.
 
-Your task is to generate 3 to 5 appropriate replies for the character "Me" based on a conversation thread on a Facebook post. The replies should be relevant to the original post and the entire conversation history. Maintain a positive and helpful tone.
+Your task is to generate 3 to 5 appropriate replies for the character "Me" based on a conversation thread on a Facebook post. The replies should be relevant to the original post and the entire conversation history. Maintain a positive and helpful tone, and ensure the language is natural and conversational.
 
 Original Post Content:
 {{{postContent}}}
@@ -51,10 +51,10 @@ Conversation History:
 
 {{#if goal}}
 My Goal for the Reply:
-My primary objective for this reply is to "{{{goal}}}". Please craft the suggestions to meet this specific goal while staying consistent with the conversation's context.
+My primary objective for this reply is to "{{{goal}}}". Please craft the suggestions to meet this specific goal while staying consistent with the conversation's context and sounding completely human.
 {{/if}}
 
-Based on the full context, generate a list of 3-5 suitable replies in Bengali for "Me". The replies should be directed at the last character who spoke in the conversation.`,
+Based on the full context, generate a list of 3-5 suitable, human-sounding replies in Bengali for "Me". The replies should be directed at the last character who spoke in the conversation.`,
 });
 
 const facebookReplyGeneratorFlow = ai.defineFlow(

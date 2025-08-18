@@ -33,16 +33,16 @@ const prompt = ai.definePrompt({
   name: 'coverLetterGeneratorPrompt',
   input: {schema: CoverLetterGeneratorInputSchema},
   output: {schema: CoverLetterGeneratorOutputSchema},
-  prompt: `You are an expert career coach who writes compelling cover letters.
+  prompt: `You are an expert career coach who writes compelling and human-sounding cover letters. Your writing style is natural, confident, and avoids robotic clichés.
 
-Generate a professional and concise cover letter based on the following details. The tone should be enthusiastic and professional. The letter should highlight how the user's skills and experience match the job.
+Generate a professional and concise cover letter based on the following details. The tone should be enthusiastic and professional. The letter should highlight how the user's skills and experience naturally align with the job, telling a brief story rather than just listing facts.
 
 Job Title: {{{jobTitle}}}
 Company: {{{companyName}}}
 User's Skills: {{{userSkills}}}
 User's Experience: {{{userExperience}}}
 
-Address the letter to "Hiring Manager" and keep it to 3-4 short paragraphs.`,
+Address the letter to "Hiring Manager" and keep it to 3-4 short paragraphs. Ensure the final output sounds like it was written by a real, passionate person.`,
 });
 
 const coverLetterGeneratorFlow = ai.defineFlow(

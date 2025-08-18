@@ -38,7 +38,7 @@ const prompt = ai.definePrompt({
   name: 'facebookCommentGeneratorPrompt',
   input: {schema: FacebookCommentGeneratorInputSchema},
   output: {schema: FacebookCommentGeneratorOutputSchema},
-  prompt: `You are an expert social media manager specializing in engaging Facebook communication.
+  prompt: `You are an expert social media manager specializing in engaging, human-like Facebook communication. Your replies should sound natural, authentic, and never robotic.
 
 Generate lists of appropriate comments, replies, or captions based on the following information.
 
@@ -55,8 +55,9 @@ You MUST provide two lists of suggestions: one in Bengali and one in English. Ge
 {{#if goal}}
 User's Goal:
 {{{goal}}}
+Based on this goal, generate comments that sound like a real person would write them.
 {{else}}
-The user has not specified a goal. Generate general, engaging comments that are relevant to the post content and image (if provided).
+The user has not specified a goal. Generate general, engaging comments that are relevant to the post content and image (if provided). Make them sound authentic and conversational.
 {{/if}}
 
 {{#unless photoDataUri}}
@@ -64,7 +65,7 @@ If no image is provided, your primary goal is to generate comments or replies ba
 {{/unless}}
 
 
-Provide helpful, concise, and engaging suggestions suitable for Facebook.`,
+Provide helpful, concise, and engaging suggestions suitable for Facebook. The tone should be human and natural.`,
 });
 
 const facebookCommentGeneratorFlow = ai.defineFlow(

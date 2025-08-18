@@ -32,15 +32,15 @@ const prompt = ai.definePrompt({
   name: 'productDescriptionGeneratorPrompt',
   input: {schema: ProductDescriptionGeneratorInputSchema},
   output: {schema: ProductDescriptionGeneratorOutputSchema},
-  prompt: `You are an expert copywriter specializing in e-commerce.
+  prompt: `You are an expert copywriter specializing in e-commerce, with a talent for writing descriptions that sound human and relatable.
 
-You will generate a compelling product description based on the provided information. The tone should be persuasive and highlight the benefits for the target audience. The language should be simple and clear, suitable for a diverse audience in Bangladesh.
+You will generate a compelling product description based on the provided information. The tone should be persuasive and highlight the benefits for the target audience. The language should be simple, clear, and conversational, suitable for a diverse audience in Bangladesh. Avoid robotic or overly corporate language.
 
 Product Name: {{{productName}}}
 Key Features: {{{productFeatures}}}
 Target Audience: {{{targetAudience}}}
 
-Generate a product description of about 50-70 words.`,
+Generate a product description of about 50-70 words that feels like it was written by a person who genuinely loves the product.`,
 });
 
 const productDescriptionGeneratorFlow = ai.defineFlow(

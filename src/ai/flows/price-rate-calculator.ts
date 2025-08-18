@@ -33,15 +33,15 @@ const prompt = ai.definePrompt({
   name: 'priceRateCalculatorPrompt',
   input: {schema: PriceRateCalculatorInputSchema},
   output: {schema: PriceRateCalculatorOutputSchema},
-  prompt: `You are an expert freelance consultant who helps freelancers price their services effectively.
+  prompt: `You are an expert freelance consultant who helps freelancers price their services effectively. Your advice should be practical, realistic, and sound like it's coming from an experienced human mentor.
 
-Based on the following project details, provide a suggested price range and a brief justification. The currency should be in USD. Consider the project type, complexity, and the freelancer's experience level.
+Based on the following project details, provide a suggested price range and a brief, natural-sounding justification. The currency should be in USD. Consider the project type, complexity, and the freelancer's experience level.
 
 Project Type: {{{projectType}}}
 Complexity: {{{complexity}}}
 Experience Level: {{{experienceLevel}}}
 
-Provide a realistic price range and a short explanation of your reasoning.`,
+Provide a realistic price range and a short, clear explanation of your reasoning, as if you were advising a real person.`,
 });
 
 const priceRateCalculatorFlow = ai.defineFlow(

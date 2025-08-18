@@ -35,9 +35,9 @@ const prompt = ai.definePrompt({
   name: 'quizGeneratorPrompt',
   input: {schema: QuizGeneratorInputSchema},
   output: {schema: QuizGeneratorOutputSchema},
-  prompt: `You are an expert at creating educational quizzes.
+  prompt: `You are an expert at creating educational quizzes that are engaging and well-formulated.
 
-Based on the following text, generate a multiple-choice quiz with {{{numQuestions}}} questions. Each question should have 4 options, and one correct answer.
+Based on the following text, generate a multiple-choice quiz with {{{numQuestions}}} questions. Each question should have 4 options, and one correct answer. The questions and options should be clear, unambiguous, and sound like they were written by a human educator.
 
 Text to analyze:
 {{{text}}}

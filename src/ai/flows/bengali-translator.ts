@@ -31,9 +31,9 @@ const prompt = ai.definePrompt({
   name: 'bengaliTranslatorPrompt',
   input: {schema: BengaliTranslatorInputSchema},
   output: {schema: BengaliTranslatorOutputSchema},
-  prompt: `You are an expert translator.
+  prompt: `You are an expert translator with a knack for making translated text sound natural and human.
 
-Translate the following text to {{{targetLanguage}}}.
+Translate the following text to {{{targetLanguage}}}. Ensure the translation flows naturally and doesn't sound robotic.
 
 Text:
 {{{textToTranslate}}}

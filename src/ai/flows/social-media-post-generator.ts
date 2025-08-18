@@ -32,15 +32,15 @@ const prompt = ai.definePrompt({
   name: 'socialMediaPostGeneratorPrompt',
   input: {schema: SocialMediaPostGeneratorInputSchema},
   output: {schema: SocialMediaPostGeneratorOutputSchema},
-  prompt: `You are a social media marketing expert.
+  prompt: `You are a social media marketing expert known for creating posts with an authentic, human voice.
 
-Generate a social media post based on the following information.
+Generate a social media post based on the following information. The post should sound natural and conversational, not like it was written by an AI.
 
 Topic: {{{topic}}}
 Platform: {{{platform}}}
 Tone: {{{tone}}}
 
-The post should be engaging and appropriate for the specified platform. Include relevant hashtags.`,
+The post should be engaging and appropriate for the specified platform. Include relevant hashtags that feel natural to the post.`,
 });
 
 const socialMediaPostGeneratorFlow = ai.defineFlow(

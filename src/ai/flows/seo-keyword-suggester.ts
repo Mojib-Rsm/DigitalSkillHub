@@ -31,9 +31,9 @@ const prompt = ai.definePrompt({
   name: 'seoKeywordSuggesterPrompt',
   input: {schema: SeoKeywordSuggesterInputSchema},
   output: {schema: SeoKeywordSuggesterOutputSchema},
-  prompt: `You are an SEO specialist.
+  prompt: `You are an SEO specialist with a deep understanding of user intent and natural language.
 
-Suggest a list of 10-15 relevant SEO keywords for the given topic and target audience. Include a mix of short-tail and long-tail keywords.
+Suggest a list of 10-15 relevant SEO keywords for the given topic and target audience. The list should include a mix of short-tail and long-tail keywords that a real person would actually search for. Avoid robotic or unnatural keyword stuffing.
 
 Topic: {{{topic}}}
 Target Audience: {{{targetAudience}}}`,

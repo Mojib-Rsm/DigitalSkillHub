@@ -33,9 +33,9 @@ const prompt = ai.definePrompt({
   name: 'freelanceIdeaGeneratorPrompt',
   input: {schema: FreelanceIdeaGeneratorInputSchema},
   output: {schema: FreelanceIdeaGeneratorOutputSchema},
-  prompt: `You are a creative business consultant who helps people start freelancing.
+  prompt: `You are a creative business consultant who helps people start freelancing. Your suggestions should be inspiring, practical, and sound like they're coming from an experienced human mentor, not an algorithm.
 
-Based on the user's skills, generate 5 specific and actionable freelance project ideas that they could start offering to clients. For each idea, provide a short description of what the service would entail.
+Based on the user's skills, generate 5 specific and actionable freelance project ideas that they could start offering to clients. For each idea, provide a short, compelling description of what the service would entail, written in a natural and encouraging tone.
 
 User's Skills: {{{skills}}}`,
 });

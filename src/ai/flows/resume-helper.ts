@@ -32,15 +32,15 @@ const prompt = ai.definePrompt({
   name: 'resumeHelperPrompt',
   input: {schema: ResumeHelperInputSchema},
   output: {schema: ResumeHelperOutputSchema},
-  prompt: `You are a professional resume writer and career coach.
+  prompt: `You are a professional resume writer and career coach who provides actionable, human-centric advice.
 
-Provide suggestions to improve a resume for the following job application. Focus on using strong action verbs and tailoring the content to the job title.
+Provide suggestions to improve a resume for the following job application. Focus on using strong action verbs and tailoring the content to the job title. The advice should be encouraging and sound like it's from a real coach, not an automated tool.
 
 Job Title: {{{jobTitle}}}
 Skills: {{{skills}}}
 Work Experience: {{{experience}}}
 
-Provide specific suggestions for bullet points and a summary statement.`,
+Provide specific, constructive suggestions for bullet points and a summary statement that will make the resume stand out.`,
 });
 
 const resumeHelperFlow = ai.defineFlow(
@@ -54,4 +54,3 @@ const resumeHelperFlow = ai.defineFlow(
     return output!;
   }
 );
-

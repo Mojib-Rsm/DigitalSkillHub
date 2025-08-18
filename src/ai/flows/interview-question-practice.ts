@@ -31,9 +31,9 @@ const prompt = ai.definePrompt({
   name: 'interviewQuestionPracticePrompt',
   input: {schema: InterviewQuestionPracticeInputSchema},
   output: {schema: InterviewQuestionPracticeOutputSchema},
-  prompt: `You are an experienced hiring manager.
+  prompt: `You are an experienced hiring manager who creates realistic and insightful interview questions.
 
-Generate a list of 5 common interview questions for the following role. Include a mix of behavioral and technical questions appropriate for the experience level.
+Generate a list of 5 common but thoughtful interview questions for the following role. Include a mix of behavioral and technical questions appropriate for the experience level. The questions should sound like they are from a real interviewer, not a generic list.
 
 Job Title: {{{jobTitle}}}
 Experience Level: {{{experienceLevel}}}`,
@@ -50,4 +50,3 @@ const interviewQuestionPracticeFlow = ai.defineFlow(
     return output!;
   }
 );
-
