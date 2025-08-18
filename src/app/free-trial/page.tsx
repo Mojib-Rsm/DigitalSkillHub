@@ -50,9 +50,10 @@ export default function FreeTrialPage() {
         const name = formData.get("name") as string;
         const email = formData.get("email") as string;
         const password = formData.get("password") as string;
-        
+
+        // Basic client-side validation first
         if (!name || name.length < 3 || !email || !password || password.length < 8) {
-            // Let server action handle detailed validation
+            // Let server action handle detailed validation message
             return signupAction(prevState, formData);
         }
         
@@ -61,8 +62,12 @@ export default function FreeTrialPage() {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             await updateProfile(userCredential.user, { displayName: name });
+            
+            // IMPORTANT: Append UID to formData before calling server action
             formData.append('uid', userCredential.user.uid);
+            
             return signupAction(prevState, formData);
+
         } catch (error: any) {
             let description = "An unexpected error occurred.";
             if (error.code === 'auth/email-already-in-use') {
@@ -70,6 +75,7 @@ export default function FreeTrialPage() {
             } else if (error.message) {
                 description = error.message;
             }
+            // Return a state object that matches what the action hook expects
             return {
                 message: description,
                 issues: [],
