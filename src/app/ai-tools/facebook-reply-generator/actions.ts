@@ -7,6 +7,7 @@ import { z } from "zod";
 const FacebookReplyGeneratorActionSchema = z.object({
   postContent: z.string().min(10, { message: "অনুগ্রহ করে পোস্টের বিষয়বস্তু লিখুন (কমপক্ষে ১০ অক্ষর)।" }),
   commentToReply: z.string().min(1, { message: "অনুগ্রহ করে যে কমেন্টের উত্তর দিতে চান তা লিখুন।" }),
+  conversationHistory: z.string().optional(),
 });
 
 type FormState = {
@@ -23,6 +24,7 @@ export async function generateFacebookReplies(
   const validatedFields = FacebookReplyGeneratorActionSchema.safeParse({
     postContent: formData.get("postContent"),
     commentToReply: formData.get("commentToReply"),
+    conversationHistory: formData.get("conversationHistory"),
   });
 
   if (!validatedFields.success) {

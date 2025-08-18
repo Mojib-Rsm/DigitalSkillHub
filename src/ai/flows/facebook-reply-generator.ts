@@ -15,6 +15,7 @@ import {z} from 'genkit';
 const FacebookReplyGeneratorInputSchema = z.object({
   postContent: z.string().describe('The content of the original Facebook post.'),
   commentToReply: z.string().describe('The specific comment that needs a reply.'),
+  conversationHistory: z.string().optional().describe('The preceding conversation thread to provide context for the reply. This could include the user\'s original comment and the post author\'s reply.'),
 });
 export type FacebookReplyGeneratorInput = z.infer<typeof FacebookReplyGeneratorInputSchema>;
 
@@ -33,15 +34,22 @@ const prompt = ai.definePrompt({
   output: {schema: FacebookReplyGeneratorOutputSchema},
   prompt: `You are an expert social media manager, skilled in crafting thoughtful and engaging replies in Bengali.
 
-Your task is to generate 3 to 5 appropriate replies to a specific comment on a Facebook post. The replies should be relevant to both the original post and the comment. Maintain a positive and helpful tone.
+Your task is to generate 3 to 5 appropriate replies to a specific comment on a Facebook post. The replies should be relevant to the original post, the comment, and any provided conversation history. Maintain a positive and helpful tone.
 
 Original Post Content:
 {{{postContent}}}
 
+{{#if conversationHistory}}
+Here is the conversation history leading up to the comment we are replying to:
+---
+{{{conversationHistory}}}
+---
+{{/if}}
+
 Comment to Reply To:
 {{{commentToReply}}}
 
-Generate a list of 3-5 suitable replies in Bengali.`,
+Based on the full context, generate a list of 3-5 suitable replies in Bengali. The replies should be directed at the person who wrote the "Comment to Reply To".`,
 });
 
 const facebookReplyGeneratorFlow = ai.defineFlow(

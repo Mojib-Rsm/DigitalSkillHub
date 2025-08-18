@@ -39,7 +39,7 @@ export default function FacebookReplyGeneratorForm() {
 
   useEffect(() => {
     if (state.message === "success") {
-      formRef.current?.reset();
+      // Do not reset the form, as the user may want to continue the conversation.
     }
      if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
@@ -63,7 +63,7 @@ export default function FacebookReplyGeneratorForm() {
       <CardHeader>
         <CardTitle>কমেন্টের রিপ্লাই তৈরি করুন</CardTitle>
         <CardDescription>
-          আসল পোস্ট এবং যে কমেন্টের রিপ্লাই দিতে চান তা লিখুন।
+          আসল পোস্ট, কথোপকথনের ইতিহাস এবং যে কমেন্টের রিপ্লাই দিতে চান তা লিখুন।
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -75,10 +75,21 @@ export default function FacebookReplyGeneratorForm() {
               name="postContent"
               placeholder="আসল ফেসবুক পোস্টটি এখানে পেস্ট করুন..."
               defaultValue={state.fields?.postContent}
-              rows={4}
+              rows={3}
               required
             />
             {state.issues?.filter((issue) => issue.toLowerCase().includes("পোস্ট")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="conversationHistory">কথোপকথনের ইতিহাস (ঐচ্ছিক)</Label>
+            <Textarea
+              id="conversationHistory"
+              name="conversationHistory"
+              placeholder="আপনি যে কমেন্টের উত্তর দিচ্ছেন তার আগের রিপ্লাইগুলো এখানে পেস্ট করুন..."
+              defaultValue={state.fields?.conversationHistory}
+              rows={4}
+            />
           </div>
 
           <div className="space-y-2">
@@ -86,7 +97,7 @@ export default function FacebookReplyGeneratorForm() {
             <Textarea
               id="commentToReply"
               name="commentToReply"
-              placeholder="এখানে কমেন্টটি পেস্ট করুন..."
+              placeholder="এখানে উত্তর দেওয়ার জন্য সর্বশেষ কমেন্টটি পেস্ট করুন..."
               defaultValue={state.fields?.commentToReply}
               rows={3}
               required
