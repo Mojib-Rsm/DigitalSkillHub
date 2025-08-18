@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -21,9 +20,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import React, { useState } from "react";
-import { Badge } from "../ui/badge";
+import React, { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
+import { app } from "@/lib/firebase";
 
 const navLinks = [
   { href: "/#features", label: "Features" },
@@ -41,7 +41,25 @@ const moreLinks = [
 
 export default function Header() {
   const pathname = usePathname();
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Mock auth state
+  const [user, setUser] = useState<User | null>(null);
+  const auth = getAuth(app);
+  
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, [auth]);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // Optional: redirect to home or login page after logout
+      window.location.href = '/login';
+    } catch (error) {
+      console.error("Logout Error:", error);
+    }
+  };
 
   const NavLink = ({ href, label }: { href: string; label: string }) => (
     <Link
@@ -77,13 +95,13 @@ export default function Header() {
         <DropdownMenuTrigger asChild>
             <Button variant="secondary" className="rounded-full w-9 h-9 p-0">
                 <Avatar>
-                    <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="person avatar"/>
-                    <AvatarFallback>U</AvatarFallback>
+                    <AvatarImage src={user?.photoURL || "https://placehold.co/40x40.png"} data-ai-hint="person avatar"/>
+                    <AvatarFallback>{user?.email?.[0].toUpperCase() || 'U'}</AvatarFallback>
                 </Avatar>
             </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>{user?.displayName || user?.email}</DropdownMenuLabel>
             <DropdownMenuSeparator/>
             <DropdownMenuItem asChild>
                 <Link href="/dashboard"><LayoutDashboard className="mr-2"/> Dashboard</Link>
@@ -92,7 +110,7 @@ export default function Header() {
                 <Link href="/profile"><UserCircle className="mr-2"/> Profile</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator/>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2"/>
                 Logout
             </DropdownMenuItem>
@@ -134,35 +152,37 @@ export default function Header() {
             </DropdownMenu>
         </nav>
         <div className="hidden lg:flex items-center gap-4">
-          {isAuthenticated ? <UserMenu/> : <AuthButtons/>}
+          {user ? <UserMenu/> : <AuthButtons/>}
         </div>
         <div className="lg:hidden flex items-center gap-2">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Open menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right">
-              <SheetHeader>
-                <SheetTitle>
-                  <Link href="/" className="flex items-center gap-2 mb-8">
-                    <Bot className="h-7 w-7 text-primary" />
-                    <span className="text-xl font-bold font-headline">TotthoAi</span>
-                  </Link>
-                </SheetTitle>
-              </SheetHeader>
-              <div className="flex flex-col gap-2">
-                {[...navLinks, ...moreLinks].map((link) => (
-                    <MobileNavLink key={link.href} href={link.href} label={link.label} />
-                ))}
-              </div>
-              <div className="mt-8 flex flex-col gap-4">
-                 {isAuthenticated ? <UserMenu/> : <AuthButtons/>}
-              </div>
-            </SheetContent>
-          </Sheet>
+           {user ? <UserMenu/> : (
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right">
+                <SheetHeader>
+                  <SheetTitle>
+                    <Link href="/" className="flex items-center gap-2 mb-8">
+                      <Bot className="h-7 w-7 text-primary" />
+                      <span className="text-xl font-bold font-headline">TotthoAi</span>
+                    </Link>
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-2">
+                  {[...navLinks, ...moreLinks].map((link) => (
+                      <MobileNavLink key={link.href} href={link.href} label={link.label} />
+                  ))}
+                </div>
+                <div className="mt-8 flex flex-col gap-4">
+                   {user ? <UserMenu/> : <AuthButtons/>}
+                </div>
+              </SheetContent>
+            </Sheet>
+           )}
         </div>
       </div>
     </header>
