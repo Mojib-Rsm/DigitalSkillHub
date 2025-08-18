@@ -13,14 +13,18 @@ if (getApps().length === 0) {
     if (serviceAccount) {
         app = initializeApp({
             credential: cert(serviceAccount),
-        }, 'firebase-admin');
+        });
     } else {
         console.warn('Firebase service account credentials not found. Server-side Firebase features will be disabled.');
-        // Initialize a dummy app or handle it as per your app's logic
-        // For now, we'll just not initialize it.
     }
 } else {
-    app = getApp('firebase-admin');
+    // Check if the admin app is already initialized, otherwise get the default app.
+    // This logic might need adjustment depending on how many apps you expect to initialize.
+    try {
+      app = getApp('firebase-admin');
+    } catch(e) {
+      app = getApp();
+    }
 }
 
 
