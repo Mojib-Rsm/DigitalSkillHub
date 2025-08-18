@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Sparkles, Clipboard, CornerDownRight, PlusCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+import { Alert, AlertDescription } from "./ui/alert";
 import { Input } from "./ui/input";
 
 function SubmitButton() {
@@ -65,7 +65,8 @@ export default function FacebookReplyGeneratorForm() {
   };
 
   const addConversationPart = () => {
-    setConversationParts(prev => [...prev, { id: Date.now(), character: "Me", text: "" }]);
+    const nextChar = String.fromCharCode(65 + conversationParts.filter(p => p.character.startsWith("Character")).length);
+    setConversationParts(prev => [...prev, { id: Date.now(), character: `Character ${nextChar}`, text: "" }]);
   };
 
   const removeConversationPart = (id: number) => {
@@ -145,12 +146,19 @@ export default function FacebookReplyGeneratorForm() {
 
           <div className="space-y-2">
             <Label htmlFor="goal">আপনার লক্ষ্য (ঐচ্ছিক)</Label>
-            <Input
-              id="goal"
-              name="goal"
-              placeholder="যেমন, কথোপকথনটি শেষ করুন, একটি প্রশ্ন জিজ্ঞাসা করুন..."
-              defaultValue={state.fields?.goal}
-            />
+            <Select name="goal" defaultValue={state.fields?.goal}>
+                <SelectTrigger id="goal">
+                    <SelectValue placeholder="একটি লক্ষ্য নির্বাচন করুন..." />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="end the conversation politely">ভদ্রভাবে কথোপকথন শেষ করুন</SelectItem>
+                    <SelectItem value="ask a clarifying question">একটি স্পষ্টীকরণের জন্য প্রশ্ন জিজ্ঞাসা করুন</SelectItem>
+                    <SelectItem value="be supportive and encouraging">সহানুভূতিশীল এবং উৎসাহব্যঞ্জক হন</SelectItem>
+                    <SelectItem value="provide helpful information">সহায়ক তথ্য প্রদান করুন</SelectItem>
+                    <SelectItem value="reply with humor">রসিকতার সাথে উত্তর দিন</SelectItem>
+                    <SelectItem value="defend my point of view">আমার মতামত রক্ষা করুন</SelectItem>
+                </SelectContent>
+            </Select>
           </div>
           
           <SubmitButton />
