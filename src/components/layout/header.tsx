@@ -23,7 +23,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
+import { getAuth, onAuthStateChanged, User, signOut as firebaseSignOut } from "firebase/auth";
 import { app } from "@/lib/firebase";
 
 const navLinks = [
@@ -43,18 +43,20 @@ const moreLinks = [
 export default function Header() {
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const auth = getAuth(app);
   
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setLoading(false);
     });
     return () => unsubscribe();
   }, [auth]);
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      await firebaseSignOut(auth);
       // Optional: redirect to home or login page after logout
       window.location.href = '/login';
     } catch (error) {
@@ -92,31 +94,36 @@ export default function Header() {
   );
 
   const UserMenu = () => (
-    <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-            <Button variant="secondary" className="rounded-full w-9 h-9 p-0">
-                <Avatar>
-                    <AvatarImage src={user?.photoURL || "https://placehold.co/40x40.png"} data-ai-hint="person avatar"/>
-                    <AvatarFallback>{user?.email?.[0].toUpperCase() || 'U'}</AvatarFallback>
-                </Avatar>
-            </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>{user?.displayName || user?.email}</DropdownMenuLabel>
-            <DropdownMenuSeparator/>
-            <DropdownMenuItem asChild>
-                <Link href="/dashboard"><LayoutDashboard className="mr-2"/> Dashboard</Link>
-            </DropdownMenuItem>
-             <DropdownMenuItem asChild>
-                <Link href="/profile"><UserCircle className="mr-2"/> Profile</Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator/>
-            <DropdownMenuItem onClick={handleLogout}>
-                <LogOut className="mr-2"/>
-                Logout
-            </DropdownMenuItem>
-        </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="flex items-center gap-2">
+        <Button asChild>
+            <Link href="/dashboard">Dashboard</Link>
+        </Button>
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="rounded-full w-9 h-9 p-0">
+                    <Avatar>
+                        <AvatarImage src={user?.photoURL || "https://placehold.co/40x40.png"} data-ai-hint="person avatar"/>
+                        <AvatarFallback>{user?.email?.[0].toUpperCase() || 'U'}</AvatarFallback>
+                    </Avatar>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>{user?.displayName || user?.email}</DropdownMenuLabel>
+                <DropdownMenuSeparator/>
+                <DropdownMenuItem asChild>
+                    <Link href="/dashboard"><LayoutDashboard className="mr-2"/> Dashboard</Link>
+                </DropdownMenuItem>
+                 <DropdownMenuItem asChild>
+                    <Link href="#"><UserCircle className="mr-2"/> Profile Settings</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator/>
+                <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2"/>
+                    Logout
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    </div>
   );
 
 
@@ -153,10 +160,10 @@ export default function Header() {
             </DropdownMenu>
         </nav>
         <div className="hidden lg:flex items-center gap-4">
-          {user ? <UserMenu/> : <AuthButtons/>}
+          {loading ? null : user ? <UserMenu/> : <AuthButtons/>}
         </div>
         <div className="lg:hidden flex items-center gap-2">
-           {user ? <UserMenu/> : (
+           {loading ? null : user ? <UserMenu/> : (
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">

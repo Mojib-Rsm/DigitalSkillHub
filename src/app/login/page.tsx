@@ -4,15 +4,16 @@
 import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { loginAction } from "./actions";
 import { Bot, Sparkles, LogIn, Chrome } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { app } from "@/lib/firebase";
 
 function SubmitButton() {
     const { pending } = useFormStatus();
@@ -37,6 +38,20 @@ export default function LoginPage() {
     const initialState = { message: "", issues: [], fields: {}, success: false };
     const [state, formAction] = useActionState(loginAction, initialState);
     const { toast } = useToast();
+    const router = useRouter();
+    const auth = getAuth(app);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // If user is logged in, redirect to dashboard
+                router.push('/dashboard');
+            }
+        });
+
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
+    }, [auth, router]);
 
     useEffect(() => {
         if (state.success) {
@@ -44,7 +59,7 @@ export default function LoginPage() {
                 title: "Login Successful!",
                 description: "Welcome back to TotthoAi. Redirecting to dashboard...",
             });
-            window.location.href = "/dashboard";
+            // The onAuthStateChanged listener will handle the redirect
         } else if (state.message && state.message !== "Validation Error") {
             toast({
                 variant: "destructive",

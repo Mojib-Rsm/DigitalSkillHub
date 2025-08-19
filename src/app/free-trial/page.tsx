@@ -4,6 +4,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { signupAction, verifyAndCreateUserAction } from "./actions";
 import { Bot, CheckCircle, Sparkles, Zap, ArrowRight, Lock, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { app } from "@/lib/firebase";
 
 function SignUpSubmitButton() {
     const { pending } = useFormStatus();
@@ -57,8 +60,22 @@ export default function FreeTrialPage() {
     const [verifyState, verifyFormAction] = useActionState(verifyAndCreateUserAction, { message: "", success: false });
     
     const { toast } = useToast();
+    const router = useRouter();
+    const auth = getAuth(app);
     
     const [formStep, setFormStep] = useState<"1" | "2" | "success">("1");
+
+     useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // If user is logged in, redirect to dashboard
+                router.push('/dashboard');
+            }
+        });
+
+        // Cleanup subscription on unmount
+        return () => unsubscribe();
+    }, [auth, router]);
 
     useEffect(() => {
         if (signupState.step === "2" && signupState.success) {
@@ -84,9 +101,7 @@ export default function FreeTrialPage() {
                 title: "Account Created!",
                 description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
             });
-            setTimeout(() => {
-                window.location.href = "/dashboard";
-            }, 2000);
+            // The onAuthStateChanged listener should handle the redirect after login state is confirmed.
         } else if (verifyState.message && !verifyState.success) {
             toast({
                 title: "Verification Failed",
@@ -120,7 +135,7 @@ export default function FreeTrialPage() {
                                 <CheckCircle className="h-4 w-4 text-green-500" />
                                 <AlertTitle className="text-green-700">Registration Successful!</AlertTitle>
                                 <AlertDescription>
-                                    Welcome aboard! You will be redirected to the dashboard shortly.
+                                    Welcome aboard! You are being redirected to the dashboard.
                                     <Button asChild className="mt-4 w-full">
                                         <Link href="/dashboard">Go to Dashboard <ArrowRight className="ml-2"/></Link>
                                     </Button>
