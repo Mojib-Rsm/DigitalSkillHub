@@ -22,6 +22,14 @@ if (!admin.apps.length) {
     }
 }
 
+type SmsApiResponse = {
+    response_code?: number;
+    message_id?: number;
+    success_message?: string;
+    error_message?: string;
+    message?: string; // For general error cases
+}
+
 
 async function sendSms(phoneNumber: string, message: string): Promise<{success: boolean, message: string}> {
   const apiKey = "LkcuBmpXSgO77LgytC9w";
@@ -41,13 +49,14 @@ async function sendSms(phoneNumber: string, message: string): Promise<{success: 
     
     const responseText = await response.text();
     try {
-        const result: { code: string; message?: string } = JSON.parse(responseText);
+        const result: SmsApiResponse = JSON.parse(responseText);
         
-        if (result.code === "ok") {
-            return { success: true, message: "SMS sent successfully." };
+        if (result.response_code === 202) {
+            return { success: true, message: result.success_message || "SMS sent successfully." };
         } else {
-            console.error("Failed to send SMS:", result.message);
-            return { success: false, message: `Failed to send SMS: ${result.message || 'Unknown API error'}` };
+            const errorMessage = result.error_message || result.message || 'Unknown API error';
+            console.error("Failed to send SMS:", errorMessage);
+            return { success: false, message: `Failed to send SMS: ${errorMessage}` };
         }
     } catch (jsonError) {
         console.error("Failed to parse SMS API response as JSON. Response body:", responseText);
