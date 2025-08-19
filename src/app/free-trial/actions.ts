@@ -44,11 +44,8 @@ async function sendSms(phoneNumber: string, message: string): Promise<{success: 
         const result: { code: string; message?: string } = JSON.parse(responseText);
         
         if (result.code === "ok") {
-            console.log("SMS sent successfully to:", phoneNumber);
-            // If the code is "ok", we don't need the message. Return a standard success message.
             return { success: true, message: "SMS sent successfully." };
         } else {
-            // If the code is not "ok", then we expect a message.
             console.error("Failed to send SMS:", result.message);
             return { success: false, message: `Failed to send SMS: ${result.message || 'Unknown API error'}` };
         }
