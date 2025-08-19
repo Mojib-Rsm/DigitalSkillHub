@@ -41,16 +41,18 @@ async function sendSms(phoneNumber: string, message: string): Promise<{success: 
     
     const responseText = await response.text();
     try {
-        const result: { code: string; message: string } = JSON.parse(responseText);
+        const result: { code: string; message?: string } = JSON.parse(responseText);
+        
         if (result.code === "ok") {
             console.log("SMS sent successfully to:", phoneNumber);
+            // If the code is "ok", we don't need the message. Return a standard success message.
             return { success: true, message: "SMS sent successfully." };
         } else {
+            // If the code is not "ok", then we expect a message.
             console.error("Failed to send SMS:", result.message);
-            return { success: false, message: `Failed to send SMS: ${result.message}` };
+            return { success: false, message: `Failed to send SMS: ${result.message || 'Unknown API error'}` };
         }
     } catch (jsonError) {
-        // This will catch errors if the response is not valid JSON
         console.error("Failed to parse SMS API response as JSON. Response body:", responseText);
         return { success: false, message: `SMS API returned an unexpected response: ${responseText}` };
     }
