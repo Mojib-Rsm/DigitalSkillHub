@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { loginAction } from "./actions";
 import { Bot, Sparkles, LogIn, Chrome } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signInWithCustomToken, User } from "firebase/auth";
 import { app } from "@/lib/firebase";
 
 function SubmitButton() {
@@ -35,7 +35,7 @@ function SubmitButton() {
 }
 
 export default function LoginPage() {
-    const initialState = { message: "", issues: [], fields: {}, success: false };
+    const initialState = { message: "", issues: [], fields: {}, success: false, customToken: "" };
     const [state, formAction] = useActionState(loginAction, initialState);
     const { toast } = useToast();
     const router = useRouter();
@@ -54,20 +54,35 @@ export default function LoginPage() {
     }, [auth, router]);
 
     useEffect(() => {
-        if (state.success) {
-            toast({
-                title: "Login Successful!",
-                description: "Welcome back to TotthoAi. Redirecting to dashboard...",
-            });
-            // The onAuthStateChanged listener will handle the redirect
-        } else if (state.message && state.message !== "Validation Error") {
+        if (state.success && state.customToken) {
+            signInWithCustomToken(auth, state.customToken)
+                .then((userCredential) => {
+                    // Signed in
+                    const user = userCredential.user;
+                     toast({
+                        title: "Login Successful!",
+                        description: `Welcome back, ${user.displayName || user.email}. Redirecting...`,
+                    });
+                    // The onAuthStateChanged listener will handle the redirect
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.error("Custom token sign-in error:", errorCode, errorMessage);
+                    toast({
+                        variant: "destructive",
+                        title: "Login Failed",
+                        description: `Could not complete sign in. ${errorMessage}`,
+                    });
+                });
+        } else if (!state.success && state.message && state.message !== "Validation Error") {
             toast({
                 variant: "destructive",
                 title: "Login Failed",
                 description: state.message,
             });
         }
-    }, [state, toast]);
+    }, [state, auth, toast]);
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4">

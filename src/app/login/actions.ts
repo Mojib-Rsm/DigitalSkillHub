@@ -4,6 +4,7 @@
 import { z } from "zod";
 import admin from 'firebase-admin';
 import crypto from "crypto";
+import { getFirestore } from 'firebase-admin/firestore';
 // @ts-ignore
 import serviceAccount from "../../../service-account.json";
 
@@ -32,6 +33,7 @@ type FormState = {
   fields?: Record<string, string>;
   issues?: string[];
   success?: boolean;
+  customToken?: string;
 };
 
 // Helper function to verify password
@@ -69,7 +71,7 @@ export async function loginAction(
       return { message: "Server configuration error. Please check your service-account.json file.", success: false };
   }
 
-  const db = admin.firestore();
+  const db = getFirestore();
   const { email, password } = validatedFields.data;
 
   try {
@@ -83,6 +85,7 @@ export async function loginAction(
 
     const userDoc = querySnapshot.docs[0];
     const userData = userDoc.data();
+    const uid = userDoc.id;
 
     if (!userData.password) {
         return { message: "This account does not have a password set. Please try another login method or reset your password.", success: false };
@@ -94,9 +97,11 @@ export async function loginAction(
         return { message: "Incorrect password. Please try again.", success: false };
     }
 
-    console.log(`User ${userData.name} logged in successfully.`);
+    console.log(`User ${userData.name} password verified. Generating custom token.`);
 
-    return { message: "success", success: true };
+    const customToken = await admin.auth().createCustomToken(uid);
+
+    return { message: "success", success: true, customToken };
 
   } catch (error: any) {
     console.error("Login Error:", error);
