@@ -12,20 +12,20 @@ const footerLinks = {
         { label: "Facebook Captions", href: "/ai-tools/facebook-comment-generator" },
     ],
     support: [
-        { label: "Contact Support", href: "#" },
+        { label: "Contact Support", href: "/contact" },
         { label: "Community", href: "/community" },
         { label: "Free Tools", href: "/free-tools" },
     ],
     company: [
-        { label: "About Us", href: "#" },
-        { label: "Careers", href: "#" },
+        { label: "About Us", href: "/about" },
+        { label: "Careers", href: "/careers" },
         { label: "Press Kit", href: "#" },
     ],
     legal: [
-        { label: "Privacy Policy", href: "/free-tools/privacy-policy-generator" },
-        { label: "Terms of Service", href: "/free-tools/terms-of-service-generator" },
-        { label: "Refund Policy", href: "#" },
-        { label: "Cookie Policy", href: "#" },
+        { label: "Privacy Policy", href: "/legal/privacy-policy" },
+        { label: "Terms of Service", href: "/legal/terms-of-service" },
+        { label: "Refund Policy", href: "/legal/refund-policy" },
+        { label: "Cookie Policy", href: "/legal/cookie-policy" },
     ]
 }
 
