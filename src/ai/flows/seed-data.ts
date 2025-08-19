@@ -8,7 +8,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { getFirestore, collection, writeBatch } from 'firebase-admin/firestore';
+import * as firestore from 'firebase-admin/firestore';
 import { app } from '@/lib/firebase-admin';
 import { allCourses, blogPosts, jobPostings } from '@/lib/demo-data';
 
@@ -33,7 +33,7 @@ export const seedDataFlow = ai.defineFlow(
         throw new Error("Firebase Admin SDK is not initialized. Cannot seed data.");
     }
     
-    const db = getFirestore(app);
+    const db = firestore.getFirestore(app);
     const batch = db.batch();
     let coursesAdded = 0;
     let blogPostsAdded = 0;
@@ -41,7 +41,7 @@ export const seedDataFlow = ai.defineFlow(
 
     try {
       // Seed Courses
-      const coursesCollection = collection(db, 'courses');
+      const coursesCollection = firestore.collection(db, 'courses');
       allCourses.forEach(course => {
         const docRef = coursesCollection.doc(); // Auto-generate ID
         batch.set(docRef, course);
@@ -49,7 +49,7 @@ export const seedDataFlow = ai.defineFlow(
       });
 
       // Seed Blog Posts
-      const blogCollection = collection(db, 'blog');
+      const blogCollection = firestore.collection(db, 'blog');
       blogPosts.forEach(post => {
         const docRef = blogCollection.doc(); // Auto-generate ID
         batch.set(docRef, post);
@@ -57,7 +57,7 @@ export const seedDataFlow = ai.defineFlow(
       });
       
       // Seed Job Postings
-      const jobsCollection = collection(db, 'jobs');
+      const jobsCollection = firestore.collection(db, 'jobs');
       jobPostings.forEach(job => {
         const docRef = jobsCollection.doc(); // Auto-generate ID
         batch.set(docRef, job);

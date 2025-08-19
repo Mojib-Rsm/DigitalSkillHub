@@ -2,17 +2,17 @@
 "use server";
 
 import { z } from "zod";
-import { getFirestore, collection, query, where, getDocs } from "firebase-admin/firestore";
-import { initializeApp, getApps, cert, App } from "firebase-admin/app";
+import * as admin from 'firebase-admin';
+import * as firestore from 'firebase-admin/firestore';
 import crypto from "crypto";
 // @ts-ignore
 import serviceAccount from "../../../service-account.json";
 
-let app: App;
-if (!getApps().length) {
+let app: admin.app.App;
+if (!admin.apps.length) {
     try {
-        app = initializeApp({
-            credential: cert(serviceAccount)
+        app = admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount)
         });
     } catch (e: any) {
         if (e.code === 'invalid-credential') {
@@ -22,7 +22,7 @@ if (!getApps().length) {
         }
     }
 } else {
-    app = getApps()[0];
+    app = admin.apps[0]!;
 }
 
 
@@ -74,13 +74,13 @@ export async function loginAction(
       return { message: "Server configuration error. Please check your service-account.json file.", success: false };
   }
 
-  const db = getFirestore(app);
+  const db = firestore.getFirestore(app);
   const { email, password } = validatedFields.data;
 
   try {
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("email", "==", email));
-    const querySnapshot = await getDocs(q);
+    const usersRef = firestore.collection(db, "users");
+    const q = firestore.query(usersRef, firestore.where("email", "==", email));
+    const querySnapshot = await firestore.getDocs(q);
 
     if (querySnapshot.empty) {
         return { message: "No user found with this email address.", success: false };

@@ -2,18 +2,18 @@
 "use server";
 
 import { z } from "zod";
-import { getFirestore, doc, getDoc, collection, query, where, getDocs, setDoc, deleteDoc, writeBatch } from "firebase-admin/firestore";
-import { initializeApp, getApps, cert, App } from "firebase-admin/app";
+import * as admin from 'firebase-admin';
+import * as firestore from 'firebase-admin/firestore';
 import crypto from "crypto";
 // @ts-ignore
 import serviceAccount from "../../../service-account.json";
 
 
-let app: App;
-if (!getApps().length) {
+let app: admin.app.App;
+if (!admin.apps.length) {
     try {
-        app = initializeApp({
-            credential: cert(serviceAccount)
+        app = admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount)
         });
     } catch (e: any) {
          if (e.code === 'invalid-credential') {
@@ -23,7 +23,7 @@ if (!getApps().length) {
         }
     }
 } else {
-    app = getApps()[0];
+    app = admin.apps[0]!;
 }
 
 
@@ -101,13 +101,13 @@ async function sendOTP(email: string, phone: string) {
         console.error("Firebase Admin SDK is not initialized. Cannot send OTP.");
         return { success: false, message: "Server configuration error. Please contact support." };
     }
-    const db = getFirestore(app);
+    const db = firestore.getFirestore(app);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
 
     try {
         const batch = db.batch();
-        const otpRef = doc(db, "otps", email);
+        const otpRef = firestore.doc(db, "otps", email);
         batch.set(otpRef, { code: otp, phone, expires: expires.toISOString() });
         
         await batch.commit();
@@ -160,15 +160,15 @@ export async function signupAction(
       return { message: "Server configuration error. Please check your service-account.json file.", fields, step: "1", success: false };
   }
   
-  const db = getFirestore(app);
-  const usersRef = collection(db, "users");
+  const db = firestore.getFirestore(app);
+  const usersRef = firestore.collection(db, "users");
 
   // Check if email or phone already exists
-  const emailQuery = query(usersRef, where("email", "==", validatedFields.data.email));
-  const phoneQuery = query(usersRef, where("phone", "==", validatedFields.data.phone));
+  const emailQuery = firestore.query(usersRef, firestore.where("email", "==", validatedFields.data.email));
+  const phoneQuery = firestore.query(usersRef, firestore.where("phone", "==", validatedFields.data.phone));
   
   try {
-    const [emailSnapshot, phoneSnapshot] = await Promise.all([getDocs(emailQuery), getDocs(phoneQuery)]);
+    const [emailSnapshot, phoneSnapshot] = await Promise.all([firestore.getDocs(emailQuery), firestore.getDocs(phoneQuery)]);
 
     if (!emailSnapshot.empty) {
         return { message: "An account with this email already exists.", fields, step: "1", success: false };
@@ -214,11 +214,11 @@ export async function verifyAndCreateUserAction(
     }
 
     const { email, otp, name, password, phone } = validatedFields.data;
-    const db = getFirestore(app);
+    const db = firestore.getFirestore(app);
 
     try {
-        const otpDocRef = doc(db, "otps", email);
-        const otpDoc = await getDoc(otpDocRef);
+        const otpDocRef = firestore.doc(db, "otps", email);
+        const otpDoc = await firestore.getDoc(otpDocRef);
 
         if (!otpDoc.exists()) {
             return { success: false, message: "Invalid OTP or it has expired. Please try registering again." };
@@ -226,13 +226,13 @@ export async function verifyAndCreateUserAction(
         
         const otpData = otpDoc.data();
         if (otpData.code !== otp || new Date(otpData.expires) < new Date()) {
-            await deleteDoc(otpDocRef);
+            await firestore.deleteDoc(otpDocRef);
             return { success: false, message: "Invalid OTP or it has expired. Please try registering again." };
         }
 
         // OTP is correct, create user and delete OTP
         const uid = crypto.randomUUID();
-        const userRef = doc(db, "users", uid);
+        const userRef = firestore.doc(db, "users", uid);
         const batch = db.batch();
 
         batch.set(userRef, {
