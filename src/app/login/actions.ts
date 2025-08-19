@@ -2,16 +2,14 @@
 "use server";
 
 import { z } from "zod";
-import * as admin from 'firebase-admin';
-import * as firestore from 'firebase-admin/firestore';
+import admin from 'firebase-admin';
 import crypto from "crypto";
 // @ts-ignore
 import serviceAccount from "../../../service-account.json";
 
-let app: admin.app.App;
 if (!admin.apps.length) {
     try {
-        app = admin.initializeApp({
+        admin.initializeApp({
             credential: admin.credential.cert(serviceAccount)
         });
     } catch (e: any) {
@@ -21,8 +19,6 @@ if (!admin.apps.length) {
             console.error("Firebase Admin SDK initialization failed:", e.message);
         }
     }
-} else {
-    app = admin.apps[0]!;
 }
 
 
@@ -68,19 +64,18 @@ export async function loginAction(
     };
   }
   
-  // @ts-ignore
-  if (!app) {
+  if (!admin.apps.length) {
       console.error("Firebase Admin SDK is not initialized.");
       return { message: "Server configuration error. Please check your service-account.json file.", success: false };
   }
 
-  const db = firestore.getFirestore(app);
+  const db = admin.firestore();
   const { email, password } = validatedFields.data;
 
   try {
-    const usersRef = firestore.collection(db, "users");
-    const q = firestore.query(usersRef, firestore.where("email", "==", email));
-    const querySnapshot = await firestore.getDocs(q);
+    const usersRef = db.collection("users");
+    const q = usersRef.where("email", "==", email);
+    const querySnapshot = await q.get();
 
     if (querySnapshot.empty) {
         return { message: "No user found with this email address.", success: false };

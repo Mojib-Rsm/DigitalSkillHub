@@ -2,17 +2,15 @@
 "use server";
 
 import { z } from "zod";
-import * as admin from 'firebase-admin';
-import * as firestore from 'firebase-admin/firestore';
+import admin from 'firebase-admin';
 import crypto from "crypto";
 // @ts-ignore
 import serviceAccount from "../../../service-account.json";
 
 
-let app: admin.app.App;
 if (!admin.apps.length) {
     try {
-        app = admin.initializeApp({
+        admin.initializeApp({
             credential: admin.credential.cert(serviceAccount)
         });
     } catch (e: any) {
@@ -22,8 +20,6 @@ if (!admin.apps.length) {
             console.error("Firebase Admin SDK initialization failed:", e.message);
         }
     }
-} else {
-    app = admin.apps[0]!;
 }
 
 
@@ -96,18 +92,17 @@ type FormState = {
 
 
 async function sendOTP(email: string, phone: string) {
-    // @ts-ignore
-    if (!app) {
+    if (!admin.apps.length) {
         console.error("Firebase Admin SDK is not initialized. Cannot send OTP.");
         return { success: false, message: "Server configuration error. Please contact support." };
     }
-    const db = firestore.getFirestore(app);
+    const db = admin.firestore();
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
 
     try {
         const batch = db.batch();
-        const otpRef = firestore.doc(db, "otps", email);
+        const otpRef = db.collection("otps").doc(email);
         batch.set(otpRef, { code: otp, phone, expires: expires.toISOString() });
         
         await batch.commit();
@@ -154,21 +149,20 @@ export async function signupAction(
     };
   }
   
-  // @ts-ignore
-  if (!app) {
+  if (!admin.apps.length) {
       console.error("Firebase Admin SDK is not initialized.");
       return { message: "Server configuration error. Please check your service-account.json file.", fields, step: "1", success: false };
   }
   
-  const db = firestore.getFirestore(app);
-  const usersRef = firestore.collection(db, "users");
+  const db = admin.firestore();
+  const usersRef = db.collection("users");
 
   // Check if email or phone already exists
-  const emailQuery = firestore.query(usersRef, firestore.where("email", "==", validatedFields.data.email));
-  const phoneQuery = firestore.query(usersRef, firestore.where("phone", "==", validatedFields.data.phone));
+  const emailQuery = usersRef.where("email", "==", validatedFields.data.email);
+  const phoneQuery = usersRef.where("phone", "==", validatedFields.data.phone);
   
   try {
-    const [emailSnapshot, phoneSnapshot] = await Promise.all([firestore.getDocs(emailQuery), firestore.getDocs(phoneQuery)]);
+    const [emailSnapshot, phoneSnapshot] = await Promise.all([emailQuery.get(), phoneQuery.get()]);
 
     if (!emailSnapshot.empty) {
         return { message: "An account with this email already exists.", fields, step: "1", success: false };
@@ -208,31 +202,30 @@ export async function verifyAndCreateUserAction(
         return { success: false, message: "Invalid data provided. Please check the form." };
     }
 
-    // @ts-ignore
-    if (!app) {
+    if (!admin.apps.length) {
         return { success: false, message: "Server configuration error. Cannot create user." };
     }
 
     const { email, otp, name, password, phone } = validatedFields.data;
-    const db = firestore.getFirestore(app);
+    const db = admin.firestore();
 
     try {
-        const otpDocRef = firestore.doc(db, "otps", email);
-        const otpDoc = await firestore.getDoc(otpDocRef);
+        const otpDocRef = db.collection("otps").doc(email);
+        const otpDoc = await otpDocRef.get();
 
-        if (!otpDoc.exists()) {
+        if (!otpDoc.exists) {
             return { success: false, message: "Invalid OTP or it has expired. Please try registering again." };
         }
         
         const otpData = otpDoc.data();
-        if (otpData.code !== otp || new Date(otpData.expires) < new Date()) {
-            await firestore.deleteDoc(otpDocRef);
+        if (otpData!.code !== otp || new Date(otpData!.expires) < new Date()) {
+            await otpDocRef.delete();
             return { success: false, message: "Invalid OTP or it has expired. Please try registering again." };
         }
 
         // OTP is correct, create user and delete OTP
         const uid = crypto.randomUUID();
-        const userRef = firestore.doc(db, "users", uid);
+        const userRef = db.collection("users").doc(uid);
         const batch = db.batch();
 
         batch.set(userRef, {
