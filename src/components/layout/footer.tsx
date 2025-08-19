@@ -19,7 +19,7 @@ const footerLinks = {
     company: [
         { label: "About Us", href: "/about" },
         { label: "Careers", href: "/careers" },
-        { label: "Press Kit", href: "#" },
+        { label: "Press Kit", href: "/press-kit" },
     ],
     legal: [
         { label: "Privacy Policy", href: "/legal/privacy-policy" },
