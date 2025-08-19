@@ -39,14 +39,20 @@ async function sendSms(phoneNumber: string, message: string): Promise<{success: 
       }),
     });
     
-    const result: { code: string; message: string } = await response.json();
-
-    if (result.code === "ok") {
-        console.log("SMS sent successfully to:", phoneNumber);
-        return { success: true, message: "SMS sent successfully." };
-    } else {
-        console.error("Failed to send SMS:", result.message);
-        return { success: false, message: `Failed to send SMS: ${result.message}` };
+    const responseText = await response.text();
+    try {
+        const result: { code: string; message: string } = JSON.parse(responseText);
+        if (result.code === "ok") {
+            console.log("SMS sent successfully to:", phoneNumber);
+            return { success: true, message: "SMS sent successfully." };
+        } else {
+            console.error("Failed to send SMS:", result.message);
+            return { success: false, message: `Failed to send SMS: ${result.message}` };
+        }
+    } catch (jsonError) {
+        // This will catch errors if the response is not valid JSON
+        console.error("Failed to parse SMS API response as JSON. Response body:", responseText);
+        return { success: false, message: `SMS API returned an unexpected response: ${responseText}` };
     }
   } catch (error) {
     console.error('Error sending SMS:', error);
