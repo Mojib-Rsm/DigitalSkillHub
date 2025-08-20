@@ -2,7 +2,7 @@
 'use server';
 
 /**
- * @fileOverview AI tool to generate videos from an image and a text prompt.
+ * @fileOverview AI tool to generate videos from an image and an optional text prompt.
  *
  * - imageToVideoGenerator - A function that generates a video.
  * - ImageToVideoGeneratorInput - The input type for the function.
@@ -16,7 +16,7 @@ import type { MediaPart } from 'genkit';
 import { Buffer } from 'buffer';
 
 const ImageToVideoGeneratorInputSchema = z.object({
-  prompt: z.string().describe('The text prompt describing what should happen in the video.'),
+  prompt: z.string().optional().describe('The text prompt describing what should happen in the video. If not provided, a default animation will be attempted.'),
   photoDataUri: z
     .string()
     .describe(
@@ -70,11 +70,14 @@ const imageToVideoGeneratorFlow = ai.defineFlow(
         }
         const [, mimeType, base64Data] = match;
 
+        // Use a default prompt if none is provided
+        const finalPrompt = prompt || 'animate this image';
+
         let { operation } = await ai.generate({
           model: googleAI.model('veo-2.0-generate-001'),
           prompt: [
-            { text: prompt },
             { image: { bytesBase64Encoded: base64Data, mimeType: mimeType } },
+            { text: finalPrompt },
           ],
           config: {
             durationSeconds: 5,

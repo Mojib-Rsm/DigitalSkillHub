@@ -8,7 +8,7 @@ const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const ImageToVideoGeneratorActionSchema = z.object({
-  prompt: z.string().min(10, { message: "Please enter a more descriptive prompt (at least 10 characters)." }),
+  prompt: z.string().optional(),
   photo: z
     .any()
     .refine((file) => file?.size > 0, 'অনুগ্রহ করে একটি ছবি আপলোড করুন।')

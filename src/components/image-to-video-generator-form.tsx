@@ -111,13 +111,12 @@ export default function ImageToVideoGeneratorForm() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="prompt">প্রম্পট</Label>
+            <Label htmlFor="prompt">প্রম্পট (ঐচ্ছিক)</Label>
             <Textarea
               id="prompt"
               name="prompt"
-              placeholder="যেমন, 'make the subject in the photo move', 'make this image a cinematic video'"
+              placeholder="যেমন, 'make the subject in the photo move', 'make this image a cinematic video'. প্রম্পট না দিলে স্বয়ংক্রিয়ভাবে অ্যানিমেশন হবে।"
               defaultValue={state.fields?.prompt}
-              required
               rows={3}
             />
             {state.issues?.map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
