@@ -74,7 +74,7 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-background">
       {/* Hero Section */}
-      <section className="py-16 md:py-24 overflow-hidden">
+      <section className="pt-12 md:pt-16 pb-8 md:pb-12 overflow-hidden">
         <div className="container mx-auto px-4 text-center">
             <Badge variant="secondary" className="text-sm py-1.5 px-4 border-2 border-primary/50 text-primary animate-pulse">
                 <SparklesIcon className="w-4 h-4 mr-2"/>
@@ -116,7 +116,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 md:py-24">
+      <section className="pt-8 pb-12 md:pb-20">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             <Card className="p-6 bg-muted/50">
@@ -161,7 +161,7 @@ export default function Home() {
 
 
       {/* What's New Section */}
-      <section id="whats-new" className="py-16 md:py-24 bg-muted/50">
+      <section id="whats-new" className="py-12 md:py-20 bg-muted/50">
         <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto">
                 <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">What's New in TotthoAi 2.0</h2>
@@ -208,7 +208,7 @@ export default function Home() {
       </section>
 
        {/* Detailed Features */}
-       <section id="features" className="py-16 md:py-24">
+       <section id="features" className="py-12 md:py-20">
             <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                  <div className="md:col-span-2 lg:col-span-1 lg:pr-8 animate-fade-in-up">
                     <Badge variant="destructive">🔥 HOT NEW FEATURE</Badge>
@@ -274,7 +274,7 @@ export default function Home() {
        </section>
 
       {/* AI-Generated Visuals Section */}
-      <section className="py-16 md:py-24 bg-muted/50">
+      <section className="py-12 md:py-20 bg-muted/50">
         <div className="container mx-auto px-4 text-center">
           <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Enhance Your Content with AI-Generated Images</h2>
           <p className="text-lg text-muted-foreground mt-4 max-w-3xl mx-auto animate-fade-in-up [animation-delay:200ms]">
@@ -297,7 +297,7 @@ export default function Home() {
       </section>
       
       {/* Success Stories Section */}
-      <section className="py-16 md:py-24">
+      <section className="py-12 md:py-20">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Success Stories with TotthoAi 2.0</h2>
@@ -399,7 +399,7 @@ export default function Home() {
       </section>
 
        {/* Pricing Section */}
-      <section id="pricing" className="py-16 md:py-24 bg-muted/50">
+      <section id="pricing" className="py-12 md:py-20 bg-muted/50">
           <div className="container mx-auto px-4">
               <div className="text-center max-w-3xl mx-auto">
                   <Badge variant="secondary" className="text-sm py-1 px-3 border-2 border-primary/50 text-primary mb-4">
@@ -589,7 +589,7 @@ export default function Home() {
       </section>
 
         {/* FAQ Section */}
-        <section className="py-16 md:py-24">
+        <section className="py-12 md:py-20">
             <div className="container mx-auto px-4">
                 <div className="text-center max-w-3xl mx-auto">
                     <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Frequently Asked Questions</h2>
