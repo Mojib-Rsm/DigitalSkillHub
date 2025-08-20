@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircle as MessageCircleIcon } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from '@/lib/utils';
@@ -42,6 +42,13 @@ const allTools = [
         description: "একটি নির্দিষ্ট ফেসবুক কমেন্টের জন্য বুদ্ধিদীপ্ত উত্তর তৈরি করুন।",
         href: "/ai-tools/facebook-reply-generator",
         icon: <CornerDownRight className="w-8 h-8 text-primary" />,
+        category: "Content & Writing",
+    },
+    {
+        title: "মেসেঞ্জার রিপ্লাই জেনারেটর",
+        description: "যেকোনো মেসেঞ্জার কথোপকথনের জন্য প্রাসঙ্গিক উত্তর তৈরি করুন।",
+        href: "/ai-tools/messenger-reply-generator",
+        icon: <MessageCircleIcon className="w-8 h-8 text-primary" />,
         category: "Content & Writing",
     },
     {
