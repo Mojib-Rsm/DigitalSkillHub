@@ -11,7 +11,7 @@ export default function HandwritingExtractorPage() {
         </div>
         <h1 className="font-headline text-5xl font-bold">হাতের লেখা এক্সট্র্যাক্টর</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          আপনার হাতে লেখা ডকুমেন্টের একটি ছবি আপলোড করুন এবং সেটিকে সম্পাদনাযোগ্য টেক্সট, এক্সেল, ওয়ার্ড বা পিডিএফ-এ রূপান্তর করুন।
+          আপনার হাতে লেখা ডকুমেন্টের এক বা একাধিক ছবি আপলোড করুন এবং সেটিকে সম্পাদনাযোগ্য টেক্সট, এক্সেল, ওয়ার্ড বা পিডিএফ-এ রূপান্তর করুন।
         </p>
       </div>
 

@@ -50,7 +50,7 @@ export default function HandwritingExtractorForm() {
   const initialState = { message: "", issues: [], data: undefined };
   const [state, formAction] = useActionState(extractHandwritingAction, initialState);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [outputFormat, setOutputFormat] = useState("excel");
   const { toast } = useToast();
 
@@ -65,29 +65,37 @@ export default function HandwritingExtractorForm() {
   }, [state, toast]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-          toast({
-              variant: "destructive",
-              title: "ফাইল খুবই বড়",
-              description: "ছবির আকার 5MB এর বেশি হতে পারবে না।",
-          });
-          if(fileInputRef.current) fileInputRef.current.value = "";
-          setPreviewUrl(null);
-          return;
-      }
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+    const files = event.target.files;
+    if (files) {
+      const validFiles = Array.from(files).filter(file => {
+          if (file.size > 5 * 1024 * 1024) {
+              toast({
+                  variant: "destructive",
+                  title: "ফাইল খুবই বড়",
+                  description: `"${file.name}" ছবির আকার 5MB এর বেশি হতে পারবে না।`,
+              });
+              return false;
+          }
+          return true;
+      });
+      const urls = validFiles.map(file => URL.createObjectURL(file));
+      setPreviewUrls(urls);
     } else {
-      setPreviewUrl(null);
+      setPreviewUrls([]);
     }
   };
 
-  const handleRemoveImage = () => {
-    setPreviewUrl(null);
-    if(fileInputRef.current) {
-        fileInputRef.current.value = "";
+  const handleRemoveImage = (indexToRemove: number) => {
+    // Revoke the object URL to free up memory
+    URL.revokeObjectURL(previewUrls[indexToRemove]);
+    setPreviewUrls(prev => prev.filter((_, index) => index !== indexToRemove));
+
+    // Remove the file from the input element
+    if (fileInputRef.current) {
+        const dataTransfer = new DataTransfer();
+        const files = Array.from(fileInputRef.current.files || []);
+        files.filter((_, i) => i !== indexToRemove).forEach(file => dataTransfer.items.add(file));
+        fileInputRef.current.files = dataTransfer.files;
     }
   }
   
@@ -96,7 +104,7 @@ export default function HandwritingExtractorForm() {
 
     const { isTable, extractedTable, extractedText } = state.data;
     
-    if (isTable) {
+    if (isTable && extractedTable.length > 0) {
         const worksheet = XLSX.utils.aoa_to_sheet(extractedTable);
         
         if (outputFormat === 'excel') {
@@ -162,29 +170,34 @@ export default function HandwritingExtractorForm() {
       <CardHeader>
         <CardTitle>ছবি থেকে টেক্সট এক্সট্র্যাক্ট করুন</CardTitle>
         <CardDescription>
-          আপনার হাতে লেখা নোটের একটি পরিষ্কার ছবি আপলোড করুন এবং আউটপুট ফরম্যাট নির্বাচন করুন।
+          আপনার হাতে লেখা নোটের এক বা একাধিক পরিষ্কার ছবি আপলোড করুন এবং আউটপুট ফরম্যাট নির্বাচন করুন।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               <div className="space-y-2">
-                <Label htmlFor="photo">আপনার ছবি (সর্বোচ্চ 5MB)</Label>
+                <Label htmlFor="photos">আপনার ছবি (সর্বোচ্চ 5MB প্রতিটি)</Label>
                 <Input
-                    id="photo"
-                    name="photo"
+                    id="photos"
+                    name="photos"
                     type="file"
                     accept="image/*"
                     ref={fileInputRef}
                     onChange={handleFileChange}
                     className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                    multiple
                 />
-                {previewUrl && (
-                    <div className="mt-2 relative w-full h-48 border rounded-md">
-                        <Image src={previewUrl} alt="Image preview" layout="fill" className="rounded-md object-contain"/>
-                        <Button type="button" variant="destructive" size="icon" onClick={handleRemoveImage} className="absolute -top-2 -right-2 h-6 w-6 rounded-full">
-                            <X className="h-4 w-4"/>
-                        </Button>
+                {previewUrls.length > 0 && (
+                    <div className="mt-2 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                        {previewUrls.map((url, index) => (
+                             <div key={url} className="relative w-full aspect-square border rounded-md">
+                                <Image src={url} alt={`Preview ${index + 1}`} layout="fill" className="rounded-md object-contain"/>
+                                <Button type="button" variant="destructive" size="icon" onClick={() => handleRemoveImage(index)} className="absolute -top-2 -right-2 h-6 w-6 rounded-full">
+                                    <X className="h-4 w-4"/>
+                                </Button>
+                            </div>
+                        ))}
                     </div>
                 )}
                 {state.issues?.map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
@@ -275,7 +288,7 @@ export default function HandwritingExtractorForm() {
                 </CardContent>
             </Card>
             
-            <Button onClick={handleDownload} size="lg" className="w-full">
+            <Button onClick={handleDownload} size="lg" className="w-full" disabled={!state.data.extractedText && (!state.data.extractedTable || state.data.extractedTable.length === 0)}>
                 <Download className="mr-2 h-5 w-5" />
                 ডাউনলোড করুন ({outputFormat.toUpperCase()})
             </Button>

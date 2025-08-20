@@ -8,12 +8,12 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const HandwritingExtractorActionSchema = z.object({
-  photo: z
-    .any()
-    .refine((file) => file && file.size > 0, 'অনুগ্রহ করে একটি ছবি আপলোড করুন।')
-    .refine((file) => file.size <= MAX_FILE_SIZE, `ছবির আকার 5MB এর বেশি হতে পারবে না।`)
+  photos: z
+    .array(z.any())
+    .min(1, 'অনুগ্রহ করে কমপক্ষে একটি ছবি আপলোড করুন।')
+    .refine((files) => files.every(file => file.size <= MAX_FILE_SIZE), `প্রতিটি ছবির আকার 5MB এর বেশি হতে পারবে না।`)
     .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file.type),
+      (files) => files.every(file => ACCEPTED_IMAGE_TYPES.includes(file.type)),
       "শুধুমাত্র .jpg, .jpeg, .png এবং .webp ফরম্যাট সমর্থিত।"
     ),
 });
@@ -28,9 +28,13 @@ export async function extractHandwritingAction(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
+
+  const photoFiles = formData.getAll("photos");
+
   const validatedFields = HandwritingExtractorActionSchema.safeParse({
-    photo: formData.get("photo"),
+    photos: photoFiles,
   });
+
 
   if (!validatedFields.success) {
     const { errors } = validatedFields.error;
@@ -41,12 +45,16 @@ export async function extractHandwritingAction(
   }
   
   try {
-    const { photo } = validatedFields.data;
-    
-    const photoBuffer = Buffer.from(await photo.arrayBuffer());
-    const photoDataUri = `data:${photo.type};base64,${photoBuffer.toString('base64')}`;
+    const { photos } = validatedFields.data;
 
-    const result = await handwritingExtractor({ photoDataUri });
+    const photoDataUris = await Promise.all(
+        photos.map(async (photo: File) => {
+            const photoBuffer = Buffer.from(await photo.arrayBuffer());
+            return `data:${photo.type};base64,${photoBuffer.toString('base64')}`;
+        })
+    );
+    
+    const result = await handwritingExtractor({ photoDataUris });
 
     if (result) {
       return {
@@ -59,6 +67,10 @@ export async function extractHandwritingAction(
   } catch (error) {
     console.error("Handwriting extraction error:", error);
     if (error instanceof Error) {
+        // Check for specific Genkit/Google AI errors if possible
+        if (error.message.includes("unexpected response")) {
+             return { message: `সার্ভার থেকে একটি অপ্রত্যাশিত প্রতিক্রিয়া এসেছে। অনুগ্রহ করে একটি একটি করে ছবি চেষ্টা করুন অথবা ছবির সংখ্যা কমান।` };
+        }
         return { message: `An unexpected error occurred: ${error.message}` };
     }
     return {
