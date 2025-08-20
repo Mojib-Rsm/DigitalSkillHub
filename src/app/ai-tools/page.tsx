@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircle as MessageCircleIcon, LayoutTemplate } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircle as MessageCircleIcon, LayoutTemplate, Receipt } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from '@/lib/utils';
@@ -106,6 +106,13 @@ const allTools = [
         href: "/ai-tools/cover-letter-generator",
         icon: <FileSignature className="w-8 h-8 text-primary" />,
         category: "Content & Writing",
+    },
+    {
+        title: "রিফান্ড পলিসি জেনারেটর",
+        description: "আপনার ব্যবসার জন্য একটি কাস্টম রিফান্ড পলিসি তৈরি করুন।",
+        href: "/ai-tools/refund-policy-generator",
+        icon: <Receipt className="w-8 h-8 text-primary" />,
+        category: "Productivity & Business",
     },
     {
         title: "জীবনবৃত্তান্ত/সিভি সহায়ক",
