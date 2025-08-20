@@ -10,8 +10,11 @@ export const metadata: Metadata = {
   title: 'TotthoAi - আপনার এআই টুলবক্স | AI Content & Image Generator',
   description:
     'TotthoAi is an innovative AI platform offering a suite of powerful tools for content generation, image creation, business solutions, and more. Save time and money by leveraging the best artificial intelligence website for your needs.',
-  keywords: ['TotthoAi', 'Tottho', 'AI tools', 'Bengali AI', 'AI website', 'AI platform', 'AI solutions', 'artificial intelligence website', 'best AI websites', 'AI tools online', 'TotthoAI pricing', 'innovative AI website', 'content generation', 'image generator', 'video generator', 'free tools', 'তথ্য', 'এআই টুলস', 'কনটেন্ট জেনারেটর', 'বাংলা এআই'],
-  manifest: '/manifest.json'
+  keywords: ['TotthoAi', 'AI tools', 'Bengali AI', 'Tottho', 'TotthoAI', 'AI website', 'AI platform', 'what is TotthoAI', 'TotthoAI features', 'TotthoAI benefits', 'AI solutions', 'artificial intelligence website', 'best AI websites', 'how to use TotthoAI', 'AI tools online', 'TotthoAI pricing', 'examples of AI websites', 'AI website for [specific task]', 'innovative AI website', 'তথ্য', 'এআই টুলস', 'কনটেন্ট জেনারেটর', 'বাংলা এআই'],
+  manifest: '/manifest.json',
+  verification: {
+    google: 'UOjLl8nKnBXzX4B4Iexn70-dASolNycUEKKZ2o4fg0E',
+  },
 };
 
 export default function RootLayout({
