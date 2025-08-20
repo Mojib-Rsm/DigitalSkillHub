@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircle as MessageCircleIcon, LayoutTemplate, Receipt, Clapperboard } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircle as MessageCircleIcon, LayoutTemplate, Receipt, Clapperboard, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from '@/lib/utils';
@@ -78,6 +78,13 @@ const allTools = [
         href: "/ai-tools/image-to-video-generator",
         icon: <Clapperboard className="w-8 h-8 text-primary" />,
         category: "Video & Animation",
+    },
+    {
+        title: "প্রম্পট জেনারেটর",
+        description: "ছবি, ভিডিও বা অডিওর জন্য বিস্তারিত এবং কার্যকর প্রম্পট তৈরি করুন।",
+        href: "/ai-tools/prompt-generator",
+        icon: <Sparkles className="w-8 h-8 text-primary" />,
+        category: "Productivity & Business",
     },
     {
         title: "পেশাদার ইমেল লেখক",

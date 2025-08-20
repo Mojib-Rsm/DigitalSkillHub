@@ -25,4 +25,5 @@ export const allTools = [
     { href: "/ai-tools/course-recommender" },
     { href: "/ai-tools/quiz-generator" },
     { href: "/ai-tools/messenger-reply-generator" },
+    { href: "/ai-tools/prompt-generator" },
 ];
