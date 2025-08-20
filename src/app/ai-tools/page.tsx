@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from '@/lib/utils';
@@ -57,6 +57,13 @@ const allTools = [
         href: "/ai-tools/passport-photo-maker",
         icon: <UserCircle className="w-8 h-8 text-primary" />,
         category: "Image Generation",
+    },
+     {
+        title: "হাতের লেখা এক্সট্র্যাক্টর",
+        description: "হাতে লেখা নোট থেকে টেক্সট এক্সট্র্যাক্ট করে Word, Excel বা PDF এ রূপান্তর করুন।",
+        href: "/ai-tools/handwriting-extractor",
+        icon: <Edit className="w-8 h-8 text-primary" />,
+        category: "Productivity & Business",
     },
     {
         title: "এআই ভিডিও জেনারেটর",

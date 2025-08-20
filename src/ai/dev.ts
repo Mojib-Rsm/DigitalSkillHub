@@ -31,3 +31,4 @@ import '@/ai/flows/disclaimer-generator.ts';
 import '@/ai/flows/seed-data.ts';
 import '@/ai/flows/refund-policy-generator.ts';
 import '@/ai/flows/contact-support.ts';
+import '@/ai/flows/handwriting-extractor.ts';
