@@ -181,7 +181,7 @@ export default function WebsiteBlueprintGeneratorForm() {
                             className="w-full justify-between font-normal"
                         >
                             {country
-                            ? countries.find((c) => c.value.toLowerCase() === country.toLowerCase())?.label
+                            ? countries.find((c) => c.value === country)?.label
                             : "দেশ নির্বাচন করুন..."}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -194,11 +194,10 @@ export default function WebsiteBlueprintGeneratorForm() {
                             {countries.map((c) => (
                                 <CommandItem
                                 key={c.value}
-                                value={c.label}
+                                value={c.value}
                                 onSelect={(currentValue) => {
-                                    const selectedCountry = countries.find(c => c.label.toLowerCase() === currentValue.toLowerCase());
-                                    setCountry(selectedCountry ? selectedCountry.value : "");
-                                    setCountrySelectOpen(false);
+                                    setCountry(currentValue === country ? "" : currentValue)
+                                    setCountrySelectOpen(false)
                                 }}
                                 >
                                 <Check
@@ -286,7 +285,7 @@ export default function WebsiteBlueprintGeneratorForm() {
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="General users and online shoppers">সাধারণ ব্যবহারকারী ও অনলাইন ক্রেতা</SelectItem>
-                        <SelectItem value="Potential clients and investors">সম্ভাব্য ক্লায়েন্ট ও বিনিয়োগকারী</SelectItem>
+                        <SelectItem value="Potential clients and investors">সম্ভাব্য ক্লায়েন্ট ও বিনিয়োগকারী</SelectItem>
                         <SelectItem value="Clients and employers">ক্লায়েন্ট এবং চাকরিদাতা</SelectItem>
                         <SelectItem value="Food lovers and tourists">খাদ্যপ্রেমী ও পর্যটক</SelectItem>
                         <SelectItem value="Travelers and families">ভ্রমণকারী ও পরিবার</SelectItem>
