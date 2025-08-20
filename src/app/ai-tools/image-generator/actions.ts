@@ -50,10 +50,10 @@ export async function generateImage(
         if (error.message.includes('429') || error.message.includes('503') || error.message.toLowerCase().includes('rate limit')) {
             return { message: "The image generation service is currently overloaded due to high demand. Please try again in a few moments." };
         }
-        return { message: `An unexpected error occurred: ${error.message}` };
+        return { message: `ছবি তৈরি করতে একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে কয়েক মিনিট পর আবার চেষ্টা করুন। (${error.message})` };
     }
     return {
-      message: "An unexpected error occurred. Please try again.",
+      message: "ছবি তৈরি করতে একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে কয়েক মিনিট পর আবার চেষ্টা করুন।",
     };
   }
 }

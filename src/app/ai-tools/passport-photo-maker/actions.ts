@@ -69,7 +69,7 @@ export async function generatePassportPhoto(
         return { message: `ছবি তৈরি করতে একটি ত্রুটি ঘটেছে: ${error.message}` };
     }
     return {
-      message: "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+      message: "ছবি তৈরি করতে একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে কয়েক মিনিট পর আবার চেষ্টা করুন।",
     };
   }
 }
