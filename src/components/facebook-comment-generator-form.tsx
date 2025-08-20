@@ -71,14 +71,12 @@ export default function FacebookCommentGeneratorForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [pastedFile, setPastedFile] = useState<File | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     if (state.message === "success") {
       formRef.current?.reset();
       setPreviewUrl(null);
-      setPastedFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -104,15 +102,12 @@ export default function FacebookCommentGeneratorForm() {
               fileInputRef.current.value = "";
           }
           setPreviewUrl(null);
-          setPastedFile(null);
           return;
       }
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
-      setPastedFile(file);
     } else {
       setPreviewUrl(null);
-      setPastedFile(null);
     }
   };
 
@@ -123,7 +118,6 @@ export default function FacebookCommentGeneratorForm() {
 
   const handleRemoveImage = () => {
     setPreviewUrl(null);
-    setPastedFile(null);
     if(fileInputRef.current) {
         fileInputRef.current.value = "";
     }
@@ -131,26 +125,29 @@ export default function FacebookCommentGeneratorForm() {
 
   const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
     const items = event.clipboardData.items;
+    let file = null;
     for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf("image") !== -1) {
-            const file = items[i].getAsFile();
-            if (file) {
-                handleFileChange(file);
-                // Prevent the image from being pasted into the textarea
-                event.preventDefault(); 
-            }
+            file = items[i].getAsFile();
+            break; 
         }
+    }
+    if (file) {
+        if (fileInputRef.current) {
+            // Create a new DataTransfer object and add the file to it
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInputRef.current.files = dataTransfer.files;
+
+            // Manually trigger the change event
+            const changeEvent = new Event('change', { bubbles: true });
+            fileInputRef.current.dispatchEvent(changeEvent);
+        }
+        handleFileChange(file);
+        event.preventDefault();
     }
   };
 
-  const customFormAction = (formData: FormData) => {
-    if(pastedFile) {
-        // If a file was pasted, it won't be in the form's file input.
-        // We need to append it to the FormData object manually.
-        formData.set('photo', pastedFile);
-    }
-    formAction(formData);
-  }
 
   return (
     <Card className="shadow-lg" onPaste={handlePaste}>
@@ -161,7 +158,7 @@ export default function FacebookCommentGeneratorForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form ref={formRef} action={customFormAction} className="space-y-6">
+        <form ref={formRef} action={formAction} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="postContent">পোস্টের বিষয়বস্তু</Label>
             <Textarea
