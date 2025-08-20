@@ -9,11 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, CornerDownRight, PlusCircle, Trash2 } from "lucide-react";
+import { Sparkles, Clipboard, CornerDownRight, PlusCircle, Trash2, MoreVertical } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Alert, AlertDescription } from "./ui/alert";
 import { Input } from "./ui/input";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -131,9 +132,19 @@ export default function FacebookReplyGeneratorForm() {
                         />
                     </div>
                      {conversationParts.length > 1 && (
-                        <Button type="button" variant="ghost" size="icon" className="absolute top-1 right-1" onClick={() => removeConversationPart(part.id)}>
-                            <Trash2 className="w-4 h-4 text-destructive" />
-                        </Button>
+                         <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button type="button" variant="ghost" size="icon" className="absolute top-1 right-1">
+                                    <MoreVertical className="w-4 h-4" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => removeConversationPart(part.id)} className="text-destructive">
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    মুছে ফেলুন
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     )}
                 </div>
              ))}
