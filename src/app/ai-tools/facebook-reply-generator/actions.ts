@@ -34,8 +34,8 @@ export async function generateFacebookReplies(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  // Correctly parse dynamic conversation parts from FormData
-  const conversationData: Record<string, { id: string; character: string; text: string }> = {};
+  const conversationData: { [key: string]: { id: string; character: string; text: string } } = {};
+
   for (const [key, value] of formData.entries()) {
     const match = key.match(/^conversation\[(\d+)\]\.(id|character|text)$/);
     if (match) {
@@ -43,13 +43,14 @@ export async function generateFacebookReplies(
       if (!conversationData[index]) {
         conversationData[index] = { id: '', character: '', text: '' };
       }
-      conversationData[index][field as 'id' | 'character' | 'text'] = value as string;
+      (conversationData[index] as any)[field] = value as string;
     }
   }
-  const conversation = Object.values(conversationData);
+
+  const conversation = Object.values(conversationData).filter(p => p.id); // Filter out any potential empty objects
 
   const getFields = () => {
-     const fields: Record<string, any> = { 
+    const fields: Record<string, any> = { 
         postContent: formData.get("postContent"), 
         goal: formData.get("goal"),
         customGoal: formData.get("customGoal"),
@@ -57,13 +58,15 @@ export async function generateFacebookReplies(
     };
     return fields;
   }
-
-  const validatedFields = FacebookReplyGeneratorActionSchema.safeParse({
+  
+  const rawData = {
     postContent: formData.get("postContent"),
     conversation: conversation,
     goal: formData.get("goal"),
     customGoal: formData.get("customGoal"),
-  });
+  };
+
+  const validatedFields = FacebookReplyGeneratorActionSchema.safeParse(rawData);
   
   if (!validatedFields.success) {
     const { errors } = validatedFields.error;
@@ -87,6 +90,7 @@ export async function generateFacebookReplies(
     
     const finalGoal = goal === 'Other' ? customGoal : goal;
     
+    // Only send character and text to the AI flow
     const conversationForAI = conversation.map(({ character, text }) => ({ character, text }));
 
     const result = await facebookReplyGenerator({
@@ -99,7 +103,7 @@ export async function generateFacebookReplies(
       return {
         message: "success",
         suggestions: result.suggestions,
-        fields: getFields(), // pass back fields on success to maintain form state if needed
+        fields: getFields(),
       };
     } else {
         return { 

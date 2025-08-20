@@ -36,22 +36,21 @@ function SubmitButton() {
 }
 
 type ConversationPart = {
-    id: string; // Use string for IDs to be safe with Date.now() and form data
+    id: string; 
     character: string;
     text: string;
 }
 
 export default function FacebookReplyGeneratorForm() {
   const initialState: { message: string; suggestions?: string[]; fields?: Record<string, any>; issues?: string[] } = 
-    { message: "", suggestions: [], issues: [], fields: {} };
+    { message: "", suggestions: [], issues: [], fields: { conversation: [{ id: `${Date.now()}`, character: "Character A", text: "" }] } };
   const [state, formAction] = useActionState(generateFacebookReplies, initialState);
-  const formRef = useRef<HTMLFormElement>(null);
   
   const [conversationParts, setConversationParts] = useState<ConversationPart[]>(
-    initialState.fields?.conversation || [{ id: `${Date.now()}`, character: "Character A", text: "" }]
+    state.fields?.conversation || [{ id: `${Date.now()}`, character: "Character A", text: "" }]
   );
 
-  const [selectedGoal, setSelectedGoal] = useState(initialState.fields?.goal || "");
+  const [selectedGoal, setSelectedGoal] = useState(state.fields?.goal || "");
   const { toast } = useToast();
   
   useEffect(() => {
@@ -99,7 +98,7 @@ export default function FacebookReplyGeneratorForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form ref={formRef} action={formAction} className="space-y-6">
+        <form action={formAction} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="postContent">আসল পোস্টের বিষয়বস্তু</Label>
             <Textarea
