@@ -1,7 +1,7 @@
 
 import admin from 'firebase-admin';
 // @ts-ignore
-import serviceAccount from '../../service-account.json';
+import serviceAccount from '@/../service-account.json';
 
 let app: admin.app.App;
 

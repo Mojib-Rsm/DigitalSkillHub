@@ -6,7 +6,7 @@ import admin from 'firebase-admin';
 import crypto from "crypto";
 import { getFirestore } from 'firebase-admin/firestore';
 // @ts-ignore
-import serviceAccount from "../../../service-account.json";
+import serviceAccount from "@/../service-account.json";
 
 if (!admin.apps.length) {
     try {
