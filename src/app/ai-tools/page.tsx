@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircle as MessageCircleIcon } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircle as MessageCircleIcon, LayoutTemplate } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from '@/lib/utils';
@@ -119,6 +119,13 @@ const allTools = [
         description: "আপনার নতুন ব্যবসা বা ব্র্যান্ডের জন্য সেরা নামটি খুঁজুন।",
         href: "/ai-tools/business-name-generator",
         icon: <Lightbulb className="w-8 h-8 text-primary" />,
+        category: "Productivity & Business",
+    },
+    {
+        title: "ওয়েবসাইট ব্লুপ্রিন্ট জেনারেটর",
+        description: "আপনার ধারণার জন্য একটি পৃষ্ঠা এবং বৈশিষ্ট্যসহ একটি কাঠামো তৈরি করুন।",
+        href: "/ai-tools/website-blueprint-generator",
+        icon: <LayoutTemplate className="w-8 h-8 text-primary" />,
         category: "Productivity & Business",
     },
     {
