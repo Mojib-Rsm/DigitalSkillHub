@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Bot, Menu, ChevronDown, LogOut, UserCircle, LayoutDashboard } from "lucide-react";
+import { Bot, Menu, ChevronDown, LogOut, UserCircle, LayoutDashboard, BrainCircuit } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -96,7 +96,7 @@ export default function Header() {
   const UserMenu = () => (
     <div className="flex items-center gap-2">
         <Button asChild>
-            <Link href="/dashboard">Dashboard</Link>
+            <Link href="/ai-tools"><BrainCircuit className="mr-2"/> All Tools</Link>
         </Button>
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
