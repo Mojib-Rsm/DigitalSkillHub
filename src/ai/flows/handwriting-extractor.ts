@@ -37,22 +37,23 @@ const prompt = ai.definePrompt({
   name: 'handwritingExtractorPrompt',
   input: {schema: HandwritingExtractorInputSchema},
   output: {schema: HandwritingExtractorOutputSchema},
-  prompt: `You are an expert data entry specialist. Your task is to extract all the text from the provided image of a handwritten table and structure it perfectly into a 2D array.
+  prompt: `You are an expert data entry specialist with an exceptional ability to read and interpret handwritten documents. Your task is not just to transcribe, but to act as an intelligent assistant. You will extract all text from the provided image of a handwritten table and structure it into a perfect 2D array, correcting obvious mistakes.
 
 Image to process:
 {{media url=photoDataUri}}
 
 Instructions:
-1.  Assume the content is a table. Set 'isTable' to true.
-2.  Extract EVERY row and EVERY column. Do not miss any data.
-3.  The first row of the output array should be the column headers.
-4.  Subsequent rows in the array should correspond to the rows in the image's table.
-5.  Ensure that the data for each cell is placed in the correct column.
-6.  If a cell in the table is empty, represent it as an empty string ("").
-7.  Do your best to read unclear handwriting. Do not make up information. If something is truly illegible, write "illegible".
-8.  Populate the 'extractedTable' field with the resulting 2D array.
-9.  The 'extractedText' field should be an empty string.
-10. For the 'explanation', provide a simple summary, like: "I have extracted a table with [Number of Rows] rows and [Number of Columns] columns."
+1.  **Act as an Intelligent Assistant:** Your primary goal is accuracy. If you see a clear, simple mistake (e.g., a sequential number is wrong like 1, 2, 4, 5, you should correct it to 1, 2, 3, 4, 5), you should correct it. Do not guess information, but use context to fix obvious errors.
+2.  **Table First:** Assume the content is a table. Set 'isTable' to true.
+3.  **Complete Extraction:** Extract EVERY row and EVERY column. Do not miss any data.
+4.  **Headers are Key:** The first row of the output array MUST be the column headers from the image.
+5.  **Correct Placement:** Ensure the data for each cell is placed in the correct column corresponding to the headers.
+6.  **Handle Empty Cells:** If a cell in the table is visibly empty, represent it as an empty string ("").
+7.  **Illegible Text:** If handwriting is truly impossible to read, write "illegible". Do not make up information.
+8.  **Output Fields:**
+    *   Populate the 'extractedTable' field with the resulting 2D array.
+    *   The 'extractedText' field should be an empty string.
+    *   For the 'explanation', provide a simple summary, like: "I have extracted a table with [Number of Rows] rows and [Number of Columns] columns, and I have corrected a sequencing error in the serial number column."
 `,
 });
 
