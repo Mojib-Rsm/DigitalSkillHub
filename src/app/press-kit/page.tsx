@@ -103,7 +103,7 @@ export default function PressKitPage() {
                                 <p><strong>Founded:</strong> 2023</p>
                                 <p><strong>Founder & CEO:</strong> Mojibur Rahman</p>
                                 <p><strong>Location:</strong> Cox's Bazar, Bangladesh</p>
-                                <p><strong>Website:</strong> <Link href="https://totthoai.com" className="text-primary hover:underline">totthoai.com</Link></p>
+                                <p><strong>Website:</strong> <Link href="https://totthoai.mojib.me/" className="text-primary hover:underline">totthoai.mojib.me</Link></p>
                                 <p><strong>Languages Supported:</strong> 150+</p>
                             </CardContent>
                         </Card>

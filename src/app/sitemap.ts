@@ -3,7 +3,7 @@ import { MetadataRoute } from 'next';
 import { allTools } from '@/app/ai-tools/all-tools-list'; // Assuming you have a list of tools
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://totthoai.com'; // Replace with your actual domain
+  const baseUrl = 'https://totthoai.mojib.me';
 
   // Static routes
   const staticRoutes = [

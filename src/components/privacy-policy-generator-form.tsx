@@ -74,7 +74,7 @@ export default function PrivacyPolicyGeneratorForm() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="websiteUrl">Website URL</Label>
-              <Input id="websiteUrl" name="websiteUrl" placeholder="e.g., https://totthoai.com" required />
+              <Input id="websiteUrl" name="websiteUrl" placeholder="e.g., https://totthoai.mojib.me" required />
             </div>
           </div>
           <div className="space-y-2">

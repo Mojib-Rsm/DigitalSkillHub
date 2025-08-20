@@ -79,8 +79,8 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "TotthoAi",
-  "url": "https://totthoai.com",
-  "logo": "https://totthoai.com/logo.png", // Replace with your actual logo URL
+  "url": "https://totthoai.mojib.me/",
+  "logo": "https://totthoai.mojib.me//logo.png", // Replace with your actual logo URL
   "sameAs": [
     "https://twitter.com/totthoai", // Replace with your actual social media URLs
     "https://www.facebook.com/totthoai",

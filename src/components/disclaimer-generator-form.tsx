@@ -68,7 +68,7 @@ export default function DisclaimerGeneratorForm() {
         <form action={formAction} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="websiteUrl">Website/App URL</Label>
-              <Input id="websiteUrl" name="websiteUrl" placeholder="e.g., https://totthoai.com" required />
+              <Input id="websiteUrl" name="websiteUrl" placeholder="e.g., https://totthoai.mojib.me" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="companyName">Company Name</Label>
