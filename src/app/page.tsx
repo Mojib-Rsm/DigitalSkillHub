@@ -208,7 +208,7 @@ export default function Home() {
       </section>
 
        {/* Detailed Features */}
-       <section id="features" className="py-12 md:py-20">
+       <section id="features" className="pt-12 md:pt-20">
             <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                  <div className="md:col-span-2 lg:col-span-1 lg:pr-8 animate-fade-in-up">
                     <Badge variant="destructive">🔥 HOT NEW FEATURE</Badge>
@@ -263,7 +263,7 @@ export default function Home() {
                     </div>
                  </div>
             </div>
-             <div className="text-center mt-16 animate-fade-in-up [animation-delay:1100ms]">
+             <div className="text-center mt-12 animate-fade-in-up [animation-delay:1100ms]">
                  <Button size="lg" asChild>
                     <Link href="/free-trial">
                         <Zap className="mr-2 h-5 w-5"/>
