@@ -42,12 +42,11 @@ export async function generateImage(
         imageUrl: result.imageUrl,
       };
     } else {
-        return { message: "Failed to generate image. Please try again." }
+        return { message: "Failed to generate image. The model did not return an image URL." }
     }
   } catch (error) {
     console.error("Image generation action error:", error);
     if (error instanceof Error) {
-        // Check for rate limit or overload errors
         if (error.message.includes('429') || error.message.includes('503') || error.message.toLowerCase().includes('rate limit')) {
             return { message: "The image generation service is currently overloaded due to high demand. Please try again in a few moments." };
         }
