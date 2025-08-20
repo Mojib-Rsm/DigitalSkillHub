@@ -9,8 +9,8 @@ import { ThemeProvider } from '@/components/theme-provider';
 export const metadata: Metadata = {
   title: 'TotthoAi - আপনার এআই টুলবক্স | AI Content & Image Generator',
   description:
-    'আপনার উৎপাদনশীলতা এবং সৃজনশীলতা বাড়াতে বিভিন্ন ধরণের এআই টুল ব্যবহার করুন। লেখা, ছবি তৈরি, কোডিং এবং আরও অনেক কিছুর জন্য আমাদের টুলস আপনাকে সাহায্য করবে।',
-  keywords: ['TotthoAi', 'AI tools', 'Bengali AI', 'content generation', 'AI website', 'image generator', 'video generator', 'free tools', 'তথ্য', 'এআই টুলস', 'কনটেন্ট জেনারেটর', 'বাংলা এআই'],
+    'TotthoAi is an innovative AI platform offering a suite of powerful tools for content generation, image creation, business solutions, and more. Save time and money by leveraging the best artificial intelligence website for your needs.',
+  keywords: ['TotthoAi', 'Tottho', 'AI tools', 'Bengali AI', 'AI website', 'AI platform', 'AI solutions', 'artificial intelligence website', 'best AI websites', 'AI tools online', 'TotthoAI pricing', 'innovative AI website', 'content generation', 'image generator', 'video generator', 'free tools', 'তথ্য', 'এআই টুলস', 'কনটেন্ট জেনারেটর', 'বাংলা এআই'],
   manifest: '/manifest.json'
 };
 
