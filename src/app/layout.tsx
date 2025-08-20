@@ -7,9 +7,10 @@ import Footer from '@/components/layout/footer';
 import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
-  title: 'TotthoAi - আপনার এআই টুলবক্স',
+  title: 'TotthoAi - আপনার এআই টুলবক্স | AI Content & Image Generator',
   description:
     'আপনার উৎপাদনশীলতা এবং সৃজনশীলতা বাড়াতে বিভিন্ন ধরণের এআই টুল ব্যবহার করুন। লেখা, ছবি তৈরি, কোডিং এবং আরও অনেক কিছুর জন্য আমাদের টুলস আপনাকে সাহায্য করবে।',
+  keywords: ['TotthoAi', 'AI tools', 'Bengali AI', 'content generation', 'AI website', 'image generator', 'video generator', 'free tools', 'তথ্য', 'এআই টুলস', 'কনটেন্ট জেনারেটর', 'বাংলা এআই'],
   manifest: '/manifest.json'
 };
 

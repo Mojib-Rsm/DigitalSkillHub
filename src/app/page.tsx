@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { app } from "@/lib/firebase";
+import Head from 'next/head';
 
 
 const faqItems = [
@@ -42,7 +43,7 @@ const faqItems = [
     },
      {
         question: "How do I publish content to my website?",
-        answer: "We offer seamless integration with WordPress, allowing you to publish your generated articles directly to your website with just a single click from your TotthoAi dashboard."
+        answer: "We offer seamless integration with WordPress, allowing you to publish your generated articles directly to your TotthoAi dashboard."
     },
     {
         question: "What's the difference between the One-click Generator and the Bulk Content Generator?",
@@ -74,6 +75,24 @@ const faqItems = [
     },
 ];
 
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "TotthoAi",
+  "url": "https://totthoai.com",
+  "logo": "https://totthoai.com/logo.png", // Replace with your actual logo URL
+  "sameAs": [
+    "https://twitter.com/totthoai", // Replace with your actual social media URLs
+    "https://www.facebook.com/totthoai",
+    "https://www.linkedin.com/company/totthoai"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer support",
+    "email": "support@totthoai.com"
+  }
+};
+
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
@@ -87,6 +106,13 @@ export default function Home() {
   }, [auth]);
 
   return (
+    <>
+    <Head>
+        <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+    </Head>
     <div className="flex flex-col bg-background">
       {/* Hero Section */}
       <section className="pt-12 md:pt-16 pb-8 md:pb-12 overflow-hidden">
@@ -639,5 +665,6 @@ export default function Home() {
             </div>
         </section>
     </div>
+    </>
   );
 }

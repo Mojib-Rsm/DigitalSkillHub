@@ -1,0 +1,27 @@
+
+// This file centralizes the list of AI tools for use in the sitemap and other components.
+export const allTools = [
+    { href: "/ai-tools/blog-topic-generator" },
+    { href: "/ai-tools/product-description-generator" },
+    { href: "/ai-tools/social-media-post-generator" },
+    { href: "/ai-tools/image-generator" },
+    { href: "/ai-tools/passport-photo-maker" },
+    { href: "/ai-tools/handwriting-extractor" },
+    { href: "/ai-tools/video-generator" },
+    { href: "/ai-tools/professional-email-writer" },
+    { href: "/ai-tools/note-summarizer" },
+    { href: "/ai-tools/bengali-translator" },
+    { href: "/ai-tools/cover-letter-generator" },
+    { href: "/ai-tools/refund-policy-generator" },
+    { href: "/ai-tools/resume-helper" },
+    { href: "/ai-tools/business-name-generator" },
+    { href: "/ai-tools/website-blueprint-generator" },
+    { href: "/ai-tools/seo-keyword-suggester" },
+    { href: "/ai-tools/interview-question-practice" },
+    { href: "/ai-tools/freelance-idea-generator" },
+    { href: "/ai-tools/price-rate-calculator" },
+    { href: "/ai-tools/domain-name-suggester" },
+    { href: "/ai-tools/course-recommender" },
+    { href: "/ai-tools/quiz-generator" },
+    { href: "/ai-tools/messenger-reply-generator" },
+];
