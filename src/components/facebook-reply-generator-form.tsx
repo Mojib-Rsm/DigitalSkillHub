@@ -151,6 +151,7 @@ export default function FacebookReplyGeneratorForm() {
                     <SelectValue placeholder="একটি লক্ষ্য নির্বাচন করুন..." />
                 </SelectTrigger>
                 <SelectContent>
+                    <SelectItem value="I am the original poster">পোস্টকারী আমি নিজে</SelectItem>
                     <SelectItem value="end the conversation politely">ভদ্রভাবে কথোপকথন শেষ করুন</SelectItem>
                     <SelectItem value="ask a clarifying question">একটি স্পষ্টীকরণের জন্য প্রশ্ন জিজ্ঞাসা করুন</SelectItem>
                     <SelectItem value="be supportive and encouraging">সহানুভূতিশীল এবং উৎসাহব্যঞ্জক হন</SelectItem>
