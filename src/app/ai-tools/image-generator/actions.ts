@@ -47,6 +47,10 @@ export async function generateImage(
   } catch (error) {
     console.error("Image generation action error:", error);
     if (error instanceof Error) {
+        // Check for rate limit or overload errors
+        if (error.message.includes('429') || error.message.includes('503') || error.message.toLowerCase().includes('rate limit')) {
+            return { message: "The image generation service is currently overloaded due to high demand. Please try again in a few moments." };
+        }
         return { message: `An unexpected error occurred: ${error.message}` };
     }
     return {
