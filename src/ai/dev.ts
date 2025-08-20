@@ -22,6 +22,7 @@ import '@/ai/flows/price-rate-calculator.ts';
 import '@/ai/flows/cover-letter-generator.ts';
 import '@/ai/flows/domain-name-suggester.ts';
 import '@/ai/flows/video-generator.ts';
+import '@/ai/flows/image-to-video-generator.ts';
 import '@/ai/flows/facebook-comment-generator.ts';
 import '@/ai/flows/passport-photo-maker.ts';
 import '@/ai/flows/privacy-policy-generator.ts';

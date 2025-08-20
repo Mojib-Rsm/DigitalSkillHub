@@ -8,6 +8,7 @@ export const allTools = [
     { href: "/ai-tools/passport-photo-maker" },
     { href: "/ai-tools/handwriting-extractor" },
     { href: "/ai-tools/video-generator" },
+    { href: "/ai-tools/image-to-video-generator" },
     { href: "/ai-tools/professional-email-writer" },
     { href: "/ai-tools/note-summarizer" },
     { href: "/ai-tools/bengali-translator" },

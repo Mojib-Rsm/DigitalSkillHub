@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircle as MessageCircleIcon, LayoutTemplate, Receipt } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircle as MessageCircleIcon, LayoutTemplate, Receipt, Clapperboard } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from '@/lib/utils';
@@ -70,6 +70,13 @@ const allTools = [
         description: "পাঠ্য প্রম্পট থেকে ছোট ভিডিও তৈরি করুন।",
         href: "/ai-tools/video-generator",
         icon: <Film className="w-8 h-8 text-primary" />,
+        category: "Video & Animation",
+    },
+    {
+        title: "ইমেজ টু ভিডিও জেনারেটর",
+        description: "একটি ছবি আপলোড করে এবং প্রম্পট দিয়ে ভিডিও তৈরি করুন।",
+        href: "/ai-tools/image-to-video-generator",
+        icon: <Clapperboard className="w-8 h-8 text-primary" />,
         category: "Video & Animation",
     },
     {
