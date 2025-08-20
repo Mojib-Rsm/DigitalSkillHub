@@ -49,10 +49,10 @@ const prompt = ai.definePrompt({
 3.  **Handle Imperfections:** The handwriting may be messy or unclear. Use your advanced recognition abilities to interpret the text as accurately as possible. Make logical inferences for hard-to-read words.
 
 4.  **Provide Output:** Populate the output JSON with the extracted data.
-    -   `isTable`: Your determination of the content structure.
-    -   `extractedText`: The full text if not a table.
-    -   `extractedTable`: The 2D array if it is a table.
-    -   `explanation`: Briefly describe what you have extracted, for example, "I have extracted the content as a table with X rows and Y columns." or "I have extracted the text content from the provided note."
+    -   isTable: Your determination of the content structure.
+    -   extractedText: The full text if not a table.
+    -   extractedTable: The 2D array if it is a table.
+    -   explanation: Briefly describe what you have extracted, for example, "I have extracted the content as a table with X rows and Y columns." or "I have extracted the text content from the provided note."
 `,
 });
 
