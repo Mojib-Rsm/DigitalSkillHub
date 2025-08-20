@@ -43,10 +43,21 @@ const prompt = ai.definePrompt({
     {{media url=photoDataUri}}
 
 2.  **Identify Content Structure:** Determine if the handwriting is structured as a table or as plain paragraph/list-based text.
-    -   If it's a table, set the 'isTable' flag to true. Extract the data into a 2D array where each inner array represents a row and its elements are the cell values in string format. Preserve the row and column structure.
-    -   If it's not a table, set 'isTable' to false. Extract all the text into a single string, preserving paragraphs and line breaks. The 'extractedTable' should be an empty array.
 
-3.  **Handle Imperfections:** The handwriting may be messy or unclear. Use your advanced recognition abilities to interpret the text as accurately as possible. Make logical inferences for hard-to-read words.
+3.  **Extraction Process:**
+    *   **If it's a table:**
+        *   Accurately identify all column headers first.
+        *   For each row, meticulously extract the text from each cell, ensuring it corresponds to the correct column header.
+        *   Pay close attention to column alignment. Do not mix data between columns.
+        *   If a cell appears empty, represent it as an empty string "" in the output array.
+        *   If some text is hard to read, do your best to interpret it. If it's completely illegible, use "N/A" or "illegible".
+        *   Set the 'isTable' flag to true.
+        *   Format the output as a 2D array in the 'extractedTable' field, where each inner array is a row.
+        *   The 'extractedText' field should be empty.
+    *   **If it's not a table:**
+        *   Set 'isTable' to false.
+        *   Extract all text into a single string, preserving paragraphs and line breaks, and place it in the 'extractedText' field.
+        *   The 'extractedTable' field should be an empty array.
 
 4.  **Provide Output:** Populate the output JSON with the extracted data.
     -   isTable: Your determination of the content structure.
