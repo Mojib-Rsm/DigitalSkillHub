@@ -32,8 +32,41 @@ function SubmitButton() {
   );
 }
 
+const PromptList = ({ title, prompts }: { title: string; prompts: string[] }) => {
+    const { toast } = useToast();
+    
+    const handleCopy = (textToCopy: string) => {
+        navigator.clipboard.writeText(textToCopy);
+        toast({
+        title: "কপি করা হয়েছে!",
+        description: "প্রম্পটটি ক্লিপবোর্ডে কপি করা হয়েছে।",
+        });
+    };
+
+    if (!prompts || prompts.length === 0) return null;
+
+    return (
+        <div>
+            <h4 className="text-lg font-semibold mb-2">{title}</h4>
+            <div className="space-y-3">
+            {prompts.map((prompt, index) => (
+                <Card key={index} className="bg-muted/50 relative group">
+                <CardContent className="p-4 pr-12">
+                    <p className="text-muted-foreground whitespace-pre-wrap">{prompt}</p>
+                    <Button variant="ghost" size="icon" className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleCopy(prompt)}>
+                        <Clipboard className="w-5 h-5"/>
+                    </Button>
+                </CardContent>
+                </Card>
+            ))}
+            </div>
+        </div>
+    );
+};
+
+
 export default function PromptGeneratorForm() {
-  const initialState = { message: "", generatedPrompt: "", issues: [], fields: {} };
+  const initialState = { message: "", prompts: undefined, issues: [], fields: {} };
   const [state, formAction] = useActionState(generatePromptAction, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
@@ -51,15 +84,6 @@ export default function PromptGeneratorForm() {
     }
   }, [state, toast]);
   
-  const handleCopy = () => {
-    if (state.generatedPrompt) {
-      navigator.clipboard.writeText(state.generatedPrompt);
-      toast({
-        title: "কপি করা হয়েছে!",
-        description: "জেনারেট করা প্রম্পটটি ক্লিপবোর্ডে কপি করা হয়েছে।",
-      });
-    }
-  };
 
   return (
     <Card className="shadow-lg">
@@ -122,17 +146,13 @@ export default function PromptGeneratorForm() {
           <SubmitButton />
         </form>
 
-        {state.generatedPrompt && (
+        {state.prompts && (
           <div className="mt-8">
             <h3 className="text-2xl font-bold font-headline mb-4 text-center">জেনারেটেড প্রম্পট</h3>
-            <Card className="bg-muted/50 relative">
-              <CardContent className="p-4">
-                <p className="text-muted-foreground whitespace-pre-wrap">{state.generatedPrompt}</p>
-                 <Button variant="ghost" size="icon" className="absolute top-2 right-2" onClick={handleCopy}>
-                    <Clipboard className="w-5 h-5"/>
-                 </Button>
-              </CardContent>
-            </Card>
+            <div className="space-y-6">
+                <PromptList title="সংক্ষিপ্ত প্রম্পট" prompts={state.prompts.shortPrompts} />
+                <PromptList title="বিস্তারিত প্রম্পট" prompts={state.prompts.longPrompts} />
+            </div>
           </div>
         )}
       </CardContent>

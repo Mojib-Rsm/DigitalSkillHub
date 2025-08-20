@@ -1,7 +1,7 @@
 
 "use server";
 
-import { promptGenerator } from "@/ai/flows/prompt-generator";
+import { promptGenerator, PromptGeneratorOutput } from "@/ai/flows/prompt-generator";
 import { z } from "zod";
 
 const PromptGeneratorActionSchema = z.object({
@@ -12,7 +12,7 @@ const PromptGeneratorActionSchema = z.object({
 
 type FormState = {
   message: string;
-  generatedPrompt?: string;
+  prompts?: PromptGeneratorOutput;
   fields?: Record<string, string>;
   issues?: string[];
 };
@@ -38,13 +38,13 @@ export async function generatePromptAction(
   
   try {
     const result = await promptGenerator(validatedFields.data);
-    if (result.generatedPrompt) {
+    if (result.shortPrompts || result.longPrompts) {
       return {
         message: "success",
-        generatedPrompt: result.generatedPrompt,
+        prompts: result,
       };
     } else {
-        return { message: "Failed to generate prompt. Please try again." }
+        return { message: "Failed to generate prompts. Please try again." }
     }
   } catch (error) {
     console.error(error);
