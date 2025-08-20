@@ -5,7 +5,10 @@ import { z } from "zod";
 import admin from 'firebase-admin';
 import crypto from "crypto";
 import { getFirestore } from 'firebase-admin/firestore';
-import serviceAccount from "@/../service-account.json";
+// Use path and fs to construct an absolute path
+import path from "path";
+const serviceAccountPath = path.resolve(process.cwd(), 'service-account.json');
+const serviceAccount = require(serviceAccountPath);
 
 if (!admin.apps.length) {
     try {
