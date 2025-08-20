@@ -70,7 +70,7 @@ const videoGeneratorFlow = ai.defineFlow(
         });
 
         if (!operation) {
-          throw new Error('Expected the model to return an operation');
+          throw new Error('Expected the model to return an operation. Please try again after some time.');
         }
 
         // Wait until the operation completes. Note that this may take some time.
@@ -87,13 +87,13 @@ const videoGeneratorFlow = ai.defineFlow(
         // Add robust checking for the operation output.
         if (!operation.output?.message?.content) {
             console.error("Incomplete operation output:", JSON.stringify(operation));
-            throw new Error("Video generation operation finished but did not produce the expected output format.");
+            throw new Error("Video generation operation finished but did not produce the expected output format. Please try again after some time.");
         }
 
         const video = operation.output.message.content.find((p) => !!p.media);
         if (!video || !video.media?.url) {
           console.error("No video media found in operation output:", JSON.stringify(operation.output));
-          throw new Error('Failed to find the generated video in the operation output.');
+          throw new Error('Failed to find the generated video in the operation output. Please try again after some time.');
         }
 
         const videoDataUri = await downloadVideo(video as MediaPart);
