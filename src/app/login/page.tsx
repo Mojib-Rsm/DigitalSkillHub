@@ -44,12 +44,9 @@ export default function LoginPage() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-                // If user is logged in, redirect to dashboard
                 router.push('/dashboard');
             }
         });
-
-        // Cleanup subscription on unmount
         return () => unsubscribe();
     }, [auth, router]);
 
@@ -57,22 +54,19 @@ export default function LoginPage() {
         if (state.success && state.customToken) {
             signInWithCustomToken(auth, state.customToken)
                 .then((userCredential) => {
-                    // Signed in
                     const user = userCredential.user;
                      toast({
                         title: "Login Successful!",
-                        description: `Welcome back, ${user.displayName || user.email}. Redirecting...`,
+                        description: `Welcome back, ${user.displayName || user.email}.`,
                     });
-                    // The onAuthStateChanged listener will handle the redirect
+                    router.push('/dashboard'); 
                 })
                 .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.error("Custom token sign-in error:", errorCode, errorMessage);
+                    console.error("Custom token sign-in error:", error.code, error.message);
                     toast({
                         variant: "destructive",
                         title: "Login Failed",
-                        description: `Could not complete sign in. ${errorMessage}`,
+                        description: `Could not complete sign in. ${error.message}`,
                     });
                 });
         } else if (!state.success && state.message && state.message !== "Validation Error") {
@@ -82,7 +76,7 @@ export default function LoginPage() {
                 description: state.message,
             });
         }
-    }, [state, auth, toast]);
+    }, [state, auth, toast, router]);
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4">
