@@ -36,6 +36,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ThemeToggleButton } from "@/components/theme-toggle-button";
 
 export default function DashboardLayout({
     children,
@@ -155,7 +156,7 @@ export default function DashboardLayout({
                     <Coins className="mr-2 size-4"/>
                     Credits: 5
                 </Button>
-                <Moon className="size-5" />
+                <ThemeToggleButton />
                 <Avatar className="h-9 w-9">
                     <AvatarImage src="https://placehold.co/40x40.png" alt="@mojib" data-ai-hint="man portrait"/>
                     <AvatarFallback>M</AvatarFallback>
