@@ -37,33 +37,22 @@ const prompt = ai.definePrompt({
   name: 'handwritingExtractorPrompt',
   input: {schema: HandwritingExtractorInputSchema},
   output: {schema: HandwritingExtractorOutputSchema},
-  prompt: `You are an expert OCR (Optical Character Recognition) specialist with advanced capabilities in recognizing and structuring handwritten text, even if it is not perfectly clear or neat. Your task is to analyze the provided image of a handwritten document.
+  prompt: `You are an expert data entry specialist. Your task is to extract all the text from the provided image of a handwritten table and structure it perfectly into a 2D array.
 
-1.  **Analyze the Image:** Carefully examine the image provided below.
-    {{media url=photoDataUri}}
+Image to process:
+{{media url=photoDataUri}}
 
-2.  **Identify Content Structure:** Determine if the handwriting is structured as a table or as plain paragraph/list-based text.
-
-3.  **Extraction Process:**
-    *   **If it's a table:**
-        *   Accurately identify all column headers first.
-        *   For each row, meticulously extract the text from each cell, ensuring it corresponds to the correct column header.
-        *   Pay close attention to column alignment. Do not mix data between columns.
-        *   If a cell appears empty, represent it as an empty string "" in the output array.
-        *   If some text is hard to read, do your best to interpret it. If it's completely illegible, use "N/A" or "illegible".
-        *   Set the 'isTable' flag to true.
-        *   Format the output as a 2D array in the 'extractedTable' field, where each inner array is a row.
-        *   The 'extractedText' field should be empty.
-    *   **If it's not a table:**
-        *   Set 'isTable' to false.
-        *   Extract all text into a single string, preserving paragraphs and line breaks, and place it in the 'extractedText' field.
-        *   The 'extractedTable' field should be an empty array.
-
-4.  **Provide Output:** Populate the output JSON with the extracted data.
-    -   isTable: Your determination of the content structure.
-    -   extractedText: The full text if not a table.
-    -   extractedTable: The 2D array if it is a table.
-    -   explanation: Briefly describe what you have extracted, for example, "I have extracted the content as a table with X rows and Y columns." or "I have extracted the text content from the provided note."
+Instructions:
+1.  Assume the content is a table. Set 'isTable' to true.
+2.  Extract EVERY row and EVERY column. Do not miss any data.
+3.  The first row of the output array should be the column headers.
+4.  Subsequent rows in the array should correspond to the rows in the image's table.
+5.  Ensure that the data for each cell is placed in the correct column.
+6.  If a cell in the table is empty, represent it as an empty string ("").
+7.  Do your best to read unclear handwriting. Do not make up information. If something is truly illegible, write "illegible".
+8.  Populate the 'extractedTable' field with the resulting 2D array.
+9.  The 'extractedText' field should be an empty string.
+10. For the 'explanation', provide a simple summary, like: "I have extracted a table with [Number of Rows] rows and [Number of Columns] columns."
 `,
 });
 
