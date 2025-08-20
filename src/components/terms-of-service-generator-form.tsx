@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { generateTermsOfService } from "@/app/free-tools/terms-of-service-generator/actions";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Clipboard, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { cn } from "@/lib/utils";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "./ui/command";
+import { countries } from "@/lib/countries";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -35,6 +40,8 @@ export default function TermsOfServiceGeneratorForm() {
   const initialState = { message: "", policy: "", issues: [], fields: {} };
   const [state, formAction] = useActionState(generateTermsOfService, initialState);
   const { toast } = useToast();
+  const [open, setOpen] = useState(false)
+  const [country, setCountry] = useState("")
 
   useEffect(() => {
     if (state.message && state.message !== "success" && state.message !== "Validation Error") {
@@ -78,7 +85,48 @@ export default function TermsOfServiceGeneratorForm() {
           </div>
            <div className="space-y-2">
               <Label htmlFor="country">Country of Jurisdiction</Label>
-              <Input id="country" name="country" placeholder="e.g., Bangladesh" required />
+               <input type="hidden" name="country" value={country} />
+                <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                    <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        className="w-full justify-between"
+                    >
+                        {country
+                        ? countries.find((c) => c.value.toLowerCase() === country.toLowerCase())?.label
+                        : "Select country..."}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                    <Command>
+                        <CommandInput placeholder="Search country..." />
+                        <CommandEmpty>No country found.</CommandEmpty>
+                        <CommandGroup className="max-h-64 overflow-y-auto">
+                        {countries.map((c) => (
+                            <CommandItem
+                            key={c.value}
+                            value={c.value}
+                            onSelect={(currentValue) => {
+                                setCountry(currentValue === country ? "" : currentValue)
+                                setOpen(false)
+                            }}
+                            >
+                            <Check
+                                className={cn(
+                                "mr-2 h-4 w-4",
+                                country === c.value ? "opacity-100" : "opacity-0"
+                                )}
+                            />
+                            {c.label}
+                            </CommandItem>
+                        ))}
+                        </CommandGroup>
+                    </Command>
+                    </PopoverContent>
+                </Popover>
             </div>
              <div className="space-y-2">
               <Label htmlFor="contactEmail">Contact Email</Label>
