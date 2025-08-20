@@ -11,6 +11,15 @@ const FacebookReplyGeneratorActionSchema = z.object({
     text: z.string().min(1, { message: "কথোপকথনের প্রতিটি অংশের জন্য পাঠ্য প্রয়োজন।" }),
   })).min(1, { message: "অনুগ্রহ করে কমপক্ষে একটি কথোপকথনের অংশ যোগ করুন।" }),
   goal: z.string().optional(),
+  customGoal: z.string().optional(),
+}).refine(data => {
+    if (data.goal === 'Other' && (!data.customGoal || data.customGoal.length < 5)) {
+        return false;
+    }
+    return true;
+}, {
+    message: "অন্যান্য নির্বাচন করলে অনুগ্রহ করে আপনার লক্ষ্য লিখুন (কমপক্ষে ৫ অক্ষর)।",
+    path: ["customGoal"],
 });
 
 type FormState = {
@@ -50,13 +59,17 @@ export async function generateFacebookReplies(
     postContent: formData.get("postContent"),
     conversation: parsedConversation,
     goal: formData.get("goal"),
+    customGoal: formData.get("customGoal"),
   });
 
   if (!validatedFields.success) {
     const { errors } = validatedFields.error;
     
-    // Create a flat list of fields for easier state restoration
-    const fields: Record<string, any> = { postContent: formData.get("postContent"), goal: formData.get("goal") };
+    const fields: Record<string, any> = { 
+        postContent: formData.get("postContent"), 
+        goal: formData.get("goal"),
+        customGoal: formData.get("customGoal"),
+    };
     parsedConversation.forEach((item, index) => {
         fields[`conversation[${index}].character`] = item.character;
         fields[`conversation[${index}].text`] = item.text;
@@ -65,13 +78,22 @@ export async function generateFacebookReplies(
 
     return {
       message: "Validation Error",
-      issues: errors.flatMap(e => e.path.length > 1 ? `Conversaton part #${Number(e.path[1])+1}: ${e.message}` : e.message),
+      issues: errors.flatMap(e => e.path.length > 1 && e.path[0] === 'conversation' ? `Conversaton part #${Number(e.path[1])+1}: ${e.message}` : e.message),
       fields,
     };
   }
   
   try {
-    const result = await facebookReplyGenerator(validatedFields.data);
+    const { postContent, conversation, goal, customGoal } = validatedFields.data;
+    
+    // If goal is "Other", use the customGoal as the actual goal for the AI
+    const finalGoal = goal === 'Other' ? customGoal : goal;
+
+    const result = await facebookReplyGenerator({
+        postContent,
+        conversation,
+        goal: finalGoal,
+    });
 
     if (result.suggestions && result.suggestions.length > 0) {
       return {

@@ -44,10 +44,11 @@ export default function FacebookReplyGeneratorForm() {
   const initialState = { message: "", suggestions: [], issues: [], fields: {} };
   const [state, formAction] = useActionState(generateFacebookReplies, initialState);
   const [conversationParts, setConversationParts] = useState<ConversationPart[]>([{ id: 1, character: "Character A", text: "" }]);
+  const [selectedGoal, setSelectedGoal] = useState(initialState.fields?.goal || "");
   const { toast } = useToast();
   
   useEffect(() => {
-     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
+     if (state.message && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
             title: "ত্রুটি",
@@ -146,7 +147,7 @@ export default function FacebookReplyGeneratorForm() {
 
           <div className="space-y-2">
             <Label htmlFor="goal">আপনার লক্ষ্য (ঐচ্ছিক)</Label>
-            <Select name="goal" defaultValue={state.fields?.goal as string}>
+            <Select name="goal" defaultValue={state.fields?.goal as string} onValueChange={setSelectedGoal}>
                 <SelectTrigger id="goal">
                     <SelectValue placeholder="একটি লক্ষ্য নির্বাচন করুন..." />
                 </SelectTrigger>
@@ -158,9 +159,23 @@ export default function FacebookReplyGeneratorForm() {
                     <SelectItem value="provide helpful information">সহায়ক তথ্য প্রদান করুন</SelectItem>
                     <SelectItem value="reply with humor">রসিকতার সাথে উত্তর দিন</SelectItem>
                     <SelectItem value="defend my point of view">আমার মতামত রক্ষা করুন</SelectItem>
+                    <SelectItem value="Other">অন্যান্য (লিখুন)</SelectItem>
                 </SelectContent>
             </Select>
           </div>
+          
+          {selectedGoal === 'Other' && (
+            <div className="space-y-2 animate-in fade-in-50">
+                <Label htmlFor="customGoal">আপনার নিজের লক্ষ্য লিখুন</Label>
+                <Input
+                    id="customGoal"
+                    name="customGoal"
+                    placeholder="আপনার লক্ষ্য এখানে লিখুন..."
+                    defaultValue={state.fields?.customGoal}
+                />
+                 {state.issues?.filter((issue) => issue.toLowerCase().includes("customgoal")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            </div>
+           )}
           
           <SubmitButton />
         </form>
