@@ -44,8 +44,11 @@ type ConversationPart = {
 export default function FacebookReplyGeneratorForm() {
   const initialState = { message: "", suggestions: [], issues: [], fields: {} };
   const [state, formAction] = useActionState(generateFacebookReplies, initialState);
-  const [conversationParts, setConversationParts] = useState<ConversationPart[]>([{ id: 1, character: "Character A", text: "" }]);
-  const [selectedGoal, setSelectedGoal] = useState(initialState.fields?.goal || "");
+  
+  const initialConversation = state.fields?.conversation || [{ id: 1, character: "Character A", text: "" }];
+  const [conversationParts, setConversationParts] = useState<ConversationPart[]>(initialConversation);
+
+  const [selectedGoal, setSelectedGoal] = useState(state.fields?.goal || "");
   const { toast } = useToast();
   
   useEffect(() => {
@@ -113,7 +116,7 @@ export default function FacebookReplyGeneratorForm() {
                 <div key={part.id} className="p-4 border rounded-lg space-y-2 relative bg-muted/50">
                     <input type="hidden" name={`conversation[${index}].id`} value={part.id} />
                     <div className="grid grid-cols-1 sm:grid-cols-[150px_1fr] gap-2 items-start">
-                        <Select name={`conversation[${index}].character`} defaultValue={part.character} onValueChange={(value) => handleCharacterChange(part.id, value)}>
+                        <Select name={`conversation[${index}].character`} value={part.character} onValueChange={(value) => handleCharacterChange(part.id, value)}>
                             <SelectTrigger>
                                 <SelectValue placeholder="চরিত্র নির্বাচন করুন" />
                             </SelectTrigger>
@@ -130,6 +133,7 @@ export default function FacebookReplyGeneratorForm() {
                             rows={2}
                             value={part.text}
                             onChange={(e) => handleTextChange(part.id, e.target.value)}
+                            required
                         />
                     </div>
                      {conversationParts.length > 1 && (
@@ -149,7 +153,7 @@ export default function FacebookReplyGeneratorForm() {
                     )}
                 </div>
              ))}
-             {state.issues?.filter((issue) => issue.toLowerCase().includes("conversation")).map((issue) => <Alert key={issue} variant="destructive" className="mt-2"><AlertDescription>{issue}</AlertDescription></Alert>)}
+             {state.issues?.filter((issue) => issue.toLowerCase().includes("কথোপকথন")).map((issue) => <Alert key={issue} variant="destructive" className="mt-2"><AlertDescription>{issue}</AlertDescription></Alert>)}
 
              <Button type="button" variant="outline" onClick={addConversationPart} className="w-full">
                 <PlusCircle className="mr-2 h-4 w-4"/>
@@ -185,7 +189,7 @@ export default function FacebookReplyGeneratorForm() {
                     placeholder="আপনার লক্ষ্য এখানে লিখুন..."
                     defaultValue={state.fields?.customGoal}
                 />
-                 {state.issues?.filter((issue) => issue.toLowerCase().includes("customgoal")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+                 {state.issues?.filter((issue) => issue.toLowerCase().includes("অন্যান্য")).map((issue) =>  <Alert key={issue} variant="destructive" className="mt-2"><AlertDescription>{issue}</AlertDescription></Alert>)}
             </div>
            )}
           

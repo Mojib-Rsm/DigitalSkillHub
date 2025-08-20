@@ -7,8 +7,8 @@ import { z } from "zod";
 const FacebookReplyGeneratorActionSchema = z.object({
   postContent: z.string().min(10, { message: "অনুগ্রহ করে পোস্টের বিষয়বস্তু লিখুন (কমপক্ষে ১০ অক্ষর)।" }),
   conversation: z.array(z.object({
-    id: z.string(),
-    character: z.string(),
+    id: z.string(), // Keep id for React key but it's not sent to AI
+    character: z.string().min(1, {message: "চরিত্র নির্বাচন করুন।"}),
     text: z.string().min(1, { message: "কথোপকথনের প্রতিটি অংশের জন্য পাঠ্য প্রয়োজন।" }),
   })).min(1, { message: "অনুগ্রহ করে কমপক্ষে একটি কথোপকথনের অংশ যোগ করুন।" }),
   goal: z.string().optional(),
@@ -36,7 +36,7 @@ export async function generateFacebookReplies(
 ): Promise<FormState> {
   const conversationEntries = Array.from(formData.entries()).filter(([key]) => key.startsWith('conversation'));
   
-  const conversationMap: Record<string, { id?: string; character?: string; text?: string }> = {};
+  const conversationMap: { [key: string]: { id?: string; character?: string; text?: string } } = {};
 
   for (const [key, value] of conversationEntries) {
       const match = key.match(/conversation\[(\d+)\]\.(id|character|text)/);
@@ -54,7 +54,7 @@ export async function generateFacebookReplies(
       id: item.id || '',
       character: item.character || '',
       text: item.text || '',
-  })).filter(part => part.id); // Filter out any empty parts
+  }));
 
 
   const validatedFields = FacebookReplyGeneratorActionSchema.safeParse({
@@ -63,26 +63,31 @@ export async function generateFacebookReplies(
     goal: formData.get("goal"),
     customGoal: formData.get("customGoal"),
   });
-
-  if (!validatedFields.success) {
-    const { errors } = validatedFields.error;
-    
-    const fields: Record<string, any> = { 
+  
+  const getFields = () => {
+     const fields: Record<string, any> = { 
         postContent: formData.get("postContent"), 
         goal: formData.get("goal"),
         customGoal: formData.get("customGoal"),
+        conversation: parsedConversation,
     };
-    parsedConversation.forEach((item, index) => {
-        fields[`conversation[${index}].id`] = item.id;
-        fields[`conversation[${index}].character`] = item.character;
-        fields[`conversation[${index}].text`] = item.text;
-    });
-    fields.conversationLength = parsedConversation.length;
+    return fields;
+  }
+
+  if (!validatedFields.success) {
+    const { errors } = validatedFields.error;
 
     return {
       message: "Validation Error",
-      issues: errors.flatMap(e => e.path.length > 1 && e.path[0] === 'conversation' ? `Conversaton part #${Number(e.path[1])+1}: ${e.message}` : e.message),
-      fields,
+      issues: errors.flatMap(e => {
+          if (e.path.length > 1 && e.path[0] === 'conversation') {
+              const index = e.path[1];
+              const field = e.path[2];
+              return `কথোপকথন #${Number(index) + 1} (${field}): ${e.message}`;
+          }
+          return e.message;
+      }),
+      fields: getFields(),
     };
   }
   
@@ -107,12 +112,16 @@ export async function generateFacebookReplies(
         suggestions: result.suggestions,
       };
     } else {
-        return { message: "কোনো উত্তর তৈরি করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।" }
+        return { 
+            message: "কোনো উত্তর তৈরি করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন。",
+            fields: getFields(),
+        }
     }
   } catch (error) {
     console.error(error);
     return {
       message: "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+      fields: getFields(),
     };
   }
 }
