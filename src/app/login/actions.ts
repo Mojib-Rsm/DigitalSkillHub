@@ -2,10 +2,8 @@
 "use server";
 
 import { z } from "zod";
-import admin from 'firebase-admin';
 import crypto from "crypto";
-import { getFirestore } from 'firebase-admin/firestore';
-import { app } from "@/lib/firebase-admin";
+import { app, admin } from "@/lib/firebase-admin";
 
 if (!app && !admin.apps.length) {
     console.error("Firebase Admin SDK is not initialized in actions.ts. This should not happen.");
@@ -60,7 +58,7 @@ export async function loginAction(
       return { message: "Server configuration error. Please check your service-account.json file.", success: false };
   }
 
-  const db = getFirestore();
+  const db = admin.firestore();
   const { email, password } = validatedFields.data;
 
   try {

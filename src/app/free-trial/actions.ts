@@ -2,9 +2,8 @@
 "use server";
 
 import { z } from "zod";
-import admin from 'firebase-admin';
 import crypto from "crypto";
-import { app } from "@/lib/firebase-admin";
+import { app, admin } from "@/lib/firebase-admin";
 
 
 if (!app && !admin.apps.length) {
