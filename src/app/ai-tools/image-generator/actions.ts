@@ -45,7 +45,10 @@ export async function generateImage(
         return { message: "Failed to generate image. Please try again." }
     }
   } catch (error) {
-    console.error(error);
+    console.error("Image generation action error:", error);
+    if (error instanceof Error) {
+        return { message: `An unexpected error occurred: ${error.message}` };
+    }
     return {
       message: "An unexpected error occurred. Please try again.",
     };

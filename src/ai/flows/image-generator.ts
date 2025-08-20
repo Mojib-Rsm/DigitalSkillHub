@@ -32,19 +32,28 @@ const imageGeneratorFlow = ai.defineFlow(
     inputSchema: ImageGeneratorInputSchema,
     outputSchema: ImageGeneratorOutputSchema,
   },
-  async input => {
-    const {media} = await ai.generate({
-      model: 'googleai/gemini-2.0-flash-preview-image-generation',
-      prompt: input.prompt,
-      config: {
-        responseModalities: ['TEXT', 'IMAGE'],
-      },
-    });
-    
-    if (!media.url) {
-        throw new Error('Image generation failed.');
-    }
+  async (input) => {
+    try {
+      const {media} = await ai.generate({
+        model: 'googleai/gemini-2.0-flash-preview-image-generation',
+        prompt: input.prompt,
+        config: {
+          responseModalities: ['TEXT', 'IMAGE'],
+        },
+      });
+      
+      if (!media?.url) {
+          throw new Error('Image generation failed to produce a valid URL. The model may have refused to generate the image based on the prompt.');
+      }
 
-    return {imageUrl: media.url};
+      return {imageUrl: media.url};
+    } catch (error) {
+        console.error("Error in imageGeneratorFlow:", error);
+        if (error instanceof Error) {
+            // Re-throw with a more user-friendly message
+            throw new Error(`Failed to generate image: ${error.message}`);
+        }
+        throw new Error("An unknown error occurred during image generation.");
+    }
   }
 );
