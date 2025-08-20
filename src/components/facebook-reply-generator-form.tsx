@@ -127,7 +127,7 @@ export default function FacebookReplyGeneratorForm() {
                             name={`conversation[${index}].text`}
                             placeholder={`চরিত্রের মন্তব্য লিখুন...`}
                             rows={2}
-                            defaultValue={part.text}
+                            value={part.text}
                             onChange={(e) => handleTextChange(part.id, e.target.value)}
                         />
                     </div>

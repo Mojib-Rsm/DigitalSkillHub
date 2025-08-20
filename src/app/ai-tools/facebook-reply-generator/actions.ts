@@ -48,11 +48,11 @@ export async function generateFacebookReplies(
           conversationMap[index][field as 'character' | 'text'] = value as string;
       }
   }
-
+  
   const parsedConversation = Object.values(conversationMap).map(item => ({
       character: item.character || '',
       text: item.text || '',
-  }));
+  })).filter(part => part.character || part.text); // Filter out empty parts that might be created by deletion
 
 
   const validatedFields = FacebookReplyGeneratorActionSchema.safeParse({
