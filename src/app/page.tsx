@@ -1,4 +1,7 @@
 
+"use client";
+
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, Check, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown } from "lucide-react";
@@ -8,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { app } from "@/lib/firebase";
 
 
 const faqItems = [
@@ -71,6 +76,16 @@ const faqItems = [
 
 
 export default function Home() {
+  const [user, setUser] = useState<User | null>(null);
+  const auth = getAuth(app);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, [auth]);
+
   return (
     <div className="flex flex-col bg-background">
       {/* Hero Section */}
@@ -94,12 +109,21 @@ export default function Home() {
             </div>
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up [animation-delay:600ms]">
-                <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
-                    <Link href="/free-trial">
-                        <Zap className="mr-2 h-5 w-5"/>
-                        Start Free Trial - No Credit Card
-                    </Link>
-                </Button>
+                {user ? (
+                     <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
+                        <Link href="/#pricing">
+                            <Zap className="mr-2 h-5 w-5"/>
+                            View Pricing
+                        </Link>
+                    </Button>
+                ) : (
+                    <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
+                        <Link href="/free-trial">
+                            <Zap className="mr-2 h-5 w-5"/>
+                            Start Free Trial - No Credit Card
+                        </Link>
+                    </Button>
+                )}
                 <Button size="lg" variant="outline" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base" asChild>
                     <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">
                         <PlayCircle className="mr-2 h-5 w-5"/>
@@ -208,7 +232,7 @@ export default function Home() {
       </section>
 
        {/* Detailed Features */}
-       <section id="features" className="pt-12 md:pt-20">
+       <section id="features" className="py-12 md:pt-20">
             <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                  <div className="md:col-span-2 lg:col-span-1 lg:pr-8 animate-fade-in-up">
                     <Badge variant="destructive">🔥 HOT NEW FEATURE</Badge>
