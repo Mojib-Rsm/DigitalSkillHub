@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   verification: {
     google: 'UOjLl8nKnBXzX4B4Iexn70-dASolNycUEKKZ2o4fg0E',
   },
+  authors: [{ name: "Mojib Rsm" }, { name: "Oftern" }, { name: "TotthoAI" }],
 };
 
 export default function RootLayout({
