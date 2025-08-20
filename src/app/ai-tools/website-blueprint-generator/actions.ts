@@ -5,15 +5,16 @@ import { websiteBlueprintGenerator } from "@/ai/flows/website-blueprint-generato
 import { z } from "zod";
 
 const WebsiteBlueprintActionSchema = z.object({
-  idea: z.string().min(10, { message: "Please describe your idea in at least 10 characters." }),
-  targetAudience: z.string().min(3, { message: "Please describe your target audience." }),
-  coreFeatures: z.string().min(5, { message: "Please list at least one core feature." }),
+  websiteType: z.string().min(1, { message: "Please select a website type." }),
+  targetAudience: z.string().min(1, { message: "Please select a target audience." }),
+  coreFeatures: z.array(z.string()).min(1, { message: "Please select at least one core feature." }),
+  briefDescription: z.string().min(10, { message: "Please describe your idea in at least 10 characters." }),
 });
 
 type FormState = {
   message: string;
   blueprint?: any;
-  fields?: Record<string, string>;
+  fields?: Record<string, any>;
   issues?: string[];
 };
 
@@ -22,9 +23,10 @@ export async function generateBlueprintAction(
   formData: FormData
 ): Promise<FormState> {
   const validatedFields = WebsiteBlueprintActionSchema.safeParse({
-    idea: formData.get("idea"),
+    websiteType: formData.get("websiteType"),
     targetAudience: formData.get("targetAudience"),
-    coreFeatures: formData.get("coreFeatures"),
+    coreFeatures: formData.getAll("coreFeatures"),
+    briefDescription: formData.get("briefDescription"),
   });
 
   if (!validatedFields.success) {
@@ -32,7 +34,12 @@ export async function generateBlueprintAction(
     return {
       message: "Validation Error",
       issues: errors.map((issue) => issue.message),
-      fields: Object.fromEntries(formData.entries()) as Record<string, string>,
+      fields: {
+        websiteType: formData.get("websiteType"),
+        targetAudience: formData.get("targetAudience"),
+        coreFeatures: formData.getAll("coreFeatures"),
+        briefDescription: formData.get("briefDescription"),
+      }
     };
   }
   

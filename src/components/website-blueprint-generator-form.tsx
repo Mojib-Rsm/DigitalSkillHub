@@ -15,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Checkbox } from "./ui/checkbox";
 
 // Import jspdf for PDF generation
 import { jsPDF } from "jspdf";
@@ -39,6 +41,18 @@ function SubmitButton() {
     </Button>
   );
 }
+
+const features = [
+    { id: "user_login", label: "ব্যবহারকারী লগইন এবং প্রোফাইল" },
+    { id: "blog_section", label: "ব্লগ সেকশন" },
+    { id: "payment_gateway", label: "পেমেন্ট গেটওয়ে ইন্টিগ্রেশন" },
+    { id: "product_listing", label: "পণ্য বা পরিষেবা তালিকা" },
+    { id: "search_functionality", label: "সার্চ কার্যকারিতা" },
+    { id: "contact_form", label: "যোগাযোগ ফরম" },
+    { id: "customer_reviews", label: "গ্রাহক পর্যালোচনা সিস্টেম" },
+    { id: "social_media_integration", label: "সোশ্যাল মিডিয়া ইন্টিগ্রেশন" },
+]
+
 
 export default function WebsiteBlueprintGeneratorForm() {
   const initialState = { message: "", blueprint: null, issues: [], fields: {} };
@@ -132,41 +146,67 @@ export default function WebsiteBlueprintGeneratorForm() {
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="idea">ওয়েবসাইটের মূল ধারণা</Label>
-            <Textarea
-              id="idea"
-              name="idea"
-              placeholder="যেমন, একটি অনলাইন প্ল্যাটফর্ম যেখানে বাংলাদেশের কারিগররা তাদের হাতে তৈরি পণ্য সরাসরি গ্রাহকদের কাছে বিক্রি করতে পারবেন।"
-              defaultValue={state.fields?.idea}
-              required
-              rows={4}
-            />
-            {state.issues?.filter(i => i.toLowerCase().includes("idea")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+                <Label htmlFor="websiteType">ওয়েবসাইটের ধরন</Label>
+                <Select name="websiteType" defaultValue={state.fields?.websiteType}>
+                    <SelectTrigger id="websiteType">
+                        <SelectValue placeholder="একটি ধরন নির্বাচন করুন" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="E-commerce Store">ই-কমার্স স্টোর</SelectItem>
+                        <SelectItem value="Blog / Portfolio">ব্লগ / পোর্টফোলিও</SelectItem>
+                        <SelectItem value="Business / Agency Website">ব্যবসায়িক / এজেন্সি ওয়েবসাইট</SelectItem>
+                        <SelectItem value="Online Course Platform">অনলাইন কোর্স প্ল্যাটফর্ম</SelectItem>
+                        <SelectItem value="Community Forum">কমিউনিটি ফোরাম</SelectItem>
+                        <SelectItem value="News Portal">নিউজ পোর্টাল</SelectItem>
+                    </SelectContent>
+                </Select>
+                 {state.issues?.filter(i => i.toLowerCase().includes("type")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="targetAudience">লক্ষ্য দর্শক</Label>
+                <Select name="targetAudience" defaultValue={state.fields?.targetAudience}>
+                    <SelectTrigger id="targetAudience">
+                        <SelectValue placeholder="দর্শক নির্বাচন করুন" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="General Public">সাধারণ মানুষ</SelectItem>
+                        <SelectItem value="Local Customers">স্থানীয় গ্রাহক</SelectItem>
+                        <SelectItem value="B2B Clients / Businesses">ব্যবসা-থেকে-ব্যবসা (B2B) ক্লায়েন্ট</SelectItem>
+                        <SelectItem value="Students / Educators">ছাত্র / শিক্ষক</SelectItem>
+                        <SelectItem value="Niche Community">নির্দিষ্ট কমিউনিটি (যেমন, গেমার, শিল্পী)</SelectItem>
+                        <SelectItem value="Tech Enthusiasts">প্রযুক্তি উত্সাহী</SelectItem>
+                    </SelectContent>
+                </Select>
+                 {state.issues?.filter(i => i.toLowerCase().includes("audience")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            </div>
           </div>
-
+          
            <div className="space-y-2">
-            <Label htmlFor="targetAudience">লক্ষ্য দর্শক (Target Audience)</Label>
-            <Input
-              id="targetAudience"
-              name="targetAudience"
-              placeholder="যেমন, যারা অনন্য এবং স্থানীয় পণ্য পছন্দ করেন, পর্যটক, প্রবাসী বাংলাদেশী।"
-              defaultValue={state.fields?.targetAudience}
-              required
-            />
-            {state.issues?.filter(i => i.toLowerCase().includes("audience")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            <Label>মূল বৈশিষ্ট্য</Label>
+            <div className="grid grid-cols-2 gap-4 p-4 border rounded-md">
+                {features.map((feature) => (
+                    <div className="flex items-center space-x-2" key={feature.id}>
+                        <Checkbox id={feature.id} name="coreFeatures" value={feature.label} />
+                        <Label htmlFor={feature.id} className="font-normal">{feature.label}</Label>
+                    </div>
+                ))}
+            </div>
+             {state.issues?.filter(i => i.toLowerCase().includes("feature")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="coreFeatures">মূল বৈশিষ্ট্য (কমা দ্বারা পৃথক)</Label>
-            <Input
-              id="coreFeatures"
-              name="coreFeatures"
-              placeholder="যেমন, পণ্য তালিকা, বিক্রেতার প্রোফাইল, নিরাপদ পেমেন্ট গেটওয়ে, গ্রাহক পর্যালোচনা।"
-              defaultValue={state.fields?.coreFeatures}
+          
+           <div className="space-y-2">
+            <Label htmlFor="briefDescription">ওয়েবসাইটের সংক্ষিপ্ত বিবরণ</Label>
+            <Textarea
+              id="briefDescription"
+              name="briefDescription"
+              placeholder="আপনার ওয়েবসাইটটি কী সম্পর্কে, তা এক বাক্যে বর্ণনা করুন..."
+              defaultValue={state.fields?.briefDescription}
               required
+              rows={2}
             />
-            {state.issues?.filter(i => i.toLowerCase().includes("feature")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            {state.issues?.filter(i => i.toLowerCase().includes("idea") || i.toLowerCase().includes("description")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
           
           <SubmitButton />
@@ -269,4 +309,3 @@ export default function WebsiteBlueprintGeneratorForm() {
     </Card>
   );
 }
-

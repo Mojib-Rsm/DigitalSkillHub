@@ -13,9 +13,10 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const WebsiteBlueprintInputSchema = z.object({
-  idea: z.string().describe('The core idea or purpose of the website.'),
+  websiteType: z.string().describe('The type of website to be built.'),
   targetAudience: z.string().describe('The primary target audience for the website.'),
-  coreFeatures: z.string().describe('A comma-separated list of must-have features.'),
+  coreFeatures: z.array(z.string()).describe('A list of must-have features.'),
+  briefDescription: z.string().describe('A brief one-sentence description of the website idea.'),
 });
 export type WebsiteBlueprintInput = z.infer<typeof WebsiteBlueprintInputSchema>;
 
@@ -43,9 +44,11 @@ const prompt = ai.definePrompt({
   output: {schema: WebsiteBlueprintOutputSchema},
   prompt: `You are an expert web strategist and project manager. Your task is to take a user's raw idea and transform it into a structured, actionable blueprint for a new website. The tone should be encouraging, creative, and professional.
 
-User's Idea: {{{idea}}}
-Target Audience: {{{targetAudience}}}
-Core Features: {{{coreFeatures}}}
+User's Idea:
+- Website Type: {{{websiteType}}}
+- Target Audience: {{{targetAudience}}}
+- Core Features: {{#each coreFeatures}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
+- Brief Description: {{{briefDescription}}}
 
 Based on this information, generate a comprehensive website blueprint. Be creative but practical.
 
