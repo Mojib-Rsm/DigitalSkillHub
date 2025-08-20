@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
 
 // Import jspdf for PDF generation
@@ -154,12 +154,47 @@ export default function WebsiteBlueprintGeneratorForm() {
                         <SelectValue placeholder="একটি ধরন নির্বাচন করুন" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="E-commerce Store">ই-কমার্স স্টোর</SelectItem>
-                        <SelectItem value="Blog / Portfolio">ব্লগ / পোর্টফোলিও</SelectItem>
-                        <SelectItem value="Business / Agency Website">ব্যবসায়িক / এজেন্সি ওয়েবসাইট</SelectItem>
-                        <SelectItem value="Online Course Platform">অনলাইন কোর্স প্ল্যাটফর্ম</SelectItem>
-                        <SelectItem value="Community Forum">কমিউনিটি ফোরাম</SelectItem>
-                        <SelectItem value="News Portal">নিউজ পোর্টাল</SelectItem>
+                        <SelectGroup>
+                            <SelectLabel>ব্যবসা ও কমার্স</SelectLabel>
+                            <SelectItem value="E-commerce Store">ই-কমার্স স্টোর</SelectItem>
+                            <SelectItem value="Company Profile">কোম্পানি প্রোফাইল</SelectItem>
+                            <SelectItem value="Freelancer Portfolio">ফ্রিল্যান্সার পোর্টফোলিও</SelectItem>
+                            <SelectItem value="Service Provider Website">সার্ভিস প্রোভাইডার ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Restaurant / Cafe Website">রেস্টুরেন্ট / ক্যাফে ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Hotel / Hostel Booking Website">হোটেল / হোস্টেল বুকিং ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Travel Agency Website">ট্রাভেল এজেন্সি ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Fitness Gym / Coaching Website">ফিটনেস জিম / কোচিং ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Real Estate Website">রিয়েল এস্টেট ওয়েবসাইট</SelectItem>
+                            <SelectItem value="SaaS Landing Page">SaaS ল্যান্ডিং পেজ</SelectItem>
+                        </SelectGroup>
+                        <SelectGroup>
+                            <SelectLabel>নিউজ ও মিডিয়া</SelectLabel>
+                            <SelectItem value="Online News Portal">অনলাইন নিউজ পোর্টাল</SelectItem>
+                            <SelectItem value="Blog Website">ব্লগ ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Digital Magazine">ডিজিটাল ম্যাগাজিন</SelectItem>
+                            <SelectItem value="Video Content Website">ভিডিও কনটেন্ট ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Podcast Website">পডকাস্ট ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Lifestyle & Interview Website">লাইফস্টাইল ও ইন্টারভিউ ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Sports News Website">স্পোর্টস নিউজ ওয়েবসাইট</SelectItem>
+                        </SelectGroup>
+                         <SelectGroup>
+                            <SelectLabel>শিক্ষা ও লার্নিং</SelectLabel>
+                            <SelectItem value="Online Course Website">অনলাইন কোর্স ওয়েবসাইট</SelectItem>
+                            <SelectItem value="School / College / University Website">স্কুল / কলেজ / বিশ্ববিদ্যালয় ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Tutorial Website">টিউটোরিয়াল ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Ebook / Study Material Website">ইবুক / স্টাডি ম্যাটেরিয়াল ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Exam & Marksheet Generator Website">পরীক্ষা ও মার্কশিট জেনারেটর ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Library or Resource Website">লাইব্রেরি বা রিসোর্স ওয়েবসাইট</SelectItem>
+                        </SelectGroup>
+                         <SelectGroup>
+                            <SelectLabel>সোশ্যাল ও কমিউনিটি</SelectLabel>
+                            <SelectItem value="Social Networking Website">সোশ্যাল নেটওয়ার্কিং ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Online Forum or Community Website">অনলাইন ফোরাম বা কমিউনিটি ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Event & Meetup Website">ইভেন্ট ও মিটআপ ওয়েবসাইট</SelectItem>
+                            <SelectItem value="Chat Room / Messaging Platform">চ্যাট রুম / মেসেজিং প্ল্যাটফর্ম</SelectItem>
+                            <SelectItem value="Review and Rating Website">রিভিউ এবং রেটিং ওয়েবসাইট</SelectItem>
+                            <SelectItem value="NGO or Voluntary Organization Website">NGO বা স্বেচ্ছাসেবী সংস্থা ওয়েবসাইট</SelectItem>
+                        </SelectGroup>
                     </SelectContent>
                 </Select>
                  {state.issues?.filter(i => i.toLowerCase().includes("type")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
@@ -171,12 +206,19 @@ export default function WebsiteBlueprintGeneratorForm() {
                         <SelectValue placeholder="দর্শক নির্বাচন করুন" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="General Public">সাধারণ মানুষ</SelectItem>
-                        <SelectItem value="Local Customers">স্থানীয় গ্রাহক</SelectItem>
-                        <SelectItem value="B2B Clients / Businesses">ব্যবসা-থেকে-ব্যবসা (B2B) ক্লায়েন্ট</SelectItem>
-                        <SelectItem value="Students / Educators">ছাত্র / শিক্ষক</SelectItem>
-                        <SelectItem value="Niche Community">নির্দিষ্ট কমিউনিটি (যেমন, গেমার, শিল্পী)</SelectItem>
-                        <SelectItem value="Tech Enthusiasts">প্রযুক্তি উত্সাহী</SelectItem>
+                        <SelectItem value="General users and online shoppers">সাধারণ ব্যবহারকারী ও অনলাইন ক্রেতা</SelectItem>
+                        <SelectItem value="Potential clients and investors">সম্ভাব্য ক্লায়েন্ট ও বিনিয়োগকারী</SelectItem>
+                        <SelectItem value="Clients and employers">ক্লায়েন্ট এবং চাকরিদাতা</SelectItem>
+                        <SelectItem value="Food lovers and tourists">খাদ্যপ্রেমী ও পর্যটক</SelectItem>
+                        <SelectItem value="Travelers and families">ভ্রমণকারী ও পরিবার</SelectItem>
+                        <SelectItem value="Fitness enthusiasts and athletes">ফিটনেস উত্সাহী ও ক্রীড়াবিদ</SelectItem>
+                        <SelectItem value="House seekers and investors">বাড়ি/ফ্ল্যাট খোঁজকারী ও বিনিয়োগকারী</SelectItem>
+                        <SelectItem value="General readers and researchers">সাধারণ পাঠক ও গবেষক</SelectItem>
+                        <SelectItem value="Niche readers (e.g., travel, tech)">নির্দিষ্ট বিষয়ের পাঠক (যেমন, ভ্রমণ, প্রযুক্তি)</SelectItem>
+                        <SelectItem value="Students and professionals">ছাত্র ও পেশাজীবী</SelectItem>
+                        <SelectItem value="Students, parents, and teachers">ছাত্র, অভিভাবক ও শিক্ষক</SelectItem>
+                        <SelectItem value="Hobbyists and community members">শখের মানুষ ও কমিউনিটি সদস্য</SelectItem>
+                        <SelectItem value="Donors and volunteers">দাতা ও স্বেচ্ছাসেবী</SelectItem>
                     </SelectContent>
                 </Select>
                  {state.issues?.filter(i => i.toLowerCase().includes("audience")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
