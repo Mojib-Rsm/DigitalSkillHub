@@ -2,7 +2,7 @@
 'use server';
 
 /**
- * @fileOverview AI tool to extract text from handwritten documents and convert it to structured data.
+ * @fileOverview AI tool to extract text from a handwritten document and convert it to structured data.
  *
  * - handwritingExtractor - A function that extracts text from an image.
  * - HandwritingExtractorInput - The input type for the function.
@@ -13,12 +13,11 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const HandwritingExtractorInputSchema = z.object({
-  photoDataUris: z.array(z
+  photoDataUri: z
     .string()
     .describe(
       "A clear photo of a handwritten document, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-    )
-  ).describe('An array of handwritten document photos.'),
+    ),
 });
 export type HandwritingExtractorInput = z.infer<typeof HandwritingExtractorInputSchema>;
 
@@ -38,24 +37,22 @@ const prompt = ai.definePrompt({
   name: 'handwritingExtractorPrompt',
   input: {schema: HandwritingExtractorInputSchema},
   output: {schema: HandwritingExtractorOutputSchema},
-  prompt: `You are a professional and intelligent data entry assistant. Your task is to extract all text from a series of handwritten document images and structure them into a single, cohesive table. You must act as a smart assistant, correcting obvious errors and ensuring data integrity across all provided images.
+  prompt: `You are a professional and intelligent data entry assistant. Your task is to extract all text from a handwritten document image and structure it into a cohesive table if it's tabular data. You must act as a smart assistant, correcting obvious errors and ensuring data integrity.
 
-Images to process:
-{{#each photoDataUris}}
-Image {{@index}}: {{media url=this}}
-{{/each}}
+Image to process:
+{{media url=photoDataUri}}
 
 Instructions:
-1.  **Act as an Intelligent Assistant:** Your primary goal is accuracy and cohesion. You are processing multiple images that represent a single, continuous dataset.
-2.  **Combine All Data:** Treat all images as parts of one single table. Combine all rows from all images into one final table.
-3.  **Correct Serial Numbers:** Pay close attention to serial numbers (like 'ক্রমিক নং'). If the serial number sequence is broken across images (e.g., Image 1 ends at 5, Image 2 starts at 1 but should be 6), you MUST correct it to maintain a continuous sequence.
-4.  **Complete and Accurate Extraction:** Extract EVERY piece of text from EVERY cell. Place data in the correct column under the correct header. The first row of the output array MUST be the column headers.
+1.  **Analyze the Structure:** First, determine if the content in the image is a table or plain text.
+2.  **Act as an Intelligent Assistant:** Your primary goal is accuracy.
+3.  **Correct Serial Numbers:** If the data is a table, pay close attention to serial numbers (like 'ক্রমিক নং'). If the serial number sequence is broken, you MUST correct it to maintain a continuous sequence.
+4.  **Complete and Accurate Extraction:** Extract EVERY piece of text. If it is a table, place data in the correct column under the correct header. The first row of the output array MUST be the column headers.
 5.  **Handle Empty or Illegible Cells:** If a cell is empty, represent it with an empty string (""). If text is truly illegible, write "illegible". Do not guess information.
 6.  **Final Output Structure:**
-    *   Set 'isTable' to true.
-    *   The 'extractedText' field should be an empty string.
-    *   Populate 'extractedTable' with the final, combined, and corrected 2D array.
-    *   For the 'explanation', provide a summary of your work, like: "I have combined the data from [Number of Images] images into a single table with [Total Number of Rows] rows and [Number of Columns] columns. I have also corrected the serial number sequence to ensure continuity."
+    *   Set 'isTable' to true if it is a table, otherwise false.
+    *   If it's not a table, put all extracted text in the 'extractedText' field. 'extractedTable' should be an empty array.
+    *   If it is a table, populate 'extractedTable' with the final, corrected 2D array. 'extractedText' should be an empty string.
+    *   For the 'explanation', provide a summary of your work, like: "I have extracted the data as a table with [Total Number of Rows] rows and [Number of Columns] columns. I have also corrected the serial number sequence." or "I have extracted the text content from the provided note."
 `,
 });
 
