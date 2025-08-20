@@ -17,6 +17,8 @@ const WebsiteBlueprintInputSchema = z.object({
   targetAudience: z.string().describe('The primary target audience for the website.'),
   coreFeatures: z.array(z.string()).describe('A list of must-have features.'),
   briefDescription: z.string().describe('A brief one-sentence description of the website idea.'),
+  language: z.enum(['Bengali', 'English']).describe('The language for the blueprint output.'),
+  country: z.string().describe('The country for which the website is targeted. This can influence suggestions.'),
 });
 export type WebsiteBlueprintInput = z.infer<typeof WebsiteBlueprintInputSchema>;
 
@@ -49,16 +51,18 @@ User's Idea:
 - Target Audience: {{{targetAudience}}}
 - Core Features: {{#each coreFeatures}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
 - Brief Description: {{{briefDescription}}}
+- Country of Target: {{{country}}}
+- Desired Language for Blueprint: {{{language}}}
 
-Based on this information, generate a comprehensive website blueprint. Be creative but practical.
+Based on this information, generate a comprehensive website blueprint in the requested language ({{{language}}}). Be creative but practical.
 
-1.  **Suggest a Name:** Propose a creative and brandable name for the website.
-2.  **Create a Tagline:** Write a short, memorable tagline.
-3.  **Outline Pages & Sections:** Define a logical page structure (e.g., Home, About, Services, Blog, Contact). For each page, list the essential sections or components it should contain. For example, the Home page might have: 'Hero Section with CTA', 'Services Overview', 'Testimonials', 'Featured Blog Posts'.
-4.  **Recommend Key Features:** Expand on the user's core features and suggest others that would add value.
-5.  **Suggest a Tech Stack:** Provide a brief, high-level recommendation for a suitable technology stack (e.g., Next.js with TailwindCSS for a fast, modern site).
+1.  **Suggest a Name:** Propose a creative and brandable name for the website in the requested language.
+2.  **Create a Tagline:** Write a short, memorable tagline in the requested language.
+3.  **Outline Pages & Sections:** Define a logical page structure (e.g., Home, About, Services, Blog, Contact). For each page, list the essential sections or components it should contain. For example, the Home page might have: 'Hero Section with CTA', 'Services Overview', 'Testimonials', 'Featured Blog Posts'. All page and section names must be in the requested language.
+4.  **Recommend Key Features:** Expand on the user's core features and suggest others that would add value. Explain them in the requested language.
+5.  **Suggest a Tech Stack:** Provide a brief, high-level recommendation for a suitable technology stack (e.g., Next.js with TailwindCSS for a fast, modern site). Explain it in the requested language.
 
-The final output must be a well-organized JSON object following the defined schema.`,
+The final output must be a well-organized JSON object following the defined schema, with all text content in the specified language ({{{language}}}).`,
 });
 
 const websiteBlueprintGeneratorFlow = ai.defineFlow(

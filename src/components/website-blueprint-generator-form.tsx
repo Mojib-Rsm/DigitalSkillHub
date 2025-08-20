@@ -10,13 +10,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Sparkles, LayoutTemplate, Lightbulb, Check, Pilcrow, Layers, Code, Settings, Download, FileText, FileDown } from "lucide-react";
+import { Sparkles, LayoutTemplate, Lightbulb, Check, Pilcrow, Layers, Code, Settings, Download, FileText, FileDown, ChevronsUpDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "./ui/command";
+import { cn } from "@/lib/utils";
+import { countries } from "@/lib/countries";
 
 // Import jspdf for PDF generation
 import { jsPDF } from "jspdf";
@@ -59,6 +63,11 @@ export default function WebsiteBlueprintGeneratorForm() {
   const [state, formAction] = useActionState(generateBlueprintAction, initialState);
   const { toast } = useToast();
   const [outputFormat, setOutputFormat] = useState("pdf");
+
+  const [websiteType, setWebsiteType] = useState(initialState.fields?.websiteType || "");
+  const [targetAudience, setTargetAudience] = useState(initialState.fields?.targetAudience || "");
+  const [country, setCountry] = useState(initialState.fields?.country || "");
+  const [countrySelectOpen, setCountrySelectOpen] = useState(false);
 
   useEffect(() => {
     if (state.message && state.message !== "success" && state.message !== "Validation Error") {
@@ -147,9 +156,70 @@ export default function WebsiteBlueprintGeneratorForm() {
       <CardContent>
         <form action={formAction} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
+              <div className="space-y-2">
+                <Label>ভাষা নির্বাচন করুন</Label>
+                <Select name="language" defaultValue="Bengali">
+                    <SelectTrigger>
+                        <SelectValue placeholder="ভাষা নির্বাচন করুন" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="Bengali">বাংলা</SelectItem>
+                        <SelectItem value="English">English</SelectItem>
+                    </SelectContent>
+                </Select>
+                 {state.issues?.filter(i => i.toLowerCase().includes("language")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="country">দেশ নির্বাচন করুন</Label>
+                <input type="hidden" name="country" value={country} />
+                    <Popover open={countrySelectOpen} onOpenChange={setCountrySelectOpen}>
+                        <PopoverTrigger asChild>
+                        <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={countrySelectOpen}
+                            className="w-full justify-between font-normal"
+                        >
+                            {country
+                            ? countries.find((c) => c.value.toLowerCase() === country.toLowerCase())?.label
+                            : "দেশ নির্বাচন করুন..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                        <Command>
+                            <CommandInput placeholder="দেশ খুঁজুন..." />
+                            <CommandEmpty>কোনো দেশ পাওয়া যায়নি।</CommandEmpty>
+                            <CommandGroup className="max-h-64 overflow-y-auto">
+                            {countries.map((c) => (
+                                <CommandItem
+                                key={c.value}
+                                value={c.label}
+                                onSelect={(currentValue) => {
+                                    const selectedCountry = countries.find(c => c.label.toLowerCase() === currentValue.toLowerCase());
+                                    setCountry(selectedCountry ? selectedCountry.value : "");
+                                    setCountrySelectOpen(false);
+                                }}
+                                >
+                                <Check
+                                    className={cn(
+                                    "mr-2 h-4 w-4",
+                                    country === c.value ? "opacity-100" : "opacity-0"
+                                    )}
+                                />
+                                {c.label}
+                                </CommandItem>
+                            ))}
+                            </CommandGroup>
+                        </Command>
+                        </PopoverContent>
+                    </Popover>
+                 {state.issues?.filter(i => i.toLowerCase().includes("country")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+              </div>
+          </div>
+          <div className="space-y-2">
                 <Label htmlFor="websiteType">ওয়েবসাইটের ধরন</Label>
-                <Select name="websiteType" defaultValue={state.fields?.websiteType}>
+                <Select name="websiteType" value={websiteType} onValueChange={setWebsiteType}>
                     <SelectTrigger id="websiteType">
                         <SelectValue placeholder="একটি ধরন নির্বাচন করুন" />
                     </SelectTrigger>
@@ -195,13 +265,22 @@ export default function WebsiteBlueprintGeneratorForm() {
                             <SelectItem value="Review and Rating Website">রিভিউ এবং রেটিং ওয়েবসাইট</SelectItem>
                             <SelectItem value="NGO or Voluntary Organization Website">NGO বা স্বেচ্ছাসেবী সংস্থা ওয়েবসাইট</SelectItem>
                         </SelectGroup>
+                        <SelectItem value="Other">অন্যান্য</SelectItem>
                     </SelectContent>
                 </Select>
                  {state.issues?.filter(i => i.toLowerCase().includes("type")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+          </div>
+          {websiteType === 'Other' && (
+             <div className="space-y-2 animate-in fade-in-50">
+                <Label htmlFor="otherWebsiteType">আপনার নিজের ওয়েবসাইটের ধরন লিখুন</Label>
+                <Input name="otherWebsiteType" id="otherWebsiteType" placeholder="যেমন, ব্যক্তিগত গ্যালারি" defaultValue={state.fields?.otherWebsiteType} />
+                {state.issues?.filter(i => i.toLowerCase().includes("custom website type")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
             </div>
-            <div className="space-y-2">
+          )}
+
+          <div className="space-y-2">
                 <Label htmlFor="targetAudience">লক্ষ্য দর্শক</Label>
-                <Select name="targetAudience" defaultValue={state.fields?.targetAudience}>
+                <Select name="targetAudience" value={targetAudience} onValueChange={setTargetAudience}>
                     <SelectTrigger id="targetAudience">
                         <SelectValue placeholder="দর্শক নির্বাচন করুন" />
                     </SelectTrigger>
@@ -219,11 +298,18 @@ export default function WebsiteBlueprintGeneratorForm() {
                         <SelectItem value="Students, parents, and teachers">ছাত্র, অভিভাবক ও শিক্ষক</SelectItem>
                         <SelectItem value="Hobbyists and community members">শখের মানুষ ও কমিউনিটি সদস্য</SelectItem>
                         <SelectItem value="Donors and volunteers">দাতা ও স্বেচ্ছাসেবী</SelectItem>
+                        <SelectItem value="Other">অন্যান্য</SelectItem>
                     </SelectContent>
                 </Select>
                  {state.issues?.filter(i => i.toLowerCase().includes("audience")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
             </div>
-          </div>
+             {targetAudience === 'Other' && (
+             <div className="space-y-2 animate-in fade-in-50">
+                <Label htmlFor="otherTargetAudience">আপনার নিজের লক্ষ্য দর্শক লিখুন</Label>
+                <Input name="otherTargetAudience" id="otherTargetAudience" placeholder="যেমন, চিত্রশিল্পী এবং শিল্প সংগ্রাহক" defaultValue={state.fields?.otherTargetAudience} />
+                {state.issues?.filter(i => i.toLowerCase().includes("custom target audience")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            </div>
+          )}
           
            <div className="space-y-2">
             <Label>মূল বৈশিষ্ট্য</Label>
