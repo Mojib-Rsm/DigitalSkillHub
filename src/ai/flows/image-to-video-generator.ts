@@ -32,6 +32,7 @@ export type ImageToVideoGeneratorOutput = z.infer<typeof ImageToVideoGeneratorOu
 
 async function downloadVideo(video: MediaPart): Promise<string> {
     const fetch = (await import('node-fetch')).default;
+    // Add API key before fetching the video. The URL may or may not have query params already.
     const videoUrl = video.media!.url!.includes('?') ? `${video.media!.url}&key=${process.env.GEMINI_API_KEY}` : `${video.media!.url}?key=${process.env.GEMINI_API_KEY}`;
     console.log(`Downloading video from: ${videoUrl.substring(0, 100)}...`);
 
@@ -45,6 +46,7 @@ async function downloadVideo(video: MediaPart): Promise<string> {
 
     const videoBuffer = await videoDownloadResponse.arrayBuffer();
     const base64Video = Buffer.from(videoBuffer).toString('base64');
+    // Ensure we have a content type, default to mp4 if not present.
     const contentType = video.media!.contentType || 'video/mp4';
     
     return `data:${contentType};base64,${base64Video}`;
