@@ -34,46 +34,37 @@ export async function generateFacebookReplies(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const conversationEntries = Array.from(formData.entries()).filter(([key]) => key.startsWith('conversation'));
-  
-  const conversationMap: { [key: string]: { id?: string; character?: string; text?: string } } = {};
-
-  for (const [key, value] of conversationEntries) {
-      const match = key.match(/conversation\[(\d+)\]\.(id|character|text)/);
-      if (match) {
-          const index = match[1];
-          const field = match[2];
-          if (!conversationMap[index]) {
-              conversationMap[index] = {};
-          }
-          conversationMap[index][field as 'id' | 'character' | 'text'] = value as string;
+  // Correctly parse dynamic conversation parts from FormData
+  const conversationData: Record<string, { id: string; character: string; text: string }> = {};
+  for (const [key, value] of formData.entries()) {
+    const match = key.match(/^conversation\[(\d+)\]\.(id|character|text)$/);
+    if (match) {
+      const [, index, field] = match;
+      if (!conversationData[index]) {
+        conversationData[index] = { id: '', character: '', text: '' };
       }
+      conversationData[index][field as 'id' | 'character' | 'text'] = value as string;
+    }
   }
-  
-  const parsedConversation = Object.values(conversationMap).map(item => ({
-      id: item.id || '',
-      character: item.character || '',
-      text: item.text || '',
-  }));
+  const conversation = Object.values(conversationData);
 
-
-  const validatedFields = FacebookReplyGeneratorActionSchema.safeParse({
-    postContent: formData.get("postContent"),
-    conversation: parsedConversation,
-    goal: formData.get("goal"),
-    customGoal: formData.get("customGoal"),
-  });
-  
   const getFields = () => {
      const fields: Record<string, any> = { 
         postContent: formData.get("postContent"), 
         goal: formData.get("goal"),
         customGoal: formData.get("customGoal"),
-        conversation: parsedConversation,
+        conversation,
     };
     return fields;
   }
 
+  const validatedFields = FacebookReplyGeneratorActionSchema.safeParse({
+    postContent: formData.get("postContent"),
+    conversation: conversation,
+    goal: formData.get("goal"),
+    customGoal: formData.get("customGoal"),
+  });
+  
   if (!validatedFields.success) {
     const { errors } = validatedFields.error;
 
@@ -94,10 +85,8 @@ export async function generateFacebookReplies(
   try {
     const { postContent, conversation, goal, customGoal } = validatedFields.data;
     
-    // If goal is "Other", use the customGoal as the actual goal for the AI
     const finalGoal = goal === 'Other' ? customGoal : goal;
     
-    // We don't need to send the ID to the AI flow, just character and text
     const conversationForAI = conversation.map(({ character, text }) => ({ character, text }));
 
     const result = await facebookReplyGenerator({
@@ -110,10 +99,11 @@ export async function generateFacebookReplies(
       return {
         message: "success",
         suggestions: result.suggestions,
+        fields: getFields(), // pass back fields on success to maintain form state if needed
       };
     } else {
         return { 
-            message: "কোনো উত্তর তৈরি করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন。",
+            message: "কোনো উত্তর তৈরি করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।",
             fields: getFields(),
         }
     }

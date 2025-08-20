@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { generateFacebookReplies } from "@/app/ai-tools/facebook-reply-generator/actions";
 import { Button } from "@/components/ui/button";
@@ -36,19 +36,22 @@ function SubmitButton() {
 }
 
 type ConversationPart = {
-    id: number;
+    id: string; // Use string for IDs to be safe with Date.now() and form data
     character: string;
     text: string;
 }
 
 export default function FacebookReplyGeneratorForm() {
-  const initialState = { message: "", suggestions: [], issues: [], fields: {} };
+  const initialState: { message: string; suggestions?: string[]; fields?: Record<string, any>; issues?: string[] } = 
+    { message: "", suggestions: [], issues: [], fields: {} };
   const [state, formAction] = useActionState(generateFacebookReplies, initialState);
+  const formRef = useRef<HTMLFormElement>(null);
   
-  const initialConversation = state.fields?.conversation || [{ id: 1, character: "Character A", text: "" }];
-  const [conversationParts, setConversationParts] = useState<ConversationPart[]>(initialConversation);
+  const [conversationParts, setConversationParts] = useState<ConversationPart[]>(
+    initialState.fields?.conversation || [{ id: `${Date.now()}`, character: "Character A", text: "" }]
+  );
 
-  const [selectedGoal, setSelectedGoal] = useState(state.fields?.goal || "");
+  const [selectedGoal, setSelectedGoal] = useState(initialState.fields?.goal || "");
   const { toast } = useToast();
   
   useEffect(() => {
@@ -56,7 +59,7 @@ export default function FacebookReplyGeneratorForm() {
         toast({
             variant: "destructive",
             title: "ত্রুটি",
-            description: state.message,
+            description: state.issues?.join('\n') || state.message,
         })
     }
   }, [state, toast]);
@@ -70,19 +73,19 @@ export default function FacebookReplyGeneratorForm() {
   };
 
   const addConversationPart = () => {
-    const nextChar = String.fromCharCode(65 + conversationParts.filter(p => p.character.startsWith("Character")).length);
-    setConversationParts(prev => [...prev, { id: Date.now(), character: `Character ${nextChar}`, text: "" }]);
+    const nextChar = String.fromCharCode(65 + conversationParts.length);
+    setConversationParts(prev => [...prev, { id: `${Date.now()}`, character: `Character ${nextChar}`, text: "" }]);
   };
 
-  const removeConversationPart = (id: number) => {
+  const removeConversationPart = (id: string) => {
     setConversationParts(prev => prev.filter(part => part.id !== id));
   };
   
-  const handleCharacterChange = (id: number, value: string) => {
+  const handleCharacterChange = (id: string, value: string) => {
     setConversationParts(prev => prev.map(part => part.id === id ? {...part, character: value} : part));
   }
 
-  const handleTextChange = (id: number, value: string) => {
+  const handleTextChange = (id: string, value: string) => {
      setConversationParts(prev => prev.map(part => part.id === id ? {...part, text: value} : part));
   }
 
@@ -96,7 +99,7 @@ export default function FacebookReplyGeneratorForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={formAction} className="space-y-6">
+        <form ref={formRef} action={formAction} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="postContent">আসল পোস্টের বিষয়বস্তু</Label>
             <Textarea
