@@ -8,12 +8,12 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const HandwritingExtractorActionSchema = z.object({
-  photo: z
-    .any()
-    .refine((file) => file?.size > 0, 'অনুগ্রহ করে একটি ছবি আপলোড করুন।')
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `ছবির আকার 5MB এর বেশি হতে পারবে না।`)
+  photos: z
+    .array(z.any())
+    .min(1, 'অনুগ্রহ করে কমপক্ষে একটি ছবি আপলোড করুন।')
+    .refine((files) => files.every(file => file.size <= MAX_FILE_SIZE), `প্রতিটি ছবির আকার 5MB এর বেশি হতে পারবে না।`)
     .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+      (files) => files.every(file => ACCEPTED_IMAGE_TYPES.includes(file.type)),
       "শুধুমাত্র .jpg, .jpeg, .png এবং .webp ফরম্যাট সমর্থিত।"
     ),
 });
@@ -29,7 +29,7 @@ export async function extractHandwritingAction(
   formData: FormData
 ): Promise<FormState> {
   const validatedFields = HandwritingExtractorActionSchema.safeParse({
-    photo: formData.get("photo"),
+    photos: formData.getAll("photos"),
   });
 
   if (!validatedFields.success) {
@@ -41,12 +41,15 @@ export async function extractHandwritingAction(
   }
   
   try {
-    const { photo } = validatedFields.data;
+    const { photos } = validatedFields.data;
     
-    const photoBuffer = Buffer.from(await photo.arrayBuffer());
-    const photoDataUri = `data:${photo.type};base64,${photoBuffer.toString('base64')}`;
+    const photoDataUris = await Promise.all(photos.map(async (photo) => {
+        const photoBuffer = Buffer.from(await photo.arrayBuffer());
+        return `data:${photo.type};base64,${photoBuffer.toString('base64')}`;
+    }));
 
-    const result = await handwritingExtractor({ photoDataUri });
+
+    const result = await handwritingExtractor({ photoDataUris });
 
     if (result) {
       return {

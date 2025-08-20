@@ -13,11 +13,12 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const HandwritingExtractorInputSchema = z.object({
-  photoDataUri: z
+  photoDataUris: z.array(z
     .string()
     .describe(
       "A clear photo of a handwritten document, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
-    ),
+    )
+  ).describe('An array of handwritten document photos.'),
 });
 export type HandwritingExtractorInput = z.infer<typeof HandwritingExtractorInputSchema>;
 
@@ -37,23 +38,24 @@ const prompt = ai.definePrompt({
   name: 'handwritingExtractorPrompt',
   input: {schema: HandwritingExtractorInputSchema},
   output: {schema: HandwritingExtractorOutputSchema},
-  prompt: `You are an expert data entry specialist with an exceptional ability to read and interpret handwritten documents. Your task is not just to transcribe, but to act as an intelligent assistant. You will extract all text from the provided image of a handwritten table and structure it into a perfect 2D array, correcting obvious mistakes.
+  prompt: `You are a professional and intelligent data entry assistant. Your task is to extract all text from a series of handwritten document images and structure them into a single, cohesive table. You must act as a smart assistant, correcting obvious errors and ensuring data integrity across all provided images.
 
-Image to process:
-{{media url=photoDataUri}}
+Images to process:
+{{#each photoDataUris}}
+Image {{@index}}: {{media url=this}}
+{{/each}}
 
 Instructions:
-1.  **Act as an Intelligent Assistant:** Your primary goal is accuracy. If you see a clear, simple mistake (e.g., a sequential number is wrong like 1, 2, 4, 5, you should correct it to 1, 2, 3, 4, 5), you should correct it. Do not guess information, but use context to fix obvious errors.
-2.  **Table First:** Assume the content is a table. Set 'isTable' to true.
-3.  **Complete Extraction:** Extract EVERY row and EVERY column. Do not miss any data.
-4.  **Headers are Key:** The first row of the output array MUST be the column headers from the image.
-5.  **Correct Placement:** Ensure the data for each cell is placed in the correct column corresponding to the headers.
-6.  **Handle Empty Cells:** If a cell in the table is visibly empty, represent it as an empty string ("").
-7.  **Illegible Text:** If handwriting is truly impossible to read, write "illegible". Do not make up information.
-8.  **Output Fields:**
-    *   Populate the 'extractedTable' field with the resulting 2D array.
+1.  **Act as an Intelligent Assistant:** Your primary goal is accuracy and cohesion. You are processing multiple images that represent a single, continuous dataset.
+2.  **Combine All Data:** Treat all images as parts of one single table. Combine all rows from all images into one final table.
+3.  **Correct Serial Numbers:** Pay close attention to serial numbers (like 'ক্রমিক নং'). If the serial number sequence is broken across images (e.g., Image 1 ends at 5, Image 2 starts at 1 but should be 6), you MUST correct it to maintain a continuous sequence.
+4.  **Complete and Accurate Extraction:** Extract EVERY piece of text from EVERY cell. Place data in the correct column under the correct header. The first row of the output array MUST be the column headers.
+5.  **Handle Empty or Illegible Cells:** If a cell is empty, represent it with an empty string (""). If text is truly illegible, write "illegible". Do not guess information.
+6.  **Final Output Structure:**
+    *   Set 'isTable' to true.
     *   The 'extractedText' field should be an empty string.
-    *   For the 'explanation', provide a simple summary, like: "I have extracted a table with [Number of Rows] rows and [Number of Columns] columns, and I have corrected a sequencing error in the serial number column."
+    *   Populate 'extractedTable' with the final, combined, and corrected 2D array.
+    *   For the 'explanation', provide a summary of your work, like: "I have combined the data from [Number of Images] images into a single table with [Total Number of Rows] rows and [Number of Columns] columns. I have also corrected the serial number sequence to ensure continuity."
 `,
 });
 

@@ -50,7 +50,7 @@ export default function HandwritingExtractorForm() {
   const initialState = { message: "", issues: [], data: undefined };
   const [state, formAction] = useActionState(extractHandwritingAction, initialState);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   const [outputFormat, setOutputFormat] = useState("excel");
   const { toast } = useToast();
 
@@ -65,28 +65,37 @@ export default function HandwritingExtractorForm() {
   }, [state, toast]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      const fileArray = Array.from(files);
+      const invalidFiles = fileArray.some(file => file.size > 5 * 1024 * 1024);
+      if (invalidFiles) {
           toast({
               variant: "destructive",
               title: "ফাইল খুবই বড়",
-              description: "ছবির আকার 5MB এর বেশি হতে পারবে না।",
+              description: "প্রতিটি ছবির আকার 5MB এর বেশি হতে পারবে না।",
           });
           if(fileInputRef.current) fileInputRef.current.value = "";
-          setPreviewUrl(null);
+          setPreviewUrls([]);
           return;
       }
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+      const urls = fileArray.map(file => URL.createObjectURL(file));
+      setPreviewUrls(urls);
     } else {
-      setPreviewUrl(null);
+      setPreviewUrls([]);
     }
   };
 
-  const handleRemoveImage = () => {
-    setPreviewUrl(null);
+  const handleRemoveImage = (indexToRemove: number) => {
+    setPreviewUrls(prev => prev.filter((_, index) => index !== indexToRemove));
+    // This is tricky with file inputs. The best we can do is clear it.
+    // A better solution would involve a custom file management state.
     if(fileInputRef.current) fileInputRef.current.value = "";
+    toast({
+        title: "Image removed",
+        description: "Please re-select your files if you need to add more.",
+        variant: "default"
+    })
   }
   
   const handleDownload = () => {
@@ -160,29 +169,34 @@ export default function HandwritingExtractorForm() {
       <CardHeader>
         <CardTitle>ছবি থেকে টেক্সট এক্সট্র্যাক্ট করুন</CardTitle>
         <CardDescription>
-          আপনার হাতে লেখা নোটের একটি পরিষ্কার ছবি আপলোড করুন এবং আউটপুট ফরম্যাট নির্বাচন করুন।
+          আপনার হাতে লেখা নোটের এক বা একাধিক পরিষ্কার ছবি আপলোড করুন এবং আউটপুট ফরম্যাট নির্বাচন করুন।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
               <div className="space-y-2">
-                <Label htmlFor="photo">আপনার ছবি (সর্বোচ্চ 5MB)</Label>
+                <Label htmlFor="photos">আপনার ছবি (সর্বোচ্চ 5MB প্রতিটি)</Label>
                 <Input
-                    id="photo"
-                    name="photo"
+                    id="photos"
+                    name="photos"
                     type="file"
                     accept="image/*"
                     ref={fileInputRef}
                     onChange={handleFileChange}
                     className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                    multiple
                 />
-                {previewUrl && (
-                    <div className="mt-2 relative w-full h-48 border rounded-md">
-                        <Image src={previewUrl} alt="Image preview" layout="fill" className="rounded-md object-contain"/>
-                        <Button variant="destructive" size="icon" onClick={handleRemoveImage} className="absolute -top-2 -right-2 h-6 w-6 rounded-full">
-                            <X className="h-4 w-4"/>
-                        </Button>
+                {previewUrls.length > 0 && (
+                    <div className="mt-2 grid grid-cols-3 gap-2">
+                        {previewUrls.map((url, index) => (
+                             <div key={index} className="relative w-full h-24 border rounded-md">
+                                <Image src={url} alt={`Image preview ${index + 1}`} layout="fill" className="rounded-md object-contain"/>
+                                <Button type="button" variant="destructive" size="icon" onClick={() => handleRemoveImage(index)} className="absolute -top-2 -right-2 h-6 w-6 rounded-full">
+                                    <X className="h-4 w-4"/>
+                                </Button>
+                            </div>
+                        ))}
                     </div>
                 )}
                 {state.issues?.map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
@@ -228,7 +242,7 @@ export default function HandwritingExtractorForm() {
         {useFormStatus().pending && (
              <div className="mt-8 text-center">
                 <div className="inline-block bg-muted/50 p-4 rounded-lg animate-pulse">
-                    <p className="text-muted-foreground">আপনার ছবিটি বিশ্লেষণ করা হচ্ছে... এটি কিছু সময় নিতে পারে।</p>
+                    <p className="text-muted-foreground">আপনার ছবি(গুলো) বিশ্লেষণ করা হচ্ছে... এটি কিছু সময় নিতে পারে।</p>
                 </div>
             </div>
         )}
