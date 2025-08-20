@@ -115,6 +115,51 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Stats Section */}
+      <section className="py-16 md:py-24">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <Card className="p-6 bg-muted/50">
+              <CardHeader>
+                <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
+                    <Layers className="w-8 h-8 text-primary" />
+                </div>
+                <p className="text-4xl font-bold">600,000+</p>
+              </CardHeader>
+              <CardContent>
+                <h3 className="text-xl font-semibold">Content Generated</h3>
+                <p className="text-muted-foreground mt-1">Articles created</p>
+              </CardContent>
+            </Card>
+            <Card className="p-6 bg-muted/50">
+              <CardHeader>
+                <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
+                    <Users className="w-8 h-8 text-primary" />
+                </div>
+                <p className="text-4xl font-bold">3,000+</p>
+              </CardHeader>
+              <CardContent>
+                <h3 className="text-xl font-semibold">Active Users</h3>
+                <p className="text-muted-foreground mt-1">Content creators</p>
+              </CardContent>
+            </Card>
+            <Card className="p-6 bg-muted/50">
+              <CardHeader>
+                <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
+                    <Clock className="w-8 h-8 text-primary" />
+                </div>
+                <p className="text-4xl font-bold">90%</p>
+              </CardHeader>
+              <CardContent>
+                <h3 className="text-xl font-semibold">Time Saved</h3>
+                <p className="text-muted-foreground mt-1">Faster than manual writing</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+
       {/* What's New Section */}
       <section id="whats-new" className="py-16 md:py-24 bg-muted/50">
         <div className="container mx-auto px-4">
