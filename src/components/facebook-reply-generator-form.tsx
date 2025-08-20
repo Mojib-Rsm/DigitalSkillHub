@@ -111,6 +111,7 @@ export default function FacebookReplyGeneratorForm() {
              <Label>কথোপকথনের ইতিহাস</Label>
              {conversationParts.map((part, index) => (
                 <div key={part.id} className="p-4 border rounded-lg space-y-2 relative bg-muted/50">
+                    <input type="hidden" name={`conversation[${index}].id`} value={part.id} />
                     <div className="grid grid-cols-1 sm:grid-cols-[150px_1fr] gap-2 items-start">
                         <Select name={`conversation[${index}].character`} defaultValue={part.character} onValueChange={(value) => handleCharacterChange(part.id, value)}>
                             <SelectTrigger>

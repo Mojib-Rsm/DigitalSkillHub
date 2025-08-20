@@ -7,6 +7,7 @@ import { z } from "zod";
 const FacebookReplyGeneratorActionSchema = z.object({
   postContent: z.string().min(10, { message: "অনুগ্রহ করে পোস্টের বিষয়বস্তু লিখুন (কমপক্ষে ১০ অক্ষর)।" }),
   conversation: z.array(z.object({
+    id: z.string(),
     character: z.string(),
     text: z.string().min(1, { message: "কথোপকথনের প্রতিটি অংশের জন্য পাঠ্য প্রয়োজন।" }),
   })).min(1, { message: "অনুগ্রহ করে কমপক্ষে একটি কথোপকথনের অংশ যোগ করুন।" }),
@@ -35,24 +36,25 @@ export async function generateFacebookReplies(
 ): Promise<FormState> {
   const conversationEntries = Array.from(formData.entries()).filter(([key]) => key.startsWith('conversation'));
   
-  const conversationMap: Record<string, { character?: string; text?: string }> = {};
+  const conversationMap: Record<string, { id?: string; character?: string; text?: string }> = {};
 
   for (const [key, value] of conversationEntries) {
-      const match = key.match(/conversation\[(\d+)\]\.(character|text)/);
+      const match = key.match(/conversation\[(\d+)\]\.(id|character|text)/);
       if (match) {
           const index = match[1];
           const field = match[2];
           if (!conversationMap[index]) {
               conversationMap[index] = {};
           }
-          conversationMap[index][field as 'character' | 'text'] = value as string;
+          conversationMap[index][field as 'id' | 'character' | 'text'] = value as string;
       }
   }
   
   const parsedConversation = Object.values(conversationMap).map(item => ({
+      id: item.id || '',
       character: item.character || '',
       text: item.text || '',
-  })).filter(part => part.character || part.text); // Filter out empty parts that might be created by deletion
+  })).filter(part => part.id); // Filter out any empty parts
 
 
   const validatedFields = FacebookReplyGeneratorActionSchema.safeParse({
@@ -71,6 +73,7 @@ export async function generateFacebookReplies(
         customGoal: formData.get("customGoal"),
     };
     parsedConversation.forEach((item, index) => {
+        fields[`conversation[${index}].id`] = item.id;
         fields[`conversation[${index}].character`] = item.character;
         fields[`conversation[${index}].text`] = item.text;
     });
@@ -88,10 +91,13 @@ export async function generateFacebookReplies(
     
     // If goal is "Other", use the customGoal as the actual goal for the AI
     const finalGoal = goal === 'Other' ? customGoal : goal;
+    
+    // We don't need to send the ID to the AI flow, just character and text
+    const conversationForAI = conversation.map(({ character, text }) => ({ character, text }));
 
     const result = await facebookReplyGenerator({
         postContent,
-        conversation,
+        conversation: conversationForAI,
         goal: finalGoal,
     });
 
