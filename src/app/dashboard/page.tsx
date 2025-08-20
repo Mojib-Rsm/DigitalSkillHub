@@ -84,50 +84,52 @@ export default function DashboardLayout() {
           </SidebarMenuButton>
         </SidebarHeader>
         <SidebarContent className="p-2">
-            <SidebarGroup>
+            <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton href="/dashboard" isActive>
                     <LayoutGrid />
                     <span>Dashboard</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-            </SidebarGroup>
-            <SidebarGroup>
-                 <SidebarGroupLabel className="flex items-center"><FileText className="mr-2"/> Content Generation <ChevronDown className="ml-auto size-4"/></SidebarGroupLabel>
-                 <SidebarMenu>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton>
-                        <Sparkles />
-                        <span>One Click Writer</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton>
-                        <Video/>
-                        <span>Video to Blog Post</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                     <SidebarMenuItem>
-                      <SidebarMenuButton>
+                <SidebarMenuItem>
+                    <SidebarMenuButton>
                         <FileText />
-                        <span>News Writer</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                     <SidebarMenuItem>
-                      <SidebarMenuButton>
-                        <Layers/>
-                        <span>Bulk Generation</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                     <SidebarMenuItem>
-                      <SidebarMenuButton>
-                        <RefreshCcw/>
-                        <span>Bulk Content Refresh</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                 </SidebarMenu>
-            </SidebarGroup>
-             <SidebarGroup>
+                        <span>Content Generation</span>
+                        <ChevronDown className="ml-auto size-4" />
+                    </SidebarMenuButton>
+                    <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                            <SidebarMenuSubButton>
+                                <Sparkles />
+                                <span>One Click Writer</span>
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                        <SidebarMenuSubItem>
+                             <SidebarMenuSubButton>
+                                <Video/>
+                                <span>Video to Blog Post</span>
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                         <SidebarMenuSubItem>
+                            <SidebarMenuSubButton>
+                                <FileText />
+                                <span>News Writer</span>
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                         <SidebarMenuSubItem>
+                            <SidebarMenuSubButton>
+                                <Layers/>
+                                <span>Bulk Generation</span>
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                         <SidebarMenuSubItem>
+                            <SidebarMenuSubButton>
+                                <RefreshCcw/>
+                                <span>Bulk Content Refresh</span>
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                    </SidebarMenuSub>
+                </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton>
                     <Library />
@@ -135,15 +137,15 @@ export default function DashboardLayout() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton href="/free-tools">
+                  <SidebarMenuButton href="/ai-tools">
                     <Bot />
-                    <span>Free Tools</span>
+                    <span>All Tools</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-            </SidebarGroup>
+            </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
-           <SidebarGroup>
+           <SidebarMenu className="p-2">
                  <SidebarMenuItem>
                   <SidebarMenuButton>
                     <Settings />
@@ -156,7 +158,7 @@ export default function DashboardLayout() {
                     <span>Help</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-           </SidebarGroup>
+           </SidebarMenu>
            <div className="p-2">
             <Card className="bg-primary/10 border-primary/50">
                 <CardHeader>
