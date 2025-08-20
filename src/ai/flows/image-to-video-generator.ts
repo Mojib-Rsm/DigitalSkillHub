@@ -62,11 +62,17 @@ const imageToVideoGeneratorFlow = ai.defineFlow(
   },
   async ({ prompt, photoDataUri }) => {
     try {
+        const match = photoDataUri.match(/^data:(image\/\w+);base64,(.*)$/);
+        if (!match) {
+            throw new Error("Invalid photoDataUri format. Expected 'data:<mimetype>;base64,<encoded_data>'.");
+        }
+        const [, mimeType, base64Data] = match;
+
         let { operation } = await ai.generate({
           model: googleAI.model('veo-2.0-generate-001'),
           prompt: [
             { text: prompt },
-            { media: { url: photoDataUri } },
+            { image: { bytesBase64Encoded: base64Data, mimeType: mimeType } },
           ],
           config: {
             durationSeconds: 5,
