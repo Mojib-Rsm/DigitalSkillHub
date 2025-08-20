@@ -5,23 +5,10 @@ import { z } from "zod";
 import admin from 'firebase-admin';
 import crypto from "crypto";
 import { getFirestore } from 'firebase-admin/firestore';
-// Use path and fs to construct an absolute path
-import path from "path";
-const serviceAccountPath = path.resolve(process.cwd(), 'service-account.json');
-const serviceAccount = require(serviceAccountPath);
+import { app } from "@/lib/firebase-admin";
 
-if (!admin.apps.length) {
-    try {
-        admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount)
-        });
-    } catch (e: any) {
-        if (e.code === 'invalid-credential') {
-            console.error("Firebase Admin SDK initialization failed: The service account credentials in service-account.json are not valid. Please check your configuration.");
-        } else {
-            console.error("Firebase Admin SDK initialization failed:", e.message);
-        }
-    }
+if (!app && !admin.apps.length) {
+    console.error("Firebase Admin SDK is not initialized in actions.ts. This should not happen.");
 }
 
 

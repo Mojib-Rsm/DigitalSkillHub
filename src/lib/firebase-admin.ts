@@ -1,16 +1,13 @@
 
 import admin from 'firebase-admin';
-// Use path and fs to construct an absolute path
-import path from "path";
-const serviceAccountPath = path.resolve(process.cwd(), 'service-account.json');
-const serviceAccount = require(serviceAccountPath);
+import serviceAccount from '@/lib/service-account.json';
 
 let app: admin.app.App;
 
 if (!admin.apps.length) {
   try {
     app = admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
+      credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
     });
   } catch (e: any) {
     if (e.code === 'invalid-credential') {

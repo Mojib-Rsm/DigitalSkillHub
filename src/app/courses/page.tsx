@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, ListFilter } from "lucide-react";
 import { getCourses, Course } from '@/services/course-service';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 
 export default function CoursesPage() {
     const [allCourses, setAllCourses] = useState<Course[]>([]);
