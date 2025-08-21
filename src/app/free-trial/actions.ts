@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { getFirestore, collection, addDoc, query, where, getDocs } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 const SignupSchema = z.object({
   name: z.string().min(3, { message: 'Name must be at least 3 characters.' }),
@@ -75,7 +76,6 @@ export async function signupAction(
         path: '/',
     });
 
-    return { message: 'Account created successfully!', success: true };
   } catch (error) {
     console.error('Signup action error:', error);
     return {
@@ -83,4 +83,7 @@ export async function signupAction(
       success: false,
     };
   }
+  
+  // Redirect to dashboard on successful signup
+  redirect('/dashboard');
 }

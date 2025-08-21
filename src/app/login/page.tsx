@@ -36,28 +36,19 @@ function LoginSubmitButton() {
 
 export default function LoginPage() {
     const { toast } = useToast();
-    const searchParams = useSearchParams();
 
     const initialState = { message: "", success: false };
     const [state, formAction] = useActionState(loginAction, initialState);
 
     useEffect(() => {
-        if (state.success) {
-            toast({
-                title: "Login Successful!",
-                description: "Welcome back. Redirecting you to the dashboard...",
-            });
-            const redirectUrl = searchParams.get('redirect') || '/dashboard';
-            // Force a full page navigation to ensure the cookie is sent with the new request.
-            window.location.href = redirectUrl;
-        } else if (state.message) {
+        if (!state.success && state.message) {
             toast({
                 variant: "destructive",
                 title: "Login Failed",
                 description: state.message,
             });
         }
-    }, [state, toast, searchParams]);
+    }, [state, toast]);
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4" suppressHydrationWarning={true}>

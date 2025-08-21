@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { cookies } from 'next/headers';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
+import { redirect } from 'next/navigation';
 
 
 const LoginSchema = z.object({
@@ -65,8 +66,6 @@ export async function loginAction(
         path: '/',
     });
 
-    return { message: 'Login successful!', success: true };
-
   } catch (error) {
     console.error('Login action error:', error);
     return {
@@ -74,4 +73,6 @@ export async function loginAction(
       success: false,
     };
   }
+
+  redirect('/dashboard');
 }

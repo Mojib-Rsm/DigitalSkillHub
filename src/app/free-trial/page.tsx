@@ -36,28 +36,19 @@ function SignUpSubmitButton() {
 
 export default function FreeTrialPage() {
     const { toast } = useToast();
-    const searchParams = useSearchParams();
     
     const initialState = { message: "", success: false, issues: [], fields: {} };
     const [state, formAction] = useActionState(signupAction, initialState);
 
     useEffect(() => {
-        if (state.success) {
-            toast({
-                title: "Account Created!",
-                description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
-            });
-            const redirectUrl = searchParams.get('redirect') || '/dashboard';
-            // Force a full page navigation to ensure the cookie is sent with the new request.
-            window.location.href = redirectUrl;
-        } else if (state.message && state.message !== 'Validation Error') {
+        if (state.message && state.message !== 'Validation Error') {
             toast({
                 variant: "destructive",
                 title: "Registration Failed",
                 description: state.message,
             });
         }
-    }, [state, toast, searchParams]);
+    }, [state, toast]);
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4" suppressHydrationWarning={true}>
