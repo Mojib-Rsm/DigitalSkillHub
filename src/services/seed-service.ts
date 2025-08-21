@@ -5,7 +5,8 @@ import {
     getFirestore, 
     collection, 
     writeBatch,
-    getDocs
+    getDocs,
+    doc
 } from 'firebase/firestore';
 import { app } from '@/lib/firebase';
 import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, users } from '@/lib/demo-data';
@@ -30,7 +31,7 @@ export async function seedDatabase() {
 
             data.forEach((item) => {
                 // For 'users', use the specified uid. For others, let Firestore generate the ID.
-                const docRef = collectionName === 'users' ? doc(collectionRef, item.uid) : doc(collectionRef);
+                const docRef = collectionName === 'users' && item.uid ? doc(collectionRef, item.uid) : doc(collectionRef);
                 const dataToSet = { ...item };
                 if (collectionName === 'users') {
                     delete dataToSet.uid; // Don't store the uid inside the document itself
@@ -72,8 +73,3 @@ export async function seedDatabase() {
         };
     }
 }
-
-// Need to import `doc` for the 'users' collection with specific UIDs
-import { doc } from 'firebase/firestore';
-
-    
