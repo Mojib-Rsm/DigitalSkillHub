@@ -7,61 +7,72 @@ import {
     writeBatch,
     getDocs,
     doc
-} from 'firebase/firestore';
+} from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, users } from '@/lib/demo-data';
 
 
 export async function seedDatabase() {
     const db = getFirestore(app);
-    const batch = writeBatch(db);
-    let operationsCount = 0;
+    let totalOperationsCount = 0;
+    const collectionsToSeed = [
+        { name: 'courses', data: allCourses },
+        { name: 'blog', data: blogPosts },
+        { name: 'jobs', data: jobPostings },
+        { name: 'pricing', data: pricingPlans },
+        { name: 'testimonials', data: testimonials },
+        { name: 'users', data: users },
+    ];
 
     try {
-        // Helper function to seed a collection
+        // Helper function to seed a single collection in its own batch
         const seedCollection = async (collectionName: string, data: any[]) => {
             const collectionRef = collection(db, collectionName);
             
-            // Optional: Check if collection is already seeded to prevent duplicates
+            // Check if collection is already seeded to prevent duplicates
             const snapshot = await getDocs(collectionRef);
             if (!snapshot.empty) {
                 console.log(`Collection "${collectionName}" already has data. Skipping.`);
-                return;
+                return 0; // Return 0 operations
             }
+            
+            // Firestore batches have a limit of 500 operations.
+            // We create a new batch for each collection to stay under the limit.
+            const batch = writeBatch(db);
+            let operationsCount = 0;
 
             data.forEach((item) => {
-                // For 'users', use the specified uid. For others, let Firestore generate the ID.
-                const docRef = collectionName === 'users' && item.uid ? doc(collectionRef, item.uid) : doc(collectionRef);
+                const docRef = item.id ? doc(collectionRef, item.id) : doc(collectionRef);
                 const dataToSet = { ...item };
-                if (collectionName === 'users') {
-                    delete dataToSet.uid; // Don't store the uid inside the document itself
+                if (item.id) {
+                    delete dataToSet.id;
                 }
                 batch.set(docRef, dataToSet);
                 operationsCount++;
             });
+
+            if (operationsCount > 0) {
+                 await batch.commit();
+                 console.log(`Successfully seeded collection "${collectionName}" with ${operationsCount} documents.`);
+            }
+            return operationsCount;
         };
 
-        // Seed all collections
-        await seedCollection('courses', allCourses);
-        await seedCollection('blog', blogPosts);
-        await seedCollection('jobs', jobPostings);
-        await seedCollection('pricing', pricingPlans);
-        await seedCollection('testimonials', testimonials);
-        await seedCollection('users', users);
+        for (const { name, data } of collectionsToSeed) {
+            const count = await seedCollection(name, data);
+            totalOperationsCount += count;
+        }
 
-        if (operationsCount === 0) {
+        if (totalOperationsCount === 0) {
             return {
                 success: true,
                 message: "All collections were already seeded with data. No new data was added."
             };
         }
-
-        // Commit the batch
-        await batch.commit();
         
         return { 
             success: true, 
-            message: `Successfully seeded database with ${operationsCount} documents.` 
+            message: `Successfully seeded database with ${totalOperationsCount} documents across ${collectionsToSeed.length} collections.` 
         };
 
     } catch (error) {
