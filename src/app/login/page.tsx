@@ -46,13 +46,10 @@ export default function LoginPage() {
         if (state.success) {
             toast({
                 title: "Login Successful!",
-                description: "Welcome back.",
+                description: "Welcome back. Redirecting you to the dashboard...",
             });
             const redirectUrl = searchParams.get('redirect') || '/dashboard';
             router.push(redirectUrl);
-            // We use window.location.reload() to ensure the cookie is picked up by the middleware
-            // and the layout is re-rendered with the correct user state.
-            setTimeout(() => window.location.reload(), 500); 
         } else if (state.message) {
             toast({
                 variant: "destructive",
