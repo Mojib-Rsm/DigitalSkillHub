@@ -1,4 +1,3 @@
-
 import admin from 'firebase-admin';
 
 // This file now only exports the admin object.
