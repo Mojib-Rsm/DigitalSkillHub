@@ -1,81 +1,188 @@
 
 import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+  Activity,
+  ArrowUpRight,
+  CircleUser,
+  CreditCard,
+  DollarSign,
+  Menu,
+  Package2,
+  Search,
+  Users,
+} from "lucide-react"
 
 import {
-  RefreshCcw,
-  Sparkles,
-  Video,
-  Layers,
-  PlayCircle,
-} from "lucide-react";
-import Image from "next/image";
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  CartesianGrid
+} from "recharts"
 
-const gettingStartedGuides = [
-  {
-    title: "Getting Started Guide",
-    description: "Learn the basics of TotthoAi",
-    image: "https://placehold.co/600x400.png",
-    dataAiHint: "tutorial screen recording"
-  },
-  {
-    title: "Advanced Features",
-    description: "Explore advanced content generation features",
-    image: "https://placehold.co/600x400.png",
-    dataAiHint: "dashboard interface"
-  },
-  {
-    title: "Best Practices",
-    description: "Tips and tricks for optimal results",
-    image: "https://placehold.co/600x400.png",
-    dataAiHint: "checklist seo"
-  },
+const userSignups = [
+    { month: "Jan", signups: 186 },
+    { month: "Feb", signups: 305 },
+    { month: "Mar", signups: 237 },
+    { month: "Apr", signups: 273 },
+    { month: "May", signups: 209 },
+    { month: "Jun", signups: 250 },
+];
+
+const recentActivities = [
+    { name: "Olivia Martin", email: "olivia.martin@email.com", amount: "+৳499.00", type: "Subscription" },
+    { name: "Jackson Lee", email: "jackson.lee@email.com", amount: "+৳1,499.00", type: "Subscription" },
+    { name: "Isabella Nguyen", email: "isabella.nguyen@email.com", amount: "+৳499.00", type: "Subscription" },
+    { name: "William Kim", email: "will@email.com", amount: "New User", type: "Registration" },
+    { name: "Sofia Davis", email: "sofia.davis@email.com", amount: "+৳1,499.00", type: "Subscription" },
 ];
 
 export default function DashboardPage() {
   return (
-    <>
-        <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-lg p-8 mb-8 shadow-lg">
-            <h1 className="text-3xl font-bold">Welcome back, Mojib Rsm!</h1>
-            <p className="mt-2 text-primary-foreground/80">Create amazing content with AI-powered tools</p>
-            <div className="mt-6 flex flex-wrap gap-3">
-                <Button variant="secondary"><Video className="mr-2"/>Video to Blog</Button>
-                <Button variant="secondary"><Layers className="mr-2"/>Bulk Create</Button>
-                <Button variant="secondary"><RefreshCcw className="mr-2"/>Refresh Content</Button>
-                <Button variant="secondary"><Sparkles className="mr-2"/>One Click Writer</Button>
-            </div>
+    <div className="flex min-h-screen w-full flex-col">
+      <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+        <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Total Revenue
+              </CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">৳45,231.89</div>
+              <p className="text-xs text-muted-foreground">
+                +20.1% from last month
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Subscriptions
+              </CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">+2350</div>
+              <p className="text-xs text-muted-foreground">
+                +180.1% from last month
+              </p>
+            </CardContent>
+          </Card>
+           <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+              <CircleUser className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">12,234</div>
+              <p className="text-xs text-muted-foreground">
+                +19% from last month
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Active Now</CardTitle>
+              <Activity className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">+573</div>
+              <p className="text-xs text-muted-foreground">
+                +201 since last hour
+              </p>
+            </CardContent>
+          </Card>
         </div>
-
-        <div>
-            <div className="flex items-center gap-2 mb-4">
-                <PlayCircle className="text-accent"/>
-                <h2 className="text-2xl font-bold">Getting Started</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {gettingStartedGuides.map(guide => (
-                    <Card key={guide.title} className="overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
-                        <CardHeader className="p-0">
-                            <Image src={guide.image} alt={guide.title} width={600} height={400} className="object-cover" data-ai-hint={guide.dataAiHint}/>
-                        </CardHeader>
-                        <CardContent className="p-4">
-                            <h3 className="font-semibold">{guide.title}</h3>
-                            <p className="text-sm text-muted-foreground mt-1">{guide.description}</p>
-                        </CardContent>
-                        <CardFooter className="p-4 pt-0">
-                            <Button variant="outline" size="sm">
-                                <PlayCircle className="mr-2"/>
-                                Watch Tutorial
-                            </Button>
-                        </CardFooter>
-                    </Card>
+        <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
+          <Card className="xl:col-span-2">
+            <CardHeader>
+              <CardTitle>User Sign-ups</CardTitle>
+              <CardDescription>Last 6 Months</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={userSignups}>
+                   <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="month"
+                    stroke="#888888"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#888888"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `${value}`}
+                  />
+                  <Tooltip
+                    cursor={{fill: 'hsl(var(--muted))'}}
+                    contentStyle={{backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))'}}
+                  />
+                  <Legend />
+                  <Bar dataKey="signups" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>
+                New users and subscriptions.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-8">
+                {recentActivities.map(activity => (
+                    <div key={activity.email} className="flex items-center gap-4">
+                        <Avatar className="hidden h-9 w-9 sm:flex">
+                        <AvatarFallback>{activity.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div className="grid gap-1">
+                        <p className="text-sm font-medium leading-none">{activity.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                            {activity.email}
+                        </p>
+                        </div>
+                        <div className="ml-auto font-medium">
+                            <Badge variant={activity.type === 'Subscription' ? 'default' : 'secondary'}>
+                                {activity.amount}
+                            </Badge>
+                        </div>
+                    </div>
                 ))}
-            </div>
+            </CardContent>
+          </Card>
         </div>
-    </>
-  );
+      </main>
+    </div>
+  )
 }
