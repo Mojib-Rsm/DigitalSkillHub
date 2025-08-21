@@ -382,7 +382,7 @@ export default function Home() {
               </div>
                {loading ? (
                   <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                      {[...Array(4)].map(i => <Skeleton key={i} className="h-64 w-full" />)}
+                      {[...Array(4)].map((_, i) => <Skeleton key={i} className="h-64 w-full" />)}
                   </div>
                ) : (
                   <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -442,7 +442,7 @@ export default function Home() {
 
                   {loading ? (
                       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-                          {[...Array(3)].map(i => <Skeleton key={i} className="h-[500px] w-full" />)}
+                          {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-[500px] w-full" />)}
                       </div>
                   ) : (
                   <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
