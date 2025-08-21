@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import {
@@ -34,7 +35,8 @@ import {
   Wrench,
   DollarSign,
   LineChart,
-  Bell
+  Bell,
+  User as UserIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -61,10 +63,10 @@ export default function DashboardSidebar({
         </SidebarHeader>
         <SidebarContent className="p-2">
             <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton href="/dashboard" >
+                 <SidebarMenuItem>
+                  <SidebarMenuButton href="/dashboard/user" >
                     <LayoutGrid />
-                    <span>Dashboard</span>
+                    <span>My Dashboard</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
@@ -122,10 +124,16 @@ export default function DashboardSidebar({
                     <SidebarMenuItem>
                         <SidebarMenuButton>
                           <DatabaseZap />
-                          <span>Admin</span>
+                          <span>Admin Panel</span>
                            <ChevronDown className="ml-auto size-4" />
                         </SidebarMenuButton>
                          <SidebarMenuSub>
+                             <SidebarMenuSubItem>
+                                <SidebarMenuSubButton href="/dashboard">
+                                    <LineChart />
+                                    <span>Admin Dashboard</span>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
                             <SidebarMenuSubItem>
                                 <SidebarMenuSubButton href="/dashboard/admin/users">
                                     <Users />
@@ -212,3 +220,5 @@ export default function DashboardSidebar({
     </SidebarProvider>
   );
 }
+
+    
