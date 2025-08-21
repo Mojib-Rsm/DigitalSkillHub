@@ -5,13 +5,11 @@
  * @fileOverview A flow to seed demo data into Firestore.
  * This should be run once to populate the database.
  */
-import { config } from 'dotenv';
-config();
-
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import { admin } from '@/lib/firebase-admin';
 import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, tools, users } from '@/lib/demo-data';
+import { getConfig } from 'next/config';
 
 const SeedDataOutputSchema = z.object({
   success: z.boolean(),
@@ -39,9 +37,11 @@ export const seedDataFlow = ai.defineFlow(
     // Initialize Firebase Admin SDK if not already initialized
     if (!admin.apps.length) {
         try {
-            const serviceAccountJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
-            if (!serviceAccountJson) {
-                throw new Error('Firebase service account credentials are not set in the GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable.');
+            const { serverRuntimeConfig } = getConfig();
+            const serviceAccountJson = serverRuntimeConfig.googleAppCredsJson;
+
+            if (!serviceAccountJson || typeof serviceAccountJson !== 'string') {
+                throw new Error('Firebase service account credentials are not correctly configured in next.config.js.');
             }
             admin.initializeApp({
                 credential: admin.credential.cert(JSON.parse(serviceAccountJson)),

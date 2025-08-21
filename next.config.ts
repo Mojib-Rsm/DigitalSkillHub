@@ -24,6 +24,9 @@ const nextConfig: NextConfig = {
     // Increase server action timeout to 2 minutes for video generation
     executionTimeout: 120,
   },
+  serverRuntimeConfig: {
+    googleAppCredsJson: process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON,
+  }
 };
 
 export default nextConfig;
