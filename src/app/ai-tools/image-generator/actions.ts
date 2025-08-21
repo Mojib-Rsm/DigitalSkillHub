@@ -42,7 +42,7 @@ export async function generateImage(
     console.error("Image generation action error:", error);
     if (error instanceof Error) {
         if (error.message.includes('429') || error.message.includes('503') || error.message.toLowerCase().includes('rate limit')) {
-            return { message: "The image generation service is currently overloaded due to high demand. Please try again in a few moments." };
+            return { message: "ছবি তৈরির পরিষেবাটি বর্তমানে উচ্চ চাহিদার কারণে ওভারলোড হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।" };
         }
         return { message: `ছবি তৈরি করতে একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে কয়েক মিনিট পর আবার চেষ্টা করুন। (${error.message})` };
     }
@@ -57,6 +57,6 @@ export async function generateImage(
       imageUrl: result.imageUrl,
     };
   } else {
-      return { message: "Failed to generate image. The model did not return an image URL." }
+      return { message: "ছবি তৈরি করতে ব্যর্থ। মডেলটি কোনো ছবির URL ফেরত দেয়নি।" }
   }
 }

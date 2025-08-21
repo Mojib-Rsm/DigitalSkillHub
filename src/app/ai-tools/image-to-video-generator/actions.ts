@@ -59,15 +59,15 @@ export async function generateVideoFromImage(
     console.error("Error in generateVideo action:", error);
     if (error instanceof Error) {
         if (error.message.includes("SERVICE_DISABLED") || error.message.includes("Generative Language API has not been used")) {
-             return { message: "The required Google API is not enabled. Please enable the 'Generative Language API' in your Google Cloud project and try again." };
+             return { message: "প্রয়োজনীয় Google API সক্রিয় করা নেই। অনুগ্রহ করে আপনার Google Cloud প্রকল্পে 'Generative Language API' সক্রিয় করুন এবং আবার চেষ্টা করুন।" };
         }
         if (error.message.includes('429') || error.message.includes('503') || error.message.toLowerCase().includes('rate limit')) {
-            return { message: "The video generation service is currently overloaded due to high demand. Please try again in a few moments." };
+            return { message: "ভিডিও জেনারেটর পরিষেবাটি বর্তমানে উচ্চ চাহিদার কারণে ওভারলোড হয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।" };
         }
-        return { message: `An unexpected error occurred: ${error.message}` };
+        return { message: `একটি অপ্রত্যাশিত ত্রুটি ঘটেছে: ${error.message}` };
     }
     return {
-      message: "An unexpected error occurred. Please try again.",
+      message: "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
     };
   }
 
@@ -77,6 +77,6 @@ export async function generateVideoFromImage(
         videoUrl: result.videoUrl,
     };
   } else {
-      return { message: "Failed to generate video. Please try again." }
+      return { message: "ভিডিও তৈরি করতে ব্যর্থ। অনুগ্রহ করে আবার চেষ্টা করুন।" }
   }
 }
