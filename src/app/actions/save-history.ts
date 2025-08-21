@@ -1,10 +1,10 @@
 
 'use server';
 
-import 'dotenv/config'; // Ensure env variables are loaded
-import { admin } from '@/lib/firebase-admin';
-import { z } from 'zod';
 import { headers } from 'next/headers';
+import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore/lite';
+import { app } from '@/lib/firebase';
+import { z } from 'zod';
 
 const HistoryItemSchema = z.object({
   tool: z.string(),
@@ -14,21 +14,6 @@ const HistoryItemSchema = z.object({
 
 type HistoryItem = z.infer<typeof HistoryItemSchema>;
 
-// Initialize Firebase Admin SDK if not already initialized
-if (!admin.apps.length) {
-    try {
-      const serviceAccountJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
-      if (!serviceAccountJson) {
-        throw new Error('Firebase service account credentials are not set in environment variables.');
-      }
-      admin.initializeApp({
-        credential: admin.credential.cert(JSON.parse(serviceAccountJson)),
-      });
-    } catch (error) {
-      console.error("Firebase admin initialization error in saveHistoryAction:", error);
-    }
-}
-
 
 export async function saveHistoryAction(item: HistoryItem) {
   const headersList = headers();
@@ -36,27 +21,25 @@ export async function saveHistoryAction(item: HistoryItem) {
 
   if (!uid) {
     console.warn('Cannot save history: user is not logged in.');
+    // Don't throw an error, just return, as this is not a critical failure for the user.
     return;
   }
 
   const validatedItem = HistoryItemSchema.safeParse(item);
   if (!validatedItem.success) {
-    throw new Error('Invalid history item');
+    console.error('Invalid history item:', validatedItem.error);
+    throw new Error('Invalid history item data');
   }
 
-  if (!admin.apps.length) {
-    console.error('Firebase Admin SDK is not initialized.');
-    throw new Error('Server configuration error');
-  }
-
-  const db = admin.firestore();
   try {
-    await db.collection('history').add({
+    const db = getFirestore(app);
+    await addDoc(collection(db, 'history'), {
       uid: uid,
       ...validatedItem.data,
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      createdAt: serverTimestamp(),
     });
   } catch (error) {
     console.error('Failed to save history to Firestore:', error);
+    // Don't throw error to the client, just log it.
   }
 }

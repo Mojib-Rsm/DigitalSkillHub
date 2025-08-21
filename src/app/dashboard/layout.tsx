@@ -116,12 +116,6 @@ export default function DashboardLayout({
                     <span>All Tools</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                 <SidebarMenuItem>
-                  <SidebarMenuButton href="/dashboard/admin/seed-data">
-                    <DatabaseZap />
-                    <span>Admin</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
             </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
