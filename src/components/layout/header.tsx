@@ -23,8 +23,8 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { getAuth, onAuthStateChanged, User, signOut as firebaseSignOut } from "firebase/auth";
-import { app } from "@/lib/firebase";
+import Cookies from 'js-cookie';
+
 
 const navLinks = [
   { href: "/#features", label: "Features" },
@@ -42,28 +42,19 @@ const moreLinks = [
 
 export default function Header() {
   const pathname = usePathname();
-  const [user, setUser] = useState<User | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-  const auth = getAuth(app);
   
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, [auth]);
+    const sessionCookie = Cookies.get('auth-session');
+    setIsLoggedIn(!!sessionCookie);
+    setLoading(false);
+  }, []);
 
-  const handleLogout = async () => {
-    try {
-      await firebaseSignOut(auth);
-      // Clear cookie
-      document.cookie = "firebaseIdToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      // Optional: redirect to home or login page after logout
-      window.location.href = '/login';
-    } catch (error) {
-      console.error("Logout Error:", error);
-    }
+  const handleLogout = () => {
+    Cookies.remove('auth-session', { path: '/' });
+    setIsLoggedIn(false);
+    window.location.href = '/login';
   };
 
   const NavLink = ({ href, label }: { href: string; label: string }) => (
@@ -104,13 +95,13 @@ export default function Header() {
             <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="rounded-full w-9 h-9 p-0">
                     <Avatar>
-                        <AvatarImage src={user?.photoURL || "https://placehold.co/40x40.png"} data-ai-hint="person avatar"/>
-                        <AvatarFallback>{user?.email?.[0].toUpperCase() || 'U'}</AvatarFallback>
+                        <AvatarImage src={"https://placehold.co/40x40.png"} data-ai-hint="person avatar"/>
+                        <AvatarFallback>U</AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>{user?.displayName || user?.email}</DropdownMenuLabel>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator/>
                 <DropdownMenuItem asChild>
                     <Link href="/dashboard"><LayoutDashboard className="mr-2"/> Dashboard</Link>
@@ -165,10 +156,10 @@ export default function Header() {
             </DropdownMenu>
         </nav>
         <div className="hidden lg:flex items-center gap-4">
-          {loading ? null : user ? <UserMenu/> : <AuthButtons/>}
+          {loading ? null : isLoggedIn ? <UserMenu/> : <AuthButtons/>}
         </div>
         <div className="lg:hidden flex items-center gap-2">
-           {loading ? null : user ? <UserMenu/> : (
+           {loading ? null : isLoggedIn ? <UserMenu/> : (
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
@@ -191,7 +182,7 @@ export default function Header() {
                   ))}
                 </div>
                 <div className="mt-8 flex flex-col gap-4">
-                   {user ? <UserMenu/> : <AuthButtons/>}
+                   {isLoggedIn ? <UserMenu/> : <AuthButtons/>}
                 </div>
               </SheetContent>
             </Sheet>

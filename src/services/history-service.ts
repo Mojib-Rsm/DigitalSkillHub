@@ -1,6 +1,7 @@
 
 'use server';
 
+import 'dotenv/config'; // Ensure env variables are loaded
 import { admin } from '@/lib/firebase-admin';
 import { headers } from 'next/headers';
 
@@ -12,14 +13,27 @@ export type HistoryItem = {
   createdAt: string;
 };
 
+// Initialize Firebase Admin SDK if not already initialized
+if (!admin.apps.length) {
+  try {
+    const serviceAccountJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+    if (!serviceAccountJson) {
+      throw new Error('Firebase service account credentials are not set in environment variables.');
+    }
+    admin.initializeApp({
+      credential: admin.credential.cert(JSON.parse(serviceAccountJson)),
+    });
+  } catch (error) {
+    console.error("Firebase admin initialization error:", error);
+  }
+}
+
 export async function getHistory(): Promise<HistoryItem[]> {
   const headersList = headers();
-  const token = headersList.get('x-id-token');
-  const uidFromHeader = headersList.get('x-uid');
+  const uid = headersList.get('x-uid');
   
-  if (!token || !uidFromHeader) {
-    // This should not happen if middleware is set up correctly, but as a safeguard:
-    console.error("No token or UID found in headers");
+  if (!uid) {
+    console.error("No UID found in headers");
     return [];
   }
 
@@ -29,19 +43,10 @@ export async function getHistory(): Promise<HistoryItem[]> {
   }
 
   try {
-    // Verify the token on the server-side to ensure it's valid
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    
-    // Security check: ensure the UID from the token matches the one from the header
-    if (decodedToken.uid !== uidFromHeader) {
-        console.error("UID mismatch between token and header.");
-        return [];
-    }
-    
     const db = admin.firestore();
     const historySnapshot = await db
       .collection('history')
-      .where('uid', '==', decodedToken.uid)
+      .where('uid', '==', uid)
       .orderBy('createdAt', 'desc')
       .limit(50)
       .get();
@@ -57,14 +62,12 @@ export async function getHistory(): Promise<HistoryItem[]> {
             tool: data.tool,
             input: data.input,
             output: data.output,
-            // Convert Firestore Timestamp to ISO string
             createdAt: data.createdAt.toDate().toISOString(),
         } as HistoryItem;
     });
 
   } catch (error) {
     console.error('Failed to get history from Firestore:', error);
-    // This will catch token verification errors as well
     return [];
   }
 }

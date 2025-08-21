@@ -9,16 +9,17 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Bot, Sparkles, Zap, Lock, Phone } from "lucide-react";
+import { Bot, Sparkles, Zap, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { app } from "@/lib/firebase";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
+import { signupAction } from "./actions";
 
-function SignUpSubmitButton({ loading }: { loading: boolean }) {
+function SignUpSubmitButton() {
+    const { pending } = useFormStatus();
     return (
-        <Button type="submit" disabled={loading} className="w-full text-base" size="lg">
-            {loading ? (
+        <Button type="submit" disabled={pending} className="w-full text-base" size="lg">
+            {pending ? (
                 <>
                     <Sparkles className="mr-2 h-5 w-5 animate-spin" />
                     Creating Account...
@@ -37,67 +38,24 @@ export default function FreeTrialPage() {
     const { toast } = useToast();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    
+    const initialState = { message: "", success: false, issues: [], fields: {} };
+    const [state, formAction] = useActionState(signupAction, initialState);
 
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [phone, setPhone] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const handleSignup = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
-
-        if (password.length < 8) {
-            setError("Password must be at least 8 characters long.");
-            setLoading(false);
-            return;
-        }
-
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            // Save additional user info to Firestore
-            await setDoc(doc(db, "users", user.uid), {
-                uid: user.uid,
-                name: name,
-                email: user.email,
-                phone: phone,
-                createdAt: new Date().toISOString()
-            });
-
-            const idToken = await user.getIdToken();
-            document.cookie = `firebaseIdToken=${idToken}; path=/; max-age=3600; samesite=lax`;
-
-            toast({
-                title: "Account Created!",
-                description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
-            });
-            const redirectUrl = searchParams.get('redirect') || '/dashboard';
-            router.push(redirectUrl);
-
-        } catch (err: any) {
-            let errorMessage = "An unexpected error occurred. Please try again.";
-            if (err.code === 'auth/email-already-in-use') {
-                errorMessage = "This email address is already in use by another account.";
-            } else if (err.code === 'auth/invalid-email') {
-                errorMessage = "Please enter a valid email address.";
-            }
-            setError(errorMessage);
-            toast({
-                variant: "destructive",
-                title: "Registration Failed",
-                description: errorMessage,
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
+    if (state.success) {
+        toast({
+            title: "Account Created!",
+            description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
+        });
+        const redirectUrl = searchParams.get('redirect') || '/dashboard';
+        router.push(redirectUrl);
+    } else if (state.message && state.message !== 'Validation Error') {
+        toast({
+            variant: "destructive",
+            title: "Registration Failed",
+            description: state.message,
+        });
+    }
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4">
@@ -118,33 +76,37 @@ export default function FreeTrialPage() {
                 <Card className="shadow-2xl">
                     <CardContent className="p-8">
                         <div className="space-y-6">
-                            {error && (
+                             {state.message === 'Validation Error' && state.issues && state.issues.length > 0 && (
                                 <Alert variant="destructive">
                                     <AlertTitle>Error</AlertTitle>
-                                    <AlertDescription>{error}</AlertDescription>
+                                    <AlertDescription>
+                                        <ul className="list-disc pl-5">
+                                            {state.issues.map((issue, i) => <li key={i}>{issue}</li>)}
+                                        </ul>
+                                    </AlertDescription>
                                 </Alert>
                             )}
-                            <form onSubmit={handleSignup} className="space-y-4">
+                            <form action={formAction} className="space-y-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Full Name</Label>
-                                    <Input id="name" name="name" type="text" placeholder="e.g., Tanvir Ahmed" required value={name} onChange={e => setName(e.target.value)} />
+                                    <Input id="name" name="name" type="text" placeholder="e.g., Tanvir Ahmed" required defaultValue={state.fields?.name} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="email">Email Address</Label>
-                                    <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required value={email} onChange={e => setEmail(e.target.value)}/>
+                                    <Input id="email" name="email" type="email" placeholder="e.g., yourname@example.com" required defaultValue={state.fields?.email}/>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="password">Password</Label>
-                                    <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} value={password} onChange={e => setPassword(e.target.value)}/>
+                                    <Input id="password" name="password" type="password" placeholder="Must be at least 8 characters" required minLength={8} />
                                 </div>
-                                    <div className="space-y-2">
+                                <div className="space-y-2">
                                     <Label htmlFor="phone">Phone Number</Label>
                                     <div className="relative">
                                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                        <Input id="phone" name="phone" type="tel" placeholder="01xxxxxxxxx" required className="pl-10" value={phone} onChange={e => setPhone(e.target.value)} />
+                                        <Input id="phone" name="phone" type="tel" placeholder="01xxxxxxxxx" required className="pl-10" defaultValue={state.fields?.phone} />
                                     </div>
                                 </div>
-                                <SignUpSubmitButton loading={loading} />
+                                <SignUpSubmitButton />
                             </form>
                         </div>
                     </CardContent>
