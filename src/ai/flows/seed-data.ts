@@ -8,7 +8,7 @@ import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, tools, users } from '@/lib/demo-data';
+import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, users } from '@/lib/demo-data';
 import { getConfig } from 'next/config';
 
 const SeedDataOutputSchema = z.object({
@@ -38,32 +38,28 @@ export const seedDataFlow = ai.defineFlow(
     if (getApps().length === 0) {
         try {
             const { serverRuntimeConfig } = getConfig();
-            const serviceAccountJson = serverRuntimeConfig.googleAppCredsJson;
+            const serviceAccountJsonString = serverRuntimeConfig.googleAppCredsJson;
 
-            if (!serviceAccountJson || typeof serviceAccountJson !== 'string') {
+            if (!serviceAccountJsonString) {
                 throw new Error('Firebase service account credentials are not correctly configured in next.config.js.');
             }
+            
+            let serviceAccount;
+            try {
+                serviceAccount = JSON.parse(serviceAccountJsonString);
+            } catch (e) {
+                 throw new Error(`Failed to parse Firebase service account JSON. Error: ${e instanceof Error ? e.message : String(e)}`);
+            }
+
             initializeApp({
-                credential: cert(JSON.parse(serviceAccountJson)),
+                credential: cert(serviceAccount),
             });
         } catch (error) {
             console.error("Firebase admin initialization error in seedDataFlow:", error);
-            if (error instanceof Error) {
-                return {
-                    success: false,
-                    message: `Failed to initialize Firebase Admin: ${error.message}`,
-                    usersAdded: 0,
-                    coursesAdded: 0,
-                    blogPostsAdded: 0,
-                    jobsAdded: 0,
-                    toolsAdded: 0,
-                    pricingPlansAdded: 0,
-                    testimonialsAdded: 0,
-                };
-            }
+            const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred during Firebase Admin initialization.';
             return {
                 success: false,
-                message: 'An unknown error occurred during Firebase Admin initialization.',
+                message: `Failed to initialize Firebase Admin: ${errorMessage}`,
                 usersAdded: 0,
                 coursesAdded: 0,
                 blogPostsAdded: 0,
