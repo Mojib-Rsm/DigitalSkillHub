@@ -1,10 +1,10 @@
 
-
 'use server';
 
 import { cookies } from 'next/headers';
-import { getFirestore as getAdminFirestore, doc as adminDoc, getDoc as adminGetDoc, collection as adminCollection, getDocs as adminGetDocs } from 'firebase-admin/firestore';
-import { adminApp } from '@/lib/firebase-admin';
+import { getFirestore, doc, getDoc, collection, getDocs, query, where } from 'firebase/firestore/lite';
+import { app } from '@/lib/firebase';
+import { User, getAuth } from 'firebase/auth';
 
 export type UserProfile = {
   id: string;
@@ -28,11 +28,11 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
   const uid = sessionCookie.value;
 
   try {
-    const adminDb = getAdminFirestore(adminApp);
-    const userRef = adminDoc(adminDb, 'users', uid);
-    const userSnapshot = await adminGetDoc(userRef);
+    const db = getFirestore(app);
+    const userRef = doc(db, 'users', uid);
+    const userSnapshot = await getDoc(userRef);
 
-    if (!userSnapshot.exists) {
+    if (!userSnapshot.exists()) {
         console.warn(`No user found with ID: ${uid}`);
         return null;
     }
@@ -62,15 +62,16 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
 
 export async function getAllUsers(): Promise<UserProfile[]> {
     const currentUser = await getCurrentUser();
+    // Security Rule should enforce this, but double-checking here.
     if (currentUser?.role !== 'admin') {
         console.error("Permission denied: Only admins can fetch all users.");
         return [];
     }
 
     try {
-        const adminDb = getAdminFirestore(adminApp);
-        const usersCol = adminCollection(adminDb, 'users');
-        const userSnapshot = await adminGetDocs(usersCol);
+        const db = getFirestore(app);
+        const usersCol = collection(db, 'users');
+        const userSnapshot = await getDocs(usersCol);
         
         if (userSnapshot.empty) {
             return [];

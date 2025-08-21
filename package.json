@@ -47,7 +47,6 @@
     "embla-carousel-react": "^8.6.0",
     "express": "^5.1.0",
     "firebase": "^11.9.1",
-    "firebase-admin": "^12.2.0",
     "genkit": "^1.14.1",
     "js-cookie": "^3.0.5",
     "jspdf": "^2.5.1",
@@ -70,8 +69,6 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@genkit-ai/firebase": "^1.14.1",
-    "@opentelemetry/exporter-jaeger": "^1.25.1",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
