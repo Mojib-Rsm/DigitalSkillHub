@@ -157,6 +157,12 @@ export default function DashboardSidebar({
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                             <SidebarMenuSubItem>
+                                <SidebarMenuSubButton href="/dashboard/admin/settings">
+                                    <Settings />
+                                    <span>Settings</span>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                            <SidebarMenuSubItem>
                                 <SidebarMenuSubButton href="/dashboard/admin/seed-data">
                                     <DatabaseZap />
                                     <span>Seed Data</span>
