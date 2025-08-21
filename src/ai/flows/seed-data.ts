@@ -8,8 +8,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import admin from 'firebase-admin';
-import { app } from '@/lib/firebase-admin';
+import { admin } from '@/lib/firebase-admin';
 import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, tools } from '@/lib/demo-data';
 
 const SeedDataOutputSchema = z.object({
@@ -33,8 +32,42 @@ export const seedDataFlow = ai.defineFlow(
     outputSchema: SeedDataOutputSchema,
   },
   async () => {
-    if (!app) {
-        throw new Error("Firebase Admin SDK is not initialized. Cannot seed data.");
+    
+    // Initialize Firebase Admin SDK if not already initialized
+    if (!admin.apps.length) {
+        try {
+            const serviceAccountJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+            if (!serviceAccountJson) {
+                throw new Error('Firebase service account credentials are not set in environment variables.');
+            }
+            admin.initializeApp({
+                credential: admin.credential.cert(JSON.parse(serviceAccountJson)),
+            });
+        } catch (error) {
+            console.error("Firebase admin initialization error in seedDataFlow:", error);
+            if (error instanceof Error) {
+                return {
+                    success: false,
+                    message: `Failed to initialize Firebase Admin: ${error.message}`,
+                    coursesAdded: 0,
+                    blogPostsAdded: 0,
+                    jobsAdded: 0,
+                    toolsAdded: 0,
+                    pricingPlansAdded: 0,
+                    testimonialsAdded: 0,
+                };
+            }
+            return {
+                success: false,
+                message: 'An unknown error occurred during Firebase Admin initialization.',
+                coursesAdded: 0,
+                blogPostsAdded: 0,
+                jobsAdded: 0,
+                toolsAdded: 0,
+                pricingPlansAdded: 0,
+                testimonialsAdded: 0,
+            };
+        }
     }
     
     const db = admin.firestore();
@@ -137,3 +170,4 @@ export const seedDataFlow = ai.defineFlow(
     }
   }
 );
+
