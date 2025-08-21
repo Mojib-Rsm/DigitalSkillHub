@@ -1,6 +1,7 @@
 
 "use server";
 
+import 'dotenv/config';
 import { z } from "zod";
 import crypto from "crypto";
 import { app, admin } from "@/lib/firebase-admin";
