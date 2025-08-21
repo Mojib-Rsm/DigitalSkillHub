@@ -6,7 +6,8 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
-import { admin } from '@/lib/firebase-admin';
+import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
 import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, tools, users } from '@/lib/demo-data';
 import { getConfig } from 'next/config';
 
@@ -34,7 +35,7 @@ export const seedDataFlow = ai.defineFlow(
   async () => {
     
     // Initialize Firebase Admin SDK if not already initialized
-    if (!admin.apps.length) {
+    if (getApps().length === 0) {
         try {
             const { serverRuntimeConfig } = getConfig();
             const serviceAccountJson = serverRuntimeConfig.googleAppCredsJson;
@@ -42,8 +43,8 @@ export const seedDataFlow = ai.defineFlow(
             if (!serviceAccountJson || typeof serviceAccountJson !== 'string') {
                 throw new Error('Firebase service account credentials are not correctly configured in next.config.js.');
             }
-            admin.initializeApp({
-                credential: admin.credential.cert(JSON.parse(serviceAccountJson)),
+            initializeApp({
+                credential: cert(JSON.parse(serviceAccountJson)),
             });
         } catch (error) {
             console.error("Firebase admin initialization error in seedDataFlow:", error);
@@ -74,7 +75,7 @@ export const seedDataFlow = ai.defineFlow(
         }
     }
     
-    const db = admin.firestore();
+    const db = getFirestore();
     const batch = db.batch();
     let usersAdded = 0;
     let coursesAdded = 0;
