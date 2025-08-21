@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, Check, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, Check, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -127,423 +127,423 @@ export default function Home() {
 
   return (
     <>
-    <Head>
-        <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-        />
-    </Head>
-    <div className="flex flex-col bg-background">
-      {/* Hero Section */}
-      <section className="pt-12 md:pt-16 pb-8 md:pb-12 overflow-hidden">
-        <div className="container mx-auto px-4 text-center">
-            <Badge variant="secondary" className="text-sm py-1.5 px-4 border-2 border-primary/50 text-primary animate-pulse">
-                <SparklesIcon className="w-4 h-4 mr-2"/>
-                LIMITED TIME! • Get 25% OFF with code LAUNCH25
-            </Badge>
-            <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tight max-w-4xl mx-auto mt-4 animate-fade-in-up">
-              Create Professional Content 10x Faster with AI 2.0
-            </h1>
-            <p className="text-lg text-muted-foreground mt-6 max-w-2xl mx-auto animate-fade-in-up [animation-delay:200ms]">
-             Generate 10x faster with TotthoAi 2.0. Save 90% time, boost SEO rankings, and reach a global audience in 150+ languages.
-            </p>
-            
-             <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-muted-foreground font-semibold animate-fade-in-up [animation-delay:400ms]">
-                <span><Check className="w-4 h-4 inline-block mr-1 text-primary"/>SEO-optimized content</span>
-                <span><Check className="w-4 h-4 inline-block mr-1 text-primary"/>AI-generated images included</span>
-                <span><Check className="w-4 h-4 inline-block mr-1 text-primary"/>Bulk generation ready</span>
-            </div>
+      <Head>
+          <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+          />
+      </Head>
+      <div className="flex flex-col bg-background">
+        {/* Hero Section */}
+        <section className="pt-12 md:pt-16 pb-8 md:pb-12 overflow-hidden">
+          <div className="container mx-auto px-4 text-center">
+              <Badge variant="secondary" className="text-sm py-1.5 px-4 border-2 border-primary/50 text-primary animate-pulse">
+                  <SparklesIcon className="w-4 h-4 mr-2"/>
+                  LIMITED TIME! • Get 25% OFF with code LAUNCH25
+              </Badge>
+              <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tight max-w-4xl mx-auto mt-4 animate-fade-in-up">
+                Create Professional Content 10x Faster with AI 2.0
+              </h1>
+              <p className="text-lg text-muted-foreground mt-6 max-w-2xl mx-auto animate-fade-in-up [animation-delay:200ms]">
+               Generate 10x faster with TotthoAi 2.0. Save 90% time, boost SEO rankings, and reach a global audience in 150+ languages.
+              </p>
+              
+               <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-muted-foreground font-semibold animate-fade-in-up [animation-delay:400ms]">
+                  <span><Check className="w-4 h-4 inline-block mr-1 text-primary"/>SEO-optimized content</span>
+                  <span><Check className="w-4 h-4 inline-block mr-1 text-primary"/>AI-generated images included</span>
+                  <span><Check className="w-4 h-4 inline-block mr-1 text-primary"/>Bulk generation ready</span>
+              </div>
 
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up [animation-delay:600ms]">
-                {user ? (
-                     <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
-                        <Link href="/#pricing">
-                            <Zap className="mr-2 h-5 w-5"/>
-                            View Pricing
-                        </Link>
-                    </Button>
-                ) : (
-                    <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
-                        <Link href="/free-trial">
-                            <Zap className="mr-2 h-5 w-5"/>
-                            Start Free Trial - No Credit Card
-                        </Link>
-                    </Button>
-                )}
-                <Button size="lg" variant="outline" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base" asChild>
-                    <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">
-                        <PlayCircle className="mr-2 h-5 w-5"/>
-                        Watch Demo
-                    </Link>
-                </Button>
-            </div>
-             
-             <div className="mt-8 text-center text-sm text-muted-foreground space-y-2 animate-fade-in-up [animation-delay:800ms]">
-                <p>⭐ Trusted by 3,000+ content creators • 600,000+ articles generated</p>
-                <p>🔒 Free trial • No setup fees • Cancel anytime</p>
-             </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="pt-8 pb-12 md:pb-20">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <Card className="p-6 bg-muted/50">
-              <CardHeader>
-                <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
-                    <Layers className="w-8 h-8 text-primary" />
-                </div>
-                <p className="text-4xl font-bold">600,000+</p>
-              </CardHeader>
-              <CardContent>
-                <h3 className="text-xl font-semibold">Content Generated</h3>
-                <p className="text-muted-foreground mt-1">Articles created</p>
-              </CardContent>
-            </Card>
-            <Card className="p-6 bg-muted/50">
-              <CardHeader>
-                <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
-                    <Users className="w-8 h-8 text-primary" />
-                </div>
-                <p className="text-4xl font-bold">3,000+</p>
-              </CardHeader>
-              <CardContent>
-                <h3 className="text-xl font-semibold">Active Users</h3>
-                <p className="text-muted-foreground mt-1">Content creators</p>
-              </CardContent>
-            </Card>
-            <Card className="p-6 bg-muted/50">
-              <CardHeader>
-                <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
-                    <Clock className="w-8 h-8 text-primary" />
-                </div>
-                <p className="text-4xl font-bold">90%</p>
-              </CardHeader>
-              <CardContent>
-                <h3 className="text-xl font-semibold">Time Saved</h3>
-                <p className="text-muted-foreground mt-1">Faster than manual writing</p>
-              </CardContent>
-            </Card>
+              <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up [animation-delay:600ms]">
+                  {user ? (
+                       <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
+                          <Link href="/#pricing">
+                              <Zap className="mr-2 h-5 w-5"/>
+                              View Pricing
+                          </Link>
+                      </Button>
+                  ) : (
+                      <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
+                          <Link href="/free-trial">
+                              <Zap className="mr-2 h-5 w-5"/>
+                              Start Free Trial - No Credit Card
+                          </Link>
+                      </Button>
+                  )}
+                  <Button size="lg" variant="outline" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base" asChild>
+                      <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">
+                          <PlayCircle className="mr-2 h-5 w-5"/>
+                          Watch Demo
+                      </Link>
+                  </Button>
+              </div>
+               
+               <div className="mt-8 text-center text-sm text-muted-foreground space-y-2 animate-fade-in-up [animation-delay:800ms]">
+                  <p>⭐ Trusted by 3,000+ content creators • 600,000+ articles generated</p>
+                  <p>🔒 Free trial • No setup fees • Cancel anytime</p>
+               </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-
-      {/* What's New Section */}
-      <section id="whats-new" className="py-12 md:py-20 bg-muted/50">
-        <div className="container mx-auto px-4">
-            <div className="text-center max-w-3xl mx-auto">
-                <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">What's New in TotthoAi 2.0</h2>
-                <p className="text-lg text-muted-foreground mt-4 animate-fade-in-up [animation-delay:200ms]">
-                    Experience the next generation of AI-powered content creation with features designed to save time, boost quality, and scale your content strategy like never before.
-                </p>
-            </div>
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                 <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:400ms]">
-                    <CardHeader>
-                        <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
-                            <Clock className="w-8 h-8 text-primary" />
-                        </div>
-                        <CardTitle className="text-xl font-bold">90% Time Savings</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-muted-foreground text-sm">Automate tedious tasks and generate high-quality content in seconds, not hours.</p>
-                    </CardContent>
-                </Card>
-                <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:600ms]">
-                    <CardHeader>
-                        <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
-                            <TrendingUp className="w-8 h-8 text-primary" />
-                        </div>
-                        <CardTitle className="text-xl font-bold">Better SEO Results</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-muted-foreground text-sm">Create content that is optimized for search engines to rank higher and drive more traffic.</p>
-                    </CardContent>
-                </Card>
-                <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:800ms]">
-                    <CardHeader>
-                        <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
-                            <Award className="w-8 h-8 text-primary" />
-                        </div>
-                        <CardTitle className="text-xl font-bold">Professional Quality</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-muted-foreground text-sm">Generate well-structured, coherent, and engaging articles that rival human writers.</p>
-                    </CardContent>
-                </Card>
-            </div>
-        </div>
-      </section>
-
-       {/* Detailed Features */}
-       <section id="features" className="py-12 md:pt-20">
-            <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                 <div className="md:col-span-2 lg:col-span-1 lg:pr-8 animate-fade-in-up">
-                    <Badge variant="destructive">🔥 HOT NEW FEATURE</Badge>
-                    <h3 className="text-3xl font-bold mt-2">Video to Blog Post</h3>
-                    <p className="text-muted-foreground mt-4">Transform any YouTube video into a comprehensive, SEO-optimized blog post in minutes. Extract insights, create outlines, and generate complete articles from video content.</p>
-                 </div>
-                 <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-8">
-                    <div className="space-y-2 animate-fade-in-up [animation-delay:200ms]">
-                        <ImageIcon className="w-8 h-8 text-primary"/>
-                        <h4 className="font-semibold">Enhanced AI Images 2.0</h4>
-                        <p className="text-sm text-muted-foreground">Generate stunning, contextual images that boost engagement by 300%.</p>
-                    </div>
-                     <div className="space-y-2 animate-fade-in-up [animation-delay:300ms]">
-                        <LinkIcon className="w-8 h-8 text-primary"/>
-                        <h4 className="font-semibold">Smart Internal Linking</h4>
-                        <p className="text-sm text-muted-foreground">Automatically create SEO-friendly internal links to improve site authority.</p>
-                    </div>
-                     <div className="space-y-2 animate-fade-in-up [animation-delay:400ms]">
-                        <SparklesIcon className="w-8 h-8 text-primary"/>
-                        <h4 className="font-semibold">Custom AI Prompts</h4>
-                        <p className="text-sm text-muted-foreground">Train the AI with your unique voice and style for brand consistency.</p>
-                    </div>
-                     <div className="space-y-2 animate-fade-in-up [animation-delay:500ms]">
-                        <Languages className="w-8 h-8 text-primary"/>
-                        <h4 className="font-semibold">150+ Languages Support</h4>
-                        <p className="text-sm text-muted-foreground">Create content in Bengali, English, Hindi, Arabic, and more.</p>
-                    </div>
-                     <div className="space-y-2 animate-fade-in-up [animation-delay:600ms]">
-                        <Layers className="w-8 h-8 text-primary"/>
-                        <h4 className="font-semibold">Bulk Generation 2.0</h4>
-                        <p className="text-sm text-muted-foreground">Create hundreds of articles simultaneously with our advanced engine.</p>
-                    </div>
-                     <div className="space-y-2 animate-fade-in-up [animation-delay:700ms]">
-                        <RefreshCcw className="w-8 h-8 text-primary"/>
-                        <h4 className="font-semibold">Content Refresh Tool</h4>
-                        <p className="text-sm text-muted-foreground">Instantly update old content with fresh information and improved SEO.</p>
-                    </div>
-                      <div className="space-y-2 animate-fade-in-up [animation-delay:800ms]">
-                        <TowerControl className="w-8 h-8 text-primary"/>
-                        <h4 className="font-semibold">Topical Authority Builder</h4>
-                        <p className="text-sm text-muted-foreground">Build topic clusters to establish your site as a niche authority.</p>
-                    </div>
-                      <div className="space-y-2 animate-fade-in-up [animation-delay:900ms]">
-                        <PenSquare className="w-8 h-8 text-primary"/>
-                        <h4 className="font-semibold">One-Click Writer 2.0</h4>
-                        <p className="text-sm text-muted-foreground">Generate publication-ready articles with just one click.</p>
-                    </div>
-                      <div className="space-y-2 animate-fade-in-up [animation-delay:1000ms]">
-                        <FileText className="w-8 h-8 text-primary"/>
-                        <h4 className="font-semibold">News Writer 2.0</h4>
-                        <p className="text-sm text-muted-foreground">Create timely, accurate news articles with real-time data integration.</p>
-                    </div>
-                 </div>
-            </div>
-             <div className="text-center mt-12 animate-fade-in-up [animation-delay:1100ms]">
-                 <Button size="lg" asChild>
-                    <Link href="/free-trial">
-                        <Zap className="mr-2 h-5 w-5"/>
-                        Start Free Trial
-                    </Link>
-                </Button>
-            </div>
-       </section>
-
-      {/* AI-Generated Visuals Section */}
-      <section className="py-12 md:py-20 bg-muted/50">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Enhance Your Content with AI-Generated Images</h2>
-          <p className="text-lg text-muted-foreground mt-4 max-w-3xl mx-auto animate-fade-in-up [animation-delay:200ms]">
-            Our AI can create stunning visuals to complement your blog posts, making your content more engaging and professional.
-          </p>
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {[...Array(6)].map((_, i) => (
-              <Card key={i} className="overflow-hidden group relative animate-fade-in-up" style={{animationDelay: `${400 + i * 100}ms`}}>
-                <Image src="https://placehold.co/300x400.png" alt="AI Generated Islamic Art" width={300} height={400} className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-300" data-ai-hint="islamic art" />
-                <div className="absolute inset-0 bg-black/50 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p className="text-white text-sm font-semibold">AI-Generated</p>
-                </div>
+        {/* Stats Section */}
+        <section className="pt-8 pb-12 md:pb-20">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+              <Card className="p-6 bg-muted/50">
+                <CardHeader>
+                  <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
+                      <Layers className="w-8 h-8 text-primary" />
+                  </div>
+                  <p className="text-4xl font-bold">600,000+</p>
+                </CardHeader>
+                <CardContent>
+                  <h3 className="text-xl font-semibold">Content Generated</h3>
+                  <p className="text-muted-foreground mt-1">Articles created</p>
+                </CardContent>
               </Card>
-            ))}
+              <Card className="p-6 bg-muted/50">
+                <CardHeader>
+                  <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
+                      <Users className="w-8 h-8 text-primary" />
+                  </div>
+                  <p className="text-4xl font-bold">3,000+</p>
+                </CardHeader>
+                <CardContent>
+                  <h3 className="text-xl font-semibold">Active Users</h3>
+                  <p className="text-muted-foreground mt-1">Content creators</p>
+                </CardContent>
+              </Card>
+              <Card className="p-6 bg-muted/50">
+                <CardHeader>
+                  <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
+                      <Clock className="w-8 h-8 text-primary" />
+                  </div>
+                  <p className="text-4xl font-bold">90%</p>
+                </CardHeader>
+                <CardContent>
+                  <h3 className="text-xl font-semibold">Time Saved</h3>
+                  <p className="text-muted-foreground mt-1">Faster than manual writing</p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
-          <p className="text-muted-foreground mt-8 max-w-3xl mx-auto animate-fade-in-up">
-            These images are entirely generated by AI and can be seamlessly integrated into your blog posts, social media content, and marketing materials to enhance visual appeal and engagement.
-          </p>
-        </div>
-      </section>
-      
-      {/* Success Stories Section */}
-        <section className="py-12 md:py-20">
-            <div className="container mx-auto px-4">
-            <div className="text-center max-w-3xl mx-auto">
-                <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Success Stories with TotthoAi 2.0</h2>
-                <p className="text-lg text-muted-foreground mt-4 animate-fade-in-up [animation-delay:200ms]">
-                Real Results from Real Users. See how content creators, marketers, and businesses are achieving extraordinary results with our new 2.0 features.
-                </p>
-                <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center animate-fade-in-up [animation-delay:400ms]">
-                    <p className="font-semibold text-lg">Avg. 90% time savings</p>
-                    <p className="font-semibold text-lg">300% faster creation</p>
-                    <p className="font-semibold text-lg">2x better SEO results</p>
-                </div>
-            </div>
-             {loading ? (
-                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {[...Array(4)].map(i => <Skeleton key={i} className="h-64 w-full" />)}
-                </div>
-             ) : (
-                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {testimonials.map((testimonial, index) => (
-                    <Card key={index} className="shadow-lg animate-fade-in-up" style={{animationDelay: `${600 + index*100}ms`}}>
-                        <CardHeader>
-                            <CardTitle className="text-xl">{testimonial.feature}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-muted-foreground text-sm italic">"{testimonial.quote}"</p>
-                            <p className="mt-4 font-bold text-primary">{testimonial.metric}</p>
-                        </CardContent>
-                        <CardFooter className="flex items-center gap-3">
-                            <Avatar>
-                                <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint}/>
-                                <AvatarFallback>{testimonial.authorName.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                                <p className="font-semibold">{testimonial.authorName}</p>
-                                <p className="text-xs text-muted-foreground">{testimonial.authorRole}</p>
-                            </div>
-                        </CardFooter>
-                    </Card>
-                    ))}
-                </div>
-            )}
-            <div className="text-center mt-12 animate-fade-in-up">
-                    <Button size="lg" asChild>
-                    <Link href="/#pricing">
-                        Start Your Success Story
-                    </Link>
-                </Button>
-            </div>
-            </div>
         </section>
 
 
-       {/* Pricing Section */}
-        <section id="pricing" className="py-12 md:py-20 bg-muted/50">
-            <div className="container mx-auto px-4">
-                <div className="text-center max-w-3xl mx-auto">
-                    <Badge variant="secondary" className="text-sm py-1 px-3 border-2 border-primary/50 text-primary mb-4">
-                        🔥 Limited Time Launch Offer - 25% OFF with LAUNCH25
-                    </Badge>
-                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
-                        Choose Your AI Content Creation Plan
-                    </h2>
-                    <p className="text-lg text-muted-foreground mt-4">
-                        Start with our free trial, then scale with plans designed for creators, marketers, and agencies
-                    </p>
-                    <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                        <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> 4 Free Articles to Try</div>
-                        <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> No Credit Card Required</div>
-                        <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> Cancel Anytime</div>
-                    </div>
-                </div>
+        {/* What's New Section */}
+        <section id="whats-new" className="py-12 md:py-20 bg-muted/50">
+          <div className="container mx-auto px-4">
+              <div className="text-center max-w-3xl mx-auto">
+                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">What's New in TotthoAi 2.0</h2>
+                  <p className="text-lg text-muted-foreground mt-4 animate-fade-in-up [animation-delay:200ms]">
+                      Experience the next generation of AI-powered content creation with features designed to save time, boost quality, and scale your content strategy like never before.
+                  </p>
+              </div>
+              <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                   <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:400ms]">
+                      <CardHeader>
+                          <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
+                              <Clock className="w-8 h-8 text-primary" />
+                          </div>
+                          <CardTitle className="text-xl font-bold">90% Time Savings</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                          <p className="text-muted-foreground text-sm">Automate tedious tasks and generate high-quality content in seconds, not hours.</p>
+                      </CardContent>
+                  </Card>
+                  <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:600ms]">
+                      <CardHeader>
+                          <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
+                              <TrendingUp className="w-8 h-8 text-primary" />
+                          </div>
+                          <CardTitle className="text-xl font-bold">Better SEO Results</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                          <p className="text-muted-foreground text-sm">Create content that is optimized for search engines to rank higher and drive more traffic.</p>
+                      </CardContent>
+                  </Card>
+                  <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:800ms]">
+                      <CardHeader>
+                          <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
+                              <Award className="w-8 h-8 text-primary" />
+                          </div>
+                          <CardTitle className="text-xl font-bold">Professional Quality</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                          <p className="text-muted-foreground text-sm">Generate well-structured, coherent, and engaging articles that rival human writers.</p>
+                      </CardContent>
+                  </Card>
+              </div>
+          </div>
+        </section>
 
-                {loading ? (
-                    <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-                        {[...Array(3)].map(i => <Skeleton key={i} className="h-[500px] w-full" />)}
-                    </div>
-                ) : (
-                <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-                    {pricingPlans.map(plan => (
-                    <Card key={plan.id} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
-                        {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR + 25% OFF</Badge>}
-                        <CardHeader>
-                            <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-                            <div className="flex items-baseline gap-2">
-                                <p className="text-4xl font-bold text-primary">৳{plan.price}</p>
-                                <p className="text-xl font-medium text-muted-foreground line-through">৳{plan.originalPrice}</p>
-                                <Badge variant="destructive">{plan.discount}</Badge>
-                            </div>
-                            <p className="text-muted-foreground pt-2">{plan.description}</p>
-                            <p className="text-sm text-accent font-semibold">Use code: LAUNCH25 at checkout</p>
-                        </CardHeader>
-                        <CardContent className="flex-grow space-y-4">
-                            <div className={`p-3 rounded-lg text-center ${plan.isPopular ? 'bg-primary/10' : 'bg-muted'}`}>
-                                <p className={`text-lg font-bold ${plan.isPopular ? 'text-primary' : ''}`}>{plan.credits} Credits</p>
-                                <p className="text-sm text-muted-foreground">Valid for {plan.validity}</p>
-                            </div>
-                            <div className="space-y-3 text-sm">
-                                {Object.entries(plan.features).map(([category, features]) => (
-                                    <div key={category}>
-                                        <h4 className="font-semibold text-base pt-2">{category}</h4>
-                                        <ul className="space-y-2">
-                                            {(features as string[]).map(feature => (
-                                                <li key={feature} className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> {feature}</li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                        <CardFooter>
-                            <Button size="lg" className="w-full" asChild>
-                                <Link href="/#pricing">GET STARTED</Link>
-                            </Button>
-                        </CardFooter>
-                    </Card>
-                    ))}
-                </div>
-                )}
+         {/* Detailed Features */}
+         <section id="features" className="py-12 md:pt-20">
+              <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                   <div className="md:col-span-2 lg:col-span-1 lg:pr-8 animate-fade-in-up">
+                      <Badge variant="destructive">🔥 HOT NEW FEATURE</Badge>
+                      <h3 className="text-3xl font-bold mt-2">Video to Blog Post</h3>
+                      <p className="text-muted-foreground mt-4">Transform any YouTube video into a comprehensive, SEO-optimized blog post in minutes. Extract insights, create outlines, and generate complete articles from video content.</p>
+                   </div>
+                   <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-8">
+                      <div className="space-y-2 animate-fade-in-up [animation-delay:200ms]">
+                          <ImageIcon className="w-8 h-8 text-primary"/>
+                          <h4 className="font-semibold">Enhanced AI Images 2.0</h4>
+                          <p className="text-sm text-muted-foreground">Generate stunning, contextual images that boost engagement by 300%.</p>
+                      </div>
+                       <div className="space-y-2 animate-fade-in-up [animation-delay:300ms]">
+                          <LinkIcon className="w-8 h-8 text-primary"/>
+                          <h4 className="font-semibold">Smart Internal Linking</h4>
+                          <p className="text-sm text-muted-foreground">Automatically create SEO-friendly internal links to improve site authority.</p>
+                      </div>
+                       <div className="space-y-2 animate-fade-in-up [animation-delay:400ms]">
+                          <SparklesIcon className="w-8 h-8 text-primary"/>
+                          <h4 className="font-semibold">Custom AI Prompts</h4>
+                          <p className="text-sm text-muted-foreground">Train the AI with your unique voice and style for brand consistency.</p>
+                      </div>
+                       <div className="space-y-2 animate-fade-in-up [animation-delay:500ms]">
+                          <Languages className="w-8 h-8 text-primary"/>
+                          <h4 className="font-semibold">150+ Languages Support</h4>
+                          <p className="text-sm text-muted-foreground">Create content in Bengali, English, Hindi, Arabic, and more.</p>
+                      </div>
+                       <div className="space-y-2 animate-fade-in-up [animation-delay:600ms]">
+                          <Layers className="w-8 h-8 text-primary"/>
+                          <h4 className="font-semibold">Bulk Generation 2.0</h4>
+                          <p className="text-sm text-muted-foreground">Create hundreds of articles simultaneously with our advanced engine.</p>
+                      </div>
+                       <div className="space-y-2 animate-fade-in-up [animation-delay:700ms]">
+                          <RefreshCcw className="w-8 h-8 text-primary"/>
+                          <h4 className="font-semibold">Content Refresh Tool</h4>
+                          <p className="text-sm text-muted-foreground">Instantly update old content with fresh information and improved SEO.</p>
+                      </div>
+                        <div className="space-y-2 animate-fade-in-up [animation-delay:800ms]">
+                          <TowerControl className="w-8 h-8 text-primary"/>
+                          <h4 className="font-semibold">Topical Authority Builder</h4>
+                          <p className="text-sm text-muted-foreground">Build topic clusters to establish your site as a niche authority.</p>
+                      </div>
+                        <div className="space-y-2 animate-fade-in-up [animation-delay:900ms]">
+                          <PenSquare className="w-8 h-8 text-primary"/>
+                          <h4 className="font-semibold">One-Click Writer 2.0</h4>
+                          <p className="text-sm text-muted-foreground">Generate publication-ready articles with just one click.</p>
+                      </div>
+                        <div className="space-y-2 animate-fade-in-up [animation-delay:1000ms]">
+                          <FileText className="w-8 h-8 text-primary"/>
+                          <h4 className="font-semibold">News Writer 2.0</h4>
+                          <p className="text-sm text-muted-foreground">Create timely, accurate news articles with real-time data integration.</p>
+                      </div>
+                   </div>
+              </div>
+               <div className="text-center mt-12 animate-fade-in-up [animation-delay:1100ms]">
+                   <Button size="lg" asChild>
+                      <Link href="/free-trial">
+                          <Zap className="mr-2 h-5 w-5"/>
+                          Start Free Trial
+                      </Link>
+                  </Button>
+              </div>
+         </section>
 
-
-                {/* Free Trial CTA */}
-                <Card className="mt-12 bg-gradient-to-r from-primary/10 to-accent/10">
-                    <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div>
-                            <CardTitle className="text-2xl font-bold">Start Free - Write 4 Articles! 🎉</CardTitle>
-                            <p className="text-muted-foreground mt-2 max-w-2xl">No credit card required. Test all features with 4 complete articles including AI images. Then upgrade with <strong className="text-primary">LAUNCH25</strong> for 25% OFF!</p>
-                            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> Full feature access</div>
-                                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> AI images included</div>
-                                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> WordPress publishing</div>
-                            </div>
-                        </div>
-                        <Button size="lg" className="text-base shrink-0" asChild>
-                            <Link href="/free-trial">Start Writing for FREE</Link>
-                        </Button>
-                    </CardContent>
+        {/* AI-Generated Visuals Section */}
+        <section className="py-12 md:py-20 bg-muted/50">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Enhance Your Content with AI-Generated Images</h2>
+            <p className="text-lg text-muted-foreground mt-4 max-w-3xl mx-auto animate-fade-in-up [animation-delay:200ms]">
+              Our AI can create stunning visuals to complement your blog posts, making your content more engaging and professional.
+            </p>
+            <div className="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {[...Array(6)].map((_, i) => (
+                <Card key={i} className="overflow-hidden group relative animate-fade-in-up" style={{animationDelay: `${400 + i * 100}ms`}}>
+                  <Image src="https://placehold.co/300x400.png" alt="AI Generated Islamic Art" width={300} height={400} className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-300" data-ai-hint="islamic art" />
+                  <div className="absolute inset-0 bg-black/50 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-white text-sm font-semibold">AI-Generated</p>
+                  </div>
                 </Card>
-                
-                {/* bKash Payment */}
-                <div className="mt-8 text-center">
-                    <p className="text-sm text-muted-foreground">Pay with</p>
-                    <div className="flex justify-center items-center gap-2 mt-2">
-                        <svg className="h-8" viewBox="0 0 1024 372.48" xmlns="http://www.w3.org/2000/svg"><path d="M789.28 206.01c-6.22-9.45-14.28-17.51-24.16-24.16-29.4-19.8-67.65-27.42-105.1-27.42-83.82 0-155.22 55.45-180.12 131.25H259.9a185.53 185.53 0 0 1 185.16-184.81c50.78 0 96.84 19.89 130.82 51.69a183.88 183.88 0 0 1 51.51 130.64h-74.01a113.88 113.88 0 0 0-50.1-107.19z" fill="#D82A7D"/><path d="M575.83 293.36a110.87 110.87 0 0 0-21.57 2.37A111.43 111.43 0 0 0 445.89 404H244.66a185.53 185.53 0 0 1 327-133.4 114.1 114.1 0 0 0-38.33-22.95 183.85 183.85 0 0 1-57.5 145.71z" fill="#D82A7D"/><path d="M837.74 34.33h-134.3v271.85a33.15 33.15 0 0 0 33.15 33.15h101.15V34.33z" fill="#D82A7D"/><path d="M1024 34.33H889.67v305h101.18a33.15 33.15 0 0 0 33.15-33.15V34.33z" fill="#D82A7D"/><path d="M0 34.33h201.23v305H0z" fill="#D82A7D"/><path d="M371.84 34.33H237.5v305h134.34a33.15 33.15 0 0 0 33.15-33.15V67.48a33.15 33.15 0 0 0-33.15-33.15z" fill="#D82A7D"/></svg>
-                        <p className="text-muted-foreground font-semibold">Easy mobile payments available for Bangladeshi users</p>
-                    </div>
-                </div>
+              ))}
             </div>
+            <p className="text-muted-foreground mt-8 max-w-3xl mx-auto animate-fade-in-up">
+              These images are entirely generated by AI and can be seamlessly integrated into your blog posts, social media content, and marketing materials to enhance visual appeal and engagement.
+            </p>
+          </div>
         </section>
+        
+        {/* Success Stories Section */}
+          <section className="py-12 md:py-20">
+              <div className="container mx-auto px-4">
+              <div className="text-center max-w-3xl mx-auto">
+                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Success Stories with TotthoAi 2.0</h2>
+                  <p className="text-lg text-muted-foreground mt-4 animate-fade-in-up [animation-delay:200ms]">
+                  Real Results from Real Users. See how content creators, marketers, and businesses are achieving extraordinary results with our new 2.0 features.
+                  </p>
+                  <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center animate-fade-in-up [animation-delay:400ms]">
+                      <p className="font-semibold text-lg">Avg. 90% time savings</p>
+                      <p className="font-semibold text-lg">300% faster creation</p>
+                      <p className="font-semibold text-lg">2x better SEO results</p>
+                  </div>
+              </div>
+               {loading ? (
+                  <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                      {[...Array(4)].map(i => <Skeleton key={i} className="h-64 w-full" />)}
+                  </div>
+               ) : (
+                  <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                      {testimonials.map((testimonial, index) => (
+                      <Card key={index} className="shadow-lg animate-fade-in-up" style={{animationDelay: `${600 + index*100}ms`}}>
+                          <CardHeader>
+                              <CardTitle className="text-xl">{testimonial.feature}</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                              <p className="text-muted-foreground text-sm italic">"{testimonial.quote}"</p>
+                              <p className="mt-4 font-bold text-primary">{testimonial.metric}</p>
+                          </CardContent>
+                          <CardFooter className="flex items-center gap-3">
+                              <Avatar>
+                                  <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint}/>
+                                  <AvatarFallback>{testimonial.authorName.charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              <div>
+                                  <p className="font-semibold">{testimonial.authorName}</p>
+                                  <p className="text-xs text-muted-foreground">{testimonial.authorRole}</p>
+                              </div>
+                          </CardFooter>
+                      </Card>
+                      ))}
+                  </div>
+              )}
+              <div className="text-center mt-12 animate-fade-in-up">
+                      <Button size="lg" asChild>
+                      <Link href="/#pricing">
+                          Start Your Success Story
+                      </Link>
+                  </Button>
+              </div>
+              </div>
+          </section>
 
-        {/* FAQ Section */}
-        <section className="py-12 md:py-20">
-            <div className="container mx-auto px-4">
-                <div className="text-center max-w-3xl mx-auto">
-                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Frequently Asked Questions</h2>
-                    <p className="text-lg text-muted-foreground mt-4">
-                        Everything you need to know about TotthoAi and our content generation tools.
-                    </p>
-                </div>
-                <div className="mt-12 max-w-4xl mx-auto">
-                    <Accordion type="single" collapsible className="w-full">
-                        {faqItems.map((item, index) => (
-                           <AccordionItem value={`item-${index}`} key={index}>
-                                <AccordionTrigger className="text-lg text-left font-semibold hover:no-underline">{item.question}</AccordionTrigger>
-                                <AccordionContent className="text-base text-muted-foreground">
-                                    {item.answer}
-                                </AccordionContent>
-                            </AccordionItem>
-                        ))}
-                    </Accordion>
-                </div>
-                <div className="text-center mt-8">
-                     <p className="text-muted-foreground">Still have questions? <Link href="#" className="text-primary font-semibold hover:underline">Contact our support team</Link></p>
-                </div>
-            </div>
-        </section>
-    </div>
+
+         {/* Pricing Section */}
+          <section id="pricing" className="py-12 md:py-20 bg-muted/50">
+              <div className="container mx-auto px-4">
+                  <div className="text-center max-w-3xl mx-auto">
+                      <Badge variant="secondary" className="text-sm py-1 px-3 border-2 border-primary/50 text-primary mb-4">
+                          🔥 Limited Time Launch Offer - 25% OFF with LAUNCH25
+                      </Badge>
+                      <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
+                          Choose Your AI Content Creation Plan
+                      </h2>
+                      <p className="text-lg text-muted-foreground mt-4">
+                          Start with our free trial, then scale with plans designed for creators, marketers, and agencies
+                      </p>
+                      <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                          <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> 4 Free Articles to Try</div>
+                          <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> No Credit Card Required</div>
+                          <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> Cancel Anytime</div>
+                      </div>
+                  </div>
+
+                  {loading ? (
+                      <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                          {[...Array(3)].map(i => <Skeleton key={i} className="h-[500px] w-full" />)}
+                      </div>
+                  ) : (
+                  <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                      {pricingPlans.map(plan => (
+                      <Card key={plan.id} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
+                          {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR + 25% OFF</Badge>}
+                          <CardHeader>
+                              <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+                              <div className="flex items-baseline gap-2">
+                                  <p className="text-4xl font-bold text-primary">৳{plan.price}</p>
+                                  <p className="text-xl font-medium text-muted-foreground line-through">৳{plan.originalPrice}</p>
+                                  <Badge variant="destructive">{plan.discount}</Badge>
+                              </div>
+                              <p className="text-muted-foreground pt-2">{plan.description}</p>
+                              <p className="text-sm text-accent font-semibold">Use code: LAUNCH25 at checkout</p>
+                          </CardHeader>
+                          <CardContent className="flex-grow space-y-4">
+                              <div className={`p-3 rounded-lg text-center ${plan.isPopular ? 'bg-primary/10' : 'bg-muted'}`}>
+                                  <p className={`text-lg font-bold ${plan.isPopular ? 'text-primary' : ''}`}>{plan.credits} Credits</p>
+                                  <p className="text-sm text-muted-foreground">Valid for {plan.validity}</p>
+                              </div>
+                              <div className="space-y-3 text-sm">
+                                  {Object.entries(plan.features).map(([category, features]) => (
+                                      <div key={category}>
+                                          <h4 className="font-semibold text-base pt-2">{category}</h4>
+                                          <ul className="space-y-2">
+                                              {(features as string[]).map(feature => (
+                                                  <li key={feature} className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> {feature}</li>
+                                              ))}
+                                          </ul>
+                                      </div>
+                                  ))}
+                              </div>
+                          </CardContent>
+                          <CardFooter>
+                              <Button size="lg" className="w-full" asChild>
+                                  <Link href="/#pricing">GET STARTED</Link>
+                              </Button>
+                          </CardFooter>
+                      </Card>
+                      ))}
+                  </div>
+                  )}
+
+
+                  {/* Free Trial CTA */}
+                  <Card className="mt-12 bg-gradient-to-r from-primary/10 to-accent/10">
+                      <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                          <div>
+                              <CardTitle className="text-2xl font-bold">Start Free - Write 4 Articles! 🎉</CardTitle>
+                              <p className="text-muted-foreground mt-2 max-w-2xl">No credit card required. Test all features with 4 complete articles including AI images. Then upgrade with <strong className="text-primary">LAUNCH25</strong> for 25% OFF!</p>
+                              <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                                  <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> Full feature access</div>
+                                  <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> AI images included</div>
+                                  <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> WordPress publishing</div>
+                              </div>
+                          </div>
+                          <Button size="lg" className="text-base shrink-0" asChild>
+                              <Link href="/free-trial">Start Writing for FREE</Link>
+                          </Button>
+                      </CardContent>
+                  </Card>
+                  
+                  {/* bKash Payment */}
+                  <div className="mt-8 text-center">
+                      <p className="text-sm text-muted-foreground">Pay with</p>
+                      <div className="flex justify-center items-center gap-2 mt-2">
+                          <svg className="h-8" viewBox="0 0 1024 372.48" xmlns="http://www.w3.org/2000/svg"><path d="M789.28 206.01c-6.22-9.45-14.28-17.51-24.16-24.16-29.4-19.8-67.65-27.42-105.1-27.42-83.82 0-155.22 55.45-180.12 131.25H259.9a185.53 185.53 0 0 1 185.16-184.81c50.78 0 96.84 19.89 130.82 51.69a183.88 183.88 0 0 1 51.51 130.64h-74.01a113.88 113.88 0 0 0-50.1-107.19z" fill="#D82A7D"/><path d="M575.83 293.36a110.87 110.87 0 0 0-21.57 2.37A111.43 111.43 0 0 0 445.89 404H244.66a185.53 185.53 0 0 1 327-133.4 114.1 114.1 0 0 0-38.33-22.95 183.85 183.85 0 0 1-57.5 145.71z" fill="#D82A7D"/><path d="M837.74 34.33h-134.3v271.85a33.15 33.15 0 0 0 33.15 33.15h101.15V34.33z" fill="#D82A7D"/><path d="M1024 34.33H889.67v305h101.18a33.15 33.15 0 0 0 33.15-33.15V34.33z" fill="#D82A7D"/><path d="M0 34.33h201.23v305H0z" fill="#D82A7D"/><path d="M371.84 34.33H237.5v305h134.34a33.15 33.15 0 0 0 33.15-33.15V67.48a33.15 33.15 0 0 0-33.15-33.15z" fill="#D82A7D"/></svg>
+                          <p className="text-muted-foreground font-semibold">Easy mobile payments available for Bangladeshi users</p>
+                      </div>
+                  </div>
+              </div>
+          </section>
+
+          {/* FAQ Section */}
+          <section className="py-12 md:py-20">
+              <div className="container mx-auto px-4">
+                  <div className="text-center max-w-3xl mx-auto">
+                      <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Frequently Asked Questions</h2>
+                      <p className="text-lg text-muted-foreground mt-4">
+                          Everything you need to know about TotthoAi and our content generation tools.
+                      </p>
+                  </div>
+                  <div className="mt-12 max-w-4xl mx-auto">
+                      <Accordion type="single" collapsible className="w-full">
+                          {faqItems.map((item, index) => (
+                             <AccordionItem value={`item-${index}`} key={index}>
+                                  <AccordionTrigger className="text-lg text-left font-semibold hover:no-underline">{item.question}</AccordionTrigger>
+                                  <AccordionContent className="text-base text-muted-foreground">
+                                      {item.answer}
+                                  </AccordionContent>
+                              </AccordionItem>
+                          ))}
+                      </Accordion>
+                  </div>
+                  <div className="text-center mt-8">
+                       <p className="text-muted-foreground">Still have questions? <Link href="#" className="text-primary font-semibold hover:underline">Contact our support team</Link></p>
+                  </div>
+              </div>
+          </section>
+      </div>
     </>
   );
 }
