@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Bot, Sparkles, LogIn, Chrome } from "lucide-react";
+import { Bot, Sparkles, LogIn, Chrome, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
@@ -36,6 +36,8 @@ function LoginSubmitButton() {
 
 export default function LoginPage() {
     const { toast } = useToast();
+    const searchParams = useSearchParams();
+    const redirectUrl = searchParams.get('redirect') || '/dashboard';
 
     const initialState = { message: "", success: false };
     const [state, formAction] = useActionState(loginAction, initialState);
@@ -99,6 +101,24 @@ export default function LoginPage() {
                             Don't have an account? <Link href="/free-trial" className="font-semibold text-primary hover:underline">Sign up for free</Link>
                         </p>
                     </CardFooter>
+                </Card>
+
+                <Card className="mt-4">
+                    <CardHeader>
+                        <CardTitle className="flex items-center text-base"><Info className="w-5 h-5 mr-2 text-primary"/>Demo Account Info</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-2">
+                        <div>
+                            <p className="font-semibold">Admin User:</p>
+                            <p className="text-muted-foreground">Email: <span className="font-mono">admin@totthoai.com</span></p>
+                            <p className="text-muted-foreground">Password: <span className="font-mono">adminpassword</span></p>
+                        </div>
+                         <div>
+                            <p className="font-semibold">Regular User:</p>
+                            <p className="text-muted-foreground">Email: <span className="font-mono">user@totthoai.com</span></p>
+                            <p className="text-muted-foreground">Password: <span className="font-mono">userpassword</span></p>
+                        </div>
+                    </CardContent>
                 </Card>
             </div>
         </div>
