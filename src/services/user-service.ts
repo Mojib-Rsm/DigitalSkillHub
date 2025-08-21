@@ -3,8 +3,8 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { getFirestore, doc, getDoc, collection, getDocs } from 'firebase/firestore/lite';
-import { app } from '@/lib/firebase';
+import { getFirestore as getAdminFirestore, doc as adminDoc, getDoc as adminGetDoc, collection as adminCollection, getDocs as adminGetDocs } from 'firebase-admin/firestore';
+import { adminApp } from '@/lib/firebase-admin';
 
 export type UserProfile = {
   id: string;
@@ -14,6 +14,7 @@ export type UserProfile = {
   credits: number;
   profile_image: string;
   status: 'active' | 'banned';
+  plan_id: string;
 };
 
 export async function getCurrentUser(): Promise<UserProfile | null> {
@@ -27,16 +28,20 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
   const uid = sessionCookie.value;
 
   try {
-    const db = getFirestore(app);
-    const userRef = doc(db, 'users', uid);
-    const userSnapshot = await getDoc(userRef);
+    const adminDb = getAdminFirestore(adminApp);
+    const userRef = adminDoc(adminDb, 'users', uid);
+    const userSnapshot = await adminGetDoc(userRef);
 
-    if (!userSnapshot.exists()) {
+    if (!userSnapshot.exists) {
         console.warn(`No user found with ID: ${uid}`);
         return null;
     }
     
     const userData = userSnapshot.data();
+    
+    if (!userData) {
+      return null;
+    }
     
     return {
         id: userSnapshot.id,
@@ -46,6 +51,7 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
         credits: userData.credits,
         profile_image: userData.profile_image,
         status: userData.status,
+        plan_id: userData.plan_id,
     } as UserProfile;
 
   } catch (error) {
@@ -62,9 +68,9 @@ export async function getAllUsers(): Promise<UserProfile[]> {
     }
 
     try {
-        const db = getFirestore(app);
-        const usersCol = collection(db, 'users');
-        const userSnapshot = await getDocs(usersCol);
+        const adminDb = getAdminFirestore(adminApp);
+        const usersCol = adminCollection(adminDb, 'users');
+        const userSnapshot = await adminGetDocs(usersCol);
         
         if (userSnapshot.empty) {
             return [];
@@ -80,6 +86,7 @@ export async function getAllUsers(): Promise<UserProfile[]> {
                 credits: data.credits,
                 profile_image: data.profile_image,
                 status: data.status,
+                plan_id: data.plan_id
              } as UserProfile;
         });
     } catch (error) {

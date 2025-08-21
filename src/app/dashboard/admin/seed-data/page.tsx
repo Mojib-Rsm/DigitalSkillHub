@@ -22,7 +22,10 @@ export default function SeedDataPage() {
             const seedResult = await seedDatabase();
             setResult(seedResult);
             if (seedResult.success) {
-                // Toast removed for success case to avoid redundancy with the Alert component.
+                toast({
+                    title: "Database Seeding Successful!",
+                    description: seedResult.message,
+                });
             } else {
                  toast({
                     variant: "destructive",

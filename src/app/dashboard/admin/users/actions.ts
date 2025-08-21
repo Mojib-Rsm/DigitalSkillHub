@@ -1,9 +1,10 @@
 
+
 'use server';
 
 import { z } from 'zod';
-import { getFirestore, doc, updateDoc } from 'firebase/firestore/lite';
-import { app } from '@/lib/firebase';
+import { getFirestore as getAdminFirestore, doc as adminDoc, updateDoc as adminUpdateDoc } from 'firebase-admin/firestore';
+import { adminApp } from '@/lib/firebase-admin';
 import { getCurrentUser } from '@/services/user-service';
 import { revalidatePath } from 'next/cache';
 
@@ -30,9 +31,9 @@ export async function updateUserRole(userId: string, role: 'user' | 'admin') {
   }
 
   try {
-    const db = getFirestore(app);
-    const userRef = doc(db, 'users', userId);
-    await updateDoc(userRef, {
+    const db = getAdminFirestore(adminApp);
+    const userRef = adminDoc(db, 'users', userId);
+    await adminUpdateDoc(userRef, {
       role: role,
     });
     
