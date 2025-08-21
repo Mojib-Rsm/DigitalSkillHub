@@ -10,11 +10,12 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { updateUserProfileAction, changePasswordAction } from './actions';
-import { Sparkles, User, Palette, Shield } from 'lucide-react';
+import { Sparkles, User, Palette, Shield, Star, Award } from 'lucide-react';
 import { getCurrentUser, UserProfile } from '@/services/user-service';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import * as React from 'react';
+import { Badge } from '@/components/ui/badge';
 
 function SubmitButton({ children }: { children: React.ReactNode }) {
   const { pending } = useFormStatus();
@@ -43,13 +44,32 @@ function ProfileForm({ user }: { user: UserProfile }) {
 
   return (
     <form action={formAction} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="name">Full Name</Label>
-        <Input id="name" name="name" defaultValue={user.name} />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input id="email" name="email" type="email" defaultValue={user.email} />
+       <div className="space-y-4">
+            <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <Input id="name" name="name" defaultValue={user.name} />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" name="email" type="email" defaultValue={user.email} />
+            </div>
+             <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <Label>Current Plan</Label>
+                    <div className="flex items-center gap-2">
+                        <Star className="w-5 h-5 text-yellow-500" />
+                        <span className="font-semibold">{user.plan_id === 'beta' || user.plan_id === 'sigma' ? "Pro" : "Free"}</span>
+                        <Badge variant="secondary">{user.plan_id}</Badge>
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <Label>Credits Remaining</Label>
+                     <div className="flex items-center gap-2">
+                        <Award className="w-5 h-5 text-primary" />
+                        <span className="font-semibold">{user.credits}</span>
+                    </div>
+                </div>
+            </div>
       </div>
       <CardFooter>
         <SubmitButton>Save Changes</SubmitButton>
@@ -142,7 +162,7 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>My Profile</CardTitle>
-              <CardDescription>Manage your personal information.</CardDescription>
+              <CardDescription>Manage your personal information, plan, and credits.</CardDescription>
             </CardHeader>
             <CardContent>
                 <ProfileForm user={user}/>

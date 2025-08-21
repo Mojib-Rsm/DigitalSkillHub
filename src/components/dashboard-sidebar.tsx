@@ -41,6 +41,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { UserProfile } from "@/services/user-service";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export default function DashboardSidebar({
     children,
@@ -158,12 +159,6 @@ export default function DashboardSidebar({
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                             <SidebarMenuSubItem>
-                                <SidebarMenuSubButton href="/dashboard/settings">
-                                    <Settings />
-                                    <span>Settings</span>
-                                </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                            <SidebarMenuSubItem>
                                 <SidebarMenuSubButton href="/dashboard/admin/seed-data">
                                     <DatabaseZap />
                                     <span>Seed Data</span>
@@ -175,17 +170,33 @@ export default function DashboardSidebar({
             </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
+            {user && (
+                 <div className="p-2">
+                    <Card className="bg-muted/50">
+                        <CardContent className="p-3 flex items-center gap-3">
+                            <Avatar className="size-10">
+                                <AvatarImage src={user.profile_image} />
+                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="overflow-hidden">
+                                <p className="font-semibold truncate">{user.name}</p>
+                                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                 </div>
+            )}
            <SidebarMenu className="p-2">
                  <SidebarMenuItem>
                   <SidebarMenuButton href="/dashboard/pricing">
                     <DollarSign />
-                    <span>Pricing & Billing</span>
+                    <span>Account & Billing</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                  <SidebarMenuItem>
                   <SidebarMenuButton href="/dashboard/settings">
-                    <UserIcon />
-                    <span>Account Settings</span>
+                    <Settings />
+                    <span>Settings</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
@@ -195,19 +206,6 @@ export default function DashboardSidebar({
                   </SidebarMenuButton>
                 </SidebarMenuItem>
            </SidebarMenu>
-           <div className="p-2">
-            <Card className="bg-primary/10 border-primary/50">
-                <CardHeader>
-                    <CardTitle className="text-base">Upgrade to Pro</CardTitle>
-                    <CardDescription className="text-xs">Unlock all features and get unlimited access.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Button size="sm" className="w-full" asChild>
-                        <Link href="/dashboard/pricing">Upgrade</Link>
-                    </Button>
-                </CardContent>
-            </Card>
-           </div>
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
