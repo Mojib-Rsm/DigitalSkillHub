@@ -4,6 +4,7 @@
 import { headers } from 'next/headers';
 import { getFirestore, collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
+import { getCurrentUser } from './user-service';
 
 export type HistoryItem = {
   id: string;
@@ -15,10 +16,9 @@ export type HistoryItem = {
 
 
 export async function getHistory(): Promise<HistoryItem[]> {
-  const headersList = headers();
-  const uid = headersList.get('x-uid');
+  const user = await getCurrentUser();
   
-  if (!uid) {
+  if (!user) {
     console.warn("Cannot get history: user is not logged in.");
     return [];
   }
@@ -28,7 +28,7 @@ export async function getHistory(): Promise<HistoryItem[]> {
     const historyCol = collection(db, 'history');
     const q = query(
         historyCol, 
-        where('uid', '==', uid),
+        where('uid', '==', user.id),
         orderBy('createdAt', 'desc'),
         limit(50)
     );

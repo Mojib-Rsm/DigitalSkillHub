@@ -72,7 +72,7 @@ export default async function HistoryPage() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <a href={item.output.imageUrl || item.output.videoUrl} download>
+                                <a href={item.output.imageUrl || item.output.videoUrl} download={`generated_${item.tool.includes('video') ? 'video' : 'image'}.png`}>
                                     <Button variant="outline">
                                         <Download className="mr-2"/>
                                         Download
