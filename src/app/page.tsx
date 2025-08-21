@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, Check, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard, Check } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -587,8 +587,8 @@ export default function Home() {
                       </div>
                   ) : (
                   <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-                      {pricingPlans.map(plan => (
-                      <Card key={`pricing-${plan.id}`} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
+                      {pricingPlans.map((plan, index) => (
+                      <Card key={`pricing-${plan.id}-${index}`} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
                           {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR + 25% OFF</Badge>}
                           <CardHeader>
                               <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
@@ -670,4 +670,6 @@ export default function Home() {
   );
 
     
+
+
 
