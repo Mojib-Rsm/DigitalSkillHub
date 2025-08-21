@@ -5,11 +5,10 @@ import {
     getFirestore, 
     collection, 
     writeBatch,
-    getDocs,
     doc
 } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
-import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, users } from '@/lib/demo-data';
+import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, users, tools } from '@/lib/demo-data';
 
 
 export async function seedDatabase() {
@@ -22,6 +21,7 @@ export async function seedDatabase() {
         { name: 'pricing', data: pricingPlans },
         { name: 'testimonials', data: testimonials },
         { name: 'users', data: users },
+        { name: 'tools', data: tools },
     ];
 
     try {
@@ -38,8 +38,8 @@ export async function seedDatabase() {
                 // Use a specific ID if provided (like for users), otherwise let Firestore auto-generate.
                 const docRef = item.email ? doc(collectionRef, item.email) : (item.id ? doc(collectionRef, item.id) : doc(collectionRef));
                 const dataToSet = { ...item };
+                // Don't store the id field inside the document if we're using it as the document ID
                 if (item.id) {
-                    // Don't store the id field inside the document if we're using it as the document ID
                     delete dataToSet.id;
                 }
                 batch.set(docRef, dataToSet);
@@ -72,3 +72,5 @@ export async function seedDatabase() {
         };
     }
 }
+
+    

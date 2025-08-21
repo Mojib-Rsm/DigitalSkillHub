@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -29,7 +30,8 @@ import {
   ChevronDown,
   History,
   DatabaseZap,
-  Users
+  Users,
+  Wrench
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -128,6 +130,12 @@ export default function DashboardSidebar({
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                             <SidebarMenuSubItem>
+                                <SidebarMenuSubButton href="/dashboard/admin/tools">
+                                    <Wrench />
+                                    <span>Tool Management</span>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                            <SidebarMenuSubItem>
                                 <SidebarMenuSubButton href="/dashboard/admin/seed-data">
                                     <DatabaseZap />
                                     <span>Seed Data</span>
@@ -177,3 +185,5 @@ export default function DashboardSidebar({
     </SidebarProvider>
   );
 }
+
+    
