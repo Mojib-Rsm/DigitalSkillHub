@@ -6,23 +6,6 @@ import { z } from "zod";
 import crypto from "crypto";
 import admin from "firebase-admin";
 
-// Ensure Firebase Admin is initialized
-if (!admin.apps.length) {
-  try {
-    const serviceAccountString = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
-    if (!serviceAccountString) {
-      throw new Error('The GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set.');
-    }
-    const serviceAccount = JSON.parse(serviceAccountString);
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-  } catch (e: any) {
-    console.error('Firebase Admin SDK initialization failed in signup action:', e.message);
-    // We'll allow the action to proceed, but it will likely fail with a clearer error below.
-  }
-}
-
 
 type SmsApiResponse = {
     response_code?: number;
@@ -115,8 +98,19 @@ type VerifyFormState = {
 
 async function sendOTP(email: string, phone: string) {
     if (!admin.apps.length) {
-        console.error("Firebase Admin SDK is not initialized. Cannot send OTP.");
-        return { success: false, message: "Server configuration error. Please contact support." };
+        try {
+            const serviceAccountString = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+            if (!serviceAccountString) {
+                throw new Error('The GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set.');
+            }
+            const serviceAccount = JSON.parse(serviceAccountString);
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount),
+            });
+        } catch (e: any) {
+            console.error('Firebase Admin SDK initialization failed:', e.message);
+            return { success: false, message: "Server configuration error. Please contact support." };
+        }
     }
     const db = admin.firestore();
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -172,7 +166,19 @@ export async function signupAction(
   }
   
   if (!admin.apps.length) {
-      return { message: "Server configuration error. Please check your service-account.json file.", fields, step: "1", success: false };
+      try {
+        const serviceAccountString = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+        if (!serviceAccountString) {
+          throw new Error('The GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set.');
+        }
+        const serviceAccount = JSON.parse(serviceAccountString);
+        admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount),
+        });
+      } catch (e: any) {
+        console.error('Firebase Admin SDK initialization failed:', e.message);
+        return { message: "Server configuration error. Please check your service-account.json file.", fields, step: "1", success: false };
+      }
   }
   
   const db = admin.firestore();
@@ -224,7 +230,19 @@ export async function verifyAndCreateUserAction(
     }
 
     if (!admin.apps.length) {
+       try {
+        const serviceAccountString = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+        if (!serviceAccountString) {
+          throw new Error('The GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set.');
+        }
+        const serviceAccount = JSON.parse(serviceAccountString);
+        admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount),
+        });
+      } catch (e: any) {
+        console.error('Firebase Admin SDK initialization failed:', e.message);
         return { success: false, message: "Server configuration error. Cannot create user." };
+      }
     }
 
     const { email, otp, name, password, phone } = validatedFields.data;

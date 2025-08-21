@@ -6,24 +6,6 @@ import { z } from "zod";
 import crypto from "crypto";
 import admin from "firebase-admin";
 
-// Ensure Firebase Admin is initialized
-if (!admin.apps.length) {
-  try {
-    const serviceAccountString = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
-    if (!serviceAccountString) {
-      throw new Error('The GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set.');
-    }
-    const serviceAccount = JSON.parse(serviceAccountString);
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-  } catch (e: any) {
-    console.error('Firebase Admin SDK initialization failed in login action:', e.message);
-    // We'll allow the action to proceed, but it will likely fail with a clearer error below.
-  }
-}
-
-
 const LoginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
   password: z.string().min(1, { message: "Password cannot be empty." }),
@@ -67,8 +49,21 @@ export async function loginAction(
     };
   }
   
+  // Ensure Firebase Admin is initialized
   if (!admin.apps.length) {
-      return { message: "Server configuration error. Please check your service-account.json file.", success: false };
+      try {
+        const serviceAccountString = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+        if (!serviceAccountString) {
+          throw new Error('The GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set. Please check your .env file.');
+        }
+        const serviceAccount = JSON.parse(serviceAccountString);
+        admin.initializeApp({
+          credential: admin.credential.cert(serviceAccount),
+        });
+      } catch (e: any) {
+        console.error('Firebase Admin SDK initialization failed:', e.message);
+        return { message: "Server configuration error. Please check your service-account.json file.", success: false };
+      }
   }
 
   const db = admin.firestore();
