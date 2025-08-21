@@ -32,6 +32,9 @@ export type ImageToVideoGeneratorOutput = z.infer<typeof ImageToVideoGeneratorOu
 
 async function downloadVideo(video: MediaPart): Promise<string> {
     const fetch = (await import('node-fetch')).default;
+    if (!process.env.GEMINI_API_KEY) {
+        throw new Error("GEMINI_API_KEY environment variable is not set.");
+    }
     // Add API key before fetching the video. The URL may or may not have query params already.
     const videoUrl = video.media!.url!.includes('?') ? `${video.media!.url}&key=${process.env.GEMINI_API_KEY}` : `${video.media!.url}?key=${process.env.GEMINI_API_KEY}`;
     console.log(`Downloading video from: ${videoUrl.substring(0, 100)}...`);

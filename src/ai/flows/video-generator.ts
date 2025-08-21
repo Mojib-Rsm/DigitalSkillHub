@@ -28,16 +28,19 @@ export type VideoGeneratorOutput = z.infer<typeof VideoGeneratorOutputSchema>;
 
 async function downloadVideo(video: MediaPart): Promise<string> {
     const fetch = (await import('node-fetch')).default;
+    if (!process.env.GEMINI_API_KEY) {
+        throw new Error("GEMINI_API_KEY environment variable is not set.");
+    }
     // Add API key before fetching the video.
     const videoUrl = video.media!.url!.includes('?') ? `${video.media!.url}&key=${process.env.GEMINI_API_KEY}` : `${video.media!.url}?key=${process.env.GEMINI_API_KEY}`;
-    console.log(`Downloading video from: ${videoUrl}`);
+    console.log(`Downloading video from: ${videoUrl.substring(0, 100)}...`);
 
     const videoDownloadResponse = await fetch(videoUrl);
 
     if (!videoDownloadResponse.ok) {
         const errorBody = await videoDownloadResponse.text();
-        console.error('Failed to fetch video:', videoDownloadResponse.status, errorBody, `URL: ${videoUrl.substring(0, 100)}...`);
-        throw new Error(`Failed to fetch generated video. Status: ${videoDownloadResponse.status}. Body: ${errorBody}`);
+        console.error('Failed to fetch video:', videoDownloadResponse.status, errorBody);
+        throw new Error(`Failed to fetch generated video. Status: ${videoDownloadResponse.status}.`);
     }
 
     const videoBuffer = await videoDownloadResponse.arrayBuffer();
