@@ -74,16 +74,11 @@ const imageToVideoGeneratorFlow = ai.defineFlow(
         const finalPrompt = prompt || 'animate this image';
 
         let { operation } = await ai.generate({
-          model: googleAI.model('veo-2.0-generate-001'),
+          model: googleAI.model('veo-3.0-generate-preview'),
           prompt: [
             { image: { bytesBase64Encoded: base64Data, mimeType: mimeType } },
             { text: finalPrompt },
           ],
-          config: {
-            durationSeconds: 5,
-            aspectRatio: '16:9',
-            personGeneration: 'allow_adult',
-          },
         });
 
         if (!operation) {
