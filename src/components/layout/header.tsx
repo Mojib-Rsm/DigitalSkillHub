@@ -23,8 +23,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import Cookies from 'js-cookie';
 import { logoutAction } from "@/app/logout/actions";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { app } from "@/lib/firebase";
 
 
 const navLinks = [
@@ -45,12 +46,17 @@ export default function Header() {
   const pathname = usePathname();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const auth = getAuth(app);
   
   useEffect(() => {
-    const sessionCookie = Cookies.get('auth-session');
-    setIsLoggedIn(!!sessionCookie);
-    setLoading(false);
-  }, [pathname]); // Re-check on path change
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+      setLoading(false);
+    });
+    
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, [auth]);
 
   const NavLink = ({ href, label }: { href: string; label: string }) => (
     <Link
