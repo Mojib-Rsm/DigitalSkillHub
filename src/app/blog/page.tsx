@@ -1,4 +1,5 @@
 
+
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,7 +38,42 @@ async function getBlogPosts(): Promise<BlogPost[]> {
 export default async function BlogPage() {
   const blogPosts = await getBlogPosts();
 
+  const blogPostingSchema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "TotthoAi Blog",
+    "description": "Insights, tutorials, and news from the world of digital skills and freelancing.",
+    "blogPost": blogPosts.map(post => ({
+        "@type": "BlogPosting",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": `https://totthoai.mojib.me/blog/${post.id}` // Assuming a slug/id structure for blog posts
+        },
+        "headline": post.title,
+        "image": post.image,
+        "author": {
+            "@type": "Person",
+            "name": post.author
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "TotthoAi",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://totthoai.mojib.me/logo.png"
+            }
+        },
+        "datePublished": post.date,
+        "description": post.excerpt
+    }))
+  };
+
   return (
+    <>
+    <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogPostingSchema) }}
+    />
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">
         <h1 className="font-headline text-5xl font-bold">দক্ষতার স্প্রাউট ব্লগ</h1>
@@ -86,5 +122,6 @@ export default async function BlogPage() {
         ))}
       </div>
     </div>
+    </>
   );
 }

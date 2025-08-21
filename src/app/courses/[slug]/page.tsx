@@ -1,10 +1,13 @@
 
+
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Star, PlayCircle, BookOpen, Clock, BarChart, User } from 'lucide-react';
+import { getCourseBySlug } from '@/services/course-service';
+import { notFound } from 'next/navigation';
 
 const courseData = {
   title: 'বাংলায় ফ্রিল্যান্সিং শুরু',
@@ -57,28 +60,57 @@ const courseData = {
   price: 49.99,
 };
 
-export default function CourseDetailPage({ params }: { params: { slug: string } }) {
+export default async function CourseDetailPage({ params }: { params: { slug: string } }) {
+  const course = await getCourseBySlug(params.slug);
+
+  if (!course) {
+    notFound();
+  }
+
+  const courseSchema = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": course.title,
+    "description": `Learn ${course.title} with our comprehensive online course. Perfect for ${course.level} learners.`,
+    "provider": {
+        "@type": "Organization",
+        "name": "TotthoAi",
+        "sameAs": "https://totthoai.mojib.me"
+    },
+    "offers": {
+        "@type": "Offer",
+        "category": "Paid",
+        "price": course.price,
+        "priceCurrency": "BDT" // Assuming BDT, change if needed
+    }
+  };
+
   return (
+    <>
+     <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseSchema) }}
+    />
     <div className="container mx-auto px-4 py-12">
       <div className="grid lg:grid-cols-3 gap-12">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8">
           {/* Course Title */}
-          <h1 className="font-headline text-5xl font-bold">{courseData.title}</h1>
+          <h1 className="font-headline text-5xl font-bold">{course.title}</h1>
 
           {/* Course Meta */}
            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-muted-foreground">
              <div className="flex items-center gap-2">
                 <User className="w-5 h-5" />
-                <span>প্রশিক্ষক: <strong>{courseData.instructor.name}</strong></span>
+                <span>প্রশিক্ষক: <strong>{course.instructor}</strong></span>
              </div>
              <div className="flex items-center gap-2">
                 <BarChart className="w-5 h-5" />
-                <span>লেভেল: <strong>{courseData.level}</strong></span>
+                <span>লেভেল: <strong>{course.level}</strong></span>
              </div>
              <div className="flex items-center gap-2">
                 <Clock className="w-5 h-5" />
-                <span>স্থিতিকাল: <strong>{courseData.duration}</strong></span>
+                <span>স্থিতিকাল: <strong>{course.duration}</strong></span>
              </div>
            </div>
 
@@ -116,10 +148,10 @@ export default function CourseDetailPage({ params }: { params: { slug: string } 
               <CardContent className="p-6 flex items-start gap-6">
                 <Avatar className="w-24 h-24">
                   <AvatarImage src={courseData.instructor.avatar} data-ai-hint={courseData.instructor.dataAiHint} />
-                  <AvatarFallback>{courseData.instructor.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>{course.instructor.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-bold">{courseData.instructor.name}</h3>
+                  <h3 className="text-2xl font-bold">{course.instructor}</h3>
                   <p className="text-muted-foreground">{courseData.instructor.bio}</p>
                 </div>
               </CardContent>
@@ -159,7 +191,7 @@ export default function CourseDetailPage({ params }: { params: { slug: string } 
         <div className="lg:col-span-1">
           <Card className="sticky top-24 shadow-lg">
             <CardHeader>
-                <p className="text-4xl font-bold text-primary text-center">${courseData.price}</p>
+                <p className="text-4xl font-bold text-primary text-center">৳{course.price}</p>
             </CardHeader>
             <CardContent className="space-y-4">
               <Button size="lg" className="w-full text-lg">এখনই ভর্তি হন</Button>
@@ -167,7 +199,7 @@ export default function CourseDetailPage({ params }: { params: { slug: string } 
               <div className="space-y-2 pt-4 border-t">
                   <h4 className="font-semibold">এই কোর্সে অন্তর্ভুক্ত:</h4>
                   <ul className="list-none space-y-2 text-sm text-muted-foreground">
-                    <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-primary"/>{courseData.duration} অন-ডিমান্ড ভিডিও</li>
+                    <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-primary"/>{course.duration} অন-ডিমান্ড ভিডিও</li>
                     <li className="flex items-center gap-2"><BookOpen className="w-4 h-4 text-primary"/>আজীবন অ্যাক্সেস</li>
                     <li className="flex items-center gap-2"><PlayCircle className="w-4 h-4 text-primary"/>মোবাইল এবং টিভিতে অ্যাক্সেস</li>
                   </ul>
@@ -177,5 +209,6 @@ export default function CourseDetailPage({ params }: { params: { slug: string } 
         </div>
       </div>
     </div>
+    </>
   );
 }

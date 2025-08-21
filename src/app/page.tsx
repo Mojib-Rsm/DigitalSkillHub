@@ -1,5 +1,6 @@
 
 
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -118,9 +119,9 @@ const organizationSchema = {
   "@type": "Organization",
   "name": "TotthoAi",
   "url": "https://totthoai.mojib.me/",
-  "logo": "https://totthoai.mojib.me//logo.png", // Replace with your actual logo URL
+  "logo": "https://totthoai.mojib.me/logo.png",
   "sameAs": [
-    "https://twitter.com/totthoai", // Replace with your actual social media URLs
+    "https://twitter.com/totthoai",
     "https://www.facebook.com/totthoai",
     "https://www.linkedin.com/company/totthoai"
   ],
@@ -129,6 +130,18 @@ const organizationSchema = {
     "contactType": "customer support",
     "email": "support@totthoai.com"
   }
+};
+
+const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "TotthoAi",
+    "url": "https://totthoai.mojib.me/",
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://totthoai.mojib.me/ai-tools?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+    }
 };
 
 const trendingCategories = [
@@ -166,8 +179,14 @@ export default function Home() {
     <>
       <Head>
           <script
+              key="structured-data-org"
               type="application/ld+json"
               dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+          />
+          <script
+              key="structured-data-website"
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
           />
       </Head>
       <div className="flex flex-col bg-background">
@@ -564,5 +583,3 @@ export default function Home() {
 const iconComponents = {
     PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, Layers, RefreshCcw, SparklesIcon, TowerControl, Clapperboard, Youtube, LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown
 };
-
-    
