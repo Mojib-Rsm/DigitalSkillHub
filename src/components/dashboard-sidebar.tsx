@@ -5,7 +5,6 @@
 import {
   Sidebar,
   SidebarProvider,
-  SidebarTrigger,
   SidebarContent,
   SidebarHeader,
   SidebarMenu,
@@ -206,9 +205,6 @@ export default function DashboardSidebar({
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <div className="md:hidden">
-            <SidebarTrigger />
-        </div>
         {children}
       </SidebarInset>
     </SidebarProvider>
