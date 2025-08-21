@@ -1,5 +1,4 @@
 
-"use client";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -19,11 +18,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import React, { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { getCurrentUser, UserProfile } from "@/services/user-service";
+import { getCurrentUser } from "@/services/user-service";
 import { ThemeToggleButton } from "../theme-toggle-button";
 import { logoutAction } from "@/app/logout/actions";
 
@@ -40,30 +36,10 @@ const moreLinks = [
     { href: "/ai-tools", label: "AI Tools", description: "Explore our suite of AI tools."},
 ]
 
-
-export default function Header() {
-  const pathname = usePathname();
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchUser() {
-        setLoading(true);
-        const currentUser = await getCurrentUser();
-        setUser(currentUser);
-        setLoading(false);
-    }
-    // Fetch user on initial load and on path changes (e.g. after login/logout redirects)
-    fetchUser();
-  }, [pathname]);
-
-  const NavLink = ({ href, label }: { href: string; label: string }) => (
+const NavLink = ({ href, label }: { href: string; label: string }) => (
     <Link
       href={href}
-      className={cn(
-        "text-sm font-medium transition-colors hover:text-primary",
-        pathname === href ? "text-primary" : "text-muted-foreground"
-      )}
+      className="text-sm font-medium transition-colors text-muted-foreground hover:text-primary"
     >
       {label}
     </Link>
@@ -75,10 +51,11 @@ export default function Header() {
      </Link>
   )
 
+
+export default async function Header() {
+  const user = await getCurrentUser();
+
   const renderAuthButtons = () => {
-    if (loading) {
-        return <div className="flex items-center gap-2 h-10 w-48 animate-pulse rounded-md bg-muted" />;
-    }
     if (user) {
       return (
         <div className="flex items-center gap-2">

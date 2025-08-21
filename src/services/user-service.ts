@@ -1,7 +1,8 @@
 
+
 'use server';
 
-import { headers } from 'next/headers';
+import { cookies } from 'next/headers';
 import { getFirestore, doc, getDoc, collection, getDocs } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 
@@ -16,13 +17,14 @@ export type UserProfile = {
 };
 
 export async function getCurrentUser(): Promise<UserProfile | null> {
-  const headersList = headers();
-  const uid = headersList.get('x-uid');
+  const cookieStore = cookies();
+  const sessionCookie = cookieStore.get('auth-session');
   
-  if (!uid) {
-    console.warn("Cannot get user profile: user is not logged in.");
+  if (!sessionCookie) {
     return null;
   }
+  
+  const uid = sessionCookie.value;
 
   try {
     const db = getFirestore(app);
