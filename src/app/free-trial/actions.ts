@@ -4,11 +4,23 @@
 import 'dotenv/config';
 import { z } from "zod";
 import crypto from "crypto";
-import { app, admin } from "@/lib/firebase-admin";
+import admin from "firebase-admin";
 
-
-if (!app && !admin.apps.length) {
-    console.error("Firebase Admin SDK is not initialized in actions.ts. This should not happen.");
+// Ensure Firebase Admin is initialized
+if (!admin.apps.length) {
+  try {
+    const serviceAccountString = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+    if (!serviceAccountString) {
+      throw new Error('The GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable is not set.');
+    }
+    const serviceAccount = JSON.parse(serviceAccountString);
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+    });
+  } catch (e: any) {
+    console.error('Firebase Admin SDK initialization failed in signup action:', e.message);
+    // We'll allow the action to proceed, but it will likely fail with a clearer error below.
+  }
 }
 
 
@@ -160,7 +172,6 @@ export async function signupAction(
   }
   
   if (!admin.apps.length) {
-      console.error("Firebase Admin SDK is not initialized.");
       return { message: "Server configuration error. Please check your service-account.json file.", fields, step: "1", success: false };
   }
   
