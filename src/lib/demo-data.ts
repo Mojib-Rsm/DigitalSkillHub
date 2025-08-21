@@ -163,18 +163,28 @@ export const users = [
     {
         name: "Admin User",
         email: "admin@totthoai.com",
-        phone: "01800000000",
         password: "adminpassword",
         role: "admin",
-        createdAt: new Date().toISOString(),
+        profile_image: "https://placehold.co/100x100.png",
+        plan_id: "sigma",
+        credits: 9999,
+        is_verified: true,
+        status: "active",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
     },
     {
         name: "Regular User",
         email: "user@totthoai.com",
-        phone: "01700000000",
         password: "userpassword",
         role: "user",
-        createdAt: new Date().toISOString(),
+        profile_image: "https://placehold.co/100x100.png",
+        plan_id: "beta",
+        credits: 100,
+        is_verified: true,
+        status: "active",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
     }
 ];
 
