@@ -1,7 +1,7 @@
 'use server';
 
 import { headers } from 'next/headers';
-import { getFirestore, doc, getDoc } from 'firebase/firestore/lite';
+import { getFirestore, doc, getDoc, collection, getDocs } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 
 export type UserProfile = {
@@ -47,4 +47,37 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
     console.error('Failed to get user profile from Firestore:', error);
     return null;
   }
+}
+
+export async function getAllUsers(): Promise<UserProfile[]> {
+    const currentUser = await getCurrentUser();
+    if (currentUser?.role !== 'admin') {
+        console.error("Permission denied: Only admins can fetch all users.");
+        return [];
+    }
+
+    try {
+        const db = getFirestore(app);
+        const usersCol = collection(db, 'users');
+        const userSnapshot = await getDocs(usersCol);
+        
+        if (userSnapshot.empty) {
+            return [];
+        }
+
+        return userSnapshot.docs.map(doc => {
+             const data = doc.data();
+             return {
+                id: doc.id,
+                name: data.name,
+                email: data.email,
+                role: data.role,
+                credits: data.credits,
+                profile_image: data.profile_image,
+             } as UserProfile;
+        });
+    } catch (error) {
+        console.error('Failed to get all users from Firestore:', error);
+        return [];
+    }
 }

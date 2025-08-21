@@ -28,7 +28,8 @@ import {
   LayoutGrid,
   ChevronDown,
   History,
-  DatabaseZap
+  DatabaseZap,
+  Users
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -114,10 +115,25 @@ export default function DashboardSidebar({
                 </SidebarMenuItem>
                  {user?.role === 'admin' && (
                     <SidebarMenuItem>
-                        <SidebarMenuButton href="/dashboard/admin/seed-data">
-                            <DatabaseZap />
-                            <span>Admin</span>
+                        <SidebarMenuButton>
+                          <DatabaseZap />
+                          <span>Admin</span>
+                           <ChevronDown className="ml-auto size-4" />
                         </SidebarMenuButton>
+                         <SidebarMenuSub>
+                            <SidebarMenuSubItem>
+                                <SidebarMenuSubButton href="/dashboard/admin/users">
+                                    <Users />
+                                    <span>Users</span>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                            <SidebarMenuSubItem>
+                                <SidebarMenuSubButton href="/dashboard/admin/seed-data">
+                                    <DatabaseZap />
+                                    <span>Seed Data</span>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                        </SidebarMenuSub>
                     </SidebarMenuItem>
                  )}
             </SidebarMenu>
