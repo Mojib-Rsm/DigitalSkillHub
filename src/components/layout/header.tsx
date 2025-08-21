@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Cookies from 'js-cookie';
+import { logoutAction } from "@/app/logout/actions";
 
 
 const navLinks = [
@@ -42,7 +43,6 @@ const moreLinks = [
 
 export default function Header() {
   const pathname = usePathname();
-  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   
@@ -51,12 +51,6 @@ export default function Header() {
     setIsLoggedIn(!!sessionCookie);
     setLoading(false);
   }, [pathname]); // Re-check on path change
-
-  const handleLogout = () => {
-    Cookies.remove('auth-session', { path: '/' });
-    setIsLoggedIn(false);
-    router.push('/login');
-  };
 
   const NavLink = ({ href, label }: { href: string; label: string }) => (
     <Link
@@ -114,10 +108,14 @@ export default function Header() {
                     <Link href="#"><UserCircle className="mr-2"/> Profile Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator/>
-                <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2"/>
-                    Logout
-                </DropdownMenuItem>
+                <form action={logoutAction}>
+                    <DropdownMenuItem asChild>
+                        <button type="submit" className="w-full">
+                            <LogOut className="mr-2"/>
+                            Logout
+                        </button>
+                    </DropdownMenuItem>
+                </form>
             </DropdownMenuContent>
         </DropdownMenu>
     </div>
