@@ -1,53 +1,59 @@
-
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helper function to check if a user is authenticated
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-    
-    // PUBLIC: Allow anyone to read these collections
-    match /courses/{courseId} {
-      allow read: if true;
-      allow write: if false; 
-    }
-    match /blog/{postId} {
-      allow read: if true;
-      allow write: if false;
-    }
-    match /jobs/{jobId} {
-      allow read: if true;
-      allow write: if false;
-    }
-     match /pricing/{planId} {
-      allow read: if true;
-      allow write: if false;
-    }
-     match /testimonials/{testimonialId} {
-      allow read: if true;
-      allow write: if false;
+
+    // Helper function to check if a user has a specific role.
+    function isRole(role) {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
     }
 
-    // HISTORY: Users can only access their own history
-    match /history/{historyId} {
-      allow read, delete: if isAuthenticated() && request.auth.uid == resource.data.uid;
-      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.uid;
-    }
-    
-    // USERS: Users can read their own data, but not others. No one can write directly.
+    // USERS
+    // 1. A user can read and update their own document.
+    // 2. An admin can read any user's document.
+    // 3. No one can create or delete users from the client-side for security.
     match /users/{userId} {
-        allow read: if isAuthenticated() && request.auth.uid == userId;
-        allow create, update, delete: if false; // Cannot be changed from client
+      allow read: if request.auth.uid == userId || isRole('admin');
+      allow update: if request.auth.uid == userId;
+      allow create, delete: if false;
     }
     
-    // Default deny all other reads/writes
-    match /{document=**} {
-      allow read, write: if false;
+    // HISTORY
+    // Users can create and read their own history items.
+    match /history/{docId} {
+      allow read, create: if request.auth.uid == request.resource.data.uid;
+      allow update, delete: if false;
+    }
+    
+    // SEED STATUS (for client-side seeding)
+    // Only authenticated users can write to the seed status document.
+    // This is a simple lock to prevent abuse, more robust rules can be added.
+    match /seed/{docId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // PUBLIC READ-ONLY DATA
+    // Anyone can read data from these collections.
+    // No one can write, update, or delete data from the client-side.
+    match /courses/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /blog/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /jobs/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /pricing/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /testimonials/{docId} {
+      allow read: if true;
+      allow write: if false;
     }
   }
 }
-
     

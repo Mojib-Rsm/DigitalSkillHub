@@ -161,20 +161,20 @@ export const jobPostings = [
 
 export const users = [
     {
-        uid: "admin001",
         name: "Admin User",
         email: "admin@totthoai.com",
         phone: "01800000000",
         password: "adminpassword",
         role: "admin",
+        createdAt: new Date().toISOString(),
     },
     {
-        uid: "user001",
-        name: "Demo User",
+        name: "Regular User",
         email: "user@totthoai.com",
         phone: "01700000000",
         password: "userpassword",
         role: "user",
+        createdAt: new Date().toISOString(),
     }
 ];
 
