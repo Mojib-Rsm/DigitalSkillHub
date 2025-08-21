@@ -1,4 +1,6 @@
 
+'use server';
+
 import { getFirestore, collection, getDocs, orderBy, query, doc, getDoc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { revalidatePath } from 'next/cache';
