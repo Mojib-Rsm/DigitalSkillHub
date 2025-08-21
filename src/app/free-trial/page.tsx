@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -42,20 +42,22 @@ export default function FreeTrialPage() {
     const initialState = { message: "", success: false, issues: [], fields: {} };
     const [state, formAction] = useActionState(signupAction, initialState);
 
-    if (state.success) {
-        toast({
-            title: "Account Created!",
-            description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
-        });
-        const redirectUrl = searchParams.get('redirect') || '/dashboard';
-        router.push(redirectUrl);
-    } else if (state.message && state.message !== 'Validation Error') {
-        toast({
-            variant: "destructive",
-            title: "Registration Failed",
-            description: state.message,
-        });
-    }
+    useEffect(() => {
+        if (state.success) {
+            toast({
+                title: "Account Created!",
+                description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
+            });
+            const redirectUrl = searchParams.get('redirect') || '/dashboard';
+            router.push(redirectUrl);
+        } else if (state.message && state.message !== 'Validation Error') {
+            toast({
+                variant: "destructive",
+                title: "Registration Failed",
+                description: state.message,
+            });
+        }
+    }, [state, toast, router, searchParams]);
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4" suppressHydrationWarning={true}>
