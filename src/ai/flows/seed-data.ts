@@ -115,6 +115,7 @@ export const seedDataFlow = ai.defineFlow(
       });
 
       // Seed Tools
+      const tools = []; // You need to define this array in demo-data.ts
       const toolsCollection = db.collection('tools');
       tools.forEach(tool => {
         const docRef = toolsCollection.doc(); // Auto-generate ID
