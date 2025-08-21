@@ -8,7 +8,7 @@ import {
     doc
 } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
-import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, tools } from '@/lib/demo-data';
+import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, tools, users } from '@/lib/demo-data';
 
 
 export async function seedDatabase() {
@@ -21,6 +21,7 @@ export async function seedDatabase() {
         { name: 'pricing', data: pricingPlans },
         { name: 'testimonials', data: testimonials },
         { name: 'tools', data: tools },
+        { name: 'users', data: users },
     ];
 
     try {
