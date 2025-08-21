@@ -48,10 +48,11 @@ export async function addTool(toolData: Omit<Tool, 'id'>) {
     try {
         const db = getFirestore(app);
         const toolsCol = collection(db, 'tools');
-        await addDoc(toolsCol, toolData);
+        const docRef = await addDoc(toolsCol, toolData);
         toolsCache = null; // Invalidate cache
         revalidatePath('/ai-tools');
-        return { success: true };
+        revalidatePath('/dashboard/admin/tools');
+        return { success: true, id: docRef.id };
     } catch (error) {
         console.error("Error adding tool:", error);
         return { success: false, message: (error as Error).message };
@@ -65,6 +66,7 @@ export async function updateTool(toolId: string, toolData: Partial<Omit<Tool, 'i
         await updateDoc(toolRef, toolData);
         toolsCache = null; // Invalidate cache
         revalidatePath('/ai-tools');
+        revalidatePath('/dashboard/admin/tools');
         return { success: true };
     } catch (error) {
         console.error("Error updating tool:", error);
@@ -79,6 +81,7 @@ export async function deleteTool(toolId: string) {
         await deleteDoc(toolRef);
         toolsCache = null; // Invalidate cache
         revalidatePath('/ai-tools');
+        revalidatePath('/dashboard/admin/tools');
         return { success: true };
     } catch (error) {
         console.error("Error deleting tool:", error);

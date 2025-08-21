@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Bot, Menu, ChevronDown } from "lucide-react";
+import { Bot, Menu, ChevronDown, User } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -16,10 +16,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { getCurrentUser, UserProfile } from "@/services/user-service";
 
 const navLinks = [
   { href: "/#features", label: "Features" },
@@ -37,6 +41,19 @@ const moreLinks = [
 
 export default function Header() {
   const pathname = usePathname();
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchUser() {
+        // This is a client component, so we can't use server-side `headers()`
+        // A proper solution would use a client-side auth state provider or a session API route
+        // For this demo, we'll assume the user is not logged in on the public site for simplicity
+        // as we can't access the cookie directly here without causing server/client mismatch
+        setLoading(false);
+    }
+    fetchUser();
+  }, []);
 
   const NavLink = ({ href, label }: { href: string; label: string }) => (
     <Link
@@ -88,6 +105,14 @@ export default function Header() {
                 </DropdownMenuContent>
             </DropdownMenu>
         </nav>
+        <div className="hidden lg:flex items-center gap-2">
+            <Button variant="ghost" asChild>
+                <Link href="/login">Login</Link>
+            </Button>
+            <Button asChild>
+                <Link href="/free-trial">Start Free Trial</Link>
+            </Button>
+        </div>
         <div className="lg:hidden flex items-center gap-2">
             <Sheet>
               <SheetTrigger asChild>
@@ -110,6 +135,10 @@ export default function Header() {
                       <MobileNavLink key={link.href} href={link.href} label={link.label} />
                   ))}
                 </div>
+                 <div className="mt-8 pt-4 border-t">
+                    <MobileNavLink href="/login" label="Login"/>
+                    <MobileNavLink href="/free-trial" label="Start Free Trial"/>
+                 </div>
               </SheetContent>
             </Sheet>
         </div>

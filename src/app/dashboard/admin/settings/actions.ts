@@ -3,7 +3,7 @@
 
 import { z } from 'zod';
 import { getCurrentUser } from '@/services/user-service';
-import { getFirestore, doc, updateDoc } from 'firebase/firestore/lite';
+import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { revalidatePath } from 'next/cache';
 

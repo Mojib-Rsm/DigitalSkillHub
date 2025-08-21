@@ -26,11 +26,6 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
 
   try {
     const db = getFirestore(app);
-    // The document ID in the 'users' collection is the user's email, not UID.
-    // This needs to be consistent with how users are created/queried.
-    // Let's assume for now the login/signup logic correctly uses a unique ID (like UID or email)
-    // The seed data uses email as ID, so let's stick with that for now.
-    // But a real app should use the Firebase Auth UID.
     const userRef = doc(db, 'users', uid);
     const userSnapshot = await getDoc(userRef);
 

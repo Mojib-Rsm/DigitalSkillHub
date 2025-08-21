@@ -14,6 +14,7 @@ import { Sparkles, User, Palette, Shield } from 'lucide-react';
 import { getCurrentUser, UserProfile } from '@/services/user-service';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import * as React from 'react';
 
 function SubmitButton({ children }: { children: React.ReactNode }) {
   const { pending } = useFormStatus();

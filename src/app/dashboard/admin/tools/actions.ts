@@ -4,6 +4,7 @@
 import { z } from 'zod';
 import { addTool, updateTool, type Tool } from '@/services/tool-service';
 import { getCurrentUser } from '@/services/user-service';
+import { revalidatePath } from 'next/cache';
 
 const toolSchema = z.object({
   title: z.string().min(3),
@@ -40,17 +41,15 @@ export async function saveToolAction(
       // Update existing tool
       result = await updateTool(toolId, validatedData.data);
       if (result.success) {
+        revalidatePath('/dashboard/admin/tools');
         return { success: true, message: 'Tool updated.', tool: { id: toolId, ...validatedData.data } };
       }
     } else {
       // Create new tool
       result = await addTool(validatedData.data);
-       if (result.success) {
-         // Since addDoc doesn't return the new ID, we can't return the full tool object here.
-         // The UI will have to refetch or handle this optimistically.
-         // For now, we'll return a partial object and the UI can update. This is a simplification.
-         // A more robust solution might involve another fetch after creation.
-         const newTool = { id: `new_${Date.now()}`, ...validatedData.data}; // temporary ID for UI
+       if (result.success && result.id) {
+         revalidatePath('/dashboard/admin/tools');
+         const newTool = { id: result.id, ...validatedData.data}; 
          return { success: true, message: 'Tool created.', tool: newTool };
       }
     }
@@ -59,5 +58,3 @@ export async function saveToolAction(
     return { success: false, message: (error as Error).message };
   }
 }
-
-    
