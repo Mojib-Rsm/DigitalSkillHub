@@ -26,7 +26,7 @@ export default async function DashboardLayout({
 
   return (
     <DashboardSidebar user={user}>
-        <div className="flex-1 overflow-y-auto p-6 md:p-8 bg-muted/50">
+        <div className="flex-1 overflow-y-auto bg-muted/50">
             {children}
         </div>
     </DashboardSidebar>
