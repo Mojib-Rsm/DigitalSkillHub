@@ -468,7 +468,7 @@ export default function Home() {
               )}
               <div className="text-center mt-12 animate-fade-in-up">
                       <Button size="lg" asChild>
-                      <Link href="/#pricing">
+                      <Link href="/dashboard/pricing">
                           Start Your Success Story
                       </Link>
                   </Button>
@@ -530,7 +530,7 @@ export default function Home() {
                           </CardContent>
                           <CardFooter>
                               <Button size="lg" className="w-full" asChild>
-                                  <Link href="/#pricing">GET STARTED</Link>
+                                  <Link href="/dashboard/pricing">GET STARTED</Link>
                               </Button>
                           </CardFooter>
                       </Card>

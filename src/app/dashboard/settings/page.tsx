@@ -43,8 +43,8 @@ function ProfileForm({ user }: { user: UserProfile }) {
   }, [state, toast]);
 
   return (
-    <form action={formAction} className="space-y-4">
-       <div className="space-y-4">
+    <form action={formAction}>
+       <CardContent className="space-y-4">
             <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
                 <Input id="name" name="name" defaultValue={user.name} />
@@ -70,7 +70,7 @@ function ProfileForm({ user }: { user: UserProfile }) {
                     </div>
                 </div>
             </div>
-      </div>
+      </CardContent>
       <CardFooter>
         <SubmitButton>Save Changes</SubmitButton>
       </CardFooter>
@@ -98,24 +98,35 @@ function PasswordForm() {
     }, [state, toast]);
 
     return (
-        <form ref={formRef} action={formAction} className="space-y-4">
-            <div className="space-y-2">
-                <Label htmlFor="currentPassword">Current Password</Label>
-                <Input id="currentPassword" name="currentPassword" type="password" required />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
-                <Input id="newPassword" name="newPassword" type="password" required />
-            </div>
-            <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                <Input id="confirmPassword" name="confirmPassword" type="password" required />
-            </div>
-             {!state.success && state.message && (
-                <Alert variant="destructive">
-                    <AlertDescription>{state.message}</AlertDescription>
-                </Alert>
-             )}
+        <form ref={formRef} action={formAction}>
+            <CardContent className="space-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor="currentPassword">Current Password</Label>
+                    <Input id="currentPassword" name="currentPassword" type="password" required />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="newPassword">New Password</Label>
+                    <Input id="newPassword" name="newPassword" type="password" required />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                    <Input id="confirmPassword" name="confirmPassword" type="password" required />
+                </div>
+                 {state.issues && (
+                    <Alert variant="destructive">
+                        <AlertDescription>
+                            <ul className="list-disc pl-4">
+                                {state.issues.map((issue: string) => <li key={issue}>{issue}</li>)}
+                            </ul>
+                        </AlertDescription>
+                    </Alert>
+                 )}
+                  {state.message && !state.success && !state.issues &&(
+                     <Alert variant="destructive">
+                        <AlertDescription>{state.message}</AlertDescription>
+                    </Alert>
+                  )}
+            </CardContent>
             <CardFooter>
                 <SubmitButton>Change Password</SubmitButton>
             </CardFooter>
@@ -153,7 +164,7 @@ export default function SettingsPage() {
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-3 max-w-lg">
           <TabsTrigger value="profile"><User className="mr-2"/> Profile</TabsTrigger>
           <TabsTrigger value="security"><Shield className="mr-2"/> Security</TabsTrigger>
           <TabsTrigger value="branding" disabled><Palette className="mr-2"/> Branding</TabsTrigger>
@@ -164,9 +175,7 @@ export default function SettingsPage() {
               <CardTitle>My Profile</CardTitle>
               <CardDescription>Manage your personal information, plan, and credits.</CardDescription>
             </CardHeader>
-            <CardContent>
-                <ProfileForm user={user}/>
-            </CardContent>
+            <ProfileForm user={user}/>
           </Card>
         </TabsContent>
          <TabsContent value="security">
@@ -175,9 +184,7 @@ export default function SettingsPage() {
               <CardTitle>Change Password</CardTitle>
               <CardDescription>Update your password here. Use a strong, unique password.</CardDescription>
             </CardHeader>
-            <CardContent>
-                <PasswordForm/>
-            </CardContent>
+            <PasswordForm/>
           </Card>
         </TabsContent>
         <TabsContent value="branding">

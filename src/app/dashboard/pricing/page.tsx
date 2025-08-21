@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, CheckCircle, Zap } from "lucide-react";
+import { Check, Zap } from "lucide-react";
 import Link from "next/link";
 import { getPricingPlans, PricingPlan } from '@/services/pricing-service';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -30,10 +30,10 @@ export default function PricingPage() {
           <div className="container mx-auto px-4">
               <div className="text-center max-w-3xl mx-auto">
                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
-                      Choose Your AI Content Creation Plan
+                      Choose Your Plan
                   </h2>
                   <p className="text-lg text-muted-foreground mt-4">
-                      Start with our free trial, then scale with plans designed for creators, marketers, and agencies
+                      Scale with plans designed for creators, marketers, and agencies.
                   </p>
               </div>
 
@@ -76,7 +76,7 @@ export default function PricingPage() {
                         </CardContent>
                         <CardFooter>
                             <Button size="lg" className="w-full" asChild>
-                                <Link href="/#pricing">
+                                <Link href="#">
                                 <Zap className="mr-2"/>
                                 Choose Plan</Link>
                             </Button>

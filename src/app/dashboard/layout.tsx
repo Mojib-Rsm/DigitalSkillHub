@@ -30,9 +30,11 @@ export default async function DashboardLayout({
                 <h2 className="text-lg font-semibold">Dashboard</h2>
             </div>
             <div className="flex items-center gap-4">
-                <Button variant="outline" size="sm">
-                    <Coins className="mr-2 size-4"/>
-                    Credits: {user?.credits ?? 0}
+                <Button variant="outline" size="sm" asChild>
+                    <Link href="/dashboard/pricing">
+                        <Coins className="mr-2 size-4"/>
+                        Credits: {user?.credits ?? 0}
+                    </Link>
                 </Button>
                 <ThemeToggleButton />
                 <Avatar className="h-9 w-9">

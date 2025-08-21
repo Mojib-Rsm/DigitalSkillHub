@@ -120,7 +120,7 @@ export default async function Header() {
     <>
     <div className="bg-primary text-primary-foreground text-center py-1.5 text-sm font-semibold">
         🚀 LIMITED TIME! • Get 25% OFF with code <strong className="underline">LAUNCH25</strong>
-        <Link href="#pricing" className="ml-4 underline">View Plans</Link>
+        <Link href="/dashboard/pricing" className="ml-4 underline">View Plans</Link>
     </div>
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-20 items-center justify-between px-4">
