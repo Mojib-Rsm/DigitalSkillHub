@@ -1,7 +1,7 @@
 
 'use server';
 
-import { getFirestore, collection, getDocs, orderBy, query, doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, orderBy, query, doc, updateDoc, addDoc, deleteDoc, limit as firestoreLimit } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { revalidatePath } from 'next/cache';
 
@@ -17,17 +17,24 @@ export type Tool = {
 
 let toolsCache: Tool[] | null = null;
 
-export async function getTools(): Promise<Tool[]> {
+export async function getTools(limit?: number): Promise<Tool[]> {
     // This function is called on public pages, so we can cache the result
     // to improve performance and reduce Firestore reads.
-    if (toolsCache) {
+    // If a limit is applied, we don't cache as it's a specific subset.
+    if (toolsCache && !limit) {
         return toolsCache;
     }
 
     try {
         const db = getFirestore(app);
         const toolsCol = collection(db, 'tools');
-        const q = query(toolsCol, orderBy('category'));
+        
+        const constraints = [orderBy('category')];
+        if(limit) {
+            constraints.push(firestoreLimit(limit));
+        }
+
+        const q = query(toolsCol, ...constraints);
         const toolSnapshot = await getDocs(q);
         
         if (toolSnapshot.empty) {
@@ -36,7 +43,11 @@ export async function getTools(): Promise<Tool[]> {
         }
 
         const toolList = toolSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Tool));
-        toolsCache = toolList; // Cache the fetched tools
+        
+        if (!limit) {
+             toolsCache = toolList; // Cache the fetched tools only if no limit
+        }
+
         return toolList;
     } catch (error) {
         console.error("Error fetching tools from Firestore:", error);

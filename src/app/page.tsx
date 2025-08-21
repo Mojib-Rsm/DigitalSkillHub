@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard, Check } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard, Search, Edit, Clapperboard } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import Head from 'next/head';
 import { getPricingPlans, PricingPlan } from '@/services/pricing-service';
 import { getTestimonials, Testimonial } from '@/services/testimonial-service';
+import { getTools, Tool } from '@/services/tool-service';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -129,21 +130,31 @@ const organizationSchema = {
   }
 };
 
+const trendingCategories = [
+    { title: "কনটেন্ট ও লেখা", icon: PenSquare, href: "/ai-tools" },
+    { title: "ছবি তৈরি", icon: ImageIcon, href: "/ai-tools" },
+    { title: "প্রোডাক্টিভিটি ও ব্যবসা", icon: Briefcase, href: "/ai-tools" },
+    { title: "এসইও ও মার্কেটিং", icon: TrendingUp, href: "/ai-tools" },
+];
+
 
 export default function Home() {
   const [pricingPlans, setPricingPlans] = useState<PricingPlan[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [trendingTools, setTrendingTools] = useState<Tool[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
         setLoading(true);
-        const [plans, fetchedTestimonials] = await Promise.all([
+        const [plans, fetchedTestimonials, tools] = await Promise.all([
             getPricingPlans(),
-            getTestimonials()
+            getTestimonials(),
+            getTools(4) // Fetch 4 trending tools
         ]);
         setPricingPlans(plans);
         setTestimonials(fetchedTestimonials);
+        setTrendingTools(tools);
         setLoading(false);
     }
     
@@ -174,9 +185,9 @@ export default function Home() {
               </p>
               
                <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-muted-foreground font-semibold animate-fade-in-up [animation-delay:400ms]">
-                  <span><Check className="w-4 h-4 inline-block mr-1 text-primary"/>SEO-optimized content</span>
-                  <span><Check className="w-4 h-4 inline-block mr-1 text-primary"/>AI-generated images included</span>
-                  <span><Check className="w-4 h-4 inline-block mr-1 text-primary"/>Bulk generation ready</span>
+                  <span><CheckCircle className="w-4 h-4 inline-block mr-1 text-primary"/>SEO-optimized content</span>
+                  <span><CheckCircle className="w-4 h-4 inline-block mr-1 text-primary"/>AI-generated images included</span>
+                  <span><CheckCircle className="w-4 h-4 inline-block mr-1 text-primary"/>Bulk generation ready</span>
               </div>
 
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up [animation-delay:600ms]">
@@ -200,53 +211,87 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Section */}
-        <section className="pt-8 pb-12 md:pb-20">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-              <Card className="p-6 bg-muted/50">
-                <CardHeader>
-                  <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
-                      <Layers className="w-8 h-8 text-primary" />
-                  </div>
-                  <p className="text-4xl font-bold">600,000+</p>
-                </CardHeader>
-                <CardContent>
-                  <h3 className="text-xl font-semibold">Content Generated</h3>
-                  <p className="text-muted-foreground mt-1">Articles created</p>
-                </CardContent>
-              </Card>
-              <Card className="p-6 bg-muted/50">
-                <CardHeader>
-                  <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
-                      <Users className="w-8 h-8 text-primary" />
-                  </div>
-                  <p className="text-4xl font-bold">3,000+</p>
-                </CardHeader>
-                <CardContent>
-                  <h3 className="text-xl font-semibold">Active Users</h3>
-                  <p className="text-muted-foreground mt-1">Content creators</p>
-                </CardContent>
-              </Card>
-              <Card className="p-6 bg-muted/50">
-                <CardHeader>
-                  <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
-                      <Clock className="w-8 h-8 text-primary" />
-                  </div>
-                  <p className="text-4xl font-bold">90%</p>
-                </CardHeader>
-                <CardContent>
-                  <h3 className="text-xl font-semibold">Time Saved</h3>
-                  <p className="text-muted-foreground mt-1">Faster than manual writing</p>
-                </CardContent>
-              </Card>
+        {/* Trending Categories Section */}
+        <section className="py-12 md:py-20">
+            <div className="container mx-auto px-4">
+                 <div className="text-center max-w-3xl mx-auto">
+                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">জনপ্রিয় ক্যাটাগরি</h2>
+                    <p className="text-lg text-muted-foreground mt-4">
+                        আমাদের সবচেয়ে জনপ্রিয় টুল বিভাগগুলো অন্বেষণ করুন এবং আপনার প্রয়োজনীয় সমাধানটি খুঁজে নিন।
+                    </p>
+                </div>
+                <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {trendingCategories.map((category) => {
+                        const Icon = category.icon;
+                        return (
+                            <Link href={category.href} key={category.title}>
+                                <Card className="text-center p-6 shadow-md hover:shadow-xl hover:border-primary transition-all duration-300 transform hover:-translate-y-1 h-full">
+                                    <CardHeader className="p-0 items-center">
+                                        <div className="bg-primary/10 p-4 rounded-full mb-4">
+                                            <Icon className="w-8 h-8 text-primary"/>
+                                        </div>
+                                        <CardTitle>{category.title}</CardTitle>
+                                    </CardHeader>
+                                </Card>
+                            </Link>
+                        );
+                    })}
+                </div>
             </div>
-          </div>
         </section>
 
 
+        {/* Trending Tools Section */}
+        <section id="trending-tools" className="py-12 md:py-20 bg-muted/50">
+          <div className="container mx-auto px-4">
+              <div className="text-center max-w-3xl mx-auto">
+                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">ট্রেন্ডিং টুলস</h2>
+                  <p className="text-lg text-muted-foreground mt-4">
+                     আমাদের ব্যবহারকারীদের মধ্যে সবচেয়ে জনপ্রিয় এবং বহুল ব্যবহৃত টুলগুলো দেখুন।
+                  </p>
+              </div>
+              <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                   {loading ? (
+                       [...Array(4)].map((_, i) => <Skeleton key={i} className="h-64 w-full" />)
+                   ) : (
+                       trendingTools.map(tool => {
+                            const Icon = iconComponents[tool.icon as keyof typeof iconComponents] || Bot;
+                            return (
+                                <Link href={tool.href} key={tool.id} className="group">
+                                    <Card className="h-full flex flex-col justify-between shadow-md hover:shadow-xl hover:border-primary transition-all duration-300 transform hover:-translate-y-1">
+                                        <CardHeader className="flex flex-row items-start gap-4">
+                                            <div className="bg-primary/10 p-3 rounded-md">
+                                                <Icon className="w-8 h-8 text-primary" />
+                                            </div>
+                                            <div>
+                                                <CardTitle className="text-xl">{tool.title}</CardTitle>
+                                            </div>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <p className="text-muted-foreground text-sm">{tool.description}</p>
+                                        </CardContent>
+                                        <CardFooter className="p-4 pt-0 flex justify-end">
+                                            <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                                        </CardFooter>
+                                    </Card>
+                                </Link>
+                            )
+                       })
+                   )}
+              </div>
+               <div className="text-center mt-12">
+                   <Button size="lg" asChild>
+                      <Link href="/ai-tools">
+                          <Search className="mr-2 h-5 w-5"/>
+                          সকল টুল দেখুন
+                      </Link>
+                  </Button>
+              </div>
+          </div>
+        </section>
+
         {/* What's New Section */}
-        <section id="whats-new" className="py-12 md:py-20 bg-muted/50">
+        <section id="whats-new" className="py-12 md:py-20">
           <div className="container mx-auto px-4">
               <div className="text-center max-w-3xl mx-auto">
                   <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">What's New in TotthoAi 2.0</h2>
@@ -293,7 +338,7 @@ export default function Home() {
         </section>
 
          {/* Detailed Features */}
-         <section id="features" className="py-12 md:pt-20">
+         <section id="features" className="py-12 md:pt-20 bg-muted/50">
               <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                    <div className="md:col-span-2 lg:col-span-1 lg:pr-8 animate-fade-in-up">
                       <Badge variant="destructive">🔥 HOT NEW FEATURE</Badge>
@@ -357,29 +402,6 @@ export default function Home() {
                   </Button>
               </div>
          </section>
-
-        {/* AI-Generated Visuals Section */}
-        <section className="py-12 md:py-20 bg-muted/50">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Enhance Your Content with AI-Generated Images</h2>
-            <p className="text-lg text-muted-foreground mt-4 max-w-3xl mx-auto animate-fade-in-up [animation-delay:200ms]">
-              Our AI can create stunning visuals to complement your blog posts, making your content more engaging and professional.
-            </p>
-            <div className="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-              {[...Array(6)].map((_, i) => (
-                <Card key={i} className="overflow-hidden group relative animate-fade-in-up" style={{animationDelay: `${400 + i * 100}ms`}}>
-                  <Image src="https://placehold.co/300x400.png" alt="AI Generated Islamic Art" width={300} height={400} className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-300" data-ai-hint="islamic art" />
-                  <div className="absolute inset-0 bg-black/50 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <p className="text-white text-sm font-semibold">AI-Generated</p>
-                  </div>
-                </Card>
-              ))}
-            </div>
-            <p className="text-muted-foreground mt-8 max-w-3xl mx-auto animate-fade-in-up">
-              These images are entirely generated by AI and can be seamlessly integrated into your blog posts, social media content, and marketing materials to enhance visual appeal and engagement.
-            </p>
-          </div>
-        </section>
         
         {/* Success Stories Section */}
           <section className="py-12 md:py-20">
@@ -402,7 +424,7 @@ export default function Home() {
                ) : (
                   <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                       {testimonials.map((testimonial, index) => (
-                      <Card key={index} className="shadow-lg animate-fade-in-up" style={{animationDelay: `${600 + index*100}ms`}}>
+                      <Card key={testimonial.id} className="shadow-lg animate-fade-in-up" style={{animationDelay: `${600 + index*100}ms`}}>
                           <CardHeader>
                               <CardTitle className="text-xl">{testimonial.feature}</CardTitle>
                           </CardHeader>
@@ -434,140 +456,8 @@ export default function Home() {
               </div>
           </section>
 
-        {/* Dashboard Section from original dashboard page */}
-        <section className="py-12 md:py-20 bg-muted/50">
-            <div className="container mx-auto px-4">
-                <div className="text-center max-w-3xl mx-auto">
-                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Powerful Dashboard</h2>
-                    <p className="text-lg text-muted-foreground mt-4">
-                        A glimpse into the control center. Here's a look at what our users see.
-                    </p>
-                </div>
-                 <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-                    <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            Total Revenue
-                        </CardTitle>
-                        <DollarSign className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                        <div className="text-2xl font-bold">৳45,231.89</div>
-                        <p className="text-xs text-muted-foreground">
-                            +20.1% from last month
-                        </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">
-                            Subscriptions
-                        </CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                        <div className="text-2xl font-bold">+2350</div>
-                        <p className="text-xs text-muted-foreground">
-                            +180.1% from last month
-                        </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                        <UserCircle className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                        <div className="text-2xl font-bold">12,234</div>
-                        <p className="text-xs text-muted-foreground">
-                            +19% from last month
-                        </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Active Now</CardTitle>
-                        <Activity className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                        <div className="text-2xl font-bold">+573</div>
-                        <p className="text-xs text-muted-foreground">
-                            +201 since last hour
-                        </p>
-                        </CardContent>
-                    </Card>
-                    </div>
-                    <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-                    <Card className="xl:col-span-2">
-                        <CardHeader>
-                        <CardTitle>User Sign-ups</CardTitle>
-                        <CardDescription>Last 6 Months</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                        <ResponsiveContainer width="100%" height={350}>
-                            <BarChart data={userSignups}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis
-                                dataKey="month"
-                                stroke="#888888"
-                                fontSize={12}
-                                tickLine={false}
-                                axisLine={false}
-                            />
-                            <YAxis
-                                stroke="#888888"
-                                fontSize={12}
-                                tickLine={false}
-                                axisLine={false}
-                                tickFormatter={(value) => `${value}`}
-                            />
-                            <Tooltip
-                                cursor={{fill: 'hsl(var(--muted))'}}
-                                contentStyle={{backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))'}}
-                            />
-                            <Legend />
-                            <Bar dataKey="signups" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader>
-                        <CardTitle>Recent Activity</CardTitle>
-                        <CardDescription>
-                            New users and subscriptions.
-                        </CardDescription>
-                        </CardHeader>
-                        <CardContent className="grid gap-8">
-                            {recentActivities.map((activity, index) => (
-                                <div key={`activity-${index}-${activity.email}`} className="flex items-center gap-4">
-                                    <Avatar className="hidden h-9 w-9 sm:flex">
-                                    <AvatarFallback>{activity.name.charAt(0)}</AvatarFallback>
-                                    </Avatar>
-                                    <div className="grid gap-1">
-                                    <p className="text-sm font-medium leading-none">{activity.name}</p>
-                                    <p className="text-sm text-muted-foreground">
-                                        {activity.email}
-                                    </p>
-                                    </div>
-                                    <div className="ml-auto font-medium">
-                                        <Badge variant={activity.type === 'Subscription' ? 'default' : 'secondary'}>
-                                            {activity.amount}
-                                        </Badge>
-                                    </div>
-                                </div>
-                            ))}
-                        </CardContent>
-                    </Card>
-                    </div>
-                </main>
-            </div>
-        </section>
-
-
          {/* Pricing Section */}
-          <section id="pricing" className="py-12 md:py-20 bg-background">
+          <section id="pricing" className="py-12 md:py-20 bg-muted/50">
               <div className="container mx-auto px-4">
                   <div className="text-center max-w-3xl mx-auto">
                       <Badge variant="secondary" className="text-sm py-1 px-3 border-2 border-primary/50 text-primary mb-4">
@@ -611,7 +501,7 @@ export default function Home() {
                                           <h4 className="font-semibold text-base pt-2">{category}</h4>
                                           <ul className="space-y-2">
                                               {(features as string[]).map(feature => (
-                                                  <li key={feature} className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> {feature}</li>
+                                                  <li key={feature} className="flex items-center gap-2 text-muted-foreground"><CheckCircle className="w-4 h-4 text-green-500" /> {feature}</li>
                                               ))}
                                           </ul>
                                       </div>
@@ -669,7 +559,9 @@ export default function Home() {
     </>
   );
 
-    
-
+}
+const iconComponents = {
+    PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, Layers, RefreshCcw, SparklesIcon, TowerControl, Clapperboard, Youtube, LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown
+};
 
 
