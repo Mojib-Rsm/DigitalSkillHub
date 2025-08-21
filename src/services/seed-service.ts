@@ -29,22 +29,17 @@ export async function seedDatabase() {
         const seedCollection = async (collectionName: string, data: any[]) => {
             const collectionRef = collection(db, collectionName);
             
-            // Check if collection is already seeded to prevent duplicates
-            const snapshot = await getDocs(collectionRef);
-            if (!snapshot.empty) {
-                console.log(`Collection "${collectionName}" already has data. Skipping.`);
-                return 0; // Return 0 operations
-            }
-            
             // Firestore batches have a limit of 500 operations.
             // We create a new batch for each collection to stay under the limit.
             const batch = writeBatch(db);
             let operationsCount = 0;
 
             data.forEach((item) => {
-                const docRef = item.id ? doc(collectionRef, item.id) : doc(collectionRef);
+                // Use a specific ID if provided (like for users), otherwise let Firestore auto-generate.
+                const docRef = item.email ? doc(collectionRef, item.email) : (item.id ? doc(collectionRef, item.id) : doc(collectionRef));
                 const dataToSet = { ...item };
                 if (item.id) {
+                    // Don't store the id field inside the document if we're using it as the document ID
                     delete dataToSet.id;
                 }
                 batch.set(docRef, dataToSet);
@@ -61,13 +56,6 @@ export async function seedDatabase() {
         for (const { name, data } of collectionsToSeed) {
             const count = await seedCollection(name, data);
             totalOperationsCount += count;
-        }
-
-        if (totalOperationsCount === 0) {
-            return {
-                success: true,
-                message: "All collections were already seeded with data. No new data was added."
-            };
         }
         
         return { 
