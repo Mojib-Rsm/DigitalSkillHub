@@ -31,7 +31,9 @@ import {
   ChevronDown,
   Moon,
   Coins,
-  History
+  History,
+  Shield,
+  DatabaseZap
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -113,6 +115,21 @@ export default function DashboardLayout({
                     <Bot />
                     <span>All Tools</span>
                   </SidebarMenuButton>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                    <SidebarMenuButton>
+                        <Shield />
+                        <span>Admin</span>
+                        <ChevronDown className="ml-auto size-4" />
+                    </SidebarMenuButton>
+                    <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                            <SidebarMenuSubButton href="/dashboard/admin/seed-data">
+                                <DatabaseZap />
+                                <span>Seed Data</span>
+                            </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                    </SidebarMenuSub>
                 </SidebarMenuItem>
             </SidebarMenu>
         </SidebarContent>

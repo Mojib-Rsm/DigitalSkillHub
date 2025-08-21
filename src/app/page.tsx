@@ -14,6 +14,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { app } from "@/lib/firebase";
 import Head from 'next/head';
+import { getPricingPlans, PricingPlan } from '@/services/pricing-service';
+import { getTestimonials, Testimonial } from '@/services/testimonial-service';
+import { Skeleton } from '@/components/ui/skeleton';
 
 
 const faqItems = [
@@ -96,12 +99,29 @@ const organizationSchema = {
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
+  const [pricingPlans, setPricingPlans] = useState<PricingPlan[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
   const auth = getAuth(app);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
+
+    async function fetchData() {
+        setLoading(true);
+        const [plans, fetchedTestimonials] = await Promise.all([
+            getPricingPlans(),
+            getTestimonials()
+        ]);
+        setPricingPlans(plans);
+        setTestimonials(fetchedTestimonials);
+        setLoading(false);
+    }
+    
+    fetchData();
+
     return () => unsubscribe();
   }, [auth]);
 
@@ -272,7 +292,7 @@ export default function Home() {
                         <p className="text-sm text-muted-foreground">Generate stunning, contextual images that boost engagement by 300%.</p>
                     </div>
                      <div className="space-y-2 animate-fade-in-up [animation-delay:300ms]">
-                        <Link href="#" className="w-8 h-8 text-primary"/>
+                        <LinkIcon className="w-8 h-8 text-primary"/>
                         <h4 className="font-semibold">Smart Internal Linking</h4>
                         <p className="text-sm text-muted-foreground">Automatically create SEO-friendly internal links to improve site authority.</p>
                     </div>
@@ -347,296 +367,155 @@ export default function Home() {
       </section>
       
       {/* Success Stories Section */}
-      <section className="py-12 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Success Stories with TotthoAi 2.0</h2>
-            <p className="text-lg text-muted-foreground mt-4 animate-fade-in-up [animation-delay:200ms]">
-              Real Results from Real Users. See how content creators, marketers, and businesses are achieving extraordinary results with our new 2.0 features.
-            </p>
-             <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center animate-fade-in-up [animation-delay:400ms]">
-                <p className="font-semibold text-lg">Avg. 90% time savings</p>
-                <p className="font-semibold text-lg">300% faster creation</p>
-                <p className="font-semibold text-lg">2x better SEO results</p>
+        <section className="py-12 md:py-20">
+            <div className="container mx-auto px-4">
+            <div className="text-center max-w-3xl mx-auto">
+                <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Success Stories with TotthoAi 2.0</h2>
+                <p className="text-lg text-muted-foreground mt-4 animate-fade-in-up [animation-delay:200ms]">
+                Real Results from Real Users. See how content creators, marketers, and businesses are achieving extraordinary results with our new 2.0 features.
+                </p>
+                <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center animate-fade-in-up [animation-delay:400ms]">
+                    <p className="font-semibold text-lg">Avg. 90% time savings</p>
+                    <p className="font-semibold text-lg">300% faster creation</p>
+                    <p className="font-semibold text-lg">2x better SEO results</p>
+                </div>
             </div>
-          </div>
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="shadow-lg animate-fade-in-up [animation-delay:600ms]">
-                <CardHeader>
-                    <CardTitle className="text-xl">Bulk Generation 2.0</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-muted-foreground text-sm italic">"TotthoAi 2.0's bulk generation feature is incredible! I created 50 blog posts in one afternoon using the new CSV upload. The AI images are so contextual that my engagement increased by 300%. This is the future of content creation."</p>
-                    <p className="mt-4 font-bold text-primary">300% engagement boost</p>
-                </CardContent>
-                <CardFooter className="flex items-center gap-3">
-                    <Avatar>
-                        <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="man portrait"/>
-                        <AvatarFallback>TA</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="font-semibold">Tanvir Ahmed</p>
-                        <p className="text-xs text-muted-foreground">Content Creator & Blogger</p>
-                    </div>
-                </CardFooter>
-            </Card>
-             <Card className="shadow-lg animate-fade-in-up [animation-delay:700ms]">
-                <CardHeader>
-                    <CardTitle className="text-xl">Content Refresh Tool</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-muted-foreground text-sm italic">"The Content Refresh tool saved my business! I had 200+ old articles that needed updating. TotthoAi 2.0 refreshed them all with current information and better SEO in just 2 hours. My organic traffic doubled in 3 weeks."</p>
-                    <p className="mt-4 font-bold text-primary">2x organic traffic</p>
-                </CardContent>
-                <CardFooter className="flex items-center gap-3">
-                    <Avatar>
-                        <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="woman portrait"/>
-                        <AvatarFallback>SA</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="font-semibold">Sharmin Akter</p>
-                        <p className="text-xs text-muted-foreground">Education Platform Owner</p>
-                    </div>
-                </CardFooter>
-            </Card>
-             <Card className="shadow-lg animate-fade-in-up [animation-delay:800ms]">
-                <CardHeader>
-                    <CardTitle className="text-xl">Authority Builder</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-muted-foreground text-sm italic">"The Topical Authority Builder is a game-changer! It created a complete content cluster around 'digital marketing in Bangladesh' with 25 interconnected articles. We now rank #1 for multiple keywords and our domain authority increased by 15 points."</p>
-                    <p className="mt-4 font-bold text-primary">15 point DA increase</p>
-                </CardContent>
-                <CardFooter className="flex items-center gap-3">
-                    <Avatar>
-                        <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="man glasses"/>
-                        <AvatarFallback>FR</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="font-semibold">Fahim Rahman</p>
-                        <p className="text-xs text-muted-foreground">News Website Owner</p>
-                    </div>
-                </CardFooter>
-            </Card>
-             <Card className="shadow-lg animate-fade-in-up [animation-delay:900ms]">
-                <CardHeader>
-                    <CardTitle className="text-xl">One-Click Writer 2.0</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-muted-foreground text-sm italic">"One-Click Writer 2.0 is pure magic! My team generates client content 10x faster now. The custom prompts feature ensures every piece matches our clients' brand voice perfectly. We've scaled from 5 to 50 clients without hiring more writers."</p>
-                    <p className="mt-4 font-bold text-primary">10x faster content</p>
-                </CardContent>
-                <CardFooter className="flex items-center gap-3">
-                    <Avatar>
-                        <AvatarImage src="https://placehold.co/40x40.png" data-ai-hint="woman smiling"/>
-                        <AvatarFallback>NJ</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="font-semibold">Nusrat Jahan</p>
-                        <p className="text-xs text-muted-foreground">Digital Marketing Agency</p>
-                    </div>
-                </CardFooter>
-            </Card>
-          </div>
+             {loading ? (
+                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {[...Array(4)].map(i => <Skeleton key={i} className="h-64 w-full" />)}
+                </div>
+             ) : (
+                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {testimonials.map((testimonial, index) => (
+                    <Card key={index} className="shadow-lg animate-fade-in-up" style={{animationDelay: `${600 + index*100}ms`}}>
+                        <CardHeader>
+                            <CardTitle className="text-xl">{testimonial.feature}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-muted-foreground text-sm italic">"{testimonial.quote}"</p>
+                            <p className="mt-4 font-bold text-primary">{testimonial.metric}</p>
+                        </CardContent>
+                        <CardFooter className="flex items-center gap-3">
+                            <Avatar>
+                                <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint}/>
+                                <AvatarFallback>{testimonial.authorName.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <p className="font-semibold">{testimonial.authorName}</p>
+                                <p className="text-xs text-muted-foreground">{testimonial.authorRole}</p>
+                            </div>
+                        </CardFooter>
+                    </Card>
+                    ))}
+                </div>
+            )}
             <div className="text-center mt-12 animate-fade-in-up">
-                 <Button size="lg" asChild>
+                    <Button size="lg" asChild>
                     <Link href="/#pricing">
                         Start Your Success Story
                     </Link>
                 </Button>
             </div>
-        </div>
-      </section>
+            </div>
+        </section>
+
 
        {/* Pricing Section */}
-      <section id="pricing" className="py-12 md:py-20 bg-muted/50">
-          <div className="container mx-auto px-4">
-              <div className="text-center max-w-3xl mx-auto">
-                  <Badge variant="secondary" className="text-sm py-1 px-3 border-2 border-primary/50 text-primary mb-4">
-                      🔥 Limited Time Launch Offer - 25% OFF with LAUNCH25
-                  </Badge>
-                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
-                      Choose Your AI Content Creation Plan
-                  </h2>
-                  <p className="text-lg text-muted-foreground mt-4">
-                      Start with our free trial, then scale with plans designed for creators, marketers, and agencies
-                  </p>
-                  <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                      <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> 4 Free Articles to Try</div>
-                      <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> No Credit Card Required</div>
-                      <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> Cancel Anytime</div>
-                  </div>
-              </div>
+        <section id="pricing" className="py-12 md:py-20 bg-muted/50">
+            <div className="container mx-auto px-4">
+                <div className="text-center max-w-3xl mx-auto">
+                    <Badge variant="secondary" className="text-sm py-1 px-3 border-2 border-primary/50 text-primary mb-4">
+                        🔥 Limited Time Launch Offer - 25% OFF with LAUNCH25
+                    </Badge>
+                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
+                        Choose Your AI Content Creation Plan
+                    </h2>
+                    <p className="text-lg text-muted-foreground mt-4">
+                        Start with our free trial, then scale with plans designed for creators, marketers, and agencies
+                    </p>
+                    <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                        <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> 4 Free Articles to Try</div>
+                        <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> No Credit Card Required</div>
+                        <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> Cancel Anytime</div>
+                    </div>
+                </div>
 
-              <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-                  {/* Alpha Plan */}
-                  <Card className="shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300">
-                      <CardHeader>
-                          <CardTitle className="text-2xl font-bold">Alpha Plan</CardTitle>
-                          <div className="flex items-baseline gap-2">
-                              <p className="text-4xl font-bold text-primary">৳499</p>
-                              <p className="text-xl font-medium text-muted-foreground line-through">৳665</p>
-                              <Badge variant="destructive">25% OFF</Badge>
-                          </div>
-                          <p className="text-muted-foreground pt-2">Kickstart your content journey with powerful AI tools and essential automation.</p>
-                          <p className="text-sm text-accent font-semibold">Use code: LAUNCH25 at checkout</p>
-                      </CardHeader>
-                      <CardContent className="flex-grow space-y-4">
-                          <div className="bg-muted p-3 rounded-lg text-center">
-                              <p className="text-lg font-bold">100 Credits</p>
-                              <p className="text-sm text-muted-foreground">Valid for 15 Days</p>
-                          </div>
-                          <div className="space-y-3 text-sm">
-                              <h4 className="font-semibold text-base">Core Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> AI-Powered Featured Image Generation</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Deep Content Research</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> One-Click Article Generator</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Automated Internal Linking</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> News Article Generator</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Seamless WordPress Publishing</li>
-                              </ul>
-                              <h4 className="font-semibold text-base pt-2">Advanced Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Topic Authority Cluster Builder</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Enhanced In-Content AI Images</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Content Refresh Tool</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Bulk Generation Tool</li>
-                              </ul>
-                          </div>
-                      </CardContent>
-                      <CardFooter>
-                          <Button size="lg" className="w-full" asChild>
-                            <Link href="/#pricing">GET STARTED</Link>
-                          </Button>
-                      </CardFooter>
-                  </Card>
+                {loading ? (
+                    <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                        {[...Array(3)].map(i => <Skeleton key={i} className="h-[500px] w-full" />)}
+                    </div>
+                ) : (
+                <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                    {pricingPlans.map(plan => (
+                    <Card key={plan.id} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
+                        {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR + 25% OFF</Badge>}
+                        <CardHeader>
+                            <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+                            <div className="flex items-baseline gap-2">
+                                <p className="text-4xl font-bold text-primary">৳{plan.price}</p>
+                                <p className="text-xl font-medium text-muted-foreground line-through">৳{plan.originalPrice}</p>
+                                <Badge variant="destructive">{plan.discount}</Badge>
+                            </div>
+                            <p className="text-muted-foreground pt-2">{plan.description}</p>
+                            <p className="text-sm text-accent font-semibold">Use code: LAUNCH25 at checkout</p>
+                        </CardHeader>
+                        <CardContent className="flex-grow space-y-4">
+                            <div className={`p-3 rounded-lg text-center ${plan.isPopular ? 'bg-primary/10' : 'bg-muted'}`}>
+                                <p className={`text-lg font-bold ${plan.isPopular ? 'text-primary' : ''}`}>{plan.credits} Credits</p>
+                                <p className="text-sm text-muted-foreground">Valid for {plan.validity}</p>
+                            </div>
+                            <div className="space-y-3 text-sm">
+                                {Object.entries(plan.features).map(([category, features]) => (
+                                    <div key={category}>
+                                        <h4 className="font-semibold text-base pt-2">{category}</h4>
+                                        <ul className="space-y-2">
+                                            {(features as string[]).map(feature => (
+                                                <li key={feature} className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> {feature}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                        <CardFooter>
+                            <Button size="lg" className="w-full" asChild>
+                                <Link href="/#pricing">GET STARTED</Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                    ))}
+                </div>
+                )}
 
-                  {/* Beta Plan - Most Popular */}
-                  <Card className="shadow-lg flex flex-col h-full border-2 border-primary relative transform hover:-translate-y-2 transition-transform duration-300">
-                       <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR + 25% OFF</Badge>
-                      <CardHeader>
-                          <CardTitle className="text-2xl font-bold">Beta Plan</CardTitle>
-                          <div className="flex items-baseline gap-2">
-                              <p className="text-4xl font-bold text-primary">৳1499</p>
-                              <p className="text-xl font-medium text-muted-foreground line-through">৳1998</p>
-                              <Badge variant="destructive">25% OFF</Badge>
-                          </div>
-                          <p className="text-muted-foreground pt-2">Scale up your output and get first dibs on future upgrades.</p>
-                           <p className="text-sm text-accent font-semibold">Use code: LAUNCH25 at checkout</p>
-                      </CardHeader>
-                      <CardContent className="flex-grow space-y-4">
-                           <div className="bg-primary/10 p-3 rounded-lg text-center">
-                              <p className="text-lg font-bold text-primary">300 Credits</p>
-                              <p className="text-sm text-muted-foreground">Valid for 1 Month</p>
-                          </div>
-                          <div className="space-y-3 text-sm">
-                              <h4 className="font-semibold text-base">Core Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> AI-Powered Featured Image Generation</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Deep Content Research</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> One-Click Article Generator</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Automated Internal Linking</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> News Article Generator</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Seamless WordPress Publishing</li>
-                              </ul>
-                              <h4 className="font-semibold text-base pt-2">Advanced Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Topic Authority Cluster Builder</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Enhanced In-Content AI Images</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Content Refresh Tool</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Bulk Generation Tool</li>
-                              </ul>
-                               <h4 className="font-semibold text-base pt-2">Premium Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Early Access to Upcoming Features</li>
-                              </ul>
-                          </div>
-                      </CardContent>
-                      <CardFooter>
-                           <Button size="lg" className="w-full" asChild>
-                             <Link href="/#pricing">GET STARTED</Link>
-                           </Button>
-                      </CardFooter>
-                  </Card>
 
-                  {/* Sigma Plan */}
-                  <Card className="shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300">
-                      <CardHeader>
-                          <CardTitle className="text-2xl font-bold">Sigma Plan</CardTitle>
-                          <div className="flex items-baseline gap-2">
-                              <p className="text-4xl font-bold text-primary">৳4999</p>
-                              <p className="text-xl font-medium text-muted-foreground line-through">৳6665</p>
-                              <Badge variant="destructive">25% OFF</Badge>
-                          </div>
-                          <p className="text-muted-foreground pt-2">Our most generous package for power users and agencies.</p>
-                           <p className="text-sm text-accent font-semibold">Use code: LAUNCH25 at checkout</p>
-                      </CardHeader>
-                      <CardContent className="flex-grow space-y-4">
-                           <div className="bg-muted p-3 rounded-lg text-center">
-                              <p className="text-lg font-bold">1,000 Credits</p>
-                              <p className="text-sm text-muted-foreground">Valid for 2 Months</p>
-                          </div>
-                           <div className="space-y-3 text-sm">
-                              <h4 className="font-semibold text-base">Core Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> AI-Powered Featured Image Generation</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Deep Content Research</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> One-Click Article Generator</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Automated Internal Linking</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> News Article Generator</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Seamless WordPress Publishing</li>
-                              </ul>
-                              <h4 className="font-semibold text-base pt-2">Advanced Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Topic Authority Cluster Builder</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Enhanced In-Content AI Images</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Content Refresh Tool</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Bulk Generation Tool</li>
-                              </ul>
-                               <h4 className="font-semibold text-base pt-2">Premium Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Early Access to Upcoming Features</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Custom Feature Requests</li>
-                              </ul>
-                          </div>
-                      </CardContent>
-                      <CardFooter>
-                          <Button size="lg" className="w-full" asChild>
-                            <Link href="/#pricing">GET STARTED</Link>
-                          </Button>
-                      </CardFooter>
-                  </Card>
-              </div>
-
-              {/* Free Trial CTA */}
-              <Card className="mt-12 bg-gradient-to-r from-primary/10 to-accent/10">
-                  <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-                      <div>
-                          <CardTitle className="text-2xl font-bold">Start Free - Write 4 Articles! 🎉</CardTitle>
-                          <p className="text-muted-foreground mt-2 max-w-2xl">No credit card required. Test all features with 4 complete articles including AI images. Then upgrade with <strong className="text-primary">LAUNCH25</strong> for 25% OFF!</p>
-                           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                              <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> Full feature access</div>
-                              <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> AI images included</div>
-                              <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> WordPress publishing</div>
-                          </div>
-                      </div>
-                      <Button size="lg" className="text-base shrink-0" asChild>
-                        <Link href="/free-trial">Start Writing for FREE</Link>
-                      </Button>
-                  </CardContent>
-              </Card>
-              
-              {/* bKash Payment */}
-              <div className="mt-8 text-center">
-                  <p className="text-sm text-muted-foreground">Pay with</p>
-                   <div className="flex justify-center items-center gap-2 mt-2">
-                      <svg className="h-8" viewBox="0 0 1024 372.48" xmlns="http://www.w3.org/2000/svg"><path d="M789.28 206.01c-6.22-9.45-14.28-17.51-24.16-24.16-29.4-19.8-67.65-27.42-105.1-27.42-83.82 0-155.22 55.45-180.12 131.25H259.9a185.53 185.53 0 0 1 185.16-184.81c50.78 0 96.84 19.89 130.82 51.69a183.88 183.88 0 0 1 51.51 130.64h-74.01a113.88 113.88 0 0 0-50.1-107.19z" fill="#D82A7D"/><path d="M575.83 293.36a110.87 110.87 0 0 0-21.57 2.37A111.43 111.43 0 0 0 445.89 404H244.66a185.53 185.53 0 0 1 327-133.4 114.1 114.1 0 0 0-38.33-22.95 183.85 183.85 0 0 1-57.5 145.71z" fill="#D82A7D"/><path d="M837.74 34.33h-134.3v271.85a33.15 33.15 0 0 0 33.15 33.15h101.15V34.33z" fill="#D82A7D"/><path d="M1024 34.33H889.67v305h101.18a33.15 33.15 0 0 0 33.15-33.15V34.33z" fill="#D82A7D"/><path d="M0 34.33h201.23v305H0z" fill="#D82A7D"/><path d="M371.84 34.33H237.5v305h134.34a33.15 33.15 0 0 0 33.15-33.15V67.48a33.15 33.15 0 0 0-33.15-33.15z" fill="#D82A7D"/></svg>
-                      <p className="text-muted-foreground font-semibold">Easy mobile payments available for Bangladeshi users</p>
-                   </div>
-              </div>
-          </div>
-      </section>
+                {/* Free Trial CTA */}
+                <Card className="mt-12 bg-gradient-to-r from-primary/10 to-accent/10">
+                    <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div>
+                            <CardTitle className="text-2xl font-bold">Start Free - Write 4 Articles! 🎉</CardTitle>
+                            <p className="text-muted-foreground mt-2 max-w-2xl">No credit card required. Test all features with 4 complete articles including AI images. Then upgrade with <strong className="text-primary">LAUNCH25</strong> for 25% OFF!</p>
+                            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+                                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> Full feature access</div>
+                                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> AI images included</div>
+                                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> WordPress publishing</div>
+                            </div>
+                        </div>
+                        <Button size="lg" className="text-base shrink-0" asChild>
+                            <Link href="/free-trial">Start Writing for FREE</Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+                
+                {/* bKash Payment */}
+                <div className="mt-8 text-center">
+                    <p className="text-sm text-muted-foreground">Pay with</p>
+                    <div className="flex justify-center items-center gap-2 mt-2">
+                        <svg className="h-8" viewBox="0 0 1024 372.48" xmlns="http://www.w3.org/2000/svg"><path d="M789.28 206.01c-6.22-9.45-14.28-17.51-24.16-24.16-29.4-19.8-67.65-27.42-105.1-27.42-83.82 0-155.22 55.45-180.12 131.25H259.9a185.53 185.53 0 0 1 185.16-184.81c50.78 0 96.84 19.89 130.82 51.69a183.88 183.88 0 0 1 51.51 130.64h-74.01a113.88 113.88 0 0 0-50.1-107.19z" fill="#D82A7D"/><path d="M575.83 293.36a110.87 110.87 0 0 0-21.57 2.37A111.43 111.43 0 0 0 445.89 404H244.66a185.53 185.53 0 0 1 327-133.4 114.1 114.1 0 0 0-38.33-22.95 183.85 183.85 0 0 1-57.5 145.71z" fill="#D82A7D"/><path d="M837.74 34.33h-134.3v271.85a33.15 33.15 0 0 0 33.15 33.15h101.15V34.33z" fill="#D82A7D"/><path d="M1024 34.33H889.67v305h101.18a33.15 33.15 0 0 0 33.15-33.15V34.33z" fill="#D82A7D"/><path d="M0 34.33h201.23v305H0z" fill="#D82A7D"/><path d="M371.84 34.33H237.5v305h134.34a33.15 33.15 0 0 0 33.15-33.15V67.48a33.15 33.15 0 0 0-33.15-33.15z" fill="#D82A7D"/></svg>
+                        <p className="text-muted-foreground font-semibold">Easy mobile payments available for Bangladeshi users</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         {/* FAQ Section */}
         <section className="py-12 md:py-20">

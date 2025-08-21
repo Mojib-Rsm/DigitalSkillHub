@@ -1,11 +1,30 @@
 
+'use client';
+
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import { getPricingPlans, PricingPlan } from '@/services/pricing-service';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function PricingPage() {
+    const [pricingPlans, setPricingPlans] = useState<PricingPlan[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            setLoading(true);
+            const plans = await getPricingPlans();
+            setPricingPlans(plans);
+            setLoading(false);
+        }
+        fetchData();
+    }, []);
+
+
     return (
         <section id="pricing" className="py-12 md:py-20">
           <div className="container mx-auto px-4">
@@ -26,146 +45,53 @@ export default function PricingPage() {
                   </div>
               </div>
 
-              <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-                  {/* Alpha Plan */}
-                  <Card className="shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300">
-                      <CardHeader>
-                          <CardTitle className="text-2xl font-bold">Alpha Plan</CardTitle>
-                          <div className="flex items-baseline gap-2">
-                              <p className="text-4xl font-bold text-primary">৳499</p>
-                              <p className="text-xl font-medium text-muted-foreground line-through">৳665</p>
-                              <Badge variant="destructive">25% OFF</Badge>
-                          </div>
-                          <p className="text-muted-foreground pt-2">Kickstart your content journey with powerful AI tools and essential automation.</p>
-                          <p className="text-sm text-accent font-semibold">Use code: LAUNCH25 at checkout</p>
-                      </CardHeader>
-                      <CardContent className="flex-grow space-y-4">
-                          <div className="bg-muted p-3 rounded-lg text-center">
-                              <p className="text-lg font-bold">100 Credits</p>
-                              <p className="text-sm text-muted-foreground">Valid for 15 Days</p>
-                          </div>
-                          <div className="space-y-3 text-sm">
-                              <h4 className="font-semibold text-base">Core Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> AI-Powered Featured Image Generation</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Deep Content Research</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> One-Click Article Generator</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Automated Internal Linking</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> News Article Generator</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Seamless WordPress Publishing</li>
-                              </ul>
-                              <h4 className="font-semibold text-base pt-2">Advanced Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Topic Authority Cluster Builder</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Enhanced In-Content AI Images</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Content Refresh Tool</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Bulk Generation Tool</li>
-                              </ul>
-                          </div>
-                      </CardContent>
-                      <CardFooter>
-                          <Button size="lg" className="w-full" asChild>
-                            <Link href="/#pricing">GET STARTED</Link>
-                          </Button>
-                      </CardFooter>
-                  </Card>
+               {loading ? (
+                    <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                        {[...Array(3)].map(i => <Skeleton key={i} className="h-[500px] w-full" />)}
+                    </div>
+                ) : (
+                <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                    {pricingPlans.map(plan => (
+                    <Card key={plan.id} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
+                        {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR + 25% OFF</Badge>}
+                        <CardHeader>
+                            <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+                            <div className="flex items-baseline gap-2">
+                                <p className="text-4xl font-bold text-primary">৳{plan.price}</p>
+                                <p className="text-xl font-medium text-muted-foreground line-through">৳{plan.originalPrice}</p>
+                                <Badge variant="destructive">{plan.discount}</Badge>
+                            </div>
+                            <p className="text-muted-foreground pt-2">{plan.description}</p>
+                            <p className="text-sm text-accent font-semibold">Use code: LAUNCH25 at checkout</p>
+                        </CardHeader>
+                        <CardContent className="flex-grow space-y-4">
+                            <div className={`p-3 rounded-lg text-center ${plan.isPopular ? 'bg-primary/10' : 'bg-muted'}`}>
+                                <p className={`text-lg font-bold ${plan.isPopular ? 'text-primary' : ''}`}>{plan.credits} Credits</p>
+                                <p className="text-sm text-muted-foreground">Valid for {plan.validity}</p>
+                            </div>
+                            <div className="space-y-3 text-sm">
+                                {Object.entries(plan.features).map(([category, features]) => (
+                                    <div key={category}>
+                                        <h4 className="font-semibold text-base pt-2">{category}</h4>
+                                        <ul className="space-y-2">
+                                            {(features as string[]).map(feature => (
+                                                <li key={feature} className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> {feature}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                        <CardFooter>
+                            <Button size="lg" className="w-full" asChild>
+                                <Link href="/#pricing">GET STARTED</Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                    ))}
+                </div>
+                )}
 
-                  {/* Beta Plan - Most Popular */}
-                  <Card className="shadow-lg flex flex-col h-full border-2 border-primary relative transform hover:-translate-y-2 transition-transform duration-300">
-                       <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR + 25% OFF</Badge>
-                      <CardHeader>
-                          <CardTitle className="text-2xl font-bold">Beta Plan</CardTitle>
-                          <div className="flex items-baseline gap-2">
-                              <p className="text-4xl font-bold text-primary">৳1499</p>
-                              <p className="text-xl font-medium text-muted-foreground line-through">৳1998</p>
-                              <Badge variant="destructive">25% OFF</Badge>
-                          </div>
-                          <p className="text-muted-foreground pt-2">Scale up your output and get first dibs on future upgrades.</p>
-                           <p className="text-sm text-accent font-semibold">Use code: LAUNCH25 at checkout</p>
-                      </CardHeader>
-                      <CardContent className="flex-grow space-y-4">
-                           <div className="bg-primary/10 p-3 rounded-lg text-center">
-                              <p className="text-lg font-bold text-primary">300 Credits</p>
-                              <p className="text-sm text-muted-foreground">Valid for 1 Month</p>
-                          </div>
-                          <div className="space-y-3 text-sm">
-                              <h4 className="font-semibold text-base">Core Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> AI-Powered Featured Image Generation</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Deep Content Research</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> One-Click Article Generator</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Automated Internal Linking</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> News Article Generator</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Seamless WordPress Publishing</li>
-                              </ul>
-                              <h4 className="font-semibold text-base pt-2">Advanced Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Topic Authority Cluster Builder</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Enhanced In-Content AI Images</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Content Refresh Tool</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Bulk Generation Tool</li>
-                              </ul>
-                               <h4 className="font-semibold text-base pt-2">Premium Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Early Access to Upcoming Features</li>
-                              </ul>
-                          </div>
-                      </CardContent>
-                      <CardFooter>
-                           <Button size="lg" className="w-full" asChild>
-                             <Link href="/#pricing">GET STARTED</Link>
-                           </Button>
-                      </CardFooter>
-                  </Card>
-
-                  {/* Sigma Plan */}
-                  <Card className="shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300">
-                      <CardHeader>
-                          <CardTitle className="text-2xl font-bold">Sigma Plan</CardTitle>
-                          <div className="flex items-baseline gap-2">
-                              <p className="text-4xl font-bold text-primary">৳4999</p>
-                              <p className="text-xl font-medium text-muted-foreground line-through">৳6665</p>
-                              <Badge variant="destructive">25% OFF</Badge>
-                          </div>
-                          <p className="text-muted-foreground pt-2">Our most generous package for power users and agencies.</p>
-                           <p className="text-sm text-accent font-semibold">Use code: LAUNCH25 at checkout</p>
-                      </CardHeader>
-                      <CardContent className="flex-grow space-y-4">
-                           <div className="bg-muted p-3 rounded-lg text-center">
-                              <p className="text-lg font-bold">1,000 Credits</p>
-                              <p className="text-sm text-muted-foreground">Valid for 2 Months</p>
-                          </div>
-                           <div className="space-y-3 text-sm">
-                              <h4 className="font-semibold text-base">Core Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> AI-Powered Featured Image Generation</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Deep Content Research</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> One-Click Article Generator</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Automated Internal Linking</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> News Article Generator</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Seamless WordPress Publishing</li>
-                              </ul>
-                              <h4 className="font-semibold text-base pt-2">Advanced Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Topic Authority Cluster Builder</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Enhanced In-Content AI Images</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Content Refresh Tool</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Bulk Generation Tool</li>
-                              </ul>
-                               <h4 className="font-semibold text-base pt-2">Premium Features</h4>
-                              <ul className="space-y-2">
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Early Access to Upcoming Features</li>
-                                  <li className="flex items-center gap-2 text-muted-foreground"><Check className="w-4 h-4 text-green-500" /> Custom Feature Requests</li>
-                              </ul>
-                          </div>
-                      </CardContent>
-                      <CardFooter>
-                          <Button size="lg" className="w-full" asChild>
-                            <Link href="/#pricing">GET STARTED</Link>
-                          </Button>
-                      </CardFooter>
-                  </Card>
-              </div>
 
               {/* Free Trial CTA */}
               <Card className="mt-12 bg-gradient-to-r from-primary/10 to-accent/10">

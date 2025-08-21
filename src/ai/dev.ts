@@ -35,3 +35,4 @@ import '@/ai/flows/handwriting-extractor.ts';
 import '@/ai/flows/messenger-reply-generator.ts';
 import '@/ai/flows/website-blueprint-generator.ts';
 import '@/ai/flows/prompt-generator.ts';
+import '@/ai/flows/seed-data.ts';
