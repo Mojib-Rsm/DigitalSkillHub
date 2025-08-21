@@ -158,7 +158,7 @@ export default function DashboardSidebar({
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                             <SidebarMenuSubItem>
-                                <SidebarMenuSubButton href="/dashboard/admin/settings">
+                                <SidebarMenuSubButton href="/dashboard/settings">
                                     <Settings />
                                     <span>Settings</span>
                                 </SidebarMenuSubButton>
@@ -178,8 +178,14 @@ export default function DashboardSidebar({
            <SidebarMenu className="p-2">
                  <SidebarMenuItem>
                   <SidebarMenuButton href="/dashboard/pricing">
-                    <Settings />
-                    <span>Account & Billing</span>
+                    <DollarSign />
+                    <span>Pricing & Billing</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                 <SidebarMenuItem>
+                  <SidebarMenuButton href="/dashboard/settings">
+                    <UserIcon />
+                    <span>Account Settings</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>

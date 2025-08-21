@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { updateAdminProfileAction, changeAdminPasswordAction } from './actions';
+import { updateUserProfileAction, changePasswordAction } from './actions';
 import { Sparkles, User, Palette, Shield } from 'lucide-react';
 import { getCurrentUser, UserProfile } from '@/services/user-service';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -28,7 +28,7 @@ function SubmitButton({ children }: { children: React.ReactNode }) {
 
 function ProfileForm({ user }: { user: UserProfile }) {
   const initialState = { success: false, message: '' };
-  const [state, formAction] = useActionState(updateAdminProfileAction, initialState);
+  const [state, formAction] = useActionState(updateUserProfileAction, initialState);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -60,7 +60,7 @@ function ProfileForm({ user }: { user: UserProfile }) {
 
 function PasswordForm() {
     const initialState = { success: false, message: '' };
-    const [state, formAction] = useActionState(changeAdminPasswordAction, initialState);
+    const [state, formAction] = useActionState(changePasswordAction, initialState);
     const formRef = useRef<HTMLFormElement>(null);
     const { toast } = useToast();
 
@@ -135,20 +135,22 @@ export default function SettingsPage() {
       <Tabs defaultValue="profile" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="profile"><User className="mr-2"/> Profile</TabsTrigger>
+          <TabsTrigger value="security"><Shield className="mr-2"/> Security</TabsTrigger>
           <TabsTrigger value="branding" disabled><Palette className="mr-2"/> Branding</TabsTrigger>
-          <TabsTrigger value="security" disabled><Shield className="mr-2"/> Security</TabsTrigger>
         </TabsList>
         <TabsContent value="profile">
           <Card>
             <CardHeader>
-              <CardTitle>Admin Profile</CardTitle>
+              <CardTitle>My Profile</CardTitle>
               <CardDescription>Manage your personal information.</CardDescription>
             </CardHeader>
             <CardContent>
                 <ProfileForm user={user}/>
             </CardContent>
           </Card>
-          <Card className="mt-8">
+        </TabsContent>
+         <TabsContent value="security">
+           <Card>
             <CardHeader>
               <CardTitle>Change Password</CardTitle>
               <CardDescription>Update your password here. Use a strong, unique password.</CardDescription>
@@ -166,17 +168,6 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">Branding settings coming soon.</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-         <TabsContent value="security">
-           <Card>
-            <CardHeader>
-              <CardTitle>Security Settings</CardTitle>
-              <CardDescription>Configure security options for your application.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Security settings coming soon.</p>
             </CardContent>
           </Card>
         </TabsContent>

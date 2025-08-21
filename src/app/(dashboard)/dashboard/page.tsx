@@ -212,11 +212,11 @@ function UserDashboard({ user }: { user: UserProfile }) {
                     <div className="flex-1 text-center sm:text-left">
                         <h1 className="text-3xl font-bold">Welcome, {user.name}!</h1>
                         <p className="text-muted-foreground">{user.email}</p>
-                        <Badge className="mt-2" variant={user.role === 'admin' ? "destructive" : "secondary"}>{user.role === 'admin' ? "Pro" : "Free"}</Badge>
+                        <Badge className="mt-2" variant={user.plan_id === 'beta' || user.plan_id === 'sigma' ? "default" : "secondary"}>{user.plan_id === 'beta' || user.plan_id === 'sigma' ? "Pro" : "Free"}</Badge>
                     </div>
                     <div className="flex gap-2">
-                        <Button variant="outline">Edit Profile</Button>
-                        <Button>Upgrade to Pro</Button>
+                        <Button variant="outline" asChild><Link href="/dashboard/settings">Edit Profile</Link></Button>
+                        <Button asChild><Link href="/dashboard/pricing">Upgrade to Pro</Link></Button>
                     </div>
                 </CardContent>
             </Card>

@@ -29,13 +29,13 @@ type FormState = {
   message: string;
 };
 
-export async function updateAdminProfileAction(
+export async function updateUserProfileAction(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
   const currentUser = await getCurrentUser();
-  if (!currentUser || currentUser.role !== 'admin') {
-    return { success: false, message: 'Permission denied.' };
+  if (!currentUser) {
+    return { success: false, message: 'Permission denied. User not found.' };
   }
 
   const validatedFields = ProfileSchema.safeParse({
@@ -55,7 +55,8 @@ export async function updateAdminProfileAction(
     const userRef = doc(db, 'users', currentUser.id);
     await updateDoc(userRef, validatedFields.data);
 
-    revalidatePath('/dashboard/admin/settings');
+    revalidatePath('/dashboard/settings');
+    revalidatePath('/(dashboard)/layout');
     return { success: true, message: 'Profile updated successfully.' };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
@@ -63,7 +64,7 @@ export async function updateAdminProfileAction(
   }
 }
 
-export async function changeAdminPasswordAction(
+export async function changePasswordAction(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
