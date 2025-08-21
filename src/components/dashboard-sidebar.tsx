@@ -31,7 +31,8 @@ import {
   History,
   DatabaseZap,
   Users,
-  Wrench
+  Wrench,
+  DollarSign
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -135,6 +136,12 @@ export default function DashboardSidebar({
                                     <span>Tool Management</span>
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
+                             <SidebarMenuSubItem>
+                                <SidebarMenuSubButton href="/dashboard/pricing">
+                                    <DollarSign />
+                                    <span>Pricing Plans</span>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
                             <SidebarMenuSubItem>
                                 <SidebarMenuSubButton href="/dashboard/admin/seed-data">
                                     <DatabaseZap />
@@ -185,5 +192,3 @@ export default function DashboardSidebar({
     </SidebarProvider>
   );
 }
-
-    
