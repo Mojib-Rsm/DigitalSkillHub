@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Bot, Menu, ChevronDown, User } from "lucide-react";
+import { Bot, Menu, ChevronDown, User, LogOut, LayoutDashboard, Coins } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -24,6 +24,8 @@ import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getCurrentUser, UserProfile } from "@/services/user-service";
+import { ThemeToggleButton } from "../theme-toggle-button";
+import { logoutAction } from "@/app/logout/actions";
 
 const navLinks = [
   { href: "/#features", label: "Features" },
@@ -46,14 +48,14 @@ export default function Header() {
 
   useEffect(() => {
     async function fetchUser() {
-        // This is a client component, so we can't use server-side `headers()`
-        // A proper solution would use a client-side auth state provider or a session API route
-        // For this demo, we'll assume the user is not logged in on the public site for simplicity
-        // as we can't access the cookie directly here without causing server/client mismatch
+        setLoading(true);
+        const currentUser = await getCurrentUser();
+        setUser(currentUser);
         setLoading(false);
     }
+    // Fetch user on initial load and on path changes (e.g. after login/logout redirects)
     fetchUser();
-  }, []);
+  }, [pathname]);
 
   const NavLink = ({ href, label }: { href: string; label: string }) => (
     <Link
@@ -72,6 +74,70 @@ export default function Header() {
         <span>{label}</span>
      </Link>
   )
+
+  const renderAuthButtons = () => {
+    if (loading) {
+        return <div className="flex items-center gap-2 h-10 w-48 animate-pulse rounded-md bg-muted" />;
+    }
+    if (user) {
+      return (
+        <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" asChild>
+                <Link href="/dashboard/pricing">
+                    <Coins className="mr-2 size-4"/>
+                    Credits: {user.credits ?? 0}
+                </Link>
+            </Button>
+            <ThemeToggleButton/>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                        <Avatar>
+                            <AvatarImage src={user.profile_image} alt={user.name}/>
+                            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+                    <DropdownMenuSeparator/>
+                    <DropdownMenuItem asChild>
+                        <Link href="/dashboard">
+                            <LayoutDashboard className="mr-2 h-4 w-4"/>
+                            <span>Dashboard</span>
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                         <Link href="/dashboard/settings">
+                            <User className="mr-2 h-4 w-4"/>
+                            <span>Profile</span>
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator/>
+                     <form action={logoutAction} className="w-full">
+                        <DropdownMenuItem asChild>
+                               <button type="submit" className="w-full">
+                                <LogOut className="mr-2 h-4 w-4"/>
+                                <span>Logout</span>
+                               </button>
+                        </DropdownMenuItem>
+                    </form>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
+      );
+    }
+    return (
+      <>
+        <Button variant="ghost" asChild>
+          <Link href="/login">Login</Link>
+        </Button>
+        <Button asChild>
+          <Link href="/free-trial">Start Free Trial</Link>
+        </Button>
+      </>
+    );
+  };
 
   return (
     <>
@@ -106,12 +172,7 @@ export default function Header() {
             </DropdownMenu>
         </nav>
         <div className="hidden lg:flex items-center gap-2">
-            <Button variant="ghost" asChild>
-                <Link href="/login">Login</Link>
-            </Button>
-            <Button asChild>
-                <Link href="/free-trial">Start Free Trial</Link>
-            </Button>
+            {renderAuthButtons()}
         </div>
         <div className="lg:hidden flex items-center gap-2">
             <Sheet>
@@ -136,8 +197,19 @@ export default function Header() {
                   ))}
                 </div>
                  <div className="mt-8 pt-4 border-t">
-                    <MobileNavLink href="/login" label="Login"/>
-                    <MobileNavLink href="/free-trial" label="Start Free Trial"/>
+                    {user ? (
+                        <>
+                         <MobileNavLink href="/dashboard" label="Dashboard"/>
+                         <form action={logoutAction} className="w-full">
+                            <button type="submit" className="w-full text-left block px-4 py-3 text-lg font-medium hover:bg-muted rounded-lg">Logout</button>
+                         </form>
+                        </>
+                    ) : (
+                        <>
+                        <MobileNavLink href="/login" label="Login"/>
+                        <MobileNavLink href="/free-trial" label="Start Free Trial"/>
+                        </>
+                    )}
                  </div>
               </SheetContent>
             </Sheet>
