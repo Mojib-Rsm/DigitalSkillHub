@@ -5,6 +5,8 @@
  * @fileOverview A flow to seed demo data into Firestore.
  * This should be run once to populate the database.
  */
+import { config } from 'dotenv';
+config();
 
 import { ai } from '@/ai/genkit';
 import { z } from 'zod';
@@ -38,7 +40,7 @@ export const seedDataFlow = ai.defineFlow(
         try {
             const serviceAccountJson = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
             if (!serviceAccountJson) {
-                throw new Error('Firebase service account credentials are not set in environment variables.');
+                throw new Error('Firebase service account credentials are not set in the GOOGLE_APPLICATION_CREDENTIALS_JSON environment variable.');
             }
             admin.initializeApp({
                 credential: admin.credential.cert(JSON.parse(serviceAccountJson)),
