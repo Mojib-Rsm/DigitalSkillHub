@@ -19,7 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import React, { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -42,6 +42,7 @@ const moreLinks = [
 
 export default function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
   
@@ -49,12 +50,12 @@ export default function Header() {
     const sessionCookie = Cookies.get('auth-session');
     setIsLoggedIn(!!sessionCookie);
     setLoading(false);
-  }, []);
+  }, [pathname]); // Re-check on path change
 
   const handleLogout = () => {
     Cookies.remove('auth-session', { path: '/' });
     setIsLoggedIn(false);
-    window.location.href = '/login';
+    router.push('/login');
   };
 
   const NavLink = ({ href, label }: { href: string; label: string }) => (

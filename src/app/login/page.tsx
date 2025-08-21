@@ -49,7 +49,8 @@ export default function LoginPage() {
                 description: "Welcome back. Redirecting you to the dashboard...",
             });
             const redirectUrl = searchParams.get('redirect') || '/dashboard';
-            router.push(redirectUrl);
+            // Use router.replace to avoid adding the login page to the history stack.
+            router.replace(redirectUrl);
         } else if (state.message) {
             toast({
                 variant: "destructive",
