@@ -76,7 +76,8 @@ export default function VideoGeneratorForm() {
         {useFormStatus().pending && (
              <div className="mt-8 text-center">
                 <div className="inline-block bg-muted/50 p-4 rounded-lg">
-                    <p className="text-muted-foreground animate-pulse">আপনার ভিডিও তৈরি হচ্ছে, এটি কয়েক মিনিট সময় নিতে পারে...</p>
+                    <p className="text-muted-foreground font-semibold animate-pulse">Generating your video…</p>
+                    <p className="text-muted-foreground text-sm">This can take 1–2 mins</p>
                 </div>
             </div>
         )}
