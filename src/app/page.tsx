@@ -3,8 +3,8 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, Check, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, Check, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,41 @@ import Head from 'next/head';
 import { getPricingPlans, PricingPlan } from '@/services/pricing-service';
 import { getTestimonials, Testimonial } from '@/services/testimonial-service';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  CartesianGrid
+} from "recharts"
+
+const userSignups = [
+    { month: "Jan", signups: 186 },
+    { month: "Feb", signups: 305 },
+    { month: "Mar", signups: 237 },
+    { month: "Apr", signups: 273 },
+    { month: "May", signups: 209 },
+    { month: "Jun", signups: 250 },
+];
+
+const recentActivities = [
+    { name: "Olivia Martin", email: "olivia.martin@email.com", amount: "+৳499.00", type: "Subscription" },
+    { name: "Jackson Lee", email: "jackson.lee@email.com", amount: "+৳1,499.00", type: "Subscription" },
+    { name: "Isabella Nguyen", email: "isabella.nguyen@email.com", amount: "+৳499.00", type: "Subscription" },
+    { name: "William Kim", email: "will@email.com", amount: "New User", type: "Registration" },
+    { name: "Sofia Davis", email: "sofia.davis@email.com", amount: "+৳1,499.00", type: "Subscription" },
+];
 
 
 const faqItems = [
@@ -399,9 +434,140 @@ export default function Home() {
               </div>
           </section>
 
+        {/* Dashboard Section from original dashboard page */}
+        <section className="py-12 md:py-20 bg-muted/50">
+            <div className="container mx-auto px-4">
+                <div className="text-center max-w-3xl mx-auto">
+                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Powerful Dashboard</h2>
+                    <p className="text-lg text-muted-foreground mt-4">
+                        A glimpse into the control center. Here's a look at what our users see.
+                    </p>
+                </div>
+                 <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+                    <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                            Total Revenue
+                        </CardTitle>
+                        <DollarSign className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                        <div className="text-2xl font-bold">৳45,231.89</div>
+                        <p className="text-xs text-muted-foreground">
+                            +20.1% from last month
+                        </p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">
+                            Subscriptions
+                        </CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                        <div className="text-2xl font-bold">+2350</div>
+                        <p className="text-xs text-muted-foreground">
+                            +180.1% from last month
+                        </p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                        <UserCircle className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                        <div className="text-2xl font-bold">12,234</div>
+                        <p className="text-xs text-muted-foreground">
+                            +19% from last month
+                        </p>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Active Now</CardTitle>
+                        <Activity className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                        <div className="text-2xl font-bold">+573</div>
+                        <p className="text-xs text-muted-foreground">
+                            +201 since last hour
+                        </p>
+                        </CardContent>
+                    </Card>
+                    </div>
+                    <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
+                    <Card className="xl:col-span-2">
+                        <CardHeader>
+                        <CardTitle>User Sign-ups</CardTitle>
+                        <CardDescription>Last 6 Months</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                        <ResponsiveContainer width="100%" height={350}>
+                            <BarChart data={userSignups}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis
+                                dataKey="month"
+                                stroke="#888888"
+                                fontSize={12}
+                                tickLine={false}
+                                axisLine={false}
+                            />
+                            <YAxis
+                                stroke="#888888"
+                                fontSize={12}
+                                tickLine={false}
+                                axisLine={false}
+                                tickFormatter={(value) => `${value}`}
+                            />
+                            <Tooltip
+                                cursor={{fill: 'hsl(var(--muted))'}}
+                                contentStyle={{backgroundColor: 'hsl(var(--background))', border: '1px solid hsl(var(--border))'}}
+                            />
+                            <Legend />
+                            <Bar dataKey="signups" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardHeader>
+                        <CardTitle>Recent Activity</CardTitle>
+                        <CardDescription>
+                            New users and subscriptions.
+                        </CardDescription>
+                        </CardHeader>
+                        <CardContent className="grid gap-8">
+                            {recentActivities.map((activity, index) => (
+                                <div key={`activity-${index}-${activity.email}`} className="flex items-center gap-4">
+                                    <Avatar className="hidden h-9 w-9 sm:flex">
+                                    <AvatarFallback>{activity.name.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="grid gap-1">
+                                    <p className="text-sm font-medium leading-none">{activity.name}</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        {activity.email}
+                                    </p>
+                                    </div>
+                                    <div className="ml-auto font-medium">
+                                        <Badge variant={activity.type === 'Subscription' ? 'default' : 'secondary'}>
+                                            {activity.amount}
+                                        </Badge>
+                                    </div>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+                    </div>
+                </main>
+            </div>
+        </section>
+
 
          {/* Pricing Section */}
-          <section id="pricing" className="py-12 md:py-20 bg-muted/50">
+          <section id="pricing" className="py-12 md:py-20 bg-background">
               <div className="container mx-auto px-4">
                   <div className="text-center max-w-3xl mx-auto">
                       <Badge variant="secondary" className="text-sm py-1 px-3 border-2 border-primary/50 text-primary mb-4">
@@ -422,7 +588,7 @@ export default function Home() {
                   ) : (
                   <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
                       {pricingPlans.map(plan => (
-                      <Card key={plan.id} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
+                      <Card key={`pricing-${plan.id}`} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
                           {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR + 25% OFF</Badge>}
                           <CardHeader>
                               <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
@@ -502,4 +668,6 @@ export default function Home() {
       </div>
     </>
   );
-}
+
+    
+
