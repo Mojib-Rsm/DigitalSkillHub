@@ -1,7 +1,6 @@
 
 import { Film } from "lucide-react";
 import VideoGeneratorForm from "@/components/video-generator-form";
-import ToolAuthGuard from "@/components/tool-auth-guard";
 
 export default function VideoGeneratorPage() {
   return (
@@ -17,9 +16,7 @@ export default function VideoGeneratorPage() {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        <ToolAuthGuard>
-            <VideoGeneratorForm />
-        </ToolAuthGuard>
+        <VideoGeneratorForm />
       </div>
     </div>
   );

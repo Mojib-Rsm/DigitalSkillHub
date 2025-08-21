@@ -1,7 +1,6 @@
 
 import { Clapperboard } from "lucide-react";
 import ImageToVideoGeneratorForm from "@/components/image-to-video-generator-form";
-import ToolAuthGuard from "@/components/tool-auth-guard";
 
 export default function ImageToVideoGeneratorPage() {
   return (
@@ -17,9 +16,7 @@ export default function ImageToVideoGeneratorPage() {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        <ToolAuthGuard>
-            <ImageToVideoGeneratorForm />
-        </ToolAuthGuard>
+        <ImageToVideoGeneratorForm />
       </div>
     </div>
   );

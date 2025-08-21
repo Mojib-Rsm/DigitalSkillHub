@@ -3,7 +3,6 @@
 
 import { imageToVideoGenerator } from "@/ai/flows/image-to-video-generator";
 import { z } from "zod";
-import { saveHistoryAction } from "@/app/actions/save-history";
 
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -73,15 +72,6 @@ export async function generateVideoFromImage(
   }
 
   if (result.videoUrl) {
-    try {
-        await saveHistoryAction({
-            tool: 'image-to-video-generator',
-            input: { prompt: validatedFields.data.prompt },
-            output: { videoUrl: result.videoUrl }
-        });
-    } catch (historyError) {
-        console.error('Failed to save history:', historyError);
-    }
     return {
         message: "success",
         videoUrl: result.videoUrl,

@@ -1,6 +1,5 @@
 
 import PassportPhotoMakerForm from "@/components/passport-photo-maker-form";
-import ToolAuthGuard from "@/components/tool-auth-guard";
 import { UserCircle } from "lucide-react";
 
 export default function PassportPhotoMakerPage() {
@@ -17,9 +16,7 @@ export default function PassportPhotoMakerPage() {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        <ToolAuthGuard>
-            <PassportPhotoMakerForm />
-        </ToolAuthGuard>
+          <PassportPhotoMakerForm />
       </div>
     </div>
   );

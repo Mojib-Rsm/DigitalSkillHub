@@ -8,7 +8,7 @@ import {
     doc
 } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
-import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, users, tools } from '@/lib/demo-data';
+import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, tools } from '@/lib/demo-data';
 
 
 export async function seedDatabase() {
@@ -20,7 +20,6 @@ export async function seedDatabase() {
         { name: 'jobs', data: jobPostings },
         { name: 'pricing', data: pricingPlans },
         { name: 'testimonials', data: testimonials },
-        { name: 'users', data: users },
         { name: 'tools', data: tools },
     ];
 
@@ -35,10 +34,9 @@ export async function seedDatabase() {
             let operationsCount = 0;
 
             data.forEach((item) => {
-                // Use a specific ID if provided (like for users), otherwise let Firestore auto-generate.
-                const docRef = item.email ? doc(collectionRef, item.email) : (item.id ? doc(collectionRef, item.id) : doc(collectionRef));
+                // Use a specific ID if provided, otherwise let Firestore auto-generate.
+                const docRef = item.id ? doc(collectionRef, item.id) : doc(collectionRef);
                 const dataToSet = { ...item };
-                // Don't store the id field inside the document if we're using it as the document ID
                 if (item.id) {
                     delete dataToSet.id;
                 }
@@ -72,5 +70,3 @@ export async function seedDatabase() {
         };
     }
 }
-
-    

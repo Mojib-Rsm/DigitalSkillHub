@@ -4,15 +4,13 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, FileAnalytics, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, Check, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, Check, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-import { app } from "@/lib/firebase";
 import Head from 'next/head';
 import { getPricingPlans, PricingPlan } from '@/services/pricing-service';
 import { getTestimonials, Testimonial } from '@/services/testimonial-service';
@@ -98,17 +96,11 @@ const organizationSchema = {
 
 
 export default function Home() {
-  const [user, setUser] = useState<User | null>(null);
   const [pricingPlans, setPricingPlans] = useState<PricingPlan[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
-  const auth = getAuth(app);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-
     async function fetchData() {
         setLoading(true);
         const [plans, fetchedTestimonials] = await Promise.all([
@@ -121,9 +113,7 @@ export default function Home() {
     }
     
     fetchData();
-
-    return () => unsubscribe();
-  }, [auth]);
+  }, []);
 
   return (
     <>
@@ -155,21 +145,12 @@ export default function Home() {
               </div>
 
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up [animation-delay:600ms]">
-                  {user ? (
-                       <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
-                          <Link href="/#pricing">
-                              <Zap className="mr-2 h-5 w-5"/>
-                              View Pricing
-                          </Link>
-                      </Button>
-                  ) : (
-                      <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
-                          <Link href="/free-trial">
-                              <Zap className="mr-2 h-5 w-5"/>
-                              Start Free Trial - No Credit Card
-                          </Link>
-                      </Button>
-                  )}
+                  <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
+                      <Link href="/ai-tools">
+                          <Zap className="mr-2 h-5 w-5"/>
+                          Start Using Free Tools
+                      </Link>
+                  </Button>
                   <Button size="lg" variant="outline" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base" asChild>
                       <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">
                           <PlayCircle className="mr-2 h-5 w-5"/>
@@ -180,7 +161,6 @@ export default function Home() {
                
                <div className="mt-8 text-center text-sm text-muted-foreground space-y-2 animate-fade-in-up [animation-delay:800ms]">
                   <p>⭐ Trusted by 3,000+ content creators • 600,000+ articles generated</p>
-                  <p>🔒 Free trial • No setup fees • Cancel anytime</p>
                </div>
           </div>
         </section>
@@ -335,9 +315,9 @@ export default function Home() {
               </div>
                <div className="text-center mt-12 animate-fade-in-up [animation-delay:1100ms]">
                    <Button size="lg" asChild>
-                      <Link href="/free-trial">
+                      <Link href="/ai-tools">
                           <Zap className="mr-2 h-5 w-5"/>
-                          Start Free Trial
+                          Explore All Tools
                       </Link>
                   </Button>
               </div>
@@ -431,13 +411,8 @@ export default function Home() {
                           Choose Your AI Content Creation Plan
                       </h2>
                       <p className="text-lg text-muted-foreground mt-4">
-                          Start with our free trial, then scale with plans designed for creators, marketers, and agencies
+                          All tools on this site are free. However, if you need more power and features, consider our premium plans.
                       </p>
-                      <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                          <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> 4 Free Articles to Try</div>
-                          <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> No Credit Card Required</div>
-                          <div className="flex items-center justify-center gap-2 text-muted-foreground"><CheckCircle className="w-5 h-5 text-primary"/> Cancel Anytime</div>
-                      </div>
                   </div>
 
                   {loading ? (
@@ -486,25 +461,6 @@ export default function Home() {
                       ))}
                   </div>
                   )}
-
-
-                  {/* Free Trial CTA */}
-                  <Card className="mt-12 bg-gradient-to-r from-primary/10 to-accent/10">
-                      <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-                          <div>
-                              <CardTitle className="text-2xl font-bold">Start Free - Write 4 Articles! 🎉</CardTitle>
-                              <p className="text-muted-foreground mt-2 max-w-2xl">No credit card required. Test all features with 4 complete articles including AI images. Then upgrade with <strong className="text-primary">LAUNCH25</strong> for 25% OFF!</p>
-                              <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-                                  <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> Full feature access</div>
-                                  <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> AI images included</div>
-                                  <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-green-500"/> WordPress publishing</div>
-                              </div>
-                          </div>
-                          <Button size="lg" className="text-base shrink-0" asChild>
-                              <Link href="/free-trial">Start Writing for FREE</Link>
-                          </Button>
-                      </CardContent>
-                  </Card>
                   
                   {/* bKash Payment */}
                   <div className="mt-8 text-center">

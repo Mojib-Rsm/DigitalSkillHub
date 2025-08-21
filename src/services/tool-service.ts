@@ -1,7 +1,7 @@
 
 'use server';
 
-import { getFirestore, collection, getDocs, orderBy, query, doc, getDoc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, orderBy, query, doc, updateDoc, addDoc, deleteDoc } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { revalidatePath } from 'next/cache';
 
@@ -50,7 +50,6 @@ export async function addTool(toolData: Omit<Tool, 'id'>) {
         const toolsCol = collection(db, 'tools');
         await addDoc(toolsCol, toolData);
         toolsCache = null; // Invalidate cache
-        revalidatePath('/dashboard/admin/tools');
         revalidatePath('/ai-tools');
         return { success: true };
     } catch (error) {
@@ -65,7 +64,6 @@ export async function updateTool(toolId: string, toolData: Partial<Omit<Tool, 'i
         const toolRef = doc(db, 'tools', toolId);
         await updateDoc(toolRef, toolData);
         toolsCache = null; // Invalidate cache
-        revalidatePath('/dashboard/admin/tools');
         revalidatePath('/ai-tools');
         return { success: true };
     } catch (error) {
@@ -80,7 +78,6 @@ export async function deleteTool(toolId: string) {
         const toolRef = doc(db, 'tools', toolId);
         await deleteDoc(toolRef);
         toolsCache = null; // Invalidate cache
-        revalidatePath('/dashboard/admin/tools');
         revalidatePath('/ai-tools');
         return { success: true };
     } catch (error) {
@@ -88,5 +85,3 @@ export async function deleteTool(toolId: string) {
         return { success: false, message: (error as Error).message };
     }
 }
-
-    

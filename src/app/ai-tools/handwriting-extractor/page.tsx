@@ -1,6 +1,5 @@
 
 import HandwritingExtractorForm from "@/components/handwriting-extractor-form";
-import ToolAuthGuard from "@/components/tool-auth-guard";
 import { Edit } from "lucide-react";
 
 export default function HandwritingExtractorPage() {
@@ -17,9 +16,7 @@ export default function HandwritingExtractorPage() {
       </div>
 
       <div className="max-w-4xl mx-auto">
-        <ToolAuthGuard>
-            <HandwritingExtractorForm />
-        </ToolAuthGuard>
+        <HandwritingExtractorForm />
       </div>
     </div>
   );

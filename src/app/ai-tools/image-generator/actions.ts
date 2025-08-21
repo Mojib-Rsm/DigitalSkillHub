@@ -3,7 +3,6 @@
 
 import { imageGenerator } from "@/ai/flows/image-generator";
 import { z } from "zod";
-import { saveHistoryAction } from "@/app/actions/save-history";
 
 const ImageGeneratorActionSchema = z.object({
   prompt: z.string().min(10, { message: "Please enter a more descriptive prompt (at least 10 characters)." }),
@@ -53,16 +52,6 @@ export async function generateImage(
   }
   
   if (result.imageUrl) {
-    try {
-      await saveHistoryAction({
-        tool: "image-generator",
-        input: { prompt: validatedFields.data.prompt },
-        output: { imageUrl: result.imageUrl },
-      });
-    } catch (historyError) {
-      console.error("Failed to save history:", historyError);
-      // Do not block user, just log the error
-    }
     return {
       message: "success",
       imageUrl: result.imageUrl,

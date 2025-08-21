@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Bot, Menu, ChevronDown, LogOut, UserCircle, LayoutDashboard, BrainCircuit, History } from "lucide-react";
+import { Bot, Menu, ChevronDown } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -15,18 +15,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import React, { useState, useEffect } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { logoutAction } from "@/app/logout/actions";
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
-import { app } from "@/lib/firebase";
-
+import React from "react";
 
 const navLinks = [
   { href: "/#features", label: "Features" },
@@ -44,19 +37,6 @@ const moreLinks = [
 
 export default function Header() {
   const pathname = usePathname();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const auth = getAuth(app);
-  
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsLoggedIn(!!user);
-      setLoading(false);
-    });
-    
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
-  }, [auth]);
 
   const NavLink = ({ href, label }: { href: string; label: string }) => (
     <Link
@@ -76,63 +56,11 @@ export default function Header() {
      </Link>
   )
 
-  const AuthButtons = () => (
-     <div className="flex items-center gap-2">
-        <Button variant="ghost" asChild>
-            <Link href="/login">Login</Link>
-        </Button>
-        <Button className="shadow-md" asChild>
-            <Link href="/free-trial">Start Free Trial</Link>
-        </Button>
-     </div>
-  );
-
-  const UserMenu = () => (
-    <div className="flex items-center gap-2">
-        <Button asChild>
-            <Link href="/ai-tools"><BrainCircuit className="mr-2"/> All Tools</Link>
-        </Button>
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="rounded-full w-9 h-9 p-0">
-                    <Avatar>
-                        <AvatarImage src={"https://placehold.co/40x40.png"} data-ai-hint="person avatar"/>
-                        <AvatarFallback>U</AvatarFallback>
-                    </Avatar>
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator/>
-                <DropdownMenuItem asChild>
-                    <Link href="/dashboard"><LayoutDashboard className="mr-2"/> Dashboard</Link>
-                </DropdownMenuItem>
-                 <DropdownMenuItem asChild>
-                    <Link href="/dashboard/history"><History className="mr-2"/> History</Link>
-                </DropdownMenuItem>
-                 <DropdownMenuItem asChild>
-                    <Link href="#"><UserCircle className="mr-2"/> Profile Settings</Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator/>
-                <form action={logoutAction}>
-                    <DropdownMenuItem asChild>
-                        <button type="submit" className="w-full">
-                            <LogOut className="mr-2"/>
-                            Logout
-                        </button>
-                    </DropdownMenuItem>
-                </form>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    </div>
-  );
-
-
   return (
     <>
     <div className="bg-primary text-primary-foreground text-center py-1.5 text-sm font-semibold">
         🚀 LIMITED TIME! • Get 25% OFF with code <strong className="underline">LAUNCH25</strong>
-        <Link href="#pricing" className="ml-4 underline">Start Free Trial</Link>
+        <Link href="#pricing" className="ml-4 underline">View Plans</Link>
     </div>
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-20 items-center justify-between px-4">
@@ -160,11 +88,7 @@ export default function Header() {
                 </DropdownMenuContent>
             </DropdownMenu>
         </nav>
-        <div className="hidden lg:flex items-center gap-4">
-          {loading ? null : isLoggedIn ? <UserMenu/> : <AuthButtons/>}
-        </div>
         <div className="lg:hidden flex items-center gap-2">
-           {loading ? null : isLoggedIn ? <UserMenu/> : (
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
@@ -186,12 +110,8 @@ export default function Header() {
                       <MobileNavLink key={link.href} href={link.href} label={link.label} />
                   ))}
                 </div>
-                <div className="mt-8 flex flex-col gap-4">
-                   {isLoggedIn ? <UserMenu/> : <AuthButtons/>}
-                </div>
               </SheetContent>
             </Sheet>
-           )}
         </div>
       </div>
     </header>

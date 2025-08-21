@@ -3,7 +3,6 @@
 
 import { videoGenerator } from "@/ai/flows/video-generator";
 import { z } from "zod";
-import { saveHistoryAction } from "@/app/actions/save-history";
 
 
 const VideoGeneratorActionSchema = z.object({
@@ -57,15 +56,6 @@ export async function generateVideo(
   }
   
   if (result.videoUrl) {
-    try {
-        await saveHistoryAction({
-            tool: 'video-generator',
-            input: { prompt: validatedFields.data.prompt },
-            output: { videoUrl: result.videoUrl }
-        });
-    } catch (historyError) {
-        console.error('Failed to save history:', historyError);
-    }
     return {
         message: "success",
         videoUrl: result.videoUrl,
