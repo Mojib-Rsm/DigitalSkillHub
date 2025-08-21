@@ -2,8 +2,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import Header from '@/components/layout/header';
-import Footer from '@/components/layout/footer';
 import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
@@ -37,11 +35,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-            <div className="flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-grow">{children}</main>
-                <Footer />
-            </div>
+            {children}
             <Toaster />
         </ThemeProvider>
       </body>
