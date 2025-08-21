@@ -57,7 +57,7 @@ export default async function UsersPage() {
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell>{user.credits}</TableCell>
                                     <TableCell>
-                                        <Badge variant="secondary">Active</Badge>
+                                        <Badge variant="secondary">{user.status}</Badge>
                                     </TableCell>
                                     <TableCell>
                                         <UserRoleUpdater userId={user.id} currentRole={user.role} />

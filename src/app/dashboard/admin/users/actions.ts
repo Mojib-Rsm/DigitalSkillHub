@@ -18,6 +18,10 @@ export async function updateUserRole(userId: string, role: 'user' | 'admin') {
   if (currentUser?.role !== 'admin') {
     return { success: false, message: 'Permission denied. You must be an admin to change roles.' };
   }
+  
+  if (currentUser?.id === userId) {
+    return { success: false, message: 'Admins cannot change their own role.' };
+  }
 
   const validatedData = UpdateRoleSchema.safeParse({ userId, role });
 

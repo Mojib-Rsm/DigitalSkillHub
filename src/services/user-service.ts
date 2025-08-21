@@ -1,3 +1,4 @@
+
 'use server';
 
 import { headers } from 'next/headers';
@@ -11,6 +12,7 @@ export type UserProfile = {
   role: 'admin' | 'user';
   credits: number;
   profile_image: string;
+  status: 'active' | 'banned';
 };
 
 export async function getCurrentUser(): Promise<UserProfile | null> {
@@ -24,11 +26,16 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
 
   try {
     const db = getFirestore(app);
+    // The document ID in the 'users' collection is the user's email, not UID.
+    // This needs to be consistent with how users are created/queried.
+    // Let's assume for now the login/signup logic correctly uses a unique ID (like UID or email)
+    // The seed data uses email as ID, so let's stick with that for now.
+    // But a real app should use the Firebase Auth UID.
     const userRef = doc(db, 'users', uid);
     const userSnapshot = await getDoc(userRef);
 
     if (!userSnapshot.exists()) {
-        console.warn(`No user found with UID: ${uid}`);
+        console.warn(`No user found with ID: ${uid}`);
         return null;
     }
     
@@ -41,6 +48,7 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
         role: userData.role,
         credits: userData.credits,
         profile_image: userData.profile_image,
+        status: userData.status,
     } as UserProfile;
 
   } catch (error) {
@@ -74,6 +82,7 @@ export async function getAllUsers(): Promise<UserProfile[]> {
                 role: data.role,
                 credits: data.credits,
                 profile_image: data.profile_image,
+                status: data.status,
              } as UserProfile;
         });
     } catch (error) {
