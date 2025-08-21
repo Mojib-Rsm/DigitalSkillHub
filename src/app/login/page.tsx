@@ -4,7 +4,7 @@
 import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { loginAction } from "./actions";
 import { Bot, Sparkles, LogIn, Chrome } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getAuth, onAuthStateChanged, signInWithCustomToken, User } from "firebase/auth";
+import { getAuth, signInWithCustomToken, User } from "firebase/auth";
 import { app } from "@/lib/firebase";
 
 function SubmitButton() {
@@ -39,27 +39,25 @@ export default function LoginPage() {
     const [state, formAction] = useActionState(loginAction, initialState);
     const { toast } = useToast();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const auth = getAuth(app);
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                router.push('/dashboard');
-            }
-        });
-        return () => unsubscribe();
-    }, [auth, router]);
 
     useEffect(() => {
         if (state.success && state.customToken) {
             signInWithCustomToken(auth, state.customToken)
-                .then((userCredential) => {
+                .then(async (userCredential) => {
                     const user = userCredential.user;
+                    const idToken = await user.getIdToken();
+
+                    // Set cookie
+                    document.cookie = `firebaseIdToken=${idToken}; path=/; max-age=3600; samesite=lax`;
+
                      toast({
                         title: "Login Successful!",
-                        description: `Welcome back, ${user.displayName || user.email}.`,
+                        description: `Welcome back.`,
                     });
-                    router.push('/dashboard'); 
+                    const redirectUrl = searchParams.get('redirect') || '/dashboard';
+                    router.push(redirectUrl); 
                 })
                 .catch((error) => {
                     console.error("Custom token sign-in error:", error.code, error.message);
@@ -76,7 +74,7 @@ export default function LoginPage() {
                 description: state.message,
             });
         }
-    }, [state, auth, toast, router]);
+    }, [state, auth, toast, router, searchParams]);
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4">

@@ -1,11 +1,7 @@
 
-"use client";
-
-import dynamic from 'next/dynamic';
 import { Clapperboard } from "lucide-react";
-
-// Dynamically import the form component and disable server-side rendering
-const ImageToVideoGeneratorForm = dynamic(() => import('@/components/image-to-video-generator-form'), { ssr: false });
+import ImageToVideoGeneratorForm from "@/components/image-to-video-generator-form";
+import ToolAuthGuard from "@/components/tool-auth-guard";
 
 export default function ImageToVideoGeneratorPage() {
   return (
@@ -21,7 +17,9 @@ export default function ImageToVideoGeneratorPage() {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        <ImageToVideoGeneratorForm />
+        <ToolAuthGuard>
+            <ImageToVideoGeneratorForm />
+        </ToolAuthGuard>
       </div>
     </div>
   );

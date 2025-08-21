@@ -85,13 +85,19 @@ function simpleHash(password: string): string {
 }
 
 
-type FormState = {
+type SignUpFormState = {
   message: string;
   fields?: Record<string, string>;
   issues?: string[];
   step?: "1" | "2" | "success";
   success?: boolean;
 };
+
+type VerifyFormState = {
+    message: string;
+    success: boolean;
+    customToken?: string;
+}
 
 
 async function sendOTP(email: string, phone: string) {
@@ -128,9 +134,9 @@ async function sendOTP(email: string, phone: string) {
 
 
 export async function signupAction(
-  prevState: FormState,
+  prevState: SignUpFormState,
   formData: FormData
-): Promise<FormState> {
+): Promise<SignUpFormState> {
   const fields = Object.fromEntries(formData.entries()) as Record<string, string>;
 
   const validatedFields = SignUpStep1Schema.safeParse(fields);
@@ -195,9 +201,9 @@ export async function signupAction(
 
 
 export async function verifyAndCreateUserAction(
-    prevState: { message: string, success: boolean },
+    prevState: VerifyFormState,
     formData: FormData
-): Promise<{ message: string, success: boolean }> {
+): Promise<VerifyFormState> {
     const fields = Object.fromEntries(formData.entries());
     const validatedFields = VerifyAndCreateUserSchema.safeParse(fields);
 
@@ -227,12 +233,12 @@ export async function verifyAndCreateUserAction(
         }
 
         // OTP is correct, create user and delete OTP
-        const uid = crypto.randomUUID();
-        const userRef = db.collection("users").doc(uid);
+        // Use a transaction to ensure atomicity
+        const userRef = db.collection("users").doc(); // Let firestore generate a new ID
         const batch = db.batch();
 
         batch.set(userRef, {
-            uid,
+            uid: userRef.id,
             name,
             email,
             phone,
@@ -244,7 +250,9 @@ export async function verifyAndCreateUserAction(
         
         await batch.commit();
 
-        return { success: true, message: "Account created successfully!" };
+        const customToken = await admin.auth().createCustomToken(userRef.id);
+
+        return { success: true, message: "Account created successfully!", customToken };
 
     } catch (error) {
         console.error("User creation error:", error);

@@ -3,6 +3,9 @@
 
 import { videoGenerator } from "@/ai/flows/video-generator";
 import { z } from "zod";
+import { saveHistoryAction } from "@/app/actions/save-history";
+import { headers } from "next/headers";
+
 
 const VideoGeneratorActionSchema = z.object({
   prompt: z.string().min(10, { message: "Please enter a more descriptive prompt (at least 10 characters)." }),
@@ -19,6 +22,9 @@ export async function generateVideo(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
+  const headersList = headers();
+  const uid = headersList.get("uid");
+
   const validatedFields = VideoGeneratorActionSchema.safeParse({
     prompt: formData.get("prompt"),
   });
@@ -34,16 +40,9 @@ export async function generateVideo(
     };
   }
   
+  let result;
   try {
-    const result = await videoGenerator(validatedFields.data);
-    if (result.videoUrl) {
-      return {
-        message: "success",
-        videoUrl: result.videoUrl,
-      };
-    } else {
-        return { message: "Failed to generate video. Please try again." }
-    }
+    result = await videoGenerator(validatedFields.data);
   } catch (error) {
     console.error("Error in generateVideo action:", error);
     if (error instanceof Error) {
@@ -58,5 +57,26 @@ export async function generateVideo(
     return {
       message: "An unexpected error occurred. Please try again.",
     };
+  }
+  
+  if (result.videoUrl) {
+    if (uid) {
+        try {
+            await saveHistoryAction({
+                uid,
+                tool: 'video-generator',
+                input: { prompt: validatedFields.data.prompt },
+                output: { videoUrl: result.videoUrl }
+            });
+        } catch (historyError) {
+            console.error('Failed to save history:', historyError);
+        }
+    }
+    return {
+        message: "success",
+        videoUrl: result.videoUrl,
+    };
+  } else {
+      return { message: "Failed to generate video. Please try again." }
   }
 }

@@ -1,11 +1,7 @@
 
-"use client";
-
-import dynamic from 'next/dynamic';
 import { Film } from "lucide-react";
-
-// Dynamically import the form component and disable server-side rendering
-const VideoGeneratorForm = dynamic(() => import('@/components/video-generator-form'), { ssr: false });
+import VideoGeneratorForm from "@/components/video-generator-form";
+import ToolAuthGuard from "@/components/tool-auth-guard";
 
 export default function VideoGeneratorPage() {
   return (
@@ -21,7 +17,9 @@ export default function VideoGeneratorPage() {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        <VideoGeneratorForm />
+        <ToolAuthGuard>
+            <VideoGeneratorForm />
+        </ToolAuthGuard>
       </div>
     </div>
   );

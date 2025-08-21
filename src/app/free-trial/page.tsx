@@ -4,7 +4,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { signupAction, verifyAndCreateUserAction } from "./actions";
 import { Bot, CheckCircle, Sparkles, Zap, ArrowRight, Lock, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, signInWithCustomToken } from "firebase/auth";
 import { app } from "@/lib/firebase";
 
 function SignUpSubmitButton() {
@@ -57,25 +57,14 @@ function OtpSubmitButton() {
 
 export default function FreeTrialPage() {
     const [signupState, signupFormAction] = useActionState(signupAction, { message: "", issues: [], fields: {}, step: "1", success: false });
-    const [verifyState, verifyFormAction] = useActionState(verifyAndCreateUserAction, { message: "", success: false });
+    const [verifyState, verifyFormAction] = useActionState(verifyAndCreateUserAction, { message: "", success: false, customToken: "" });
     
     const { toast } = useToast();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const auth = getAuth(app);
     
     const [formStep, setFormStep] = useState<"1" | "2" | "success">("1");
-
-     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // If user is logged in, redirect to dashboard
-                router.push('/dashboard');
-            }
-        });
-
-        // Cleanup subscription on unmount
-        return () => unsubscribe();
-    }, [auth, router]);
 
     useEffect(() => {
         if (signupState.step === "2" && signupState.success) {
@@ -95,13 +84,31 @@ export default function FreeTrialPage() {
     }, [signupState, toast]);
 
     useEffect(() => {
-        if (verifyState.success) {
-            setFormStep("success");
-            toast({
-                title: "Account Created!",
-                description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
-            });
-            // The onAuthStateChanged listener should handle the redirect after login state is confirmed.
+        if (verifyState.success && verifyState.customToken) {
+            signInWithCustomToken(auth, verifyState.customToken)
+                .then(async (userCredential) => {
+                    const user = userCredential.user;
+                    const idToken = await user.getIdToken();
+                    
+                    // Set cookie
+                    document.cookie = `firebaseIdToken=${idToken}; path=/; max-age=3600; samesite=lax`;
+
+                    setFormStep("success");
+                    toast({
+                        title: "Account Created!",
+                        description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
+                    });
+                     const redirectUrl = searchParams.get('redirect') || '/dashboard';
+                     router.push(redirectUrl);
+                })
+                .catch((error) => {
+                     console.error("Custom token sign-in error:", error.code, error.message);
+                    toast({
+                        variant: "destructive",
+                        title: "Login Failed",
+                        description: `Could not complete sign in after verification. ${error.message}`,
+                    });
+                });
         } else if (verifyState.message && !verifyState.success) {
             toast({
                 title: "Verification Failed",
@@ -109,7 +116,7 @@ export default function FreeTrialPage() {
                 variant: "destructive",
             });
         }
-    }, [verifyState, toast]);
+    }, [verifyState, toast, auth, router, searchParams]);
 
     
     return (

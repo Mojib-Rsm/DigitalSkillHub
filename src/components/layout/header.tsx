@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Bot, Menu, ChevronDown, LogOut, UserCircle, LayoutDashboard, BrainCircuit } from "lucide-react";
+import { Bot, Menu, ChevronDown, LogOut, UserCircle, LayoutDashboard, BrainCircuit, History } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -57,6 +57,8 @@ export default function Header() {
   const handleLogout = async () => {
     try {
       await firebaseSignOut(auth);
+      // Clear cookie
+      document.cookie = "firebaseIdToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       // Optional: redirect to home or login page after logout
       window.location.href = '/login';
     } catch (error) {
@@ -112,6 +114,9 @@ export default function Header() {
                 <DropdownMenuSeparator/>
                 <DropdownMenuItem asChild>
                     <Link href="/dashboard"><LayoutDashboard className="mr-2"/> Dashboard</Link>
+                </DropdownMenuItem>
+                 <DropdownMenuItem asChild>
+                    <Link href="/dashboard/history"><History className="mr-2"/> History</Link>
                 </DropdownMenuItem>
                  <DropdownMenuItem asChild>
                     <Link href="#"><UserCircle className="mr-2"/> Profile Settings</Link>

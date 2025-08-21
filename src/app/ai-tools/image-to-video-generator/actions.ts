@@ -3,6 +3,8 @@
 
 import { imageToVideoGenerator } from "@/ai/flows/image-to-video-generator";
 import { z } from "zod";
+import { saveHistoryAction } from "@/app/actions/save-history";
+import { headers } from "next/headers";
 
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -30,6 +32,9 @@ export async function generateVideoFromImage(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
+  const headersList = headers();
+  const uid = headersList.get("uid");
+
   const validatedFields = ImageToVideoGeneratorActionSchema.safeParse({
     prompt: formData.get("prompt"),
     photo: formData.get("photo"),
@@ -46,20 +51,14 @@ export async function generateVideoFromImage(
     };
   }
   
+  let result;
   try {
     const { prompt, photo } = validatedFields.data;
     const photoBuffer = Buffer.from(await photo.arrayBuffer());
     const photoDataUri = `data:${photo.type};base64,${photoBuffer.toString('base64')}`;
 
-    const result = await imageToVideoGenerator({ prompt, photoDataUri });
-    if (result.videoUrl) {
-      return {
-        message: "success",
-        videoUrl: result.videoUrl,
-      };
-    } else {
-        return { message: "Failed to generate video. Please try again." }
-    }
+    result = await imageToVideoGenerator({ prompt, photoDataUri });
+    
   } catch (error) {
     console.error("Error in generateVideo action:", error);
     if (error instanceof Error) {
@@ -74,5 +73,26 @@ export async function generateVideoFromImage(
     return {
       message: "An unexpected error occurred. Please try again.",
     };
+  }
+
+  if (result.videoUrl) {
+    if (uid) {
+        try {
+            await saveHistoryAction({
+                uid,
+                tool: 'image-to-video-generator',
+                input: { prompt: validatedFields.data.prompt },
+                output: { videoUrl: result.videoUrl }
+            });
+        } catch (historyError) {
+            console.error('Failed to save history:', historyError);
+        }
+    }
+    return {
+        message: "success",
+        videoUrl: result.videoUrl,
+    };
+  } else {
+      return { message: "Failed to generate video. Please try again." }
   }
 }

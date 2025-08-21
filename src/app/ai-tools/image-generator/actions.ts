@@ -3,6 +3,8 @@
 
 import { imageGenerator } from "@/ai/flows/image-generator";
 import { z } from "zod";
+import { saveHistoryAction } from "@/app/actions/save-history";
+import { headers } from "next/headers";
 
 const ImageGeneratorActionSchema = z.object({
   prompt: z.string().min(10, { message: "Please enter a more descriptive prompt (at least 10 characters)." }),
@@ -19,6 +21,9 @@ export async function generateImage(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
+  const headersList = headers();
+  const uid = headersList.get("uid");
+
   const validatedFields = ImageGeneratorActionSchema.safeParse({
     prompt: formData.get("prompt"),
   });
@@ -34,16 +39,9 @@ export async function generateImage(
     };
   }
   
+  let result;
   try {
-    const result = await imageGenerator(validatedFields.data);
-    if (result.imageUrl) {
-      return {
-        message: "success",
-        imageUrl: result.imageUrl,
-      };
-    } else {
-        return { message: "Failed to generate image. The model did not return an image URL." }
-    }
+    result = await imageGenerator(validatedFields.data);
   } catch (error) {
     console.error("Image generation action error:", error);
     if (error instanceof Error) {
@@ -55,5 +53,27 @@ export async function generateImage(
     return {
       message: "ছবি তৈরি করতে একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। অনুগ্রহ করে কয়েক মিনিট পর আবার চেষ্টা করুন।",
     };
+  }
+  
+  if (result.imageUrl) {
+    if (uid) {
+      try {
+        await saveHistoryAction({
+          uid,
+          tool: "image-generator",
+          input: { prompt: validatedFields.data.prompt },
+          output: { imageUrl: result.imageUrl },
+        });
+      } catch (historyError) {
+        console.error("Failed to save history:", historyError);
+        // Do not block user, just log the error
+      }
+    }
+    return {
+      message: "success",
+      imageUrl: result.imageUrl,
+    };
+  } else {
+      return { message: "Failed to generate image. The model did not return an image URL." }
   }
 }

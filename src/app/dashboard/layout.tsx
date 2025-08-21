@@ -30,7 +30,8 @@ import {
   LayoutGrid,
   ChevronDown,
   Moon,
-  Coins
+  Coins,
+  History
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -102,9 +103,9 @@ export default function DashboardLayout({
                     </SidebarMenuSub>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton>
-                    <Library />
-                    <span>Library</span>
+                  <SidebarMenuButton href="/dashboard/history">
+                    <History />
+                    <span>History</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>

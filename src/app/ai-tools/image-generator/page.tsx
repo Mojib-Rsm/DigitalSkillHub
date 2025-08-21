@@ -1,5 +1,6 @@
 
 import ImageGeneratorForm from "@/components/image-generator-form";
+import ToolAuthGuard from "@/components/tool-auth-guard";
 import { Image } from "lucide-react";
 
 export default function ImageGeneratorPage() {
@@ -16,7 +17,9 @@ export default function ImageGeneratorPage() {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        <ImageGeneratorForm />
+        <ToolAuthGuard>
+            <ImageGeneratorForm />
+        </ToolAuthGuard>
       </div>
     </div>
   );
