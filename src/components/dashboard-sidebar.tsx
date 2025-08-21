@@ -64,7 +64,7 @@ export default function DashboardSidebar({
         <SidebarContent className="p-2">
             <SidebarMenu>
                  <SidebarMenuItem>
-                  <SidebarMenuButton href="/dashboard/user" >
+                  <SidebarMenuButton href="/dashboard" >
                     <LayoutGrid />
                     <span>My Dashboard</span>
                   </SidebarMenuButton>
@@ -129,12 +129,6 @@ export default function DashboardSidebar({
                         </SidebarMenuButton>
                          <SidebarMenuSub>
                              <SidebarMenuSubItem>
-                                <SidebarMenuSubButton href="/dashboard">
-                                    <LineChart />
-                                    <span>Admin Dashboard</span>
-                                </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                            <SidebarMenuSubItem>
                                 <SidebarMenuSubButton href="/dashboard/admin/users">
                                     <Users />
                                     <span>Users</span>
@@ -220,5 +214,3 @@ export default function DashboardSidebar({
     </SidebarProvider>
   );
 }
-
-    
