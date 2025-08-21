@@ -10,7 +10,6 @@ import { revalidatePath } from 'next/cache';
 // Schema for updating profile information
 const ProfileSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters."),
-  email: z.string().email("Please enter a valid email address."),
 });
 
 // Schema for changing the password
@@ -40,7 +39,6 @@ export async function updateUserProfileAction(
 
   const validatedFields = ProfileSchema.safeParse({
     name: formData.get('name'),
-    email: formData.get('email'),
   });
 
   if (!validatedFields.success) {

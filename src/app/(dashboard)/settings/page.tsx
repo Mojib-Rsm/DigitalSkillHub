@@ -51,7 +51,7 @@ function ProfileForm({ user }: { user: UserProfile }) {
             </div>
             <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" type="email" defaultValue={user.email} />
+                <Input id="email" name="email" type="email" defaultValue={user.email} disabled />
             </div>
              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
