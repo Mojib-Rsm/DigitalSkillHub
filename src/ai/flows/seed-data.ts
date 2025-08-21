@@ -10,8 +10,7 @@ import { ai } from '@/ai/genkit';
 import { z } from 'zod';
 import admin from 'firebase-admin';
 import { app } from '@/lib/firebase-admin';
-import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, tools, users } from '@/lib/demo-data';
-import crypto from 'crypto';
+import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, tools } from '@/lib/demo-data';
 
 const SeedDataOutputSchema = z.object({
   success: z.boolean(),
@@ -19,20 +18,12 @@ const SeedDataOutputSchema = z.object({
   coursesAdded: z.number(),
   blogPostsAdded: z.number(),
   jobsAdded: z.number(),
-  usersAdded: z.number(),
   toolsAdded: z.number(),
   pricingPlansAdded: z.number(),
   testimonialsAdded: z.number(),
 });
 
 export type SeedDataOutput = z.infer<typeof SeedDataOutputSchema>;
-
-// Helper function to hash password - must be identical to the one in free-trial/actions.ts
-function simpleHash(password: string): string {
-    const salt = crypto.randomBytes(16).toString('hex');
-    const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-    return `${salt}:${hash}`;
-}
 
 
 export const seedDataFlow = ai.defineFlow(
@@ -51,7 +42,6 @@ export const seedDataFlow = ai.defineFlow(
     let coursesAdded = 0;
     let blogPostsAdded = 0;
     let jobsAdded = 0;
-    let usersAdded = 0;
     let toolsAdded = 0;
     let pricingPlansAdded = 0;
     let testimonialsAdded = 0;
@@ -81,19 +71,6 @@ export const seedDataFlow = ai.defineFlow(
         jobsAdded++;
       });
 
-       // Seed Users
-      const usersCollection = db.collection('users');
-      users.forEach(user => {
-        const docRef = usersCollection.doc(user.uid); // Use predefined UID
-        const { uid, password, ...userData } = user;
-        batch.set(docRef, { 
-            ...userData, 
-            password: simpleHash(password), // Hash the password before storing
-            createdAt: admin.firestore.FieldValue.serverTimestamp()
-        });
-        usersAdded++;
-      });
-
       // Seed Tools
       const toolsCollection = db.collection('tools');
       tools.forEach(tool => {
@@ -120,7 +97,7 @@ export const seedDataFlow = ai.defineFlow(
 
       await batch.commit();
       
-      const message = `Successfully seeded data: ${coursesAdded} courses, ${blogPostsAdded} blog posts, ${jobsAdded} jobs, ${usersAdded} users, ${toolsAdded} tools, ${pricingPlansAdded} pricing plans, ${testimonialsAdded} testimonials.`;
+      const message = `Successfully seeded data: ${coursesAdded} courses, ${blogPostsAdded} blog posts, ${jobsAdded} jobs, ${toolsAdded} tools, ${pricingPlansAdded} pricing plans, ${testimonialsAdded} testimonials.`;
       console.log(message);
       return {
         success: true,
@@ -128,7 +105,6 @@ export const seedDataFlow = ai.defineFlow(
         coursesAdded,
         blogPostsAdded,
         jobsAdded,
-        usersAdded,
         toolsAdded,
         pricingPlansAdded,
         testimonialsAdded
@@ -143,7 +119,6 @@ export const seedDataFlow = ai.defineFlow(
           coursesAdded: 0,
           blogPostsAdded: 0,
           jobsAdded: 0,
-          usersAdded: 0,
           toolsAdded: 0,
           pricingPlansAdded: 0,
           testimonialsAdded: 0,
@@ -155,7 +130,6 @@ export const seedDataFlow = ai.defineFlow(
           coursesAdded: 0,
           blogPostsAdded: 0,
           jobsAdded: 0,
-          usersAdded: 0,
           toolsAdded: 0,
           pricingPlansAdded: 0,
           testimonialsAdded: 0,
