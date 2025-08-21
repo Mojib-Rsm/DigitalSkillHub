@@ -3,54 +3,51 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
+    
     // Helper function to check if a user is authenticated
     function isAuthenticated() {
       return request.auth != null;
     }
-
-    // Helper function to check if the requesting user's UID matches the document's uid field
-    function isOwner(resource) {
-      return request.auth.uid == resource.data.uid;
-    }
-
-    // Publicly readable collections
+    
+    // PUBLIC: Allow anyone to read these collections
     match /courses/{courseId} {
       allow read: if true;
-      allow write: if false; // Nobody can write
+      allow write: if false; 
     }
-
     match /blog/{postId} {
       allow read: if true;
       allow write: if false;
     }
-    
     match /jobs/{jobId} {
       allow read: if true;
       allow write: if false;
     }
-
-    match /pricing/{planId} {
-        allow read: if true;
-        allow write: if false;
+     match /pricing/{planId} {
+      allow read: if true;
+      allow write: if false;
+    }
+     match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow write: if false;
     }
 
-    match /testimonials/{testimonialId} {
-        allow read: if true;
-        allow write: if false;
-    }
-    
-    // Users can only manage their own documents
-    match /users/{userId} {
-      allow read, update: if request.auth.uid == userId;
-      allow create: if isAuthenticated(); // Any authenticated user can create their own user doc
-    }
-    
-    // History can only be created and read by the owner
+    // HISTORY: Users can only access their own history
     match /history/{historyId} {
-      allow read: if isAuthenticated() && isOwner(get(path));
-      allow create: if isAuthenticated() && isOwner(request.resource);
-      allow update, delete: if false; // Nobody can update or delete history
+      allow read, delete: if isAuthenticated() && request.auth.uid == resource.data.uid;
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.uid;
+    }
+    
+    // USERS: Users can read their own data, but not others. No one can write directly.
+    match /users/{userId} {
+        allow read: if isAuthenticated() && request.auth.uid == userId;
+        allow create, update, delete: if false; // Cannot be changed from client
+    }
+    
+    // Default deny all other reads/writes
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
+
+    
