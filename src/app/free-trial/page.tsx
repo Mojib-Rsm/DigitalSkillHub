@@ -1,9 +1,9 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -36,7 +36,6 @@ function SignUpSubmitButton() {
 
 export default function FreeTrialPage() {
     const { toast } = useToast();
-    const router = useRouter();
     const searchParams = useSearchParams();
     
     const initialState = { message: "", success: false, issues: [], fields: {} };
@@ -49,7 +48,8 @@ export default function FreeTrialPage() {
                 description: "Welcome to TotthoAi. You will be redirected to the dashboard.",
             });
             const redirectUrl = searchParams.get('redirect') || '/dashboard';
-            router.push(redirectUrl);
+            // Force a full page navigation to ensure the cookie is sent with the new request.
+            window.location.href = redirectUrl;
         } else if (state.message && state.message !== 'Validation Error') {
             toast({
                 variant: "destructive",
@@ -57,7 +57,7 @@ export default function FreeTrialPage() {
                 description: state.message,
             });
         }
-    }, [state, toast, router, searchParams]);
+    }, [state, toast, searchParams]);
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4" suppressHydrationWarning={true}>

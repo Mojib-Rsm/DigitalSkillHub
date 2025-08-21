@@ -36,7 +36,6 @@ function LoginSubmitButton() {
 
 export default function LoginPage() {
     const { toast } = useToast();
-    const router = useRouter();
     const searchParams = useSearchParams();
 
     const initialState = { message: "", success: false };
@@ -49,8 +48,8 @@ export default function LoginPage() {
                 description: "Welcome back. Redirecting you to the dashboard...",
             });
             const redirectUrl = searchParams.get('redirect') || '/dashboard';
-            // Use router.replace to avoid adding the login page to the history stack.
-            router.replace(redirectUrl);
+            // Force a full page navigation to ensure the cookie is sent with the new request.
+            window.location.href = redirectUrl;
         } else if (state.message) {
             toast({
                 variant: "destructive",
@@ -58,7 +57,7 @@ export default function LoginPage() {
                 description: state.message,
             });
         }
-    }, [state, toast, router, searchParams]);
+    }, [state, toast, searchParams]);
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4" suppressHydrationWarning={true}>
@@ -81,7 +80,7 @@ export default function LoginPage() {
                         <CardTitle>Login</CardTitle>
                         <CardDescription>Enter your credentials to access your account.</CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-8">
                         <form action={formAction} className="space-y-6">
                             <div className="grid grid-cols-1 gap-4">
                                 <Button variant="outline" className="py-6 text-base" type="button" disabled>
