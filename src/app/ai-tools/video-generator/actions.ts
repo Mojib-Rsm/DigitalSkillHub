@@ -4,7 +4,6 @@
 import { videoGenerator } from "@/ai/flows/video-generator";
 import { z } from "zod";
 import { saveHistoryAction } from "@/app/actions/save-history";
-import { headers } from "next/headers";
 
 
 const VideoGeneratorActionSchema = z.object({
@@ -22,8 +21,6 @@ export async function generateVideo(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
-  const headersList = headers();
-  const uid = headersList.get("uid");
 
   const validatedFields = VideoGeneratorActionSchema.safeParse({
     prompt: formData.get("prompt"),
@@ -60,17 +57,14 @@ export async function generateVideo(
   }
   
   if (result.videoUrl) {
-    if (uid) {
-        try {
-            await saveHistoryAction({
-                uid,
-                tool: 'video-generator',
-                input: { prompt: validatedFields.data.prompt },
-                output: { videoUrl: result.videoUrl }
-            });
-        } catch (historyError) {
-            console.error('Failed to save history:', historyError);
-        }
+    try {
+        await saveHistoryAction({
+            tool: 'video-generator',
+            input: { prompt: validatedFields.data.prompt },
+            output: { videoUrl: result.videoUrl }
+        });
+    } catch (historyError) {
+        console.error('Failed to save history:', historyError);
     }
     return {
         message: "success",

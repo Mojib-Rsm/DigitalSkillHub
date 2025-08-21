@@ -1,7 +1,7 @@
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { admin } from './lib/firebase-admin';
+import { jwtDecode } from 'jwt-decode';
 
 // The paths that require authentication
 const protectedPaths = [
@@ -13,6 +13,12 @@ const protectedPaths = [
     '/ai-tools/handwriting-extractor'
 ];
 
+interface DecodedToken {
+    uid: string;
+    [key: string]: any;
+}
+
+
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
@@ -22,7 +28,6 @@ export async function middleware(request: NextRequest) {
         const token = request.cookies.get('firebaseIdToken')?.value;
 
         if (!token) {
-            console.log('Middleware: No token found, redirecting to login.');
             const url = request.nextUrl.clone();
             url.pathname = '/login';
             url.searchParams.set('redirect', pathname);
@@ -30,17 +35,15 @@ export async function middleware(request: NextRequest) {
         }
 
         try {
-            if (!admin.apps.length) {
-                console.error("Firebase Admin SDK not initialized in middleware.");
-                // Potentially redirect to an error page or allow access with a warning
-                return NextResponse.next();
-            }
-            const decodedToken = await admin.auth().verifyIdToken(token);
+            // Decode the token to get the UID without verification in the edge.
+            // The actual verification will happen in server components/actions.
+            const decodedToken = jwtDecode<DecodedToken>(token);
             const uid = decodedToken.uid;
 
-            // Add the user's UID to the request headers
+            // Add the user's UID to the request headers for use in server components.
             const requestHeaders = new Headers(request.headers);
-            requestHeaders.set('uid', uid);
+            requestHeaders.set('x-uid', uid);
+            requestHeaders.set('x-id-token', token);
 
             return NextResponse.next({
                 request: {
