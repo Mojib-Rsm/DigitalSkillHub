@@ -17,6 +17,10 @@ export default async function VideoGeneratorPage() {
         description={tool.description}
         icon={<Film className="w-12 h-12 text-primary" />}
         relatedTools={relatedTools}
+        helperTool={{
+            buttonText: "প্রম্পট তৈরি করুন",
+            href: "/ai-tools/prompt-generator"
+        }}
     >
       <VideoGeneratorForm />
     </ToolPageLayout>

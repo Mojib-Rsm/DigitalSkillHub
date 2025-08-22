@@ -17,6 +17,10 @@ export default async function SocialMediaPostGeneratorPage() {
         description={tool.description}
         icon={<Hash className="w-12 h-12 text-primary" />}
         relatedTools={relatedTools}
+        helperTool={{
+            buttonText: "টপিক খুঁজুন",
+            href: "/ai-tools/blog-topic-generator"
+        }}
     >
       <SocialMediaPostGeneratorForm />
     </ToolPageLayout>

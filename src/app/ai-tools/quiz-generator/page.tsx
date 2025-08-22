@@ -17,6 +17,10 @@ export default async function QuizGeneratorPage() {
         description={tool.description}
         icon={<HelpCircle className="w-12 h-12 text-primary" />}
         relatedTools={relatedTools}
+        helperTool={{
+            buttonText: "পাঠ্য সারাংশ করুন",
+            href: "/ai-tools/note-summarizer"
+        }}
     >
       <QuizGeneratorForm />
     </ToolPageLayout>

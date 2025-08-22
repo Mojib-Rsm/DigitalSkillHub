@@ -17,6 +17,10 @@ export default async function CoverLetterGeneratorPage() {
         description={tool.description}
         icon={<FileSignature className="w-12 h-12 text-primary" />}
         relatedTools={relatedTools}
+        helperTool={{
+            buttonText: "সিভি উন্নত করুন",
+            href: "/ai-tools/resume-helper"
+        }}
     >
       <CoverLetterGeneratorForm />
     </ToolPageLayout>

@@ -17,6 +17,10 @@ export default async function ImageToVideoGeneratorPage() {
         description={tool.description}
         icon={<Clapperboard className="w-12 h-12 text-primary" />}
         relatedTools={relatedTools}
+        helperTool={{
+            buttonText: "প্রম্পট তৈরি করুন",
+            href: "/ai-tools/prompt-generator"
+        }}
     >
         <ImageToVideoGeneratorForm />
     </ToolPageLayout>

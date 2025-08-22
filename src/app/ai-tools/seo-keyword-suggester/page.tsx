@@ -17,6 +17,10 @@ export default async function SeoKeywordSuggesterPage() {
         description={tool.description}
         icon={<BarChart className="w-12 h-12 text-primary" />}
         relatedTools={relatedTools}
+        helperTool={{
+            buttonText: "বিষয়বস্তু আইডিয়া নিন",
+            href: "/ai-tools/blog-topic-generator"
+        }}
     >
       <SeoKeywordSuggesterForm />
     </ToolPageLayout>

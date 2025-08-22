@@ -17,6 +17,10 @@ export default async function OneClickWriterPage() {
             description={tool.description}
             icon={<Sparkles className="w-12 h-12 text-primary" />}
             relatedTools={relatedTools}
+            helperTool={{
+                buttonText: "বিষয়বস্তু আইডিয়া নিন",
+                href: "/ai-tools/blog-topic-generator"
+            }}
         >
             <div className="max-w-4xl mx-auto">
                 <OneClickWriterForm />

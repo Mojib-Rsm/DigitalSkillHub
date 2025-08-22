@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
-import { ArrowLeft, ArrowRight, Bot } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bot, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
@@ -37,6 +37,10 @@ const iconComponents: { [key: string]: React.ElementType } = {
     Sparkles: require("lucide-react").Sparkles,
 };
 
+type HelperTool = {
+    buttonText: string;
+    href: string;
+}
 
 export default function ToolPageLayout({
     children,
@@ -44,12 +48,14 @@ export default function ToolPageLayout({
     description,
     icon,
     relatedTools,
+    helperTool,
 }: {
     children: React.ReactNode;
     title: string;
     description: string;
     icon: React.ReactNode;
     relatedTools: Tool[];
+    helperTool?: HelperTool;
 }) {
   return (
     <div className="container mx-auto px-4 py-12">
@@ -69,6 +75,16 @@ export default function ToolPageLayout({
             <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
             {description}
             </p>
+            {helperTool && (
+                <div className="mt-6">
+                    <Button asChild>
+                        <Link href={helperTool.href}>
+                           <Sparkles className="mr-2 h-4 w-4" />
+                           {helperTool.buttonText}
+                        </Link>
+                    </Button>
+                </div>
+            )}
         </div>
 
         <div className="max-w-2xl mx-auto">
