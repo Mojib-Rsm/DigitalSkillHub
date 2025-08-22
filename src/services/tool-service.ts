@@ -1,7 +1,7 @@
 
 'use server';
 
-import { getFirestore, collection, getDocs, orderBy, query, doc, updateDoc, addDoc, deleteDoc, limit as firestoreLimit } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, orderBy, query, doc, updateDoc, addDoc, deleteDoc, limit as firestoreLimit, where } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { revalidatePath } from 'next/cache';
 
@@ -55,6 +55,18 @@ export async function getTools(limit?: number): Promise<Tool[]> {
     }
 }
 
+export async function getToolByHref(href: string): Promise<Tool | null> {
+    const allTools = await getTools();
+    return allTools.find(tool => tool.href === href) || null;
+}
+
+export async function getRelatedTools(category: string, currentToolId: string): Promise<Tool[]> {
+    const allTools = await getTools();
+    return allTools
+        .filter(tool => tool.category === category && tool.id !== currentToolId && tool.enabled)
+        .slice(0, 3);
+}
+
 
 export async function getTrendingTools(limit: number = 4): Promise<Tool[]> {
     try {
@@ -69,7 +81,9 @@ export async function getTrendingTools(limit: number = 4): Promise<Tool[]> {
         historySnapshot.forEach(doc => {
             const toolId = doc.data().tool;
             if (toolId) {
-                toolUsage[toolId] = (toolUsage[toolId] || 0) + 1;
+                // The toolId in history is the href, so we need to map it to the tool's ID
+                const toolHref = `/ai-tools/${toolId}`;
+                 toolUsage[toolHref] = (toolUsage[toolHref] || 0) + 1;
             }
         });
 
@@ -79,8 +93,8 @@ export async function getTrendingTools(limit: number = 4): Promise<Tool[]> {
 
         // 4. Sort tools by usage
         const sortedTools = enabledTools.sort((a, b) => {
-            const usageA = toolUsage[a.id] || 0;
-            const usageB = toolUsage[b.id] || 0;
+            const usageA = toolUsage[a.href] || 0;
+            const usageB = toolUsage[b.href] || 0;
             return usageB - usageA;
         });
 

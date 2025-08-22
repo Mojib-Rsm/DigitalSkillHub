@@ -1,23 +1,16 @@
 
 import { Clapperboard } from "lucide-react";
 import ImageToVideoGeneratorForm from "@/components/image-to-video-generator-form";
+import ToolPageLayout from "@/components/tool-page-layout";
 
 export default function ImageToVideoGeneratorPage() {
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="text-center mb-12">
-        <div className="inline-block bg-primary/10 p-4 rounded-full mb-4">
-            <Clapperboard className="w-12 h-12 text-primary" />
-        </div>
-        <h1 className="font-headline text-5xl font-bold">ইমেজ টু ভিডিও জেনারেটর</h1>
-        <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          একটি ছবি আপলোড করুন এবং প্রম্পট দিন, এআই আপনার জন্য ভিডিও তৈরি করবে।
-        </p>
-      </div>
-
-      <div className="max-w-2xl mx-auto">
+    <ToolPageLayout
+        title="ইমেজ টু ভিডিও জেনারেটর"
+        description="একটি ছবি আপলোড করুন এবং প্রম্পট দিন, এআই আপনার জন্য ভিডিও তৈরি করবে।"
+        icon={<Clapperboard className="w-12 h-12 text-primary" />}
+    >
         <ImageToVideoGeneratorForm />
-      </div>
-    </div>
+    </ToolPageLayout>
   );
 }

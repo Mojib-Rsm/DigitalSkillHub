@@ -1,23 +1,18 @@
 
 import OneClickWriterForm from "@/components/one-click-writer-form";
+import ToolPageLayout from "@/components/tool-page-layout";
 import { Sparkles } from "lucide-react";
 
 export default function OneClickWriterPage() {
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="text-center mb-12">
-        <div className="inline-block bg-primary/10 p-4 rounded-full mb-4">
-            <Sparkles className="w-12 h-12 text-primary" />
+    <ToolPageLayout
+        title="One-Click Writer"
+        description="Enter a title and get a full, SEO-optimized blog post with a featured image in seconds."
+        icon={<Sparkles className="w-12 h-12 text-primary" />}
+    >
+        <div className="max-w-4xl mx-auto">
+            <OneClickWriterForm />
         </div>
-        <h1 className="font-headline text-5xl font-bold">One-Click Writer</h1>
-        <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
-          Enter a title and get a full, SEO-optimized blog post with a featured image in seconds.
-        </p>
-      </div>
-
-      <div className="max-w-4xl mx-auto">
-        <OneClickWriterForm />
-      </div>
-    </div>
+    </ToolPageLayout>
   );
 }
