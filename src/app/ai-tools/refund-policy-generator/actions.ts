@@ -2,6 +2,7 @@
 "use server";
 
 import { refundPolicyGenerator } from "@/ai/flows/refund-policy-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const RefundPolicyActionSchema = z.object({
@@ -43,6 +44,11 @@ export async function generateRefundPolicy(
   try {
     const result = await refundPolicyGenerator(validatedFields.data);
     if (result.policy) {
+      await saveHistoryAction({
+          tool: 'refund-policy-generator',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         policy: result.policy,

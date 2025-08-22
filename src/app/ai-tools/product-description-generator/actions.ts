@@ -2,6 +2,7 @@
 "use server";
 
 import { productDescriptionGenerator } from "@/ai/flows/product-description-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const ProductDescriptionGeneratorActionSchema = z.object({
@@ -43,6 +44,11 @@ export async function generateDescription(
   try {
     const result = await productDescriptionGenerator(validatedFields.data);
     if (result.description) {
+      await saveHistoryAction({
+          tool: 'product-description-generator',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         description: result.description,

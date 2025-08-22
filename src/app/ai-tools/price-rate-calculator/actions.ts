@@ -2,6 +2,7 @@
 "use server";
 
 import { priceRateCalculator } from "@/ai/flows/price-rate-calculator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const PriceRateCalculatorActionSchema = z.object({
@@ -40,6 +41,11 @@ export async function calculatePrice(
   try {
     const result = await priceRateCalculator(validatedFields.data);
     if (result.priceRange && result.justification) {
+      await saveHistoryAction({
+          tool: 'price-rate-calculator',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         priceRange: result.priceRange,

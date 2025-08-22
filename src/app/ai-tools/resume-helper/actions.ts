@@ -2,6 +2,7 @@
 "use server";
 
 import { resumeHelper } from "@/ai/flows/resume-helper";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const ResumeHelperActionSchema = z.object({
@@ -43,6 +44,11 @@ export async function getSuggestions(
   try {
     const result = await resumeHelper(validatedFields.data);
     if (result.suggestions) {
+      await saveHistoryAction({
+          tool: 'resume-helper',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         suggestions: result.suggestions,

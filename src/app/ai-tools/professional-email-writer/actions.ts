@@ -2,6 +2,7 @@
 "use server";
 
 import { professionalEmailWriter } from "@/ai/flows/professional-email-writer";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const ProfessionalEmailWriterActionSchema = z.object({
@@ -43,6 +44,11 @@ export async function writeEmail(
   try {
     const result = await professionalEmailWriter(validatedFields.data);
     if (result.emailDraft) {
+      await saveHistoryAction({
+          tool: 'professional-email-writer',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         emailDraft: result.emailDraft,

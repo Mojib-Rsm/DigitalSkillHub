@@ -2,6 +2,7 @@
 "use server";
 
 import { domainNameSuggester } from "@/ai/flows/domain-name-suggester";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const DomainNameSuggesterActionSchema = z.object({
@@ -40,6 +41,11 @@ export async function suggestDomains(
   try {
     const result = await domainNameSuggester(validatedFields.data);
     if (result.domains && result.domains.length > 0) {
+      await saveHistoryAction({
+          tool: 'domain-name-suggester',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         domains: result.domains,

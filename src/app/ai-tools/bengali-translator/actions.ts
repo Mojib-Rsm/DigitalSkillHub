@@ -2,6 +2,7 @@
 "use server";
 
 import { bengaliTranslator } from "@/ai/flows/bengali-translator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const BengaliTranslatorActionSchema = z.object({
@@ -40,6 +41,11 @@ export async function translateText(
   try {
     const result = await bengaliTranslator(validatedFields.data);
     if (result.translatedText) {
+      await saveHistoryAction({
+          tool: 'bengali-translator',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         translatedText: result.translatedText,

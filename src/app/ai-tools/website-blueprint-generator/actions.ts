@@ -2,6 +2,7 @@
 "use server";
 
 import { websiteBlueprintGenerator } from "@/ai/flows/website-blueprint-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const WebsiteBlueprintActionSchema = z.object({
@@ -90,6 +91,11 @@ export async function generateBlueprintAction(
     const result = await websiteBlueprintGenerator(finalData);
 
     if (result.blueprint) {
+      await saveHistoryAction({
+          tool: 'website-blueprint-generator',
+          input: finalData,
+          output: result,
+      });
       return {
         message: "success",
         blueprint: result.blueprint,

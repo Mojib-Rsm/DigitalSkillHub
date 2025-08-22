@@ -2,6 +2,7 @@
 "use server";
 
 import { courseRecommender } from "@/ai/flows/course-recommender";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const CourseRecommenderActionSchema = z.object({
@@ -37,6 +38,11 @@ export async function recommendCourses(
   try {
     const result = await courseRecommender(validatedFields.data);
     if (result.recommendations && result.recommendations.length > 0) {
+      await saveHistoryAction({
+          tool: 'course-recommender',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         recommendations: result.recommendations,

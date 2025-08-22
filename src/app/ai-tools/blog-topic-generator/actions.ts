@@ -2,6 +2,7 @@
 "use server";
 
 import { blogTopicGenerator } from "@/ai/flows/blog-topic-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const BlogTopicGeneratorActionSchema = z.object({
@@ -40,6 +41,11 @@ export async function generateTopics(
   try {
     const result = await blogTopicGenerator(validatedFields.data);
     if (result.topics && result.topics.length > 0) {
+      await saveHistoryAction({
+        tool: 'blog-topic-generator',
+        input: validatedFields.data,
+        output: result,
+      });
       return {
         message: "success",
         topics: result.topics,

@@ -2,6 +2,7 @@
 "use server";
 
 import { interviewQuestionPractice } from "@/ai/flows/interview-question-practice";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const InterviewQuestionPracticeActionSchema = z.object({
@@ -40,6 +41,11 @@ export async function generateQuestions(
   try {
     const result = await interviewQuestionPractice(validatedFields.data);
     if (result.questions && result.questions.length > 0) {
+      await saveHistoryAction({
+          tool: 'interview-question-practice',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         questions: result.questions,
@@ -54,4 +60,3 @@ export async function generateQuestions(
     };
   }
 }
-

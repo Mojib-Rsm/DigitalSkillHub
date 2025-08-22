@@ -2,6 +2,7 @@
 "use server";
 
 import { noteSummarizer } from "@/ai/flows/note-summarizer";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const NoteSummarizerActionSchema = z.object({
@@ -40,6 +41,11 @@ export async function summarizeText(
   try {
     const result = await noteSummarizer(validatedFields.data);
     if (result.summary) {
+      await saveHistoryAction({
+          tool: 'note-summarizer',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         summary: result.summary,

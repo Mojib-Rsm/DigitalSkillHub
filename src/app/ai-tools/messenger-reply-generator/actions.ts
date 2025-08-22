@@ -2,6 +2,7 @@
 "use server";
 
 import { messengerReplyGenerator } from "@/ai/flows/messenger-reply-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const MessengerReplyGeneratorActionSchema = z.object({
@@ -84,13 +85,16 @@ export async function generateMessengerReplies(
     const { conversation, goal, customGoal } = validatedFields.data;
     
     const finalGoal = goal === 'Other' ? customGoal : goal;
+    const flowInput = { conversation, goal: finalGoal };
 
-    const result = await messengerReplyGenerator({
-        conversation,
-        goal: finalGoal,
-    });
+    const result = await messengerReplyGenerator(flowInput);
 
     if (result.suggestions && result.suggestions.length > 0) {
+      await saveHistoryAction({
+          tool: 'messenger-reply-generator',
+          input: flowInput,
+          output: result,
+      });
       return {
         message: "success",
         suggestions: result.suggestions,

@@ -2,6 +2,7 @@
 "use server";
 
 import { businessNameGenerator } from "@/ai/flows/business-name-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const BusinessNameGeneratorActionSchema = z.object({
@@ -43,6 +44,11 @@ export async function generateNames(
   try {
     const result = await businessNameGenerator(validatedFields.data);
     if (result.names && result.names.length > 0) {
+      await saveHistoryAction({
+          tool: 'business-name-generator',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         names: result.names,

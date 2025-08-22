@@ -2,6 +2,7 @@
 "use server";
 
 import { facebookCommentGenerator } from "@/ai/flows/facebook-comment-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
@@ -68,6 +69,11 @@ export async function generateFacebookComments(
     const result = await facebookCommentGenerator({ postContent, goal, photoDataUri });
 
     if ((result.bengaliSuggestions && result.bengaliSuggestions.length > 0) || (result.englishSuggestions && result.englishSuggestions.length > 0)) {
+      await saveHistoryAction({
+          tool: 'facebook-comment-generator',
+          input: { postContent, goal },
+          output: result,
+      });
       return {
         message: "success",
         bengaliSuggestions: result.bengaliSuggestions,

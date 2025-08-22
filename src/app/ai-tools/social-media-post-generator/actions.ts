@@ -2,6 +2,7 @@
 "use server";
 
 import { socialMediaPostGenerator } from "@/ai/flows/social-media-post-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const SocialMediaPostGeneratorActionSchema = z.object({
@@ -43,6 +44,11 @@ export async function generatePost(
   try {
     const result = await socialMediaPostGenerator(validatedFields.data);
     if (result.post) {
+      await saveHistoryAction({
+          tool: 'social-media-post-generator',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         post: result.post,

@@ -2,6 +2,7 @@
 "use server";
 
 import { seoKeywordSuggester } from "@/ai/flows/seo-keyword-suggester";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const SeoKeywordSuggesterActionSchema = z.object({
@@ -40,6 +41,11 @@ export async function suggestKeywords(
   try {
     const result = await seoKeywordSuggester(validatedFields.data);
     if (result.keywords && result.keywords.length > 0) {
+      await saveHistoryAction({
+          tool: 'seo-keyword-suggester',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         keywords: result.keywords,

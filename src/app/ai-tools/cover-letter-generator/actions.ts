@@ -2,6 +2,7 @@
 "use server";
 
 import { coverLetterGenerator } from "@/ai/flows/cover-letter-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const CoverLetterGeneratorActionSchema = z.object({
@@ -41,6 +42,11 @@ export async function generateCoverLetter(
   try {
     const result = await coverLetterGenerator(validatedFields.data);
     if (result.coverLetter) {
+      await saveHistoryAction({
+          tool: 'cover-letter-generator',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         coverLetter: result.coverLetter,

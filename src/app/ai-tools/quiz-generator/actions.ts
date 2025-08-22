@@ -2,6 +2,7 @@
 "use server";
 
 import { quizGenerator } from "@/ai/flows/quiz-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const QuizGeneratorActionSchema = z.object({
@@ -40,6 +41,11 @@ export async function generateQuiz(
   try {
     const result = await quizGenerator(validatedFields.data);
     if (result.questions && result.questions.length > 0) {
+      await saveHistoryAction({
+          tool: 'quiz-generator',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         questions: result.questions,

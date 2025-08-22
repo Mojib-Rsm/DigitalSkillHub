@@ -2,6 +2,7 @@
 "use server";
 
 import { freelanceIdeaGenerator } from "@/ai/flows/freelance-idea-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const FreelanceIdeaGeneratorActionSchema = z.object({
@@ -37,6 +38,11 @@ export async function generateIdeas(
   try {
     const result = await freelanceIdeaGenerator(validatedFields.data);
     if (result.ideas && result.ideas.length > 0) {
+      await saveHistoryAction({
+          tool: 'freelance-idea-generator',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         ideas: result.ideas,

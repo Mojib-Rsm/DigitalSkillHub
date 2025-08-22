@@ -2,6 +2,7 @@
 "use server";
 
 import { promptGenerator, PromptGeneratorOutput } from "@/ai/flows/prompt-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const PromptGeneratorActionSchema = z.object({
@@ -39,6 +40,11 @@ export async function generatePromptAction(
   try {
     const result = await promptGenerator(validatedFields.data);
     if (result.shortPrompts || result.longPrompts) {
+      await saveHistoryAction({
+          tool: 'prompt-generator',
+          input: validatedFields.data,
+          output: result,
+      });
       return {
         message: "success",
         prompts: result,
