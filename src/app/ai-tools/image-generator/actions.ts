@@ -2,6 +2,7 @@
 "use server";
 
 import { imageGenerator } from "@/ai/flows/image-generator";
+import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const ImageGeneratorActionSchema = z.object({
@@ -52,6 +53,11 @@ export async function generateImage(
   }
   
   if (result.imageUrl) {
+    await saveHistoryAction({
+        tool: 'image-generator',
+        input: validatedFields.data,
+        output: result,
+    });
     return {
       message: "success",
       imageUrl: result.imageUrl,
