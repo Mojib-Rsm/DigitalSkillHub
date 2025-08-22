@@ -1,7 +1,6 @@
 
 "use client";
 
-import React from "react";
 import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { generateDisclaimer } from "@/app/free-tools/disclaimer-generator/actions";

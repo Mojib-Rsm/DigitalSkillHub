@@ -1,8 +1,7 @@
 
 "use client";
 
-import React from "react";
-import { useActionState, useEffect, useRef } from "react";
+import React, { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { contactSupportAction } from "@/app/contact/actions";
 import { Button } from "@/components/ui/button";

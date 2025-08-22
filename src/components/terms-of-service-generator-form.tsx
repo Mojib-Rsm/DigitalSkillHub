@@ -1,7 +1,6 @@
 
 "use client";
 
-import React from "react";
 import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { generateTermsOfService } from "@/app/free-tools/terms-of-service-generator/actions";

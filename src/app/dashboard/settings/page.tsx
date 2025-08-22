@@ -112,16 +112,16 @@ function PasswordForm() {
                     <Label htmlFor="confirmPassword">Confirm New Password</Label>
                     <Input id="confirmPassword" name="confirmPassword" type="password" required />
                 </div>
-                 {state.issues && (
+                 {(state as any).issues && (
                     <Alert variant="destructive">
                         <AlertDescription>
                             <ul className="list-disc pl-4">
-                                {state.issues.map((issue: string) => <li key={issue}>{issue}</li>)}
+                                {(state as any).issues.map((issue: string) => <li key={issue}>{issue}</li>)}
                             </ul>
                         </AlertDescription>
                     </Alert>
                  )}
-                  {state.message && !state.success && !state.issues &&(
+                  {state.message && !state.success && !(state as any).issues &&(
                      <Alert variant="destructive">
                         <AlertDescription>{state.message}</AlertDescription>
                     </Alert>

@@ -10,8 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Bot, Sparkles, Zap, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
+import { useActionState, useFormStatus } from "react";
 import { signupAction } from "@/app/free-trial/actions";
 
 function SignUpSubmitButton() {

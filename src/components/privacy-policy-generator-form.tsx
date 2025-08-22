@@ -1,8 +1,7 @@
 
 "use client";
 
-import React from "react";
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { generatePrivacyPolicy } from "@/app/free-tools/privacy-policy-generator/actions";
 import { Button } from "@/components/ui/button";
