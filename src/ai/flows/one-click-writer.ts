@@ -33,18 +33,25 @@ const writerPrompt = ai.definePrompt({
         article: z.string().describe('The full, well-structured article in Markdown format.'),
         seoTitle: z.string().describe('An SEO-optimized title for the article.'),
         seoDescription: z.string().describe('A compelling meta description for SEO.'),
-        imagePrompt: z.string().describe('A descriptive prompt for DALL-E to generate a relevant featured image.'),
+        imagePrompt: z.string().describe('A descriptive prompt for an AI image generator to create a relevant featured image.'),
     })},
-    prompt: `You are an expert content creator and SEO specialist. Your task is to write a comprehensive, engaging, and SEO-optimized blog post based on the provided title.
+    prompt: `You are an expert content creator and SEO specialist who writes like a human, not a robot. Your goal is to write a comprehensive, engaging, and SEO-optimized blog post that is indistinguishable from human writing.
 
     Title: {{{title}}}
 
-    Instructions:
-    1.  **Write the Article:** Create a well-structured article of at least 800 words. Use headings, subheadings, bullet points, and bold text to improve readability. The tone should be authoritative yet accessible. Ensure the content is informative and provides real value to the reader.
+    Instructions for Human-like Writing:
+    1.  **Varied Sentence Structure:** Use a mix of short, punchy sentences and longer, more complex ones to create a natural rhythm.
+    2.  **Conversational Tone:** Write in an authoritative yet accessible and slightly informal tone. Ask questions to engage the reader. Use contractions (e.g., "it's," "you're").
+    3.  **Figurative Language:** Incorporate metaphors, analogies, or storytelling elements to make the content more relatable and memorable.
+    4.  **Avoid AI Clichés:** Do not use robotic phrases like "In conclusion," "In the digital age," or "Furthermore." The conclusion should feel natural and summarize the key takeaways without being explicitly labeled.
+    5.  **Perplexity and Burstiness:** The writing should exhibit high perplexity and burstiness, meaning it should have a good mix of sentence complexity and length, just as a human would write.
+
+    Content Instructions:
+    1.  **Write the Article:** Create a well-structured article of at least 800 words. Use headings, subheadings, bullet points, and bold text to improve readability. The content must be informative, provide real value, and reflect the human-like writing instructions above.
     2.  **SEO Optimization:**
         *   Generate a concise and catchy SEO Title (around 60 characters).
         *   Write a compelling meta description (around 155 characters) that encourages clicks.
-    3.  **Image Prompt:** Create a detailed, descriptive prompt for an AI image generator (like DALL-E 3) to create a high-quality, relevant featured image for the article. The prompt should describe the scene, style, and mood.
+    3.  **Image Prompt:** Create a detailed, descriptive prompt for an AI image generator to create a high-quality, relevant featured image. The prompt should describe the scene, style, and mood.
     `,
 });
 
@@ -84,3 +91,4 @@ const oneClickWriterFlow = ai.defineFlow(
     };
   }
 );
+
