@@ -5,7 +5,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard, Search, Edit, Clapperboard } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard, Search, Edit, Clapperboard, Receipt, BarChart2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +15,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import Head from 'next/head';
 import { getPricingPlans, PricingPlan } from '@/services/pricing-service';
 import { getTestimonials, Testimonial } from '@/services/testimonial-service';
-import { getTrendingTools, Tool } from '@/services/tool-service';
+import { getTrendingTools } from '@/services/tool-service';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -35,6 +35,7 @@ import {
   Legend,
   CartesianGrid
 } from "recharts"
+import type { Tool } from '@/lib/demo-data';
 
 const userSignups = [
     { month: "Jan", signups: 186 },
@@ -580,5 +581,5 @@ export default function Home() {
 
 }
 const iconComponents = {
-    PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, Layers, RefreshCcw, SparklesIcon, TowerControl, Clapperboard, Youtube, LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown
+    PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, Layers, RefreshCcw, SparklesIcon, TowerControl, Clapperboard, Youtube, LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, BarChart2,
 };

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { usePathname } from "next/navigation";
@@ -6,7 +7,7 @@ import { ArrowLeft, ArrowRight, Bot, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
-import type { Tool } from "@/services/tool-service";
+import type { Tool } from "@/lib/demo-data";
 import React from "react";
 
 const iconComponents: { [key: string]: React.ElementType } = {

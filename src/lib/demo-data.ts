@@ -1,7 +1,16 @@
 
 
-import { Layers, RefreshCcw, Sparkles, TowerControl, Users, Youtube, Clock, TrendingUp, Award, CheckCircle, FileText, ImageIcon, Link as LinkIcon, PenSquare, ShoppingCart, Languages, Hash, Mail, Lightbulb, BarChart, GraduationCap, HelpCircle, BookCheck, DollarSign, Wand, FileSignature, Globe, Film, MessageSquare, UserCircle as UserCircleIcon, Edit, Clapperboard, Receipt, Briefcase, LayoutTemplate } from 'lucide-react';
+import { Layers, RefreshCcw, Sparkles, TowerControl, Users, Youtube, Clock, TrendingUp, Award, CheckCircle, FileText, ImageIcon, Link as LinkIcon, PenSquare, ShoppingCart, Languages, Hash, Mail, Lightbulb, BarChart, GraduationCap, HelpCircle, BookCheck, DollarSign, Wand, FileSignature, Globe, Film, MessageSquare, UserCircle as UserCircleIcon, Edit, Clapperboard, Receipt, Briefcase, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2 } from 'lucide-react';
 
+export type Tool = {
+    id: string;
+    title: string;
+    description: string;
+    href: string;
+    icon: string;
+    category: string;
+    enabled: boolean;
+};
 
 export const allCourses = [
   {
@@ -391,7 +400,7 @@ export const tools = [
         href: "/ai-tools/ad-copy-generator",
         icon: "Megaphone",
         category: "Content & Writing",
-        enabled: true,
+        enabled: false,
     },
     {
         id: "script-writer",
@@ -400,7 +409,7 @@ export const tools = [
         href: "/ai-tools/script-writer",
         icon: "Youtube",
         category: "Content & Writing",
-        enabled: true,
+        enabled: false,
     },
     {
         id: "story-plot-generator",
@@ -409,7 +418,7 @@ export const tools = [
         href: "/ai-tools/story-plot-generator",
         icon: "GitBranchPlus",
         category: "Content & Writing",
-        enabled: true,
+        enabled: false,
     },
     {
         id: "poetry-lyrics-maker",
@@ -418,7 +427,7 @@ export const tools = [
         href: "/ai-tools/poetry-lyrics-maker",
         icon: "Mic",
         category: "Content & Writing",
-        enabled: true,
+        enabled: false,
     },
     {
         id: "content-outline-generator",
@@ -427,7 +436,7 @@ export const tools = [
         href: "/ai-tools/content-outline-generator",
         icon: "List",
         category: "Content & Writing",
-        enabled: true,
+        enabled: false,
     },
     {
         id: "headline-generator",
@@ -436,7 +445,7 @@ export const tools = [
         href: "/ai-tools/headline-generator",
         icon: "PanelTopOpen",
         category: "Content & Writing",
-        enabled: true,
+        enabled: false,
     },
     {
         id: "content-calendar-planner",
@@ -445,7 +454,7 @@ export const tools = [
         href: "/ai-tools/content-calendar-planner",
         icon: "CalendarDays",
         category: "Productivity & Business",
-        enabled: true,
+        enabled: false,
     },
     {
         id: "image-generator",
@@ -574,6 +583,15 @@ export const tools = [
         enabled: true,
     },
     {
+        id: "seo-score-checker",
+        title: "এসইও স্কোর চেকার",
+        description: "আপনার কনটেন্টের এসইও স্কোর এবং উন্নতির জন্য পরামর্শ পান।",
+        href: "/ai-tools/seo-score-checker",
+        icon: "BarChart2",
+        category: "SEO & Marketing",
+        enabled: true,
+    },
+    {
         id: "interview-question-practice",
         title: "ইন্টারভিউ প্রশ্ন অনুশীলন",
         description: "আপনার পরবর্তী চাকরির ইন্টারভিউর জন্য অনুশীলন প্রশ্ন তৈরি করুন।",
@@ -631,4 +649,5 @@ export const tools = [
     
 
     
+
 

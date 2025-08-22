@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -17,11 +18,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
-import { Tool } from "@/services/tool-service";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { saveToolAction } from "@/app/dashboard/admin/tools/actions";
 import { Sparkles } from "lucide-react";
+import type { Tool } from "@/lib/demo-data";
 
 
 const toolSchema = z.object({
@@ -184,5 +185,3 @@ export function ToolDialog({ isOpen, setIsOpen, tool, onSave }: ToolDialogProps)
     </Dialog>
   );
 }
-
-    

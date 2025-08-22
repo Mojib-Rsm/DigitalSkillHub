@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -23,7 +24,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, PlusCircle, Pen, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Tool, updateTool } from "@/services/tool-service";
+import { updateTool } from "@/services/tool-service";
+import type { Tool } from "@/lib/demo-data";
 import { ToolDialog } from "./tool-dialog";
 
 type ToolsDataTableProps = {
@@ -158,5 +160,3 @@ export default function ToolsDataTable({ initialTools }: ToolsDataTableProps) {
     </div>
   );
 }
-
-    
