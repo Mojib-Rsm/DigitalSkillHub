@@ -321,6 +321,15 @@ export const testimonials = [
 
 export const tools = [
     {
+        id: "one-click-writer",
+        title: "One-Click Writer",
+        description: "Generate a full, SEO-optimized blog post from a single title.",
+        href: "/ai-tools/one-click-writer",
+        icon: "Sparkles",
+        category: "Content & Writing",
+        enabled: true,
+    },
+    {
         id: "blog-topic-generator",
         title: "ব্লগ টপিক জেনারেটর",
         description: "আপনার আগ্রহের উপর ভিত্তি করে সৃজনশীল ব্লগ পোস্টের ধারণা তৈরি করুন।",
