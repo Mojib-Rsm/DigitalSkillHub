@@ -1,20 +1,12 @@
-import {
-  Bot,
-  History,
-  LayoutGrid,
-  Settings,
-  HelpCircle,
-  Coins,
-  DatabaseZap,
-  Users
-} from "lucide-react";
-import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ThemeToggleButton } from "@/components/theme-toggle-button";
-import { getCurrentUser, UserProfile } from "@/services/user-service";
 import DashboardSidebar from "@/components/dashboard-sidebar";
+import { ThemeToggleButton } from "@/components/theme-toggle-button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { getCurrentUser, UserProfile } from "@/services/user-service";
+import { Coins } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+
 
 export default async function DashboardLayout({
     children,
@@ -22,6 +14,11 @@ export default async function DashboardLayout({
     children: React.ReactNode;
 }) {
   const user = await getCurrentUser();
+
+  if (!user) {
+    // This should theoretically be caught by middleware, but it's a good safeguard.
+    redirect('/login');
+  }
 
   return (
     <DashboardSidebar user={user}>

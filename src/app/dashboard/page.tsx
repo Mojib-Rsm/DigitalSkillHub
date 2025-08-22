@@ -1,7 +1,3 @@
-
-"use client";
-
-import * as React from "react";
 import {
   Card,
   CardContent,
@@ -30,7 +26,6 @@ import { Badge } from "@/components/ui/badge";
 import { getCurrentUser, UserProfile } from "@/services/user-service";
 import { MoreHorizontal, Edit, PlusCircle, Star, Trash, Bell, Heart, Activity, DollarSign, Users as UsersIcon, CircleUser } from "lucide-react";
 import Link from "next/link";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Bar,
   BarChart,
@@ -359,30 +354,14 @@ function UserDashboard({ user }: { user: UserProfile }) {
 }
 
 
-export default function DashboardPage() {
-    const [user, setUser] = React.useState<UserProfile | null>(null);
-    const [loading, setLoading] = React.useState(true);
-
-    React.useEffect(() => {
-        async function fetchUser() {
-            setLoading(true);
-            const currentUser = await getCurrentUser();
-            setUser(currentUser);
-            setLoading(false);
-        }
-        fetchUser();
-    }, []);
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center h-full">
-                <Skeleton className="h-96 w-full" />
-            </div>
-        )
-    }
+export default async function DashboardPage() {
+    const user = await getCurrentUser();
 
     if (!user) {
-        return <p>User not found. Please log in again.</p>
+        // This case should ideally be handled by the layout and middleware,
+        // but as a fallback, we can show an error or redirect.
+        // For now, returning a clear message.
+        return <p>User not found or not authenticated. Please log in.</p>;
     }
 
     if (user.role === 'admin') {
