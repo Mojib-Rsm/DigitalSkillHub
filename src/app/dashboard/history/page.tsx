@@ -2,19 +2,133 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getHistory } from "@/services/history-service";
-import { ListCollapse, Video, Image as ImageIcon, Download, Copy } from "lucide-react";
+import { ListCollapse, Video, Image as ImageIcon, Download, Copy, Bot } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 function getToolDisplayName(toolId: string) {
-    const names: Record<string, string> = {
-        'image-generator': 'AI Image Generator',
-        'video-generator': 'AI Video Generator',
-        'image-to-video-generator': 'Image to Video Generator',
-    };
-    return names[toolId] || toolId;
+    // Simple conversion from slug to title case
+    return toolId.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
+
+
+const HistoryOutput = ({ item }: { item: any }) => {
+    // Media-based outputs
+    if (item.output.imageUrl) {
+        return (
+            <div className="space-y-4">
+                <Image src={item.output.imageUrl} alt="Generated image" width={512} height={512} className="rounded-lg border object-contain"/>
+                <Button asChild variant="outline">
+                    <a href={item.output.imageUrl} download={`generated_image.png`}><Download className="mr-2"/> Download</a>
+                </Button>
+            </div>
+        );
+    }
+    if (item.output.videoUrl) {
+        return (
+             <div className="space-y-4">
+                <video controls src={item.output.videoUrl} className="w-full max-w-md rounded-lg border bg-black" />
+                <Button asChild variant="outline">
+                    <a href={item.output.videoUrl} download={`generated_video.mp4`}><Download className="mr-2"/> Download</a>
+                </Button>
+            </div>
+        );
+    }
+
+    // Text-based outputs
+    if (typeof item.output.article === 'string') {
+        return <p className="text-muted-foreground whitespace-pre-wrap">{item.output.article}</p>;
+    }
+    if (typeof item.output.coverLetter === 'string') {
+        return <p className="text-muted-foreground whitespace-pre-wrap">{item.output.coverLetter}</p>;
+    }
+     if (typeof item.output.description === 'string') {
+        return <p className="text-muted-foreground whitespace-pre-wrap">{item.output.description}</p>;
+    }
+     if (typeof item.output.disclaimer === 'string') {
+        return <p className="text-muted-foreground whitespace-pre-wrap">{item.output.disclaimer}</p>;
+    }
+    if (typeof item.output.emailDraft === 'string') {
+        return <p className="text-muted-foreground whitespace-pre-wrap">{item.output.emailDraft}</p>;
+    }
+    if (typeof item.output.policy === 'string') {
+        return <p className="text-muted-foreground whitespace-pre-wrap">{item.output.policy}</p>;
+    }
+     if (typeof item.output.post === 'string') {
+        return <p className="text-muted-foreground whitespace-pre-wrap">{item.output.post}</p>;
+    }
+     if (typeof item.output.summary === 'string') {
+        return <p className="text-muted-foreground whitespace-pre-wrap">{item.output.summary}</p>;
+    }
+     if (typeof item.output.suggestions === 'string') {
+        return <p className="text-muted-foreground whitespace-pre-wrap">{item.output.suggestions}</p>;
+    }
+      if (typeof item.output.terms === 'string') {
+        return <p className="text-muted-foreground whitespace-pre-wrap">{item.output.terms}</p>;
+    }
+    if (typeof item.output.translatedText === 'string') {
+        return <p className="text-muted-foreground whitespace-pre-wrap">{item.output.translatedText}</p>;
+    }
+
+    // List/Array based outputs
+    if (Array.isArray(item.output.bengaliSuggestions)) {
+         return <ul className="list-disc pl-5 text-muted-foreground">
+            {item.output.bengaliSuggestions.map((s: string, i: number) => <li key={i}>{s}</li>)}
+        </ul>
+    }
+     if (Array.isArray(item.output.domains)) {
+         return <ul className="list-disc pl-5 text-muted-foreground">
+            {item.output.domains.map((d: string, i: number) => <li key={i}>{d}</li>)}
+        </ul>
+    }
+    if (Array.isArray(item.output.keywords)) {
+         return <ul className="list-disc pl-5 text-muted-foreground">
+            {item.output.keywords.map((k: string, i: number) => <li key={i}>{k}</li>)}
+        </ul>
+    }
+     if (Array.isArray(item.output.names)) {
+         return <ul className="list-disc pl-5 text-muted-foreground">
+            {item.output.names.map((n: string, i: number) => <li key={i}>{n}</li>)}
+        </ul>
+    }
+    if (Array.isArray(item.output.topics)) {
+         return <ul className="list-disc pl-5 text-muted-foreground">
+            {item.output.topics.map((t: string, i: number) => <li key={i}>{t}</li>)}
+        </ul>
+    }
+     if (Array.isArray(item.output.questions)) {
+         return <ul className="list-disc pl-5 text-muted-foreground">
+            {item.output.questions.map((q: any, i: number) => <li key={i}>{q.question}</li>)}
+        </ul>
+    }
+
+    // Object based outputs
+    if (item.output.blueprint) {
+         return <p className="text-muted-foreground whitespace-pre-wrap">{JSON.stringify(item.output.blueprint, null, 2)}</p>
+    }
+     if (item.output.data) { // for one-click-writer
+         return <p className="text-muted-foreground whitespace-pre-wrap">{item.output.data.article}</p>
+    }
+
+    // Fallback for any other data structures
+    return <p className="text-muted-foreground whitespace-pre-wrap">{JSON.stringify(item.output, null, 2)}</p>;
+};
+
+const HistoryInput = ({ item }: { item: any }) => {
+    // Stringify if it's an object, otherwise display directly
+    const inputContent = typeof item.input === 'object' ? JSON.stringify(item.input, null, 2) : item.input;
+    return <p className="text-muted-foreground bg-muted p-3 rounded-md text-sm italic whitespace-pre-wrap">"{inputContent}"</p>;
+};
+
 
 export default async function HistoryPage() {
     const historyItems = await getHistory();
@@ -52,33 +166,25 @@ export default async function HistoryPage() {
                                     <CardTitle className="text-xl">{getToolDisplayName(item.tool)}</CardTitle>
                                     <CardDescription>{new Date(item.createdAt).toLocaleString()}</CardDescription>
                                 </div>
-                                <Badge variant="secondary">{item.tool.includes('video') ? <Video className="mr-2"/> : <ImageIcon className="mr-2"/>} {item.tool.includes('video') ? 'Video' : 'Image'}</Badge>
+                                <Badge variant="secondary">
+                                    <Bot className="mr-2"/>
+                                    {item.tool.includes('video') ? 'Video' : item.tool.includes('image') ? 'Image' : 'Text'}
+                                </Badge>
                             </CardHeader>
                              <CardContent>
                                 <div className="space-y-4">
                                    <div>
-                                       <h4 className="font-semibold text-sm mb-1">Input Prompt:</h4>
-                                       <p className="text-muted-foreground bg-muted p-3 rounded-md text-sm italic">"{item.input.prompt}"</p>
+                                       <h4 className="font-semibold text-sm mb-1">Input:</h4>
+                                       <HistoryInput item={item} />
                                    </div>
                                     <div>
                                         <h4 className="font-semibold text-sm mb-2">Generated Output:</h4>
-                                        {item.output.imageUrl && (
-                                            <Image src={item.output.imageUrl} alt="Generated image" width={512} height={512} className="rounded-lg border object-contain"/>
-                                        )}
-                                        {item.output.videoUrl && (
-                                             <video controls src={item.output.videoUrl} className="w-full max-w-md rounded-lg border bg-black" />
-                                        )}
+                                        <div className="p-3 border rounded-md">
+                                             <HistoryOutput item={item} />
+                                        </div>
                                     </div>
                                 </div>
                             </CardContent>
-                            <CardFooter>
-                                <a href={item.output.imageUrl || item.output.videoUrl} download={`generated_${item.tool.includes('video') ? 'video' : 'image'}.png`}>
-                                    <Button variant="outline">
-                                        <Download className="mr-2"/>
-                                        Download
-                                    </Button>
-                                </a>
-                            </CardFooter>
                         </Card>
                     ))}
                 </div>
