@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Bot, Sparkles, LogIn, Chrome, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useActionState, useFormStatus } from "react";
 import { loginAction } from "@/app/login/actions";
 
 
