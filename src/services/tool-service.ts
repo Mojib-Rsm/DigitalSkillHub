@@ -55,6 +55,46 @@ export async function getTools(limit?: number): Promise<Tool[]> {
     }
 }
 
+
+export async function getTrendingTools(limit: number = 4): Promise<Tool[]> {
+    try {
+        const db = getFirestore(app);
+        
+        // 1. Get all history items
+        const historyCol = collection(db, 'history');
+        const historySnapshot = await getDocs(historyCol);
+        
+        // 2. Count tool usage
+        const toolUsage: Record<string, number> = {};
+        historySnapshot.forEach(doc => {
+            const toolId = doc.data().tool;
+            if (toolId) {
+                toolUsage[toolId] = (toolUsage[toolId] || 0) + 1;
+            }
+        });
+
+        // 3. Get all available tools
+        const allTools = await getTools();
+        const enabledTools = allTools.filter(tool => tool.enabled);
+
+        // 4. Sort tools by usage
+        const sortedTools = enabledTools.sort((a, b) => {
+            const usageA = toolUsage[a.id] || 0;
+            const usageB = toolUsage[b.id] || 0;
+            return usageB - usageA;
+        });
+
+        // 5. Return the top N tools
+        return sortedTools.slice(0, limit);
+
+    } catch (error) {
+        console.error("Error fetching trending tools:", error);
+        // Fallback to fetching latest tools if history processing fails
+        return getTools(limit);
+    }
+}
+
+
 export async function addTool(toolData: Omit<Tool, 'id'>) {
     try {
         const db = getFirestore(app);

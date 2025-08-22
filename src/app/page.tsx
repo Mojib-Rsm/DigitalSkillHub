@@ -1,6 +1,5 @@
 
 
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -16,7 +15,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import Head from 'next/head';
 import { getPricingPlans, PricingPlan } from '@/services/pricing-service';
 import { getTestimonials, Testimonial } from '@/services/testimonial-service';
-import { getTools, Tool } from '@/services/tool-service';
+import { getTrendingTools, Tool } from '@/services/tool-service';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -164,7 +163,7 @@ export default function Home() {
         const [plans, fetchedTestimonials, tools] = await Promise.all([
             getPricingPlans(),
             getTestimonials(),
-            getTools(4) // Fetch 4 trending tools
+            getTrendingTools(4) // Fetch 4 trending tools
         ]);
         setPricingPlans(plans);
         setTestimonials(fetchedTestimonials);
