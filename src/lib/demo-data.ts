@@ -1,4 +1,5 @@
 
+
 import { Layers, RefreshCcw, Sparkles, TowerControl, Users, Youtube, Clock, TrendingUp, Award, CheckCircle, FileText, ImageIcon, Link as LinkIcon, PenSquare, ShoppingCart, Languages, Hash, Mail, Lightbulb, BarChart, GraduationCap, HelpCircle, BookCheck, DollarSign, Wand, FileSignature, Globe, Film, MessageSquare, UserCircle as UserCircleIcon, Edit, Clapperboard, Receipt, Briefcase, LayoutTemplate } from 'lucide-react';
 
 
@@ -375,6 +376,78 @@ export const tools = [
         enabled: true,
     },
     {
+        id: "cover-letter-generator",
+        title: "কভার লেটার জেনারেটর",
+        description: "কয়েক সেকেন্ডের মধ্যে একটি পেশাদার কভার লেটার তৈরি করুন।",
+        href: "/ai-tools/cover-letter-generator",
+        icon: "FileSignature",
+        category: "Content & Writing",
+        enabled: true,
+    },
+    {
+        id: "ad-copy-generator",
+        title: "বিজ্ঞাপনের কপি জেনারেটর",
+        description: "আপনার পণ্যের জন্য আকর্ষণীয় বিজ্ঞাপনের কপি তৈরি করুন।",
+        href: "/ai-tools/ad-copy-generator",
+        icon: "Megaphone",
+        category: "Content & Writing",
+        enabled: true,
+    },
+    {
+        id: "script-writer",
+        title: "স্ক্রিপ্ট লেখক",
+        description: "ইউটিউব বা টিকটক ভিডিওর জন্য আকর্ষণীয় স্ক্রিপ্ট তৈরি করুন।",
+        href: "/ai-tools/script-writer",
+        icon: "Youtube",
+        category: "Content & Writing",
+        enabled: true,
+    },
+    {
+        id: "story-plot-generator",
+        title: "গল্পের প্লট জেনারেটর",
+        description: "আপনার পরবর্তী গল্প বা উপন্যাসের জন্য প্লট আইডিয়া তৈরি করুন।",
+        href: "/ai-tools/story-plot-generator",
+        icon: "GitBranchPlus",
+        category: "Content & Writing",
+        enabled: true,
+    },
+    {
+        id: "poetry-lyrics-maker",
+        title: "কবিতা ও গান লেখক",
+        description: "আপনার অনুভূতি প্রকাশ করার জন্য কবিতা বা গান লিখুন।",
+        href: "/ai-tools/poetry-lyrics-maker",
+        icon: "Mic",
+        category: "Content & Writing",
+        enabled: true,
+    },
+    {
+        id: "content-outline-generator",
+        title: "কনটেন্ট আউটলাইন জেনারেটর",
+        description: "যেকোনো বিষয়ের উপর ভিত্তি করে একটি সুগঠিত আউটলাইন তৈরি করুন।",
+        href: "/ai-tools/content-outline-generator",
+        icon: "List",
+        category: "Content & Writing",
+        enabled: true,
+    },
+    {
+        id: "headline-generator",
+        title: "শিরোনাম জেনারেটর",
+        description: "আপনার ব্লগ বা ভিডিওর জন্য আকর্ষণীয় শিরোনাম তৈরি করুন।",
+        href: "/ai-tools/headline-generator",
+        icon: "PanelTopOpen",
+        category: "Content & Writing",
+        enabled: true,
+    },
+    {
+        id: "content-calendar-planner",
+        title: "কনটেন্ট ক্যালেন্ডার প্ল্যানার",
+        description: "আপনার সোশ্যাল মিডিয়া বা ব্লগের জন্য একটি কনটেন্ট ক্যালেন্ডার তৈরি করুন।",
+        href: "/ai-tools/content-calendar-planner",
+        icon: "CalendarDays",
+        category: "Productivity & Business",
+        enabled: true,
+    },
+    {
         id: "image-generator",
         title: "এআই ইমেজ জেনারেটর",
         description: "পাঠ্য থেকে লোগো, ব্যানার এবং অন্যান্য ছবি তৈরি করুন।",
@@ -453,15 +526,6 @@ export const tools = [
         href: "/ai-tools/bengali-translator",
         icon: "Languages",
         category: "Productivity & Business",
-        enabled: true,
-    },
-    {
-        id: "cover-letter-generator",
-        title: "কভার লেটার জেনারেটর",
-        description: "কয়েক সেকেন্ডের মধ্যে একটি পেশাদার কভার লেটার তৈরি করুন।",
-        href: "/ai-tools/cover-letter-generator",
-        icon: "FileSignature",
-        category: "Content & Writing",
         enabled: true,
     },
     {
@@ -567,3 +631,4 @@ export const tools = [
     
 
     
+
