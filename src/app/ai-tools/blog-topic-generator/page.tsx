@@ -1,14 +1,22 @@
 
 import BlogTopicGeneratorForm from "@/components/blog-topic-generator-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { PenSquare } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function BlogTopicGeneratorPage() {
+export default async function BlogTopicGeneratorPage() {
+  const tool = await getToolByHref('/ai-tools/blog-topic-generator');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="ব্লগ টপিক জেনারেটর"
-        description="কি লিখবেন তা নিয়ে ভাবছেন? ট্রেন্ডিং দক্ষতার এবং আপনার আগ্রহের উপর ভিত্তি করে প্রাসঙ্গিক ব্লগ বিষয়ের ধারণা তৈরি করতে আমাদের এআই টুল ব্যবহার করুন।"
+        title={tool.title}
+        description={tool.description}
         icon={<PenSquare className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <BlogTopicGeneratorForm />
     </ToolPageLayout>

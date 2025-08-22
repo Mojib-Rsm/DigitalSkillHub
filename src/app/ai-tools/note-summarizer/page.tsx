@@ -1,14 +1,22 @@
 
 import NoteSummarizerForm from "@/components/note-summarizer-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { BookCheck } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function NoteSummarizerPage() {
+export default async function NoteSummarizerPage() {
+  const tool = await getToolByHref('/ai-tools/note-summarizer');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="নোট সারাংশকারী"
-        description="দীর্ঘ নিবন্ধ বা নথিগুলিকে সংক্ষিপ্ত, সহজে হজমযোগ্য নোটগুলিতে পরিণত করুন।"
+        title={tool.title}
+        description={tool.description}
         icon={<BookCheck className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <NoteSummarizerForm />
     </ToolPageLayout>

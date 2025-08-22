@@ -1,14 +1,22 @@
 
 import WebsiteBlueprintGeneratorForm from "@/components/website-blueprint-generator-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { LayoutTemplate } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function WebsiteBlueprintGeneratorPage() {
+export default async function WebsiteBlueprintGeneratorPage() {
+  const tool = await getToolByHref('/ai-tools/website-blueprint-generator');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="ওয়েবসাইট ব্লুপ্রিন্ট জেনারেটর"
-        description="আপনার ওয়েবসাইটের ধারণাটি দিন এবং এআই আপনার জন্য একটি সম্পূর্ণ পরিকল্পনা তৈরি করবে।"
+        title={tool.title}
+        description={tool.description}
         icon={<LayoutTemplate className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <div className="max-w-4xl mx-auto">
         <WebsiteBlueprintGeneratorForm />

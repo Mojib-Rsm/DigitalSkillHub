@@ -1,14 +1,22 @@
 
 import CourseRecommenderForm from "@/components/course-recommender-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { GraduationCap } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function CourseRecommenderPage() {
+export default async function CourseRecommenderPage() {
+  const tool = await getToolByHref('/ai-tools/course-recommender');
+  if (!tool) notFound();
+  
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="কোর্স রিকমেন্ডার"
-        description="কোথায় শুরু করবেন নিশ্চিত নন? আপনার আগ্রহ আমাদের জানান, এবং আমরা আপনার জন্য সেরা কোর্সগুলো সুপারিশ করব।"
+        title={tool.title}
+        description={tool.description}
         icon={<GraduationCap className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <CourseRecommenderForm />
     </ToolPageLayout>

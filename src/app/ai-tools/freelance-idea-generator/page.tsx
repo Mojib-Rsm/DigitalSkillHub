@@ -1,14 +1,22 @@
 
 import FreelanceIdeaGeneratorForm from "@/components/freelance-idea-generator-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { Wand } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function FreelanceIdeaGeneratorPage() {
+export default async function FreelanceIdeaGeneratorPage() {
+  const tool = await getToolByHref('/ai-tools/freelance-idea-generator');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="ফ্রিল্যান্স আইডিয়া জেনারেটর"
-        description="আপনার দক্ষতাকে সেবায় রূপান্তর করুন। ক্লায়েন্টদের কাছে অফার করার জন্য প্রকল্পের ধারণা থেকে অনুপ্রাণিত হন।"
+        title={tool.title}
+        description={tool.description}
         icon={<Wand className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <FreelanceIdeaGeneratorForm />
     </ToolPageLayout>

@@ -1,14 +1,22 @@
 
 import ImageGeneratorForm from "@/components/image-generator-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { Image } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function ImageGeneratorPage() {
+export default async function ImageGeneratorPage() {
+  const tool = await getToolByHref('/ai-tools/image-generator');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="এআই ইমেজ জেনারেটর"
-        description="একটি সাধারণ টেক্সট প্রম্পট দিয়ে লোগো, ব্যানার বা আপনার কল্পনার যেকোনো ছবি তৈরি করুন।"
+        title={tool.title}
+        description={tool.description}
         icon={<Image className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <ImageGeneratorForm />
     </ToolPageLayout>

@@ -1,14 +1,22 @@
 
 import ResumeHelperForm from "@/components/resume-helper-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { FileText } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function ResumeHelperPage() {
+export default async function ResumeHelperPage() {
+  const tool = await getToolByHref('/ai-tools/resume-helper');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="জীবনবৃত্তান্ত/সিভি সহায়ক"
-        description="আপনার জীবনবৃত্তান্তকে আলাদা করে তোলার জন্য এআই-চালিত পরামর্শ পান।"
+        title={tool.title}
+        description={tool.description}
         icon={<FileText className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <ResumeHelperForm />
     </ToolPageLayout>

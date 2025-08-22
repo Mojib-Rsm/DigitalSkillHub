@@ -1,14 +1,22 @@
 
 import BusinessNameGeneratorForm from "@/components/business-name-generator-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { Lightbulb } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function BusinessNameGeneratorPage() {
+export default async function BusinessNameGeneratorPage() {
+  const tool = await getToolByHref('/ai-tools/business-name-generator');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
      <ToolPageLayout
-        title="ব্যবসার নাম জেনারেটর"
-        description="এআই এর সাহায্যে আপনার নতুন উদ্যোগের জন্য সেরা নামটি খুঁজুন।"
+        title={tool.title}
+        description={tool.description}
         icon={<Lightbulb className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <BusinessNameGeneratorForm />
     </ToolPageLayout>

@@ -1,14 +1,22 @@
 
 import SeoKeywordSuggesterForm from "@/components/seo-keyword-suggester-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { BarChart } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function SeoKeywordSuggesterPage() {
+export default async function SeoKeywordSuggesterPage() {
+  const tool = await getToolByHref('/ai-tools/seo-keyword-suggester');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="এসইও কীওয়ার্ড সাজেশনকারী"
-        description="আপনার সার্চ ইঞ্জিন র‌্যাঙ্কিং বাড়াতে শক্তিশালী কীওয়ার্ড আবিষ্কার করুন।"
+        title={tool.title}
+        description={tool.description}
         icon={<BarChart className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <SeoKeywordSuggesterForm />
     </ToolPageLayout>

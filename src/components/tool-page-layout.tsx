@@ -1,11 +1,13 @@
+"use client";
 
-import { getRelatedTools, getToolByHref, Tool } from "@/services/tool-service";
-import { notFound, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 import { ArrowLeft, ArrowRight, Bot } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
+import type { Tool } from "@/services/tool-service";
+import React from "react";
 
 const iconComponents: { [key: string]: React.ElementType } = {
     PenSquare: require("lucide-react").PenSquare,
@@ -36,26 +38,19 @@ const iconComponents: { [key: string]: React.ElementType } = {
 };
 
 
-export default async function ToolPageLayout({
+export default function ToolPageLayout({
     children,
     title,
     description,
-    icon
+    icon,
+    relatedTools,
 }: {
     children: React.ReactNode;
     title: string;
     description: string;
     icon: React.ReactNode;
+    relatedTools: Tool[];
 }) {
-    const pathname = usePathname();
-    const currentTool = await getToolByHref(pathname);
-
-    if (!currentTool) {
-        notFound();
-    }
-    
-    const relatedTools = await getRelatedTools(currentTool.category, currentTool.id);
-    
   return (
     <div className="container mx-auto px-4 py-12">
         <div className="mb-8">

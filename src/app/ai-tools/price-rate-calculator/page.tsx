@@ -1,14 +1,22 @@
 
 import PriceRateCalculatorForm from "@/components/price-rate-calculator-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { DollarSign } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function PriceRateCalculatorPage() {
+export default async function PriceRateCalculatorPage() {
+  const tool = await getToolByHref('/ai-tools/price-rate-calculator');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="মূল্য/রেট ক্যালকুলেটর"
-        description="আপনার ফ্রিল্যান্স প্রকল্পের জন্য কত চার্জ করবেন তার জন্য একটি এআই-চালিত পরামর্শ পান।"
+        title={tool.title}
+        description={tool.description}
         icon={<DollarSign className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <PriceRateCalculatorForm />
     </ToolPageLayout>

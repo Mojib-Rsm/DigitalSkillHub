@@ -1,14 +1,22 @@
 
 import FacebookCommentGeneratorForm from "@/components/facebook-comment-generator-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { MessageSquare } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function FacebookCommentGeneratorPage() {
+export default async function FacebookCommentGeneratorPage() {
+  const tool = await getToolByHref('/ai-tools/facebook-comment-generator');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="ফেসবুক কমেন্ট জেনারেটর"
-        description="যেকোনো ফেসবুক পোস্টের জন্য দ্রুত এবং প্রাসঙ্গিক কমেন্ট এবং রিপ্লাই তৈরি করুন।"
+        title={tool.title}
+        description={tool.description}
         icon={<MessageSquare className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <FacebookCommentGeneratorForm />
     </ToolPageLayout>

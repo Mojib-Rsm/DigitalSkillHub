@@ -1,14 +1,22 @@
 
 import DomainNameSuggesterForm from "@/components/domain-name-suggester-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { Globe } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function DomainNameSuggesterPage() {
+export default async function DomainNameSuggesterPage() {
+  const tool = await getToolByHref('/ai-tools/domain-name-suggester');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="ডোমেইন নেম সাজেশনকারী"
-        description="আপনার ব্যবসার জন্য নিখুঁত এবং উপলব্ধ ডোমেইন নাম খুঁজুন।"
+        title={tool.title}
+        description={tool.description}
         icon={<Globe className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <DomainNameSuggesterForm />
     </ToolPageLayout>

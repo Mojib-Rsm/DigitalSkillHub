@@ -1,14 +1,22 @@
 
 import PromptGeneratorForm from "@/components/prompt-generator-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { Sparkles } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function PromptGeneratorPage() {
+export default async function PromptGeneratorPage() {
+  const tool = await getToolByHref('/ai-tools/prompt-generator');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="এআই প্রম্পট জেনারেটর"
-        description="আপনার ধারণা দিন এবং ছবি, ভিডিও বা অডিওর জন্য একটি বিস্তারিত প্রম্পট তৈরি করুন।"
+        title={tool.title}
+        description={tool.description}
         icon={<Sparkles className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <PromptGeneratorForm />
     </ToolPageLayout>

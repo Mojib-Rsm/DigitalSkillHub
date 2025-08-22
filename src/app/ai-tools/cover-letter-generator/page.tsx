@@ -1,14 +1,22 @@
 
 import CoverLetterGeneratorForm from "@/components/cover-letter-generator-form";
 import ToolPageLayout from "@/components/tool-page-layout";
+import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { FileSignature } from "lucide-react";
+import { notFound } from "next/navigation";
 
-export default function CoverLetterGeneratorPage() {
+export default async function CoverLetterGeneratorPage() {
+  const tool = await getToolByHref('/ai-tools/cover-letter-generator');
+  if (!tool) notFound();
+
+  const relatedTools = await getRelatedTools(tool.category, tool.id);
+
   return (
     <ToolPageLayout
-        title="কভার লেটার জেনারেটর"
-        description="আপনার কাঙ্ক্ষিত চাকরির জন্য একটি পেশাদার কভার লেটার তৈরি করুন।"
+        title={tool.title}
+        description={tool.description}
         icon={<FileSignature className="w-12 h-12 text-primary" />}
+        relatedTools={relatedTools}
     >
       <CoverLetterGeneratorForm />
     </ToolPageLayout>
