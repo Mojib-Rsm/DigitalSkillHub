@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import {
@@ -54,12 +53,10 @@ export default function DashboardSidebar({
     <SidebarProvider>
       <Sidebar side="left" collapsible="icon">
         <SidebarHeader>
-           <SidebarMenuButton asChild>
-            <Link href="/" className="h-12 justify-start gap-3 px-3">
+           <SidebarMenuButton href="/" className="h-12 justify-start gap-3 px-3">
               <Bot className="text-primary size-7" />
               <span className="font-bold text-xl">TotthoAi</span>
-            </Link>
-          </SidebarMenuButton>
+            </SidebarMenuButton>
         </SidebarHeader>
         <SidebarContent className="p-2">
             <SidebarMenu>
