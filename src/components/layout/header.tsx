@@ -152,6 +152,12 @@ export default async function Header() {
             {renderAuthButtons()}
         </div>
         <div className="lg:hidden flex items-center gap-2">
+            <Button variant="ghost" size="icon" asChild>
+                <Link href={user ? "/dashboard" : "/login"}>
+                    <User className="h-6 w-6"/>
+                    <span className="sr-only">Profile</span>
+                </Link>
+            </Button>
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
