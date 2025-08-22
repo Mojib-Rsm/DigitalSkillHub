@@ -36,3 +36,11 @@ import '@/ai/flows/website-blueprint-generator.ts';
 import '@/ai/flows/prompt-generator.ts';
 import '@/ai/flows/one-click-writer.ts';
 import '@/ai/flows/seo-score-checker.ts';
+import '@/ai/flows/ad-copy-generator.ts';
+import '@/ai/flows/script-writer.ts';
+import '@/ai/flows/story-plot-generator.ts';
+import '@/ai/flows/poetry-lyrics-maker.ts';
+import '@/ai/flows/content-outline-generator.ts';
+import '@/ai/flows/headline-generator.ts';
+import '@/ai/flows/content-calendar-planner.ts';
+

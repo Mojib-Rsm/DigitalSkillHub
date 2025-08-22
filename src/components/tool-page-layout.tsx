@@ -3,7 +3,7 @@
 
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
-import { ArrowLeft, ArrowRight, Bot, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bot, Sparkles, Quote } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
@@ -36,6 +36,14 @@ const iconComponents: { [key: string]: React.ElementType } = {
     Receipt: require("lucide-react").Receipt,
     LayoutTemplate: require("lucide-react").LayoutTemplate,
     Sparkles: require("lucide-react").Sparkles,
+    Megaphone: require("lucide-react").Megaphone,
+    Youtube: require("lucide-react").Youtube,
+    GitBranchPlus: require("lucide-react").GitBranchPlus,
+    Mic: require("lucide-react").Mic,
+    List: require("lucide-react").List,
+    PanelTopOpen: require("lucide-react").PanelTopOpen,
+    CalendarDays: require("lucide-react").CalendarDays,
+    Quote: require("lucide-react").Quote,
 };
 
 type HelperTool = {

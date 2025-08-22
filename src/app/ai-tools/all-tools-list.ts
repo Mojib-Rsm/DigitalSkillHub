@@ -27,4 +27,12 @@ export const allTools = [
     { href: "/ai-tools/quiz-generator" },
     { href: "/ai-tools/messenger-reply-generator" },
     { href: "/ai-tools/prompt-generator" },
+    { href: "/ai-tools/seo-score-checker" },
+    { href: "/ai-tools/ad-copy-generator" },
+    { href: "/ai-tools/script-writer" },
+    { href: "/ai-tools/story-plot-generator" },
+    { href: "/ai-tools/poetry-lyrics-maker" },
+    { href: "/ai-tools/content-outline-generator" },
+    { href: "/ai-tools/headline-generator" },
+    { href: "/ai-tools/content-calendar-planner" },
 ];
