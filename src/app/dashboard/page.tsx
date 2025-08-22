@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -36,6 +38,8 @@ import {
   Legend,
   CartesianGrid
 } from "recharts"
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 // Admin Dashboard Data
@@ -354,14 +358,29 @@ function UserDashboard({ user }: { user: UserProfile }) {
 }
 
 
-export default async function DashboardPage() {
-    const user = await getCurrentUser();
+export default function DashboardPage() {
+    const [user, setUser] = useState<UserProfile | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const currentUser = await getCurrentUser();
+            setUser(currentUser);
+            setLoading(false);
+        };
+        fetchUser();
+    }, []);
+
+    if (loading) {
+         return (
+            <div className="flex items-center justify-center h-full">
+                <Skeleton className="h-64 w-full" />
+            </div>
+        )
+    }
 
     if (!user) {
-        // This case should ideally be handled by the layout and middleware,
-        // but as a fallback, we can show an error or redirect.
-        // For now, returning a clear message.
-        return <p>User not found or not authenticated. Please log in.</p>;
+        return <p>An error occurred while loading user data. Please try refreshing.</p>;
     }
 
     if (user.role === 'admin') {
