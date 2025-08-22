@@ -2,7 +2,8 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useActionState, useFormStatus } from "react-dom";
+import { useActionState } from 'react';
+import { useFormStatus } from "react-dom";
 import { generateArticleAction } from "@/app/ai-tools/one-click-writer/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
