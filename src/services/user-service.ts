@@ -4,7 +4,6 @@
 import { cookies } from 'next/headers';
 import { getFirestore, doc, getDoc, collection, getDocs, query, where } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
-import { User, getAuth } from 'firebase/auth';
 
 export type UserProfile = {
   id: string;
@@ -21,7 +20,7 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
   const cookieStore = cookies();
   const sessionCookie = cookieStore.get('auth-session');
   
-  if (!sessionCookie) {
+  if (!sessionCookie?.value) {
     return null;
   }
   
