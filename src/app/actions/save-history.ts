@@ -1,10 +1,10 @@
 
 'use server';
 
-import { headers } from 'next/headers';
 import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { z } from 'zod';
+import { getCurrentUser } from '@/services/user-service';
 
 const HistoryItemSchema = z.object({
   tool: z.string(),
@@ -16,10 +16,9 @@ type HistoryItem = z.infer<typeof HistoryItemSchema>;
 
 
 export async function saveHistoryAction(item: HistoryItem) {
-  const headersList = headers();
-  const uid = headersList.get('x-uid');
+  const user = await getCurrentUser();
 
-  if (!uid) {
+  if (!user) {
     console.warn('Cannot save history: user is not logged in.');
     // Don't throw an error, just return, as this is not a critical failure for the user.
     return;
@@ -34,7 +33,7 @@ export async function saveHistoryAction(item: HistoryItem) {
   try {
     const db = getFirestore(app);
     await addDoc(collection(db, 'history'), {
-      uid: uid,
+      uid: user.id,
       ...validatedItem.data,
       createdAt: serverTimestamp(),
     });
