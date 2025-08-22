@@ -1,7 +1,8 @@
 
 "use client";
 
-import React, { useActionState, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useActionState } from 'react';
 import { useFormStatus } from "react-dom";
 import { generateFacebookComments } from "@/app/ai-tools/facebook-comment-generator/actions";
 import { Button } from "@/components/ui/button";
