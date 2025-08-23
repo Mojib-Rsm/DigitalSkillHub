@@ -1,4 +1,6 @@
 
+'use server';
+
 import * as admin from 'firebase-admin';
 
 // Check if all required environment variables are available
@@ -18,7 +20,7 @@ if (!admin.apps.length && hasAllCredentials) {
       }),
     });
   } catch (error: any) {
-    console.error('Firebase admin initialization error', error.stack);
+    console.error('Firebase admin initialization error:', error.message);
   }
 } else if (!admin.apps.length) {
     console.warn("Firebase Admin SDK not initialized. Missing required environment variables (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY). This is expected during local build if credentials are not set.");

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect } from "react";
@@ -52,7 +53,8 @@ export default function FreeTrialForm() {
                 title: "Registration Successful!",
                 description: "Redirecting you to the dashboard...",
             });
-            // The server action now handles the redirect
+            // The server action now handles the redirect, but as a fallback:
+            router.push('/dashboard');
         }
     }, [state, toast, router]);
     
