@@ -1,10 +1,9 @@
 
 "use client";
 
-import React from "react";
-import { useActionState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useFormStatus } from "react-dom";
-import { generateAdCopy } from "@/app/ai-tools/ad-copy-generator/actions";
+import { generateAdCopyAction } from "@/app/ai-tools/ad-copy-generator/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,6 +12,7 @@ import { Sparkles, Clipboard, Megaphone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Input } from "./ui/input";
+import type { AdCopyGeneratorOutput } from "@/ai/flows/ad-copy-generator";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -34,19 +34,36 @@ function SubmitButton() {
 }
 
 export default function AdCopyGeneratorForm() {
-  const initialState = { message: "", data: undefined, issues: [], fields: {} };
-  const [state, formAction] = useActionState(generateAdCopy, initialState);
+  const [data, setData] = useState<AdCopyGeneratorOutput | undefined>(undefined);
+  const [issues, setIssues] = useState<Record<string, string[]> | undefined>(undefined);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (state.message && state.message !== "success" && state.message !== "Validation Error") {
-        toast({
-            variant: "destructive",
-            title: "ত্রুটি",
-            description: state.message,
-        })
-    }
-  }, [state, toast]);
+  const handleSubmit = async (formData: FormData) => {
+      setIsSubmitting(true);
+      setData(undefined);
+      setIssues(undefined);
+
+      const result = await generateAdCopyAction(formData);
+
+      if (result.success) {
+          setData(result.data);
+          formRef.current?.reset();
+      } else {
+          if (result.issues) {
+              setIssues(result.issues as any);
+          } else {
+            toast({
+                variant: "destructive",
+                title: "ত্রুটি",
+                description: result.issues?.join(", ") || "An unknown error occurred.",
+            })
+          }
+      }
+      setIsSubmitting(false);
+  };
+
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -65,17 +82,16 @@ export default function AdCopyGeneratorForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={formAction} className="space-y-6">
+        <form ref={formRef} action={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="productName">পণ্যের নাম</Label>
             <Input
               id="productName"
               name="productName"
               placeholder="যেমন, অর্গানিক গ্রিন টি"
-              defaultValue={state.fields?.productName}
               required
             />
-            {state.issues?.filter(i => i.includes("product name")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            {issues?.productName && <p className="text-sm font-medium text-destructive">{issues.productName[0]}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="productDescription">পণ্যের বর্ণনা</Label>
@@ -83,11 +99,10 @@ export default function AdCopyGeneratorForm() {
               id="productDescription"
               name="productDescription"
               placeholder="যেমন, অ্যান্টিঅক্সিডেন্ট সমৃদ্ধ, সতেজ এবং সম্পূর্ণ প্রাকৃতিক।"
-              defaultValue={state.fields?.productDescription}
               required
               rows={3}
             />
-             {state.issues?.filter(i => i.includes("product description")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            {issues?.productDescription && <p className="text-sm font-medium text-destructive">{issues.productDescription[0]}</p>}
           </div>
            <div className="space-y-2">
             <Label htmlFor="targetAudience">লক্ষ্য দর্শক</Label>
@@ -95,10 +110,9 @@ export default function AdCopyGeneratorForm() {
               id="targetAudience"
               name="targetAudience"
               placeholder="যেমন, স্বাস্থ্য-সচেতন তরুণ পেশাজীবী"
-              defaultValue={state.fields?.targetAudience}
               required
             />
-             {state.issues?.filter(i => i.includes("audience")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+             {issues?.targetAudience && <p className="text-sm font-medium text-destructive">{issues.targetAudience[0]}</p>}
           </div>
           
           <div className="space-y-2">
@@ -118,12 +132,20 @@ export default function AdCopyGeneratorForm() {
           <SubmitButton />
         </form>
 
-        {state.data && (
+        {isSubmitting && (
+            <div className="mt-8 text-center">
+                <div className="inline-block bg-muted/50 p-4 rounded-lg">
+                    <p className="text-muted-foreground animate-pulse">আপনার বিজ্ঞাপনের কপি তৈরি হচ্ছে...</p>
+                </div>
+            </div>
+        )}
+
+        {data && (
           <div className="mt-8 space-y-6">
             <div>
                 <h3 className="text-2xl font-bold font-headline mb-4 text-center">জেনারেটেড হেডলাইন</h3>
                 <div className="space-y-3">
-                {state.data.headlines.map((headline, index) => (
+                {data.headlines.map((headline, index) => (
                     <Card key={index} className="bg-muted/50 relative group">
                     <CardContent className="p-3 flex items-center gap-3">
                         <p className="font-medium flex-1">{headline}</p>
@@ -139,8 +161,8 @@ export default function AdCopyGeneratorForm() {
                 <h3 className="text-2xl font-bold font-headline mb-4 text-center">জেনারেটেড বডি টেক্সট</h3>
                  <Card className="bg-muted/50 relative group">
                     <CardContent className="p-4">
-                        <p className="text-muted-foreground whitespace-pre-wrap">{state.data.body}</p>
-                        <Button variant="ghost" size="icon" className="absolute top-2 right-2 opacity-0 group-hover:opacity-100" onClick={() => handleCopy(state.data!.body)}>
+                        <p className="text-muted-foreground whitespace-pre-wrap">{data.body}</p>
+                        <Button variant="ghost" size="icon" className="absolute top-2 right-2 opacity-0 group-hover:opacity-100" onClick={() => handleCopy(data!.body)}>
                             <Clipboard className="w-5 h-5"/>
                         </Button>
                     </CardContent>

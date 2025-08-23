@@ -1,10 +1,9 @@
 
 "use client";
 
-import React from "react";
-import { useActionState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useFormStatus } from "react-dom";
-import { generateContentOutline } from "@/app/ai-tools/content-outline-generator/actions";
+import { generateContentOutlineAction } from "@/app/ai-tools/content-outline-generator/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -12,6 +11,7 @@ import { Sparkles, List } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "./ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
+import type { ContentOutlineGeneratorOutput } from "@/ai/flows/content-outline-generator";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -33,20 +33,36 @@ function SubmitButton() {
 }
 
 export default function ContentOutlineGeneratorForm() {
-  const initialState = { message: "", outline: undefined, issues: [], fields: {} };
-  const [state, formAction] = useActionState(generateContentOutline, initialState);
+  const [data, setData] = useState<ContentOutlineGeneratorOutput | undefined>(undefined);
+  const [issues, setIssues] = useState<any[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (state.message && state.message !== "success" && state.message !== "Validation Error") {
-        toast({
-            variant: "destructive",
-            title: "ত্রুটি",
-            description: state.message,
-        })
+  const handleSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
+    setData(undefined);
+    setIssues([]);
+    const result = await generateContentOutlineAction(formData);
+    if(result.success) {
+        setData(result.data);
+    } else {
+        if (result.issues) {
+            setIssues(result.issues);
+        } else {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: "An unknown error occurred."
+            });
+        }
     }
-  }, [state, toast]);
+    setIsSubmitting(false);
+  }
 
+  const getIssueMessage = (path: string) => {
+      return issues.find(issue => issue.path.includes(path))?.message;
+  }
 
   return (
     <Card className="shadow-lg">
@@ -57,17 +73,16 @@ export default function ContentOutlineGeneratorForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={formAction} className="space-y-6">
+        <form ref={formRef} action={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="topic">বিষয়</Label>
             <Input
               id="topic"
               name="topic"
               placeholder="যেমন, কৃত্রিম বুদ্ধিমত্তার নৈতিকতা"
-              defaultValue={state.fields?.topic}
               required
             />
-            {state.issues?.filter(i => i.includes("topic")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            {getIssueMessage('topic') && <p className="text-sm font-medium text-destructive">{getIssueMessage('topic')}</p>}
           </div>
           <div className="space-y-2">
             <Label htmlFor="contentType">কনটেন্টের ধরন</Label>
@@ -75,20 +90,27 @@ export default function ContentOutlineGeneratorForm() {
               id="contentType"
               name="contentType"
               placeholder="যেমন, ব্লগ পোস্ট, ইউটিউব ভিডিও, প্রেজেন্টেশন"
-              defaultValue={state.fields?.contentType}
               required
             />
-             {state.issues?.filter(i => i.includes("content type")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+             {getIssueMessage('contentType') && <p className="text-sm font-medium text-destructive">{getIssueMessage('contentType')}</p>}
           </div>
           
           <SubmitButton />
         </form>
 
-        {state.outline && (
+        {isSubmitting && (
+            <div className="mt-8 text-center">
+                <div className="inline-block bg-muted/50 p-4 rounded-lg">
+                    <p className="text-muted-foreground animate-pulse">আপনার আউটলাইন তৈরি হচ্ছে...</p>
+                </div>
+            </div>
+        )}
+
+        {data?.outline && (
           <div className="mt-8 space-y-4">
             <h3 className="text-2xl font-bold font-headline text-center">আপনার কনটেন্ট আউটলাইন</h3>
             <Accordion type="single" collapsible className="w-full">
-                {state.outline.map((item, index) => (
+                {data.outline.map((item, index) => (
                     <AccordionItem value={`item-${index}`} key={index}>
                         <AccordionTrigger className="text-base font-semibold">{item.section}</AccordionTrigger>
                         <AccordionContent>

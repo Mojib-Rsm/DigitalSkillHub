@@ -12,17 +12,9 @@ const AdCopyGeneratorActionSchema = z.object({
   platform: z.enum(['Facebook Ads', 'Google Ads']),
 });
 
-type FormState = {
-  message: string;
-  data?: AdCopyGeneratorOutput;
-  fields?: Record<string, string>;
-  issues?: string[];
-};
-
-export async function generateAdCopy(
-  prevState: FormState,
+export async function generateAdCopyAction(
   formData: FormData
-): Promise<FormState> {
+): Promise<{ success: boolean; data?: AdCopyGeneratorOutput; issues?: string[]; fields?: Record<string, string>}> {
   const validatedFields = AdCopyGeneratorActionSchema.safeParse({
     productName: formData.get("productName"),
     productDescription: formData.get("productDescription"),
@@ -31,10 +23,9 @@ export async function generateAdCopy(
   });
 
   if (!validatedFields.success) {
-    const { errors } = validatedFields.error;
     return {
-      message: "Validation Error",
-      issues: errors.map((issue) => issue.message),
+      success: false,
+      issues: validatedFields.error.flatten().fieldErrors,
       fields: Object.fromEntries(formData.entries()) as Record<string, string>,
     };
   }
@@ -48,16 +39,17 @@ export async function generateAdCopy(
           output: result,
       });
       return {
-        message: "success",
+        success: true,
         data: result,
       };
     } else {
-        return { message: "Failed to generate ad copy. Please try again." }
+        return { success: false, issues: ["Failed to generate ad copy. Please try again."] }
     }
   } catch (error) {
     console.error(error);
     return {
-      message: "An unexpected error occurred. Please try again.",
+      success: false,
+      issues: ["An unexpected error occurred. Please try again."],
     };
   }
 }

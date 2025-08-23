@@ -11,17 +11,9 @@ const ContentCalendarPlannerActionSchema = z.object({
   duration: z.string().min(3, { message: "Please select a duration." }),
 });
 
-type FormState = {
-  message: string;
-  calendar?: ContentCalendarPlannerOutput['calendar'];
-  fields?: Record<string, string>;
-  issues?: string[];
-};
-
-export async function generateContentCalendar(
-  prevState: FormState,
+export async function generateContentCalendarAction(
   formData: FormData
-): Promise<FormState> {
+): Promise<{ success: boolean; data?: ContentCalendarPlannerOutput; issues?: z.ZodIssue[]; fields?: Record<string, string>}> {
   const validatedFields = ContentCalendarPlannerActionSchema.safeParse({
     topic: formData.get("topic"),
     platform: formData.get("platform"),
@@ -29,10 +21,9 @@ export async function generateContentCalendar(
   });
 
   if (!validatedFields.success) {
-    const { errors } = validatedFields.error;
     return {
-      message: "Validation Error",
-      issues: errors.map((issue) => issue.message),
+      success: false,
+      issues: validatedFields.error.errors,
       fields: Object.fromEntries(formData.entries()) as Record<string, string>,
     };
   }
@@ -46,16 +37,17 @@ export async function generateContentCalendar(
           output: result,
       });
       return {
-        message: "success",
-        calendar: result.calendar,
+        success: true,
+        data: result,
       };
     } else {
-        return { message: "Failed to generate calendar. Please try again." }
+        return { success: false, issues: [{ path: ['root'], message: "Failed to generate calendar. Please try again."}] }
     }
   } catch (error) {
     console.error(error);
     return {
-      message: "An unexpected error occurred. Please try again.",
+      success: false,
+      issues: [{ path: ['root'], message: "An unexpected error occurred. Please try again."}],
     };
   }
 }

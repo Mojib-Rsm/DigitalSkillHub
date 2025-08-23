@@ -1,7 +1,7 @@
 
 "use server";
 
-import { seoKeywordSuggester } from "@/ai/flows/seo-keyword-suggester";
+import { seoKeywordSuggester, SeoKeywordSuggesterOutput } from "@/ai/flows/seo-keyword-suggester";
 import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
@@ -10,31 +10,19 @@ const SeoKeywordSuggesterActionSchema = z.object({
   targetAudience: z.string().min(3, { message: "Please describe your target audience." }),
 });
 
-type FormState = {
-  message: string;
-  keywords?: string[];
-  fields?: Record<string, string>;
-  issues?: string[];
-};
-
-export async function suggestKeywords(
-  prevState: FormState,
+export async function suggestKeywordsAction(
   formData: FormData
-): Promise<FormState> {
+): Promise<{ success: boolean; data?: SeoKeywordSuggesterOutput; issues?: string[]; fields?: Record<string, string>}> {
   const validatedFields = SeoKeywordSuggesterActionSchema.safeParse({
     topic: formData.get("topic"),
     targetAudience: formData.get("targetAudience"),
   });
 
   if (!validatedFields.success) {
-    const { errors } = validatedFields.error;
     return {
-      message: "Validation Error",
-      issues: errors.map((issue) => issue.message),
-      fields: {
-        topic: formData.get("topic") as string,
-        targetAudience: formData.get("targetAudience") as string,
-      }
+      success: false,
+      issues: validatedFields.error.flatten().fieldErrors as any,
+      fields: Object.fromEntries(formData.entries()) as Record<string, string>,
     };
   }
   
@@ -47,16 +35,17 @@ export async function suggestKeywords(
           output: result,
       });
       return {
-        message: "success",
-        keywords: result.keywords,
+        success: true,
+        data: result,
       };
     } else {
-        return { message: "No keywords generated. Please try a different input." }
+        return { success: false, issues: ["No keywords generated. Please try a different input."] }
     }
   } catch (error) {
     console.error(error);
     return {
-      message: "An unexpected error occurred. Please try again.",
+      success: false,
+      issues: ["An unexpected error occurred. Please try again."],
     };
   }
 }

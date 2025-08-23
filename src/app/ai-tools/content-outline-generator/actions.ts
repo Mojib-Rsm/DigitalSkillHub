@@ -10,27 +10,18 @@ const ContentOutlineGeneratorActionSchema = z.object({
   contentType: z.string().min(3, { message: "Please select a content type." }),
 });
 
-type FormState = {
-  message: string;
-  outline?: ContentOutlineGeneratorOutput['outline'];
-  fields?: Record<string, string>;
-  issues?: string[];
-};
-
-export async function generateContentOutline(
-  prevState: FormState,
+export async function generateContentOutlineAction(
   formData: FormData
-): Promise<FormState> {
+): Promise<{ success: boolean; data?: ContentOutlineGeneratorOutput; issues?: z.ZodIssue[]; fields?: Record<string, string>}> {
   const validatedFields = ContentOutlineGeneratorActionSchema.safeParse({
     topic: formData.get("topic"),
     contentType: formData.get("contentType"),
   });
 
   if (!validatedFields.success) {
-    const { errors } = validatedFields.error;
     return {
-      message: "Validation Error",
-      issues: errors.map((issue) => issue.message),
+      success: false,
+      issues: validatedFields.error.errors,
       fields: Object.fromEntries(formData.entries()) as Record<string, string>,
     };
   }
@@ -44,16 +35,17 @@ export async function generateContentOutline(
           output: result,
       });
       return {
-        message: "success",
-        outline: result.outline,
+        success: true,
+        data: result,
       };
     } else {
-        return { message: "Failed to generate outline. Please try again." }
+        return { success: false, issues: [{ path: ['root'], message: "Failed to generate outline. Please try again."}] };
     }
   } catch (error) {
     console.error(error);
     return {
-      message: "An unexpected error occurred. Please try again.",
+      success: false,
+      issues: [{ path: ['root'], message: "An unexpected error occurred. Please try again."}],
     };
   }
 }
