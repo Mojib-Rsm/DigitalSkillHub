@@ -1,14 +1,37 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Users can only read their own data.
+    // Admins can read any user's data.
     match /users/{userId} {
       allow read: if request.auth.uid == userId || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
       allow write: if request.auth.uid == userId;
-      // Allow admins to update the role of other users
-      allow update: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role']);
     }
+
+    // Admins can manage all collections
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Public collections can be read by anyone.
+    match /courses/{courseId} {
+        allow read: if true;
+    }
+     match /blog/{blogId} {
+        allow read: if true;
+    }
+     match /jobs/{jobId} {
+        allow read: if true;
+    }
+     match /pricing/{planId} {
+        allow read: if true;
+    }
+     match /testimonials/{testimonialId} {
+        allow read: if true;
+    }
+     match /tools/{toolId} {
+        allow read: if true;
     }
   }
 }
