@@ -1,4 +1,3 @@
-
 'use server';
 
 import { z } from 'zod';
@@ -74,5 +73,6 @@ export async function loginAction(
       path: '/',
   });
 
+  // Return success but don't redirect here. Let the client handle it.
   return { message: 'Login successful!', success: true };
 }

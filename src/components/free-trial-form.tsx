@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect } from "react";
@@ -10,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Bot, Sparkles, Zap, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useActionState, useFormStatus } from "react";
+import { useActionState, useFormStatus } from "react-dom";
 import { signupAction } from "@/app/free-trial/actions";
 import { useRouter } from "next/navigation";
 
@@ -53,12 +52,13 @@ export default function FreeTrialForm() {
                 title: "Registration Successful!",
                 description: "Redirecting you to the dashboard...",
             });
+            // The server action now handles the redirect, but this is a good fallback/UI update
             router.push('/dashboard');
         }
     }, [state, toast, router]);
     
     return (
-        <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4" suppressHydrationWarning={true}>
+        <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                  <div className="text-center mb-8">
                     <Link href="/" className="flex items-center gap-2 justify-center mb-4">

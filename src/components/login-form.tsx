@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState, useRef } from "react";
@@ -10,11 +9,14 @@ import { Label } from "@/components/ui/label";
 import { Bot, Sparkles, LogIn, Chrome, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { loginAction } from "@/app/login/actions";
+import { useFormStatus } from "react-dom";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function LoginSubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
+    const { pending } = useFormStatus();
     return (
-        <Button type="submit" disabled={isSubmitting} className="w-full text-base" size="lg">
-            {isSubmitting ? (
+        <Button type="submit" disabled={isSubmitting || pending} className="w-full text-base" size="lg">
+            {(isSubmitting || pending) ? (
                 <>
                     <Sparkles className="mr-2 h-5 w-5 animate-spin" />
                     Logging in...
@@ -33,17 +35,25 @@ export default function LoginForm() {
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
+    const searchParams = useSearchParams();
+    const router = useRouter();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setIsSubmitting(true);
         const formData = new FormData(event.currentTarget);
         
-        // The action will handle the redirect on success, so we only care about the error case here.
         try {
             const result = await loginAction(formData);
-            if (!result.success) {
-                toast({
+            if (result.success) {
+                 toast({
+                    title: "Login Successful!",
+                    description: "Redirecting you to the dashboard...",
+                });
+                const redirectUrl = searchParams.get('redirect') || '/dashboard';
+                router.push(redirectUrl);
+            } else {
+                 toast({
                     variant: "destructive",
                     title: "Login Failed",
                     description: result.message,
@@ -61,7 +71,7 @@ export default function LoginForm() {
     };
     
     return (
-        <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4" suppressHydrationWarning={true}>
+        <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                  <div className="text-center mb-8">
                     <Link href="/" className="flex items-center gap-2 justify-center mb-4">
@@ -111,7 +121,7 @@ export default function LoginForm() {
                     </CardFooter>
                 </Card>
 
-                <Card className="mt-4">
+                 <Card className="mt-4">
                     <CardHeader>
                         <CardTitle className="flex items-center text-base"><Info className="w-5 h-5 mr-2 text-primary"/>Demo Account Info</CardTitle>
                     </CardHeader>
