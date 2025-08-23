@@ -17,6 +17,13 @@ const OneClickWriterInputSchema = z.object({
   primaryKeyword: z.string().min(3, { message: "Please enter a primary keyword." }),
   contentLength: z.enum(['Short', 'Medium', 'Long']).describe('The desired length of the article (Short: ~400 words, Medium: ~800 words, Long: ~1500 words).'),
   tone: z.enum(['Formal', 'Casual', 'Friendly', 'Professional']).describe('The desired writing tone for the article.'),
+  targetCountry: z.string().describe('The target country for the content, for localization purposes.'),
+  includeFaq: z.boolean().optional().describe('Whether to include a FAQ section in the article.'),
+  includeKeyTakeaways: z.boolean().optional().describe('Whether to include a key takeaways section.'),
+  disableIntroduction: z.boolean().optional().describe('Whether to disable the introduction section.'),
+  disableConclusion: z.boolean().optional().describe('Whether to disable the conclusion section.'),
+  enableSkinnyParagraph: z.boolean().optional().describe('Whether to use short, "skinny" paragraphs for better readability.'),
+  passAiDetection: z.boolean().optional().describe('Whether to use techniques to bypass AI detection tools.'),
 });
 export type OneClickWriterInput = z.infer<typeof OneClickWriterInputSchema>;
 
@@ -59,6 +66,14 @@ const writerPrompt = ai.definePrompt({
     - **Primary Keyword:** {{{primaryKeyword}}}
     - **Desired Length:** {{{contentLength}}}
     - **Desired Tone:** {{{tone}}}
+    - **Target Country:** {{{targetCountry}}}
+
+    **Content Structure Options:**
+    {{#if disableIntroduction}}- Do NOT include an introduction. Start directly with the main content.{{/if}}
+    {{#if includeKeyTakeaways}}- Include a 'Key Takeaways' section near the beginning, summarizing the main points in a bulleted list.{{/if}}
+    {{#if includeFaq}}- Include a detailed FAQ section at the end with 3-5 relevant questions and answers.{{/if}}
+    {{#if disableConclusion}}- Do NOT include a conclusion. End the article after the last main point.{{/if}}
+    {{#if enableSkinnyParagraph}}- Use "skinny paragraphs": keep most paragraphs very short (1-3 sentences) for high readability.{{/if}}
 
     **Instructions for 100% SEO Score & Human-like Writing:**
 
@@ -67,16 +82,18 @@ const writerPrompt = ai.definePrompt({
         *   Keyword density should be optimal (around 1-2%). Avoid keyword stuffing at all costs.
 
     2.  **Content Structure & Formatting:**
-        *   Write a well-structured article with an engaging introduction, multiple logical subheadings (mix of H2 using '##' and H3 using '###'), detailed body paragraphs, and a strong concluding paragraph with a Call-to-Action (CTA).
+        *   Write a well-structured article with an engaging introduction, multiple logical subheadings (mix of H2 using '##' and H3 using '###'), detailed body paragraphs, and a strong concluding paragraph with a Call-to-Action (CTA), unless disabled by the user.
         *   Use proper Markdown formatting. Use **bold text** for emphasis. Use *italic text* for nuance. Use bullet points or numbered lists to break up text and improve readability.
         *   Adhere to the desired length: Short (~400 words), Medium (~800 words), or Long (~1500 words). The article MUST be comprehensive and detailed.
+        *   If the target country is not 'United States', subtly include context, examples, or references relevant to the '{{{targetCountry}}}'.
 
     3.  **Human-like Tone & Style (Critical for Bypassing AI Detectors):**
         *   Adopt the specified **Tone** ({{{tone}}}).
-        *   Use a mix of short, punchy sentences and longer, more complex ones to create a natural rhythm. This variation in sentence length is key to sounding human.
-        *   Ask rhetorical questions to engage the reader and break up the text.
-        *   Incorporate metaphors, analogies, or storytelling to make the content relatable and less robotic.
-        *   Avoid common AI clichés like "In conclusion," "In today's digital age," "Furthermore," "It's important to note," or "Overall." The conclusion should feel like a natural summary or a final thought, not a formal announcement.
+        {{#if passAiDetection}}
+        *   **CRITICAL:** To pass AI detection, you MUST vary sentence structure significantly. Use a mix of short, punchy sentences and longer, more complex ones to create a natural rhythm. Use rhetorical questions. Incorporate metaphors, analogies, or storytelling to make the content relatable and less robotic. Avoid common AI clichés like "In today's digital age," "Furthermore," "It's important to note," "In conclusion," or "Overall." The conclusion should feel like a natural summary or a final thought, not a formal announcement.
+        {{else}}
+        *   Write in a clear, engaging, and human-like style.
+        {{/if}}
 
     4.  **Meta Information Generation:**
         *   Generate a concise and catchy **SEO Title** (around 60 characters) that includes the primary keyword.
@@ -143,3 +160,5 @@ const oneClickWriterFlow = ai.defineFlow(
     };
   }
 );
+
+    

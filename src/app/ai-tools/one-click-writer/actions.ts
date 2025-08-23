@@ -1,38 +1,21 @@
 
 "use server";
 
-import { oneClickWriter, OneClickWriterOutput } from "@/ai/flows/one-click-writer";
+import { oneClickWriter, OneClickWriterOutput, OneClickWriterInput } from "@/ai/flows/one-click-writer";
 import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
-const OneClickWriterActionSchema = z.object({
-  title: z.string().min(10, { message: "Please enter a title with at least 10 characters." }),
-  primaryKeyword: z.string().min(3, { message: "Please enter a primary keyword." }),
-  contentLength: z.enum(['Short', 'Medium', 'Long']),
-  tone: z.enum(['Formal', 'Casual', 'Friendly', 'Professional']),
-});
-
-type OneClickWriterInput = z.infer<typeof OneClickWriterActionSchema>;
 
 export async function generateArticleAction(
   input: OneClickWriterInput
 ): Promise<{ success: boolean; data?: OneClickWriterOutput; issues?: string[] }> {
-
-  const validatedFields = OneClickWriterActionSchema.safeParse(input);
-
-  if (!validatedFields.success) {
-    return {
-      success: false,
-      issues: validatedFields.error.errors.map((e) => e.message),
-    };
-  }
   
   try {
-    const result = await oneClickWriter(validatedFields.data);
+    const result = await oneClickWriter(input);
     if (result) {
         await saveHistoryAction({
             tool: 'one-click-writer',
-            input: validatedFields.data,
+            input: input,
             output: result,
         });
       return {
@@ -56,3 +39,5 @@ export async function generateArticleAction(
     };
   }
 }
+
+    

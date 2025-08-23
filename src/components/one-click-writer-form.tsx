@@ -1,14 +1,14 @@
 
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { generateArticleAction } from "@/app/ai-tools/one-click-writer/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
@@ -17,6 +17,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Progress } from "./ui/progress";
 import type { OneClickWriterOutput } from "@/ai/flows/one-click-writer";
 import { Badge } from "./ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "./ui/command";
+import { cn } from "@/lib/utils";
+import { countries } from "@/lib/countries";
+import { Switch } from "./ui/switch";
 
 // Remark and rehype plugins for markdown rendering
 import { unified } from 'unified';
@@ -61,6 +66,8 @@ export default function OneClickWriterForm() {
   const [issues, setIssues] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [renderedHtml, setRenderedHtml] = useState("");
+  const [country, setCountry] = useState("Bangladesh");
+  const [countrySelectOpen, setCountrySelectOpen] = useState(false);
 
   useEffect(() => {
     if (data?.article) {
@@ -98,6 +105,13 @@ export default function OneClickWriterForm() {
           primaryKeyword: formData.get('primaryKeyword') as string,
           contentLength: formData.get('contentLength') as 'Short' | 'Medium' | 'Long',
           tone: formData.get('tone') as 'Formal' | 'Casual' | 'Friendly' | 'Professional',
+          targetCountry: formData.get('targetCountry') as string,
+          includeFaq: formData.get('includeFaq') === 'on',
+          includeKeyTakeaways: formData.get('includeKeyTakeaways') === 'on',
+          disableIntroduction: formData.get('disableIntroduction') === 'on',
+          disableConclusion: formData.get('disableConclusion') === 'on',
+          enableSkinnyParagraph: formData.get('enableSkinnyParagraph') === 'on',
+          passAiDetection: formData.get('passAiDetection') === 'on',
       };
       
       const result = await generateArticleAction(input);
@@ -161,6 +175,88 @@ export default function OneClickWriterForm() {
                         <SelectItem value="Professional">পেশাদার</SelectItem>
                     </SelectContent>
                 </Select>
+            </div>
+            
+            <div className="space-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor="country">লক্ষ্য দেশ</Label>
+                    <input type="hidden" name="targetCountry" value={country} />
+                    <Popover open={countrySelectOpen} onOpenChange={setCountrySelectOpen}>
+                        <PopoverTrigger asChild>
+                        <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={countrySelectOpen}
+                            className="w-full justify-between font-normal"
+                        >
+                            {country
+                            ? countries.find((c) => c.value === country)?.label
+                            : "দেশ নির্বাচন করুন..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                        <Command>
+                            <CommandInput placeholder="দেশ খুঁজুন..." />
+                            <CommandEmpty>কোনো দেশ পাওয়া যায়নি।</CommandEmpty>
+                            <CommandGroup className="max-h-64 overflow-y-auto">
+                            {countries.map((c) => (
+                                <CommandItem
+                                key={c.value}
+                                value={c.value}
+                                onSelect={(currentValue) => {
+                                    setCountry(countries.find(c => c.value.toLowerCase() === currentValue.toLowerCase())?.value || "")
+                                    setCountrySelectOpen(false)
+                                }}
+                                >
+                                <Check
+                                    className={cn(
+                                    "mr-2 h-4 w-4",
+                                    country === c.value ? "opacity-100" : "opacity-0"
+                                    )}
+                                />
+                                {c.label}
+                                </CommandItem>
+                            ))}
+                            </CommandGroup>
+                        </Command>
+                        </PopoverContent>
+                    </Popover>
+                </div>
+                <Card className="p-4 bg-muted/50">
+                    <CardHeader className="p-0 pb-4">
+                        <CardTitle className="text-lg">Content Structure Options</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0 space-y-4">
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="includeFaq" className="font-normal">Include FAQ Section</Label>
+                            <Switch id="includeFaq" name="includeFaq" />
+                        </div>
+                         <div className="flex items-center justify-between">
+                            <Label htmlFor="includeKeyTakeaways" className="font-normal">Include Key Takeaways</Label>
+                            <Switch id="includeKeyTakeaways" name="includeKeyTakeaways" />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="disableIntroduction" className="font-normal">Disable Introduction</Label>
+                            <Switch id="disableIntroduction" name="disableIntroduction" />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="disableConclusion" className="font-normal">Disable Conclusion</Label>
+                            <Switch id="disableConclusion" name="disableConclusion" />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <Label htmlFor="enableSkinnyParagraph" className="font-normal">Enable Skinny Paragraph</Label>
+                            <Switch id="enableSkinnyParagraph" name="enableSkinnyParagraph" />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <Label htmlFor="passAiDetection" className="font-normal">Pass AI Detection</Label>
+                                <p className="text-xs text-muted-foreground">Avoid common AI-detectable words and phrases</p>
+                            </div>
+                            <Switch id="passAiDetection" name="passAiDetection" />
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
           
             {issues.length > 0 && (
@@ -327,3 +423,5 @@ export default function OneClickWriterForm() {
     </Card>
   );
 }
+
+    
