@@ -1,8 +1,7 @@
 
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Bot, Menu, ChevronDown, User, LogOut, LayoutDashboard, Coins } from "lucide-react";
+import { Bot, Menu, ChevronDown, User, LogOut, LayoutDashboard, Coins, Settings } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -55,7 +54,7 @@ const NavLink = ({ href, label }: { href: string; label: string }) => (
 export default async function Header() {
   const user = await getCurrentUser();
 
-  const renderAuthButtons = () => {
+  const renderAuthSection = () => {
     if (user) {
       return (
         <div className="flex items-center gap-2">
@@ -69,14 +68,17 @@ export default async function Header() {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                        <Avatar>
+                        <Avatar className="h-10 w-10">
                             <AvatarImage src={user.profile_image} alt={user.name}/>
-                            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                            <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+                    <DropdownMenuLabel>
+                        <p className="font-bold">{user.name}</p>
+                        <p className="text-xs text-muted-foreground font-normal">{user.email}</p>
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator/>
                     <DropdownMenuItem asChild>
                         <Link href="/dashboard">
@@ -86,14 +88,14 @@ export default async function Header() {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                          <Link href="/dashboard/settings">
-                            <User className="mr-2 h-4 w-4"/>
-                            <span>Profile</span>
+                            <Settings className="mr-2 h-4 w-4"/>
+                            <span>Settings</span>
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator/>
                      <form action={logoutAction} className="w-full">
                         <DropdownMenuItem asChild>
-                               <button type="submit" className="w-full">
+                               <button type="submit" className="w-full cursor-pointer">
                                 <LogOut className="mr-2 h-4 w-4"/>
                                 <span>Logout</span>
                                </button>
@@ -149,15 +151,10 @@ export default async function Header() {
             </DropdownMenu>
         </nav>
         <div className="hidden lg:flex items-center gap-2">
-            {renderAuthButtons()}
+            {renderAuthSection()}
         </div>
         <div className="lg:hidden flex items-center gap-2">
-            <Button variant="ghost" size="icon" asChild>
-                <Link href={user ? "/dashboard" : "/login"}>
-                    <User className="h-6 w-6"/>
-                    <span className="sr-only">Profile</span>
-                </Link>
-            </Button>
+            <ThemeToggleButton />
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
