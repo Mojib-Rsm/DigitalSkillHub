@@ -74,5 +74,5 @@ export async function loginAction(
       path: '/',
   });
 
-  redirect('/dashboard');
+  return { message: 'Login successful!', success: true };
 }

@@ -12,6 +12,7 @@ import { Bot, Sparkles, Zap, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useActionState, useFormStatus } from "react";
 import { signupAction } from "@/app/free-trial/actions";
+import { redirect, useRouter } from "next/navigation";
 
 function SignUpSubmitButton() {
     const { pending } = useFormStatus();
@@ -34,6 +35,7 @@ function SignUpSubmitButton() {
 
 export default function FreeTrialForm() {
     const { toast } = useToast();
+    const router = useRouter();
     
     const initialState = { message: "", success: false, issues: [], fields: {} };
     const [state, formAction] = useActionState(signupAction, initialState);
@@ -46,7 +48,10 @@ export default function FreeTrialForm() {
                 description: state.message,
             });
         }
-    }, [state, toast]);
+        if (state.success) {
+            router.push('/dashboard');
+        }
+    }, [state, toast, router]);
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4" suppressHydrationWarning={true}>
