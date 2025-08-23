@@ -1,19 +1,10 @@
 
+'use server';
 
-'use client';
-
-import { 
-    getFirestore, 
-    collection, 
-    writeBatch,
-    doc
-} from 'firebase/firestore/lite';
-import { app } from '@/lib/firebase';
+import { adminDb } from '@/lib/firebase-admin';
 import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, tools, users } from '@/lib/demo-data';
 
-
 export async function seedDatabase() {
-    const db = getFirestore(app);
     let totalOperationsCount = 0;
     const collectionsToSeed = [
         { name: 'courses', data: allCourses },
@@ -28,16 +19,12 @@ export async function seedDatabase() {
     try {
         // Helper function to seed a single collection in its own batch
         const seedCollection = async (collectionName: string, data: any[]) => {
-            const collectionRef = collection(db, collectionName);
-            
-            // Firestore batches have a limit of 500 operations.
-            // We create a new batch for each collection to stay under the limit.
-            const batch = writeBatch(db);
+            const collectionRef = adminDb.collection(collectionName);
+            const batch = adminDb.batch();
             let operationsCount = 0;
 
             data.forEach((item) => {
-                // Use a specific ID if provided, otherwise let Firestore auto-generate.
-                const docRef = item.id ? doc(collectionRef, item.id) : doc(collectionRef);
+                const docRef = item.id ? collectionRef.doc(item.id) : collectionRef.doc();
                 const dataToSet = { ...item };
                 if (item.id) {
                     delete dataToSet.id;
