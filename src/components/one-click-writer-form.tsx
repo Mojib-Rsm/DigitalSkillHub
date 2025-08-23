@@ -8,12 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Progress } from "./ui/progress";
 import type { OneClickWriterOutput } from "@/ai/flows/one-click-writer";
 import { Badge } from "./ui/badge";
@@ -22,6 +21,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { cn } from "@/lib/utils";
 import { countries } from "@/lib/countries";
 import { Switch } from "./ui/switch";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 // Remark and rehype plugins for markdown rendering
 import { unified } from 'unified';
@@ -103,7 +103,7 @@ export default function OneClickWriterForm() {
       const input = {
           title: formData.get('title') as string,
           primaryKeyword: formData.get('primaryKeyword') as string,
-          contentLength: formData.get('contentLength') as 'Short' | 'Medium' | 'Long',
+          contentLength: formData.get('contentLength') as 'Auto' | 'Short' | 'Medium' | 'Long' | 'Ultra Long',
           tone: formData.get('tone') as 'Formal' | 'Casual' | 'Friendly' | 'Professional',
           targetCountry: formData.get('targetCountry') as string,
           includeFaq: formData.get('includeFaq') === 'on',
@@ -149,32 +149,37 @@ export default function OneClickWriterForm() {
                     <Input id="primaryKeyword" name="primaryKeyword" placeholder="যেমন, ফ্রিল্যান্সিং টিপস" required />
                 </div>
                  <div className="space-y-2">
-                    <Label htmlFor="contentLength">আর্টিকেলের দৈর্ঘ্য</Label>
-                    <Select name="contentLength" defaultValue="Medium">
-                        <SelectTrigger id="contentLength">
-                            <SelectValue placeholder="দৈর্ঘ্য নির্বাচন করুন" />
+                    <Label htmlFor="tone">লেখার ধরণ/টোন</Label>
+                    <Select name="tone" defaultValue="Friendly">
+                        <SelectTrigger id="tone">
+                            <SelectValue placeholder="টোন নির্বাচন করুন" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="Short">ছোট (প্রায় ৪০০ শব্দ)</SelectItem>
-                            <SelectItem value="Medium">মাঝারি (প্রায় ৮০০ শব্দ)</SelectItem>
-                            <SelectItem value="Long">বড় (প্রায় ১৫০০ শব্দ)</SelectItem>
+                            <SelectItem value="Formal">ফরমাল</SelectItem>
+                            <SelectItem value="Casual">সাধারণ</SelectItem>
+                            <SelectItem value="Friendly">বন্ধুসুলভ</SelectItem>
+                            <SelectItem value="Professional">পেশাদার</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
             </div>
-             <div className="space-y-2">
-                <Label htmlFor="tone">লেখার ধরণ/টোন</Label>
-                <Select name="tone" defaultValue="Friendly">
-                    <SelectTrigger id="tone">
-                        <SelectValue placeholder="টোন নির্বাচন করুন" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="Formal">ফরমাল</SelectItem>
-                        <SelectItem value="Casual">সাধারণ</SelectItem>
-                        <SelectItem value="Friendly">বন্ধুসুলভ</SelectItem>
-                        <SelectItem value="Professional">পেশাদার</SelectItem>
-                    </SelectContent>
-                </Select>
+            
+            <div className="space-y-2">
+                <Label>Word Count</Label>
+                <RadioGroup name="contentLength" defaultValue="Auto" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                    {[
+                        {value: "Auto", label: "Auto"},
+                        {value: "Short", label: "Short (600-800)"},
+                        {value: "Medium", label: "Medium (900-1,600)"},
+                        {value: "Long", label: "Long (1,700-3,000)"},
+                        {value: "Ultra Long", label: "Ultra Long (3,000-6,000)"},
+                    ].map(option => (
+                         <Label key={option.value} htmlFor={option.value} className="flex items-center space-x-2 rounded-md border p-2 cursor-pointer has-[:checked]:bg-primary/10 has-[:checked]:border-primary">
+                            <RadioGroupItem value={option.value} id={option.value} />
+                            <span>{option.label}</span>
+                        </Label>
+                    ))}
+                </RadioGroup>
             </div>
             
             <div className="space-y-4">
@@ -283,145 +288,128 @@ export default function OneClickWriterForm() {
         )}
 
         {data && !isSubmitting &&(
-          <div className="mt-8 space-y-6">
+          <div className="mt-8 space-y-8">
             <h3 className="text-3xl font-bold font-headline text-center">আপনার জেনারেটেড আর্টিকেল</h3>
             
-            <Tabs defaultValue="article" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
-                    <TabsTrigger value="article">আর্টিকেল</TabsTrigger>
-                    <TabsTrigger value="image">ফিচার্ড ইমেজ</TabsTrigger>
-                    <TabsTrigger value="seo">এসইও</TabsTrigger>
-                    <TabsTrigger value="analysis">বিশ্লেষণ</TabsTrigger>
-                </TabsList>
-                <TabsContent value="article" className="mt-4">
-                     <Card>
-                        <CardHeader className="flex flex-row justify-between items-center">
-                            <CardTitle>আর্টিকেল কনটেন্ট</CardTitle>
-                            <div className="flex gap-2">
-                                <Button variant="outline" size="sm" onClick={() => handleCopy(data.article)}><Clipboard className="mr-2"/> কপি করুন</Button>
-                                <Button variant="outline" size="sm" onClick={handleDownload}><Download className="mr-2"/> ডাউনলোড (.md)</Button>
+            {/* Featured Image Section */}
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><ImageIcon className="w-5 h-5 text-primary"/>ফিচার্ড ইমেজ</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Image src={data.featuredImageUrl} alt={data.altText} width={1024} height={576} className="rounded-lg border object-contain w-full"/>
+                     <Alert className="mt-4">
+                        <Info className="h-4 w-4" />
+                        <AlertTitle>Alt Text</AlertTitle>
+                        <AlertDescription className="flex justify-between items-center">
+                            <p className="italic">{data.altText}</p>
+                            <Button variant="ghost" size="icon" onClick={() => handleCopy(data.altText)}><Clipboard className="w-4 h-4"/></Button>
+                        </AlertDescription>
+                    </Alert>
+                </CardContent>
+                <CardFooter>
+                    <a href={data.featuredImageUrl} download={`${data.seoTitle.replace(/\s+/g, '_')}_featured_image.png`}>
+                        <Button variant="outline"><Download className="mr-2"/> ইমেজ ডাউনলোড করুন</Button>
+                    </a>
+                </CardFooter>
+            </Card>
+
+             {/* SEO & Analysis Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><TrendingUp className="w-5 h-5 text-primary"/>এসইও ও মেটা তথ্য</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <Alert>
+                            <AlertTitle>এসইও টাইটেল</AlertTitle>
+                            <AlertDescription className="flex justify-between items-center">
+                            <p>{data.seoTitle}</p>
+                            <Button variant="ghost" size="icon" onClick={() => handleCopy(data.seoTitle)}><Clipboard className="w-4 h-4"/></Button>
+                            </AlertDescription>
+                        </Alert>
+                        <Alert>
+                            <AlertTitle>মেটা ডেসক্রিপশন</AlertTitle>
+                            <AlertDescription className="flex justify-between items-center">
+                            <p>{data.seoDescription}</p>
+                                <Button variant="ghost" size="icon" onClick={() => handleCopy(data.seoDescription)}><Clipboard className="w-4 h-4"/></Button>
+                            </AlertDescription>
+                        </Alert>
+                         <Alert>
+                            <AlertTitle className="flex items-center gap-2"><Tag className="w-4 h-4"/>Suggested Categories</AlertTitle>
+                            <AlertDescription className="flex flex-wrap gap-2 pt-2">
+                              {data.suggestedCategories.map((category) => <Badge key={category} variant="secondary">{category}</Badge>)}
+                            </AlertDescription>
+                        </Alert>
+                         <Alert>
+                            <AlertTitle className="flex items-center gap-2"><Tag className="w-4 h-4"/>Suggested Tags</AlertTitle>
+                            <AlertDescription className="flex flex-wrap gap-2 pt-2">
+                              {data.suggestedTags.map((tag) => <Badge key={tag} variant="outline">{tag}</Badge>)}
+                            </AlertDescription>
+                        </Alert>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5 text-primary"/>কনটেন্ট বিশ্লেষণ</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                         <div className="space-y-2">
+                            <div className="flex justify-between items-center mb-1">
+                                <Label>পড়ার যোগ্যতা (Readability)</Label>
+                                <span className="font-bold">{data.readabilityScore}/10</span>
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="prose dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: renderedHtml }} />
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-                 <TabsContent value="image" className="mt-4">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>ফিচার্ড ইমেজ</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <Image src={data.featuredImageUrl} alt={data.altText} width={1024} height={576} className="rounded-lg border object-contain w-full"/>
-                             <Alert className="mt-4">
-                                <Info className="h-4 w-4" />
-                                <AlertTitle>Alt Text</AlertTitle>
-                                <AlertDescription className="flex justify-between items-center">
-                                    <p className="italic">{data.altText}</p>
-                                    <Button variant="ghost" size="icon" onClick={() => handleCopy(data.altText)}><Clipboard className="w-4 h-4"/></Button>
-                                </AlertDescription>
-                            </Alert>
-                        </CardContent>
-                        <CardFooter>
-                            <a href={data.featuredImageUrl} download={`${data.seoTitle.replace(/\s+/g, '_')}_featured_image.png`}>
-                                <Button variant="outline"><Download className="mr-2"/> ইমেজ ডাউনলোড করুন</Button>
-                            </a>
-                        </CardFooter>
-                    </Card>
-                </TabsContent>
-                 <TabsContent value="seo" className="mt-4">
-                     <Card>
-                        <CardHeader>
-                            <CardTitle>এসইও ও মেটা তথ্য</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <Alert>
-                                <AlertTitle>এসইও টাইটেল</AlertTitle>
-                                <AlertDescription className="flex justify-between items-center">
-                                <p>{data.seoTitle}</p>
-                                <Button variant="ghost" size="icon" onClick={() => handleCopy(data.seoTitle)}><Clipboard className="w-4 h-4"/></Button>
-                                </AlertDescription>
-                            </Alert>
-                            <Alert>
-                                <AlertTitle>মেটা ডেসক্রিপশন</AlertTitle>
-                                <AlertDescription className="flex justify-between items-center">
-                                <p>{data.seoDescription}</p>
-                                    <Button variant="ghost" size="icon" onClick={() => handleCopy(data.seoDescription)}><Clipboard className="w-4 h-4"/></Button>
-                                </AlertDescription>
-                            </Alert>
-                             <Alert>
-                                <AlertTitle className="flex items-center gap-2"><Tag className="w-4 h-4"/>Suggested Categories</AlertTitle>
-                                <AlertDescription className="flex flex-wrap gap-2 pt-2">
-                                  {data.suggestedCategories.map((category) => <Badge key={category} variant="secondary">{category}</Badge>)}
-                                </AlertDescription>
-                            </Alert>
-                             <Alert>
-                                <AlertTitle className="flex items-center gap-2"><Tag className="w-4 h-4"/>Suggested Tags</AlertTitle>
-                                <AlertDescription className="flex flex-wrap gap-2 pt-2">
-                                  {data.suggestedTags.map((tag) => <Badge key={tag} variant="outline">{tag}</Badge>)}
-                                </AlertDescription>
-                            </Alert>
-                             <Alert>
-                                <AlertTitle>অভ্যন্তরীণ লিঙ্কিং পরামর্শ</AlertTitle>
-                                <AlertDescription>
-                                    <ul className="list-disc pl-5 mt-2 space-y-1">
-                                    {data.internalLinks.map((link, i) => <li key={i}>{link}</li>)}
-                                    </ul>
-                                </AlertDescription>
-                            </Alert>
-                            <Alert>
-                                <AlertTitle>বহিরাগত লিঙ্কিং পরামর্শ</AlertTitle>
-                                <AlertDescription>
-                                     <ul className="list-disc pl-5 mt-2 space-y-1">
-                                    {data.externalLinks.map((link, i) => (
-                                        <li key={i} className="flex items-center gap-2">
-                                            <span>{link}</span>
-                                            <a href={`https://www.google.com/search?q=${link}`} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-3 h-3 text-primary"/></a>
-                                        </li>
-                                    ))}
-                                    </ul>
-                                </AlertDescription>
-                            </Alert>
-                        </CardContent>
-                    </Card>
-                 </TabsContent>
-                 <TabsContent value="analysis" className="mt-4">
-                     <Card>
-                        <CardHeader>
-                            <CardTitle>কনটেন্ট বিশ্লেষণ</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                             <div className="space-y-2">
-                                <div className="flex justify-between items-center mb-1">
-                                    <Label>পড়ার যোগ্যতা (Readability)</Label>
-                                    <span className="font-bold">{data.readabilityScore}/10</span>
-                                </div>
-                                <Progress value={data.readabilityScore * 10} className="w-full" />
-                            </div>
-                             <Alert>
-                                <CheckCircle className="h-4 w-4 text-green-500" />
-                                <AlertTitle>পড়ার যোগ্যতা বিশ্লেষণ</AlertTitle>
-                                <AlertDescription>
-                                  আপনার আর্টিকেলের স্কোর হলো <strong>{data.readabilityScore}/10</strong>। এটি পড়তে সহজ এবং বোঝা সহজ। উচ্চ স্কোর মানে পাঠকরা আপনার লেখা সহজেই বুঝতে পারবেন।
-                                </AlertDescription>
-                            </Alert>
-                             <Alert>
-                                <LinkIcon className="h-4 w-4" />
-                                <AlertTitle>টার্গেট কীওয়ার্ড</AlertTitle>
-                                <AlertDescription>
-                                 আপনার দেওয়া প্রধান কীওয়ার্ড হলো: <strong>"{data.targetKeyword}"</strong>। এটি আর্টিকেলে সঠিকভাবে ব্যবহার করা হয়েছে।
-                                </AlertDescription>
-                            </Alert>
-                        </CardContent>
-                    </Card>
-                 </TabsContent>
-            </Tabs>
+                            <Progress value={data.readabilityScore * 10} className="w-full" />
+                        </div>
+                        <Alert>
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                            <AlertTitle>টার্গেট কীওয়ার্ড</AlertTitle>
+                            <AlertDescription>
+                             প্রধান কীওয়ার্ড: <strong>"{data.targetKeyword}"</strong> সঠিকভাবে ব্যবহার করা হয়েছে।
+                            </AlertDescription>
+                        </Alert>
+                         <Alert>
+                            <AlertTitle>অভ্যন্তরীণ লিঙ্কিং পরামর্শ</AlertTitle>
+                            <AlertDescription>
+                                <ul className="list-disc pl-5 mt-2 space-y-1">
+                                {data.internalLinks.map((link, i) => <li key={i}>{link}</li>)}
+                                </ul>
+                            </AlertDescription>
+                        </Alert>
+                        <Alert>
+                            <AlertTitle>বহিরাগত লিঙ্কিং পরামর্শ</AlertTitle>
+                            <AlertDescription>
+                                 <ul className="list-disc pl-5 mt-2 space-y-1">
+                                {data.externalLinks.map((link, i) => (
+                                    <li key={i} className="flex items-center gap-2">
+                                        <span>{link}</span>
+                                        <a href={`https://www.google.com/search?q=${link}`} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-3 h-3 text-primary"/></a>
+                                    </li>
+                                ))}
+                                </ul>
+                            </AlertDescription>
+                        </Alert>
+                    </CardContent>
+                </Card>
+            </div>
+            
+            {/* Article Section */}
+            <Card>
+                <CardHeader className="flex flex-row justify-between items-center">
+                    <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5 text-primary"/>সম্পূর্ণ আর্টিকেল</CardTitle>
+                    <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleCopy(data.article)}><Clipboard className="mr-2"/> কপি করুন</Button>
+                        <Button variant="outline" size="sm" onClick={handleDownload}><Download className="mr-2"/> ডাউনলোড (.md)</Button>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="prose dark:prose-invert max-w-none prose-headings:font-headline" dangerouslySetInnerHTML={{ __html: renderedHtml }} />
+                </CardContent>
+            </Card>
+
           </div>
         )}
       </CardContent>
     </Card>
   );
 }
-
-    

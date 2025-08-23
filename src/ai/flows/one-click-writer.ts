@@ -15,7 +15,7 @@ import {z} from 'genkit';
 const OneClickWriterInputSchema = z.object({
   title: z.string().min(10, { message: "Please enter a title with at least 10 characters." }),
   primaryKeyword: z.string().min(3, { message: "Please enter a primary keyword." }),
-  contentLength: z.enum(['Short', 'Medium', 'Long']).describe('The desired length of the article (Short: ~400 words, Medium: ~800 words, Long: ~1500 words).'),
+  contentLength: z.enum(['Auto', 'Short', 'Medium', 'Long', 'Ultra Long']).describe('The desired length of the article (Short: 600-800, Medium: 900-1,600, Long: 1,700-3,000, Ultra Long: 3,000-6,000 words).'),
   tone: z.enum(['Formal', 'Casual', 'Friendly', 'Professional']).describe('The desired writing tone for the article.'),
   targetCountry: z.string().describe('The target country for the content, for localization purposes.'),
   includeFaq: z.boolean().optional().describe('Whether to include a FAQ section in the article.'),
@@ -28,7 +28,7 @@ const OneClickWriterInputSchema = z.object({
 export type OneClickWriterInput = z.infer<typeof OneClickWriterInputSchema>;
 
 const OneClickWriterOutputSchema = z.object({
-  article: z.string().describe('The full, well-structured article in Markdown format.'),
+  article: z.string().describe('The full, well-structured article in Markdown format, with multiple H2/H3 headings.'),
   seoTitle: z.string().describe('An SEO-optimized title for the article.'),
   seoDescription: z.string().describe('A compelling meta description (around 155 characters) for SEO.'),
   featuredImageUrl: z.string().describe('A data URI of a relevant, high-quality featured image for the article.'),
@@ -47,7 +47,7 @@ const writerPrompt = ai.definePrompt({
     name: 'oneClickWriterPrompt',
     input: { schema: OneClickWriterInputSchema },
     output: { schema: z.object({
-        article: z.string().describe("The full, well-structured article in Markdown format. It must include an introduction, multiple subheadings (H2 using ##, H3 using ###), bold text using **, italics using *, and bullet points or lists. The content should be comprehensive and meet the specified length."),
+        article: z.string().describe("The full, well-structured article in Markdown format. It must include an engaging introduction, multiple subheadings (H2 using ##, H3 using ###), bold text using **, italics using *, and bullet points or lists where appropriate. The content should be comprehensive and meet the specified length."),
         seoTitle: z.string().describe('An SEO-optimized title for the article (around 60 characters).'),
         seoDescription: z.string().describe('A compelling meta description (around 155 characters) for SEO.'),
         imagePrompt: z.string().describe('A descriptive prompt for an AI image generator to create a relevant featured image.'),
@@ -59,12 +59,12 @@ const writerPrompt = ai.definePrompt({
         suggestedTags: z.array(z.string()).describe('A list of 5-7 relevant, specific tags for the article.'),
         suggestedCategories: z.array(z.string()).describe('A list of 1-3 relevant, broad categories for the article.'),
     })},
-    prompt: `You are an expert content creator and SEO specialist who writes like a human, not a robot. Your primary goal is to generate a comprehensive, engaging, and SEO-optimized blog post that achieves a 100% SEO score and can bypass AI detectors.
+    prompt: `You are an expert content creator and SEO specialist who writes like a human, not a robot. Your primary goal is to generate a comprehensive, engaging, and SEO-optimized blog post that achieves a 100% SEO score and can bypass AI detectors. The article must be ready for publication.
 
     **User Inputs:**
     - **Topic/Title:** {{{title}}}
     - **Primary Keyword:** {{{primaryKeyword}}}
-    - **Desired Length:** {{{contentLength}}}
+    - **Desired Length:** {{{contentLength}}} (Auto: Let AI decide, Short: 600-800 words, Medium: 900-1,600 words, Long: 1,700-3,000 words, Ultra Long: 3,000-6,000 words).
     - **Desired Tone:** {{{tone}}}
     - **Target Country:** {{{targetCountry}}}
 
@@ -82,9 +82,9 @@ const writerPrompt = ai.definePrompt({
         *   Keyword density should be optimal (around 1-2%). Avoid keyword stuffing at all costs.
 
     2.  **Content Structure & Formatting:**
-        *   Write a well-structured article with an engaging introduction, multiple logical subheadings (mix of H2 using '##' and H3 using '###'), detailed body paragraphs, and a strong concluding paragraph with a Call-to-Action (CTA), unless disabled by the user.
+        *   Write a well-structured article with an engaging introduction, multiple logical subheadings (mix of H2 using '##' and H3 using '###'), detailed body paragraphs, and a strong concluding paragraph with a Call-to-Action (CTA), unless disabled by the user. The article must have several headings to be well-structured.
         *   Use proper Markdown formatting. Use **bold text** for emphasis. Use *italic text* for nuance. Use bullet points or numbered lists to break up text and improve readability.
-        *   Adhere to the desired length: Short (~400 words), Medium (~800 words), or Long (~1500 words). The article MUST be comprehensive and detailed.
+        *   Adhere to the desired length. The article MUST be comprehensive and detailed.
         *   If the target country is not 'United States', subtly include context, examples, or references relevant to the '{{{targetCountry}}}'.
 
     3.  **Human-like Tone & Style (Critical for Bypassing AI Detectors):**
@@ -160,5 +160,3 @@ const oneClickWriterFlow = ai.defineFlow(
     };
   }
 );
-
-    
