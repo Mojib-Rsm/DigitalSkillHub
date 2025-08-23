@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -26,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getCurrentUser, UserProfile } from "@/services/user-service";
-import { MoreHorizontal, Edit, PlusCircle, Star, Trash, Bell, Heart, Activity, DollarSign, Users as UsersIcon, CircleUser } from "lucide-react";
+import { MoreHorizontal, Edit, PlusCircle, Star, Trash, Bell, Heart, Activity, DollarSign, Users as UsersIcon, CircleUser, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import {
   Bar,
@@ -38,9 +36,6 @@ import {
   Legend,
   CartesianGrid
 } from "recharts"
-import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-
 
 // Admin Dashboard Data
 const userSignups = [
@@ -358,29 +353,18 @@ function UserDashboard({ user }: { user: UserProfile }) {
 }
 
 
-export default function DashboardPage() {
-    const [user, setUser] = useState<UserProfile | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            const currentUser = await getCurrentUser();
-            setUser(currentUser);
-            setLoading(false);
-        };
-        fetchUser();
-    }, []);
-
-    if (loading) {
-         return (
-            <div className="flex items-center justify-center h-full">
-                <Skeleton className="h-64 w-full" />
-            </div>
-        )
-    }
+export default async function DashboardPage() {
+    const user = await getCurrentUser();
 
     if (!user) {
-        return <p>An error occurred while loading user data. Please try refreshing.</p>;
+        return (
+            <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+                <AlertTriangle className="w-16 h-16 text-destructive mb-4"/>
+                <h2 className="text-2xl font-bold">Error Loading User Data</h2>
+                <p className="text-muted-foreground">We couldn't load your profile. Please try refreshing the page or logging in again.</p>
+                <Button className="mt-4" asChild><Link href="/login">Go to Login</Link></Button>
+            </div>
+        );
     }
 
     if (user.role === 'admin') {
