@@ -73,7 +73,7 @@ function UserDashboard({ user }: { user: UserProfile }) {
                         <TabsList className="grid w-full grid-cols-3">
                             <TabsTrigger value="bookmarks">Bookmarked Tools</TabsTrigger>
                             <TabsTrigger value="reviews">My Reviews</TabsTrigger>
-                            <TabsTrigger value="qa">Q&A Contributions</TabsTrigger>
+                            <TabsTrigger value="qa">Q&amp;A Contributions</TabsTrigger>
                         </TabsList>
                         <TabsContent value="bookmarks">
                              <Card>
@@ -140,7 +140,7 @@ function UserDashboard({ user }: { user: UserProfile }) {
                           <TabsContent value="qa">
                             <Card>
                                 <CardHeader>
-                                     <CardTitle>Q&A Contributions</CardTitle>
+                                     <CardTitle>Q&amp;A Contributions</CardTitle>
                                     <CardDescription>Your questions and answers from the community.</CardDescription>
                                 </CardHeader>
                                 <CardContent className="text-center text-muted-foreground py-12">
