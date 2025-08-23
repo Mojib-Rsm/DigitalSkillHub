@@ -3,27 +3,28 @@
 
 import * as admin from 'firebase-admin';
 
-// Check if all required environment variables are available
-const hasAllCredentials = 
-    process.env.FIREBASE_PROJECT_ID &&
-    process.env.FIREBASE_CLIENT_EMAIL &&
-    process.env.FIREBASE_PRIVATE_KEY;
+// Check if the SDK is already initialized
+if (!admin.apps.length) {
+    try {
+        // Use environment variables directly, which are more secure and flexible than a JSON file.
+        const serviceAccount = {
+            projectId: process.env.FIREBASE_PROJECT_ID,
+            clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+            // Replace escaped newlines in the private key
+            privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        };
 
-// Initialize Firebase Admin SDK only if it hasn't been initialized and all credentials are present
-if (!admin.apps.length && hasAllCredentials) {
-  try {
-    admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      }),
-    });
-  } catch (error: any) {
-    console.error('Firebase admin initialization error:', error.message);
-  }
-} else if (!admin.apps.length) {
-    console.warn("Firebase Admin SDK not initialized. Missing required environment variables (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY). This is expected during local build if credentials are not set.");
+        // Ensure all required credentials are provided
+        if (serviceAccount.projectId && serviceAccount.clientEmail && serviceAccount.privateKey) {
+             admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount),
+             });
+        } else {
+            console.warn("Firebase Admin SDK not initialized. Missing one or more required environment variables (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY).");
+        }
+    } catch (error: any) {
+        console.error('Firebase admin initialization error:', error.message);
+    }
 }
 
 
