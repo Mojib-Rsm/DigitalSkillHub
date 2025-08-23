@@ -34,44 +34,45 @@ export async function loginAction(
   }
 
   const { email, password } = validatedFields.data;
+  let userSnapshot;
 
   try {
     const db = getFirestore(app);
     const usersCol = collection(db, 'users');
     const q = query(usersCol, where('email', '==', email));
-    const userSnapshot = await getDocs(q);
-
-    if (userSnapshot.empty) {
-      return { message: 'No user found with this email.', success: false };
-    }
-
-    const userData = userSnapshot.docs[0].data();
-    const userId = userSnapshot.docs[0].id;
-    
-    // WARNING: In a real-world application, never store or compare plaintext passwords.
-    // This is a simplified example for this specific environment.
-    // Use a library like bcrypt to hash passwords during registration and compare them during login.
-    const isPasswordValid = userData.password === password;
-
-    if (!isPasswordValid) {
-      return { message: 'Invalid password. Please try again.', success: false };
-    }
-
-    // In a real app, you would generate a secure JWT. For this demo, we'll use the user ID.
-    cookies().set('auth-session', userId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24, // 24 hours
-        path: '/',
-    });
+    userSnapshot = await getDocs(q);
 
   } catch (error) {
-    console.error('Login action error:', error);
+    console.error('Firestore connection error during login:', error);
     return {
-      message: 'An unexpected server error occurred. Please try again later.',
+      message: 'Could not connect to the database. Please check your network and try again.',
       success: false,
     };
   }
+
+  if (userSnapshot.empty) {
+    return { message: 'No user found with this email.', success: false };
+  }
+
+  const userData = userSnapshot.docs[0].data();
+  const userId = userSnapshot.docs[0].id;
+  
+  // WARNING: In a real-world application, never store or compare plaintext passwords.
+  // This is a simplified example for this specific environment.
+  // Use a library like bcrypt to hash passwords during registration and compare them during login.
+  const isPasswordValid = userData.password === password;
+
+  if (!isPasswordValid) {
+    return { message: 'Invalid password. Please try again.', success: false };
+  }
+
+  // In a real app, you would generate a secure JWT. For this demo, we'll use the user ID.
+  cookies().set('auth-session', userId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 60 * 60 * 24, // 24 hours
+      path: '/',
+  });
 
   redirect('/dashboard');
 }
