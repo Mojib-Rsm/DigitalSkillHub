@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,7 +31,7 @@ function LoginSubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
     );
 }
 
-export default function LoginForm() {
+function LoginFormContent() {
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
@@ -141,4 +141,13 @@ export default function LoginForm() {
             </div>
         </div>
     );
+}
+
+
+export default function LoginForm() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <LoginFormContent />
+        </Suspense>
+    )
 }

@@ -52,8 +52,7 @@ export default function FreeTrialForm() {
                 title: "Registration Successful!",
                 description: "Redirecting you to the dashboard...",
             });
-            // The server action now handles the redirect, but this is a good fallback/UI update
-            router.push('/dashboard');
+            // The server action now handles the redirect
         }
     }, [state, toast, router]);
     
