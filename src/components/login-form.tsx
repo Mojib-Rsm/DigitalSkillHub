@@ -1,10 +1,8 @@
 
 "use client";
 
-import { useEffect, useActionState } from "react";
-import { useFormStatus } from "react-dom";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,12 +11,10 @@ import { Bot, Sparkles, LogIn, Chrome, Info } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { loginAction } from "@/app/login/actions";
 
-
-function LoginSubmitButton() {
-    const { pending } = useFormStatus();
+function LoginSubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
     return (
-        <Button type="submit" disabled={pending} className="w-full text-base" size="lg">
-            {pending ? (
+        <Button type="submit" disabled={isSubmitting} className="w-full text-base" size="lg">
+            {isSubmitting ? (
                 <>
                     <Sparkles className="mr-2 h-5 w-5 animate-spin" />
                     Logging in...
@@ -35,21 +31,34 @@ function LoginSubmitButton() {
 
 export default function LoginForm() {
     const { toast } = useToast();
-    const searchParams = useSearchParams();
-    const redirectUrl = searchParams.get('redirect') || '/dashboard';
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const formRef = useRef<HTMLFormElement>(null);
 
-    const initialState = { message: "", success: false };
-    const [state, formAction] = useActionState(loginAction, initialState);
-
-    useEffect(() => {
-        if (!state.success && state.message) {
-            toast({
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+        const formData = new FormData(event.currentTarget);
+        
+        // The action will handle the redirect on success, so we only care about the error case here.
+        try {
+            const result = await loginAction(formData);
+            if (!result.success) {
+                toast({
+                    variant: "destructive",
+                    title: "Login Failed",
+                    description: result.message,
+                });
+            }
+        } catch (error) {
+             toast({
                 variant: "destructive",
-                title: "Login Failed",
-                description: state.message,
+                title: "Login Error",
+                description: "An unexpected error occurred during login."
             });
+        } finally {
+            setIsSubmitting(false);
         }
-    }, [state, toast]);
+    };
     
     return (
         <div className="min-h-screen bg-muted/50 flex items-center justify-center p-4" suppressHydrationWarning={true}>
@@ -73,7 +82,7 @@ export default function LoginForm() {
                         <CardDescription>Enter your credentials to access your account.</CardDescription>
                     </CardHeader>
                     <CardContent className="p-8">
-                        <form action={formAction} className="space-y-6">
+                        <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid grid-cols-1 gap-4">
                                 <Button variant="outline" className="py-6 text-base" type="button" disabled>
                                     <Chrome className="mr-2" /> Login with Google
@@ -92,7 +101,7 @@ export default function LoginForm() {
                                 <Label htmlFor="password">Password</Label>
                                 <Input id="password" name="password" type="password" placeholder="Your password" required />
                             </div>
-                             <LoginSubmitButton />
+                             <LoginSubmitButton isSubmitting={isSubmitting} />
                         </form>
                     </CardContent>
                     <CardFooter className="bg-muted/50 p-6 border-t">

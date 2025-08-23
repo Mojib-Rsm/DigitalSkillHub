@@ -20,7 +20,6 @@ type FormState = {
 };
 
 export async function loginAction(
-  prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
   const validatedFields = LoginSchema.safeParse(
