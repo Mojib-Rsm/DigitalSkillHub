@@ -13,15 +13,23 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const OneClickWriterInputSchema = z.object({
-  title: z.string().describe('The title of the blog post to generate.'),
+  title: z.string().describe('The title or topic of the blog post.'),
+  primaryKeyword: z.string().describe('The main SEO keyword to target.'),
+  contentLength: z.enum(['Short', 'Medium', 'Long']).describe('The desired length of the article (Short: ~400 words, Medium: ~800 words, Long: ~1500 words).'),
+  tone: z.enum(['Formal', 'Casual', 'Friendly', 'Professional']).describe('The desired writing tone for the article.'),
 });
 export type OneClickWriterInput = z.infer<typeof OneClickWriterInputSchema>;
 
 const OneClickWriterOutputSchema = z.object({
   article: z.string().describe('The full, well-structured article in Markdown format.'),
   seoTitle: z.string().describe('An SEO-optimized title for the article.'),
-  seoDescription: z.string().describe('A compelling meta description for SEO.'),
+  seoDescription: z.string().describe('A compelling meta description (around 155 characters) for SEO.'),
   featuredImageUrl: z.string().describe('A data URI of a relevant, high-quality featured image for the article.'),
+  altText: z.string().describe('SEO-friendly alt text for the featured image.'),
+  internalLinks: z.array(z.string()).describe('A list of 3-5 suggested topics for internal links within the article.'),
+  externalLinks: z.array(z.string()).describe('A list of 2-3 suggested topics for external (reputable source) links.'),
+  readabilityScore: z.number().min(1).max(10).describe('A score from 1-10 indicating how easy the article is to read.'),
+  targetKeyword: z.string().describe('The primary keyword used for optimization.'),
 });
 export type OneClickWriterOutput = z.infer<typeof OneClickWriterOutputSchema>;
 
@@ -30,28 +38,57 @@ const writerPrompt = ai.definePrompt({
     name: 'oneClickWriterPrompt',
     input: { schema: OneClickWriterInputSchema },
     output: { schema: z.object({
-        article: z.string().describe('The full, well-structured article in Markdown format.'),
-        seoTitle: z.string().describe('An SEO-optimized title for the article.'),
-        seoDescription: z.string().describe('A compelling meta description for SEO.'),
+        article: z.string().describe('The full, well-structured article in Markdown format. It must include an introduction, multiple subheadings (H2/H3), bullet points or lists, and a conclusion/CTA.'),
+        seoTitle: z.string().describe('An SEO-optimized title for the article (around 60 characters).'),
+        seoDescription: z.string().describe('A compelling meta description (around 155 characters) for SEO.'),
         imagePrompt: z.string().describe('A descriptive prompt for an AI image generator to create a relevant featured image.'),
+        altText: z.string().describe('SEO-friendly alt text for the featured image, containing the primary keyword.'),
+        internalLinks: z.array(z.string()).describe('A list of 3-5 suggested topics for internal links within the article, based on the content.'),
+        externalLinks: z.array(z.string()).describe('A list of 2-3 suggested topics for external (reputable source) links.'),
+        readabilityScore: z.number().min(1).max(10).describe('A score from 1-10 indicating how easy the article is to read (10 being very easy).'),
+        targetKeyword: z.string().describe('The primary keyword that was used for optimization.'),
     })},
-    prompt: `You are an expert content creator and SEO specialist who writes like a human, not a robot. Your goal is to write a comprehensive, engaging, and SEO-optimized blog post that is indistinguishable from human writing.
+    prompt: `You are an expert content creator and SEO specialist who writes like a human, not a robot. Your primary goal is to generate a comprehensive, engaging, and SEO-optimized blog post that achieves a 100% SEO score.
 
-    Title: {{{title}}}
+    **User Inputs:**
+    - **Topic/Title:** {{{title}}}
+    - **Primary Keyword:** {{{primaryKeyword}}}
+    - **Desired Length:** {{{contentLength}}}
+    - **Desired Tone:** {{{tone}}}
 
-    Instructions for Human-like Writing:
-    1.  **Varied Sentence Structure:** Use a mix of short, punchy sentences and longer, more complex ones to create a natural rhythm.
-    2.  **Conversational Tone:** Write in an authoritative yet accessible and slightly informal tone. Ask questions to engage the reader. Use contractions (e.g., "it's," "you're").
-    3.  **Figurative Language:** Incorporate metaphors, analogies, or storytelling elements to make the content more relatable and memorable.
-    4.  **Avoid AI Clichés:** Do not use robotic phrases like "In conclusion," "In the digital age," or "Furthermore." The conclusion should feel natural and summarize the key takeaways without being explicitly labeled.
-    5.  **Perplexity and Burstiness:** The writing should exhibit high perplexity and burstiness, meaning it should have a good mix of sentence complexity and length, just as a human would write.
+    **Instructions for 100% SEO Score & Human-like Writing:**
 
-    Content Instructions:
-    1.  **Write the Article:** Create a well-structured article of at least 800 words. Use headings, subheadings, bullet points, and bold text to improve readability. The content must be informative, provide real value, and reflect the human-like writing instructions above.
-    2.  **SEO Optimization:**
-        *   Generate a concise and catchy SEO Title (around 60 characters).
-        *   Write a compelling meta description (around 155 characters) that encourages clicks.
-    3.  **Image Prompt:** Create a detailed, descriptive prompt for an AI image generator to create a high-quality, relevant featured image. The prompt should describe the scene, style, and mood.
+    1.  **Keyword Integration:**
+        *   The **Primary Keyword** ({{{primaryKeyword}}}) MUST be included naturally in the **SEO Title**, the first paragraph (introduction), at least one subheading (H2 or H3), and throughout the body text.
+        *   Keyword density should be optimal (around 1-2%). Avoid keyword stuffing.
+
+    2.  **Content Structure & Length:**
+        *   Write a well-structured article with an engaging introduction, multiple logical subheadings (mix of H2 and H3), detailed body paragraphs, and a strong concluding paragraph with a Call-to-Action (CTA) if appropriate.
+        *   Use bullet points, numbered lists, and bold text to improve readability.
+        *   Adhere to the desired length: Short (~400 words), Medium (~800 words), or Long (~1500 words).
+
+    3.  **Human-like Tone & Style:**
+        *   Adopt the specified **Tone** ({{{tone}}}).
+        *   Use a mix of short, punchy sentences and longer, complex ones to create a natural rhythm.
+        *   Ask questions to engage the reader. Use contractions (e.g., "it's," "you're") for a conversational feel, unless the tone is strictly Formal.
+        *   Incorporate metaphors, analogies, or storytelling to make the content relatable.
+        *   Avoid AI clichés like "In conclusion," "In the digital age," or "Furthermore." The conclusion should feel like a natural summary.
+
+    4.  **Meta Information Generation:**
+        *   Generate a concise and catchy **SEO Title** (around 60 characters) that includes the primary keyword.
+        *   Write a compelling **Meta Description** (around 155 characters) that includes the keyword and encourages clicks.
+
+    5.  **Image & Linking Suggestions:**
+        *   Create a detailed, descriptive **Image Prompt** for an AI image generator to create a high-quality, relevant featured image.
+        *   Generate SEO-friendly **Alt Text** for the image that includes the primary keyword.
+        *   Suggest 3-5 relevant topics for **Internal Links** (links to other potential articles on the same site).
+        *   Suggest 2-3 relevant topics for **External Links** (links to reputable, non-competing sources to build authority).
+
+    6.  **Analysis:**
+        *   Provide a **Readability Score** from 1 to 10 (10 being the easiest to read, like conversational text).
+        *   Confirm the **Target Keyword** used for optimization in the output.
+
+    The final output MUST be a complete JSON object following the schema.
     `,
 });
 
@@ -68,7 +105,7 @@ const oneClickWriterFlow = ai.defineFlow(
   },
   async (input) => {
     const writerResponse = await writerPrompt(input);
-    const { article, seoTitle, seoDescription, imagePrompt } = writerResponse.output!;
+    const { article, seoTitle, seoDescription, imagePrompt, altText, internalLinks, externalLinks, readabilityScore, targetKeyword } = writerResponse.output!;
 
     const imageGenResponse = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
@@ -87,8 +124,12 @@ const oneClickWriterFlow = ai.defineFlow(
         article,
         seoTitle,
         seoDescription,
-        featuredImageUrl: imageUrl
+        featuredImageUrl: imageUrl,
+        altText,
+        internalLinks,
+        externalLinks,
+        readabilityScore,
+        targetKeyword,
     };
   }
 );
-
