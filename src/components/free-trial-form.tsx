@@ -12,7 +12,7 @@ import { Bot, Sparkles, Zap, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useActionState, useFormStatus } from "react";
 import { signupAction } from "@/app/free-trial/actions";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 function SignUpSubmitButton() {
     const { pending } = useFormStatus();
@@ -49,6 +49,10 @@ export default function FreeTrialForm() {
             });
         }
         if (state.success) {
+            toast({
+                title: "Registration Successful!",
+                description: "Redirecting you to the dashboard...",
+            });
             router.push('/dashboard');
         }
     }, [state, toast, router]);
