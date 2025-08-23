@@ -1,7 +1,7 @@
 
 "use server";
 
-import { blogTopicGenerator } from "@/ai/flows/blog-topic-generator";
+import { blogTopicGenerator, BlogTopicGeneratorOutput } from "@/ai/flows/blog-topic-generator";
 import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
@@ -10,31 +10,17 @@ const BlogTopicGeneratorActionSchema = z.object({
   userInterests: z.string().min(3, { message: "Please enter at least one user interest." }),
 });
 
-type FormState = {
-  message: string;
-  topics?: string[];
-  fields?: Record<string, string>;
-  issues?: string[];
-};
+type BlogTopicGeneratorInput = z.infer<typeof BlogTopicGeneratorActionSchema>;
 
-export async function generateTopics(
-  prevState: FormState,
-  formData: FormData
-): Promise<FormState> {
-  const validatedFields = BlogTopicGeneratorActionSchema.safeParse({
-    digitalSkills: formData.get("digitalSkills"),
-    userInterests: formData.get("userInterests"),
-  });
+export async function generateTopicsAction(
+  input: BlogTopicGeneratorInput
+): Promise<{ success: boolean; data?: BlogTopicGeneratorOutput; issues?: string[] }> {
+  const validatedFields = BlogTopicGeneratorActionSchema.safeParse(input);
 
   if (!validatedFields.success) {
-    const { errors } = validatedFields.error;
     return {
-      message: "Validation Error",
-      issues: errors.map((issue) => issue.message),
-      fields: {
-        digitalSkills: formData.get("digitalSkills") as string,
-        userInterests: formData.get("userInterests") as string,
-      }
+      success: false,
+      issues: validatedFields.error.errors.map((e) => e.message),
     };
   }
   
@@ -47,16 +33,18 @@ export async function generateTopics(
         output: result,
       });
       return {
-        message: "success",
-        topics: result.topics,
+        success: true,
+        data: result,
       };
     } else {
-        return { message: "No topics generated. Please try a different input." }
+        return { success: false, issues: ["No topics generated. Please try a different input."] }
     }
   } catch (error) {
     console.error(error);
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred.";
     return {
-      message: "An unexpected error occurred. Please try again.",
+      success: false,
+      issues: [errorMessage],
     };
   }
 }

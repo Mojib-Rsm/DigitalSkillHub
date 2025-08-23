@@ -1,25 +1,25 @@
 
 "use client";
 
-import React from "react";
-import { useActionState } from "react";
+import React, { useState, useRef } from "react";
 import { useFormStatus } from "react-dom";
-import { generateTopics } from "@/app/ai-tools/blog-topic-generator/actions";
+import { generateTopicsAction } from "@/app/ai-tools/blog-topic-generator/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Lightbulb } from "lucide-react";
-import { useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
+import type { BlogTopicGeneratorOutput } from "@/ai/flows/blog-topic-generator";
+import { Alert, AlertDescription } from "./ui/alert";
 
 
-function SubmitButton() {
+function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} size="lg" className="w-full">
-      {pending ? (
+    <Button type="submit" disabled={pending || isSubmitting} size="lg" className="w-full">
+      {pending || isSubmitting ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
           জেনারেট করা হচ্ছে...
@@ -35,23 +35,38 @@ function SubmitButton() {
 }
 
 export default function BlogTopicGeneratorForm() {
-  const initialState = { message: "", topics: [], issues: [], fields: {} };
-  const [state, formAction] = useActionState(generateTopics, initialState);
+  const [data, setData] = useState<BlogTopicGeneratorOutput | undefined>(undefined);
+  const [issues, setIssues] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (state.message === "success") {
-      formRef.current?.reset();
-    }
-    if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setData(undefined);
+    setIssues([]);
+
+    const formData = new FormData(event.currentTarget);
+    const result = await generateTopicsAction({
+        digitalSkills: formData.get("digitalSkills") as string,
+        userInterests: formData.get("userInterests") as string,
+    });
+
+    if (result.success) {
+        setData(result.data);
+        formRef.current?.reset();
+    } else {
+        setIssues(result.issues || ["An unknown error occurred."]);
         toast({
             variant: "destructive",
-            title: "ত্রুটি",
-            description: state.message,
-        })
+            title: "Error",
+            description: result.issues?.join(", ") || "An unknown error occurred.",
+        });
     }
-  }, [state, toast]);
+
+    setIsSubmitting(false);
+  }
 
   return (
     <Card className="shadow-lg">
@@ -62,19 +77,15 @@ export default function BlogTopicGeneratorForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form ref={formRef} action={formAction} className="space-y-6">
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="digitalSkills">ট্রেন্ডিং ডিজিটাল স্কিলস</Label>
             <Input
               id="digitalSkills"
               name="digitalSkills"
               placeholder="যেমন, ওয়েব ডেভেলপমেন্ট, এসইও, এআই টুলস"
-              defaultValue={state.fields?.digitalSkills}
               required
             />
-            {state.issues
-              ?.filter((issue) => issue.toLowerCase().includes("skill"))
-              .map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
           <div className="space-y-2">
             <Label htmlFor="userInterests">আপনার আগ্রহ</Label>
@@ -82,21 +93,36 @@ export default function BlogTopicGeneratorForm() {
               id="userInterests"
               name="userInterests"
               placeholder="যেমন, পাইথন, ফ্রিল্যান্সিং, সাইড হাসল"
-              defaultValue={state.fields?.userInterests}
               required
             />
-             {state.issues
-              ?.filter((issue) => issue.toLowerCase().includes("interest"))
-              .map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
-          <SubmitButton />
+
+          {issues.length > 0 && (
+            <Alert variant="destructive">
+                <AlertDescription>
+                    <ul className="list-disc pl-4">
+                        {issues.map((issue, i) => <li key={i}>{issue}</li>)}
+                    </ul>
+                </AlertDescription>
+            </Alert>
+          )}
+
+          <SubmitButton isSubmitting={isSubmitting}/>
         </form>
 
-        {state.topics && state.topics.length > 0 && (
+        {(isSubmitting) && (
+             <div className="mt-8 text-center">
+                <div className="inline-block bg-muted/50 p-4 rounded-lg">
+                    <p className="text-muted-foreground font-semibold animate-pulse">আপনার টপিক তৈরি হচ্ছে...</p>
+                </div>
+            </div>
+        )}
+
+        {data?.topics && data.topics.length > 0 && !isSubmitting && (
           <div className="mt-8">
             <h3 className="text-2xl font-bold font-headline mb-4 text-center">জেনারেটেড টপিকস</h3>
             <div className="space-y-3">
-              {state.topics.map((topic, index) => (
+              {data.topics.map((topic, index) => (
                 <Card key={index} className="bg-background/50">
                   <CardContent className="p-4 flex items-center gap-4">
                     <Lightbulb className="w-6 h-6 text-accent"/>
