@@ -38,13 +38,13 @@ const writerPrompt = ai.definePrompt({
     name: 'oneClickWriterPrompt',
     input: { schema: OneClickWriterInputSchema },
     output: { schema: z.object({
-        article: z.string().describe('The full, well-structured article in Markdown format. It must include an introduction, multiple subheadings (H2/H3), bullet points or lists, and a conclusion/CTA.'),
+        article: z.string().describe('The full, well-structured article in Markdown format. It must include an introduction, multiple subheadings (H2 using ##, H3 using ###), bold text using **, and bullet points or lists. The content should be comprehensive and meet the specified length.'),
         seoTitle: z.string().describe('An SEO-optimized title for the article (around 60 characters).'),
         seoDescription: z.string().describe('A compelling meta description (around 155 characters) for SEO.'),
         imagePrompt: z.string().describe('A descriptive prompt for an AI image generator to create a relevant featured image.'),
         altText: z.string().describe('SEO-friendly alt text for the featured image, containing the primary keyword.'),
         internalLinks: z.array(z.string()).describe('A list of 3-5 suggested topics for internal links within the article, based on the content.'),
-        externalLinks: z.array(z.string()).describe('A list of 2-3 suggested topics for external (reputable source) links.'),
+        externalLinks: z.array(z.string()).describe('A list of 2-3 suggested topics for external (reputable, non-competing) sources.'),
         readabilityScore: z.number().min(1).max(10).describe('A score from 1-10 indicating how easy the article is to read (10 being very easy).'),
         targetKeyword: z.string().describe('The primary keyword that was used for optimization.'),
     })},
@@ -60,20 +60,19 @@ const writerPrompt = ai.definePrompt({
 
     1.  **Keyword Integration:**
         *   The **Primary Keyword** ({{{primaryKeyword}}}) MUST be included naturally in the **SEO Title**, the first paragraph (introduction), at least one subheading (H2 or H3), and throughout the body text.
-        *   Keyword density should be optimal (around 1-2%). Avoid keyword stuffing.
+        *   Keyword density should be optimal (around 1-2%). Avoid keyword stuffing at all costs.
 
-    2.  **Content Structure & Length:**
-        *   Write a well-structured article with an engaging introduction, multiple logical subheadings (mix of H2 and H3), detailed body paragraphs, and a strong concluding paragraph with a Call-to-Action (CTA) if appropriate.
-        *   Use bullet points, numbered lists, and bold text to improve readability.
-        *   Adhere to the desired length: Short (~400 words), Medium (~800 words), or Long (~1500 words).
+    2.  **Content Structure & Formatting:**
+        *   Write a well-structured article with an engaging introduction, multiple logical subheadings (mix of H2 using '##' and H3 using '###'), detailed body paragraphs, and a strong concluding paragraph with a Call-to-Action (CTA).
+        *   Use proper Markdown formatting. Use **bold text** for emphasis. Use bullet points or numbered lists to break up text and improve readability.
+        *   Adhere to the desired length: Short (~400 words), Medium (~800 words), or Long (~1500 words). The article MUST be comprehensive and detailed.
 
     3.  **Human-like Tone & Style (Critical for Bypassing AI Detectors):**
         *   Adopt the specified **Tone** ({{{tone}}}).
         *   Use a mix of short, punchy sentences and longer, more complex ones to create a natural rhythm. This variation in sentence length is key to sounding human.
         *   Ask rhetorical questions to engage the reader and break up the text.
-        *   Use contractions (e.g., "it's," "you're," "can't") for a conversational feel, unless the tone is strictly Formal.
         *   Incorporate metaphors, analogies, or storytelling to make the content relatable and less robotic.
-        *   Avoid common AI clichés like "In conclusion," "In the digital age," "Furthermore," "It's important to note," or "Overall." The conclusion should feel like a natural summary, not a formal announcement.
+        *   Avoid common AI clichés like "In conclusion," "In today's digital age," "Furthermore," "It's important to note," or "Overall." The conclusion should feel like a natural summary or a final thought, not a formal announcement.
 
     4.  **Meta Information Generation:**
         *   Generate a concise and catchy **SEO Title** (around 60 characters) that includes the primary keyword.
@@ -86,10 +85,10 @@ const writerPrompt = ai.definePrompt({
         *   Suggest 2-3 relevant topics for **External Links** (links to reputable, non-competing sources to build authority).
 
     6.  **Analysis & Confirmation:**
-        *   Provide a **Readability Score** from 1 to 10 (10 being the easiest to read, like conversational text).
+        *   Provide a **Readability Score** from 1 to 10 (10 being the easiest to read, like conversational text). This score should reflect the quality and readability of the generated content. Aim for a high score.
         *   Confirm the **Target Keyword** used for optimization in the output. This MUST be the same as the user's primary keyword.
 
-    The final output MUST be a complete JSON object following the schema. Ensure every field is populated correctly.
+    The final output MUST be a complete JSON object following the schema. Ensure every field is populated correctly and the article is fully formatted in Markdown.
     `,
 });
 

@@ -22,8 +22,6 @@ import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
-import rehypeSanitize from 'rehype-sanitize';
-import rehypeFormat from 'rehype-format';
 
 
 function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
@@ -50,8 +48,6 @@ async function markdownToHtml(markdown: string): Promise<string> {
   const file = await unified()
     .use(remarkParse)
     .use(remarkRehype)
-    .use(rehypeSanitize)
-    .use(rehypeFormat)
     .use(rehypeStringify)
     .process(markdown);
   return String(file);
@@ -288,15 +284,17 @@ export default function OneClickWriterForm() {
                         </CardHeader>
                         <CardContent className="space-y-4">
                              <div className="space-y-2">
-                                <Label>এসইও স্কোর</Label>
+                                <div className="flex justify-between items-center mb-1">
+                                    <Label>পড়ার যোগ্যতা (Readability)</Label>
+                                    <span className="font-bold">{data.readabilityScore}/10</span>
+                                </div>
                                 <Progress value={data.readabilityScore * 10} className="w-full" />
-                                <p className="text-sm text-muted-foreground text-center">{data.readabilityScore * 10}%</p>
                             </div>
-                            <Alert>
+                             <Alert>
                                 <CheckCircle className="h-4 w-4 text-green-500" />
-                                <AlertTitle>পড়ার যোগ্যতা (Readability)</AlertTitle>
+                                <AlertTitle>পড়ার যোগ্যতা বিশ্লেষণ</AlertTitle>
                                 <AlertDescription>
-                                  আপনার আর্টিকেলের স্কোর হলো <strong>{data.readabilityScore}/10</strong>। এটি পড়তে সহজ এবং বোঝা সহজ।
+                                  আপনার আর্টিকেলের স্কোর হলো <strong>{data.readabilityScore}/10</strong>। এটি পড়তে সহজ এবং বোঝা সহজ। উচ্চ স্কোর মানে পাঠকরা আপনার লেখা সহজেই বুঝতে পারবেন।
                                 </AlertDescription>
                             </Alert>
                              <Alert>
