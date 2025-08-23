@@ -10,7 +10,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { z } from 'zod';
 import { googleAI } from '@genkit-ai/googleai';
 import type { MediaPart } from 'genkit';
 import { Buffer } from 'buffer';
@@ -35,8 +35,12 @@ async function downloadVideo(video: MediaPart): Promise<string> {
     if (!process.env.GEMINI_API_KEY) {
         throw new Error("GEMINI_API_KEY environment variable is not set.");
     }
-    // Add API key before fetching the video. The URL may or may not have query params already.
-    const videoUrl = video.media!.url!.includes('?') ? `${video.media!.url}&key=${process.env.GEMINI_API_KEY}` : `${video.media!.url}?key=${process.env.GEMINI_API_KEY}`;
+    
+    // Correctly construct the video URL with the API key
+    const videoUrl = video.media!.url!.includes('?') 
+      ? `${video.media!.url}&key=${process.env.GEMINI_API_KEY}` 
+      : `${video.media!.url}?key=${process.env.GEMINI_API_KEY}`;
+      
     console.log(`Downloading video from: ${videoUrl.substring(0, 100)}...`);
 
     const videoDownloadResponse = await fetch(videoUrl);
