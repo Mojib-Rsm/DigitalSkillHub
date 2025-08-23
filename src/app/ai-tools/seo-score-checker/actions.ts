@@ -10,28 +10,17 @@ const SeoScoreCheckerActionSchema = z.object({
   keyword: z.string().min(3, { message: "Please enter a target keyword." }),
 });
 
-type FormState = {
-  message: string;
-  data?: SeoScoreCheckerOutput;
-  fields?: Record<string, string>;
-  issues?: string[];
-};
+type SeoScoreCheckerInput = z.infer<typeof SeoScoreCheckerActionSchema>;
 
 export async function checkSeoScoreAction(
-  prevState: FormState,
-  formData: FormData
-): Promise<FormState> {
-  const validatedFields = SeoScoreCheckerActionSchema.safeParse({
-    content: formData.get("content"),
-    keyword: formData.get("keyword"),
-  });
+  input: SeoScoreCheckerInput
+): Promise<{ success: boolean; data?: SeoScoreCheckerOutput; issues?: string[] }> {
+  const validatedFields = SeoScoreCheckerActionSchema.safeParse(input);
 
   if (!validatedFields.success) {
-    const { errors } = validatedFields.error;
     return {
-      message: "Validation Error",
-      issues: errors.map((issue) => issue.message),
-      fields: Object.fromEntries(formData.entries()) as Record<string, string>,
+      success: false,
+      issues: validatedFields.error.errors.map((e) => e.message),
     };
   }
   
@@ -44,16 +33,15 @@ export async function checkSeoScoreAction(
           output: result,
       });
       return {
-        message: "success",
+        success: true,
         data: result,
       };
     } else {
-        return { message: "Failed to analyze SEO score. Please try again." }
+        return { success: false, issues: ["Failed to analyze SEO score. Please try again."] }
     }
   } catch (error) {
     console.error(error);
-    return {
-      message: "An unexpected error occurred. Please try again.",
-    };
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred. Please try again.";
+    return { success: false, issues: [errorMessage] };
   }
 }

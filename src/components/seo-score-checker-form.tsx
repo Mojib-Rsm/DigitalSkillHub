@@ -1,8 +1,8 @@
 
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { useActionState, useFormStatus } from "react-dom";
+import React, { useEffect, useState } from "react";
+import { useFormStatus } from "react-dom";
 import { checkSeoScoreAction } from "@/app/ai-tools/seo-score-checker/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,13 +11,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Sparkles, BarChart2, TrendingUp, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
+import type { SeoScoreCheckerOutput } from "@/ai/flows/seo-score-checker";
 
-function SubmitButton() {
+function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
   const { pending } = useFormStatus();
+  const isDisabled = pending || isSubmitting;
   return (
-    <Button type="submit" disabled={pending} size="lg" className="w-full">
-      {pending ? (
+    <Button type="submit" disabled={isDisabled} size="lg" className="w-full">
+      {isDisabled ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
           বিশ্লেষণ করা হচ্ছে...
@@ -73,19 +74,36 @@ const ScoreCircle = ({ score }: { score: number }) => {
 
 
 export default function SeoScoreCheckerForm() {
-  const initialState = { message: "", issues: [], data: undefined, fields: {} };
-  const [state, formAction] = useActionState(checkSeoScoreAction, initialState);
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [data, setData] = useState<SeoScoreCheckerOutput | undefined>(undefined);
+  const [issues, setIssues] = useState<string[] | undefined>(undefined);
 
-  useEffect(() => {
-    if (state.message && state.message !== "success" && state.message !== "Validation Error") {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setData(undefined);
+    setIssues(undefined);
+
+    const formData = new FormData(event.currentTarget);
+    const result = await checkSeoScoreAction({
+        content: formData.get('content') as string,
+        keyword: formData.get('keyword') as string,
+    });
+
+    if (result.success) {
+        setData(result.data);
+    } else {
+        setIssues(result.issues);
         toast({
             variant: "destructive",
-            title: "ত্রুটি",
-            description: state.message,
+            title: "Validation Error",
+            description: result.issues?.join(", ") || "An unknown error occurred.",
         });
     }
-  }, [state, toast]);
+
+    setIsSubmitting(false);
+  }
 
   return (
     <Card className="shadow-lg">
@@ -96,18 +114,17 @@ export default function SeoScoreCheckerForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={formAction} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="content">আপনার কনটেন্ট</Label>
             <Textarea
               id="content"
               name="content"
               placeholder="আপনার সম্পূর্ণ আর্টিকেল বা কনটেন্ট এখানে পেস্ট করুন..."
-              defaultValue={state.fields?.content}
               required
               rows={12}
             />
-            {state.issues?.filter(i => i.toLowerCase().includes("content")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            {issues?.filter(i => i.toLowerCase().includes("content")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
            <div className="space-y-2">
             <Label htmlFor="keyword">টার্গেট কীওয়ার্ড</Label>
@@ -115,15 +132,14 @@ export default function SeoScoreCheckerForm() {
               id="keyword"
               name="keyword"
               placeholder="যেমন, 'ডিজিটাল মার্কেটিং', 'ফ্রিল্যান্সিং টিপস'"
-              defaultValue={state.fields?.keyword}
               required
             />
-            {state.issues?.filter(i => i.toLowerCase().includes("keyword")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            {issues?.filter(i => i.toLowerCase().includes("keyword")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
-          <SubmitButton />
+          <SubmitButton isSubmitting={isSubmitting} />
         </form>
 
-        {useFormStatus().pending && (
+        {isSubmitting && (
              <div className="mt-8 text-center">
                 <div className="inline-block bg-muted/50 p-4 rounded-lg">
                     <p className="text-muted-foreground font-semibold animate-pulse">আপনার কনটেন্ট বিশ্লেষণ করা হচ্ছে...</p>
@@ -131,12 +147,12 @@ export default function SeoScoreCheckerForm() {
             </div>
         )}
 
-        {state.data && !useFormStatus().pending && (
+        {data && !isSubmitting && (
           <div className="mt-8 space-y-6">
             <h3 className="text-3xl font-bold font-headline text-center">আপনার SEO ফলাফল</h3>
             
             <div className="flex flex-col items-center justify-center">
-                <ScoreCircle score={state.data.score} />
+                <ScoreCircle score={data.score} />
                 <p className="mt-2 text-lg text-muted-foreground font-semibold">Overall Score</p>
             </div>
 
@@ -146,7 +162,7 @@ export default function SeoScoreCheckerForm() {
                 </CardHeader>
                  <CardContent>
                     <ul className="list-none space-y-3">
-                        {state.data.recommendations.map((rec, i) => (
+                        {data.recommendations.map((rec, i) => (
                             <li key={i} className="flex items-start gap-3">
                                 <CheckCircle className="w-5 h-5 text-green-500 mt-1 shrink-0"/> 
                                 <span className="text-muted-foreground">{rec}</span>
