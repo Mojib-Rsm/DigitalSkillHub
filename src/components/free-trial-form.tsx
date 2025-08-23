@@ -11,7 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Bot, Sparkles, Zap, Phone } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useActionState, useFormStatus } from "react-dom";
-import { signupAction } from "@/app/free-trial/actions";
+import { signupAction } from "@/app/signup/actions";
 import { useRouter } from "next/navigation";
 
 function SignUpSubmitButton() {

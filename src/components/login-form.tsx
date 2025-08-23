@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState, useRef, Suspense } from "react";
@@ -116,7 +117,7 @@ function LoginFormContent() {
                     </CardContent>
                     <CardFooter className="bg-muted/50 p-6 border-t">
                         <p className="text-sm text-muted-foreground text-center w-full">
-                            Don't have an account? <Link href="/free-trial" className="font-semibold text-primary hover:underline">Sign up for free</Link>
+                            Don't have an account? <Link href="/signup" className="font-semibold text-primary hover:underline">Sign up for free</Link>
                         </p>
                     </CardFooter>
                 </Card>

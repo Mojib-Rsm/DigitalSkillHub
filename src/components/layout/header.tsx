@@ -123,7 +123,7 @@ export default async function Header() {
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                         <Link href="/free-trial">
+                         <Link href="/signup">
                             <User className="mr-2 h-4 w-4"/>
                             <span>Sign Up</span>
                         </Link>
@@ -210,7 +210,7 @@ export default async function Header() {
                     ) : (
                         <>
                         <MobileNavLink href="/login" label="Login"/>
-                        <MobileNavLink href="/free-trial" label="Start Free Trial"/>
+                        <MobileNavLink href="/signup" label="Start Free Trial"/>
                         </>
                     )}
                  </div>

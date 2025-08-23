@@ -1,6 +1,6 @@
 import FreeTrialForm from '@/components/free-trial-form';
 
-export default function FreeTrialPage() {
+export default function SignUpPage() {
     return (
         <FreeTrialForm />
     );
