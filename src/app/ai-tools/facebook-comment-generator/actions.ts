@@ -1,7 +1,7 @@
 
 "use server";
 
-import { facebookCommentGenerator } from "@/ai/flows/facebook-comment-generator";
+import { facebookCommentGenerator, FacebookCommentGeneratorInput, FacebookCommentGeneratorOutput } from "@/ai/flows/facebook-comment-generator";
 import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
@@ -30,30 +30,21 @@ const FacebookCommentGeneratorActionSchema = z.object({
     path: ["postContent"], // Set the error path to the postContent field.
 });
 
-type FormState = {
-  message: string;
-  bengaliSuggestions?: string[];
-  englishSuggestions?: string[];
-  fields?: Record<string, string>;
-  issues?: string[];
-};
 
 export async function generateFacebookComments(
-  prevState: FormState,
-  formData: FormData
-): Promise<FormState> {
+  input: FormData
+): Promise<{ success: boolean; data?: FacebookCommentGeneratorOutput; issues?: string[]}> {
   const validatedFields = FacebookCommentGeneratorActionSchema.safeParse({
-    postContent: formData.get("postContent"),
-    goal: formData.get("goal"),
-    photo: formData.get("photo"),
+    postContent: input.get("postContent"),
+    goal: input.get("goal"),
+    photo: input.get("photo"),
   });
 
   if (!validatedFields.success) {
     const { errors } = validatedFields.error;
     return {
-      message: "Validation Error",
+      success: false,
       issues: errors.map((issue) => issue.message),
-      fields: Object.fromEntries(formData.entries()) as Record<string, string>,
     };
   }
   
@@ -75,17 +66,15 @@ export async function generateFacebookComments(
           output: result,
       });
       return {
-        message: "success",
-        bengaliSuggestions: result.bengaliSuggestions,
-        englishSuggestions: result.englishSuggestions,
+        success: true,
+        data: result
       };
     } else {
-        return { message: "No suggestions generated. Please try a different input." }
+        throw new Error("No suggestions generated. Please try a different input.");
     }
   } catch (error) {
     console.error(error);
-    return {
-      message: "An unexpected error occurred. Please try again.",
-    };
+    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred.";
+    throw new Error(errorMessage);
   }
 }
