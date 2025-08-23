@@ -1,58 +1,18 @@
 
-
-"use client";
-
-import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard, Search, Edit, Clapperboard, Receipt, BarChart2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Head from 'next/head';
 import { getPricingPlans, PricingPlan } from '@/services/pricing-service';
 import { getTestimonials, Testimonial } from '@/services/testimonial-service';
 import { getTrendingTools } from '@/services/tool-service';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  CartesianGrid
-} from "recharts"
 import type { Tool } from '@/lib/demo-data';
-
-const userSignups = [
-    { month: "Jan", signups: 186 },
-    { month: "Feb", signups: 305 },
-    { month: "Mar", signups: 237 },
-    { month: "Apr", signups: 273 },
-    { month: "May", signups: 209 },
-    { month: "Jun", signups: 250 },
-];
-
-const recentActivities = [
-    { name: "Olivia Martin", email: "olivia.martin@email.com", amount: "+৳499.00", type: "Subscription" },
-    { name: "Jackson Lee", email: "jackson.lee@email.com", amount: "+৳1,499.00", type: "Subscription" },
-    { name: "Isabella Nguyen", email: "isabella.nguyen@email.com", amount: "+৳499.00", type: "Subscription" },
-    { name: "William Kim", email: "will@email.com", amount: "New User", type: "Registration" },
-    { name: "Sofia Davis", email: "sofia.davis@email.com", amount: "+৳1,499.00", type: "Subscription" },
-];
 
 
 const faqItems = [
@@ -151,29 +111,18 @@ const trendingCategories = [
     { title: "এসইও ও মার্কেটিং", icon: TrendingUp, href: "/ai-tools" },
 ];
 
+const iconComponents: { [key: string]: React.ElementType } = {
+    PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, Layers, RefreshCcw, SparklesIcon, TowerControl, Clapperboard, Youtube, LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, BarChart2,
+};
 
-export default function Home() {
-  const [pricingPlans, setPricingPlans] = useState<PricingPlan[]>([]);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [trendingTools, setTrendingTools] = useState<Tool[]>([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchData() {
-        setLoading(true);
-        const [plans, fetchedTestimonials, tools] = await Promise.all([
-            getPricingPlans(),
-            getTestimonials(),
-            getTrendingTools(4) // Fetch 4 trending tools
-        ]);
-        setPricingPlans(plans);
-        setTestimonials(fetchedTestimonials);
-        setTrendingTools(tools);
-        setLoading(false);
-    }
-    
-    fetchData();
-  }, []);
+export default async function Home() {
+  const [pricingPlans, testimonials, trendingTools] = await Promise.all([
+    getPricingPlans(),
+    getTestimonials(),
+    getTrendingTools(4)
+  ]);
+  const loading = false; // Data is pre-fetched on server
 
   return (
     <>
@@ -580,6 +529,3 @@ export default function Home() {
   );
 
 }
-const iconComponents = {
-    PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, Layers, RefreshCcw, SparklesIcon, TowerControl, Clapperboard, Youtube, LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, BarChart2,
-};
