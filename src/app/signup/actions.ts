@@ -64,6 +64,11 @@ export async function signupAction(
       email,
       password, // In a real app, this should be a hashed password
       phone,
+      credits: 10,
+      plan_id: 'alpha',
+      role: 'user',
+      status: 'active',
+      profile_image: `https://i.pravatar.cc/150?u=${email}`,
       createdAt: new Date().toISOString(),
     });
 
