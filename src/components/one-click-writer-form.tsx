@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Progress } from "./ui/progress";
 import type { OneClickWriterOutput } from "@/ai/flows/one-click-writer";
+import { Badge } from "./ui/badge";
 
 // Remark and rehype plugins for markdown rendering
 import { unified } from 'unified';
@@ -251,6 +252,18 @@ export default function OneClickWriterForm() {
                                 <AlertDescription className="flex justify-between items-center">
                                 <p>{data.seoDescription}</p>
                                     <Button variant="ghost" size="icon" onClick={() => handleCopy(data.seoDescription)}><Clipboard className="w-4 h-4"/></Button>
+                                </AlertDescription>
+                            </Alert>
+                             <Alert>
+                                <AlertTitle className="flex items-center gap-2"><Tag className="w-4 h-4"/>Suggested Categories</AlertTitle>
+                                <AlertDescription className="flex flex-wrap gap-2 pt-2">
+                                  {data.suggestedCategories.map((category) => <Badge key={category} variant="secondary">{category}</Badge>)}
+                                </AlertDescription>
+                            </Alert>
+                             <Alert>
+                                <AlertTitle className="flex items-center gap-2"><Tag className="w-4 h-4"/>Suggested Tags</AlertTitle>
+                                <AlertDescription className="flex flex-wrap gap-2 pt-2">
+                                  {data.suggestedTags.map((tag) => <Badge key={tag} variant="outline">{tag}</Badge>)}
                                 </AlertDescription>
                             </Alert>
                              <Alert>
