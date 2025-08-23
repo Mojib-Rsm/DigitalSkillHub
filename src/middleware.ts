@@ -14,7 +14,7 @@ export async function middleware(request: NextRequest) {
     const isProtected = protectedPaths.some(path => pathname.startsWith(path));
 
     if (isProtected) {
-        const sessionCookie = request.cookies.get('auth-session')?.value;
+        const sessionCookie = request.cookies.get('auth-session');
 
         if (!sessionCookie) {
             const url = request.nextUrl.clone();
