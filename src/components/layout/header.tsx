@@ -1,7 +1,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Bot, Menu, ChevronDown, User, LogOut, LayoutDashboard, Coins, Settings } from "lucide-react";
+import { Bot, Menu, ChevronDown, User, LogOut, LayoutDashboard, Coins, Settings, Star, Zap } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -107,14 +107,37 @@ export default async function Header() {
       );
     }
     return (
-      <>
-        <Button variant="ghost" asChild>
-          <Link href="/login">Login</Link>
-        </Button>
-        <Button asChild>
-          <Link href="/free-trial">Start Free Trial</Link>
-        </Button>
-      </>
+        <div className="flex items-center gap-2">
+            <ThemeToggleButton />
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                     <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-full">
+                        <User className="h-5 w-5"/>
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                     <DropdownMenuItem asChild>
+                         <Link href="/login">
+                            <LogOut className="mr-2 h-4 w-4"/>
+                            <span>Login</span>
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                         <Link href="/free-trial">
+                            <User className="mr-2 h-4 w-4"/>
+                            <span>Sign Up</span>
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator/>
+                     <DropdownMenuItem asChild>
+                         <Link href="/free-tools">
+                            <Star className="mr-2 h-4 w-4"/>
+                            <span>Free Tools</span>
+                        </Link>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
     );
   };
 
