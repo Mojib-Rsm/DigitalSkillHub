@@ -1,30 +1,41 @@
 /** @type {import('next').NextConfig} */
-import withPWA from 'next-pwa';
-
-const pwaConfig = withPWA({
-  dest: 'public',
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development',
-});
-
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
-      },
-    ],
-  },
+    typescript: {
+        ignoreBuildErrors: true,
+    },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'placehold.co',
+                port: '',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'i.pravatar.cc',
+                port: '',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'www.google.com',
+                port: '',
+                pathname: '/**',
+            },
+        ],
+    },
+    serverActions: {
+        bodySizeLimit: '4mb',
+        executionTimeout: 120,
+    },
+    webpack: (config, { isServer }) => {
+        config.resolve.alias.handlebars = 'handlebars/dist/handlebars.min.js';
+        return config;
+    },
 };
 
-export default pwaConfig(nextConfig);
+export default nextConfig;
