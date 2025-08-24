@@ -32,8 +32,9 @@ const navLinks = [
 ];
 
 const moreLinks = [
-    { href: "/#testimonials", label: "Testimonials" },
-    { href: "/#faq", label: "FAQ" },
+    { href: "/about", label: "About Us" },
+    { href: "/careers", label: "Careers" },
+    { href: "/press-kit", label: "Press Kit" },
     { href: "/blog", label: "Blog" },
     { href: "/community", label: "Community" },
     { href: "/ai-tools", label: "All Tools" },
