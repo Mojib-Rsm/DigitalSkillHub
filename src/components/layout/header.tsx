@@ -124,6 +124,50 @@ export default async function Header() {
         </div>
     );
   };
+  
+  const MobileAuthSection = () => {
+    if (user) {
+        return (
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                     <Avatar className="h-9 w-9">
+                        <AvatarImage src={user.profile_image} alt={user.name}/>
+                        <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>
+                        <p className="font-bold">{user.name}</p>
+                        <p className="text-xs text-muted-foreground font-normal">{user.email}</p>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator/>
+                    <DropdownMenuItem asChild>
+                        <Link href="/dashboard">
+                            <LayoutDashboard className="mr-2 h-4 w-4"/>
+                            <span>Dashboard</span>
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                         <Link href="/dashboard/settings">
+                            <Settings className="mr-2 h-4 w-4"/>
+                            <span>Settings</span>
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator/>
+                     <form action={logoutAction} className="w-full">
+                        <DropdownMenuItem asChild>
+                               <button type="submit" className="w-full cursor-pointer">
+                                <LogOut className="mr-2 h-4 w-4"/>
+                                <span>Logout</span>
+                               </button>
+                        </DropdownMenuItem>
+                    </form>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        )
+    }
+    return null;
+  }
 
   return (
     <>
@@ -160,6 +204,7 @@ export default async function Header() {
              {renderAuthSection()}
         </div>
         <div className="lg:hidden flex items-center gap-2">
+            <MobileAuthSection/>
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -185,11 +230,7 @@ export default async function Header() {
                   </SheetHeader>
                  <div className="flex flex-col h-full">
                     <div className="flex-grow p-4 space-y-2">
-                        {[...navLinks, ...moreLinks].slice(0, 5).map(link => (
-                            <MobileNavLink key={link.href} href={link.href} label={link.label} />
-                        ))}
-                        <Separator/>
-                        {moreLinks.slice(5).map(link => (
+                        {[...navLinks, ...moreLinks].map(link => (
                             <MobileNavLink key={link.href} href={link.href} label={link.label} />
                         ))}
                         <Separator/>
