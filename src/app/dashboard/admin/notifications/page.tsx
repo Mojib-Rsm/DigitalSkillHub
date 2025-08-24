@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +12,8 @@ import { useToast } from "@/hooks/use-toast";
 import { sendNotificationAction } from "./actions";
 import { Sparkles, Send } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getTools, Tool } from "@/services/tool-service";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -39,6 +40,17 @@ export default function NotificationsPage() {
     const [state, formAction] = useActionState(sendNotificationAction, initialState);
     const formRef = useRef<HTMLFormElement>(null);
     const { toast } = useToast();
+    const [tools, setTools] = useState<Tool[]>([]);
+    const [loadingTools, setLoadingTools] = useState(true);
+
+    useEffect(() => {
+        const fetchTools = async () => {
+            const allTools = await getTools();
+            setTools(allTools);
+            setLoadingTools(false);
+        };
+        fetchTools();
+    }, []);
 
     useEffect(() => {
         if (state.message) {
@@ -58,7 +70,7 @@ export default function NotificationsPage() {
             <div>
                 <h1 className="text-3xl font-bold">Send Notification</h1>
                 <p className="text-muted-foreground">
-                    Compose and send a new announcement to all users.
+                    Compose and send a new announcement to all users or for a specific tool.
                 </p>
             </div>
             
@@ -66,11 +78,27 @@ export default function NotificationsPage() {
                 <CardHeader>
                     <CardTitle>Compose Message</CardTitle>
                     <CardDescription>
-                       The message will appear as an in-app notification for all users.
+                       The message will appear as an in-app notification.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form ref={formRef} action={formAction} className="space-y-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="toolId">Target Audience</Label>
+                             <Select name="toolId" defaultValue="all">
+                                <SelectTrigger id="toolId" disabled={loadingTools}>
+                                    <SelectValue placeholder="Select a target..." />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Users</SelectItem>
+                                    <optgroup label="Specific Tools">
+                                        {tools.map(tool => (
+                                            <SelectItem key={tool.id} value={tool.id}>{tool.title}</SelectItem>
+                                        ))}
+                                    </optgroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
                         <div className="space-y-2">
                             <Label htmlFor="title">Title</Label>
                             <Input

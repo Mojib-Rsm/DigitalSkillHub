@@ -8,6 +8,7 @@ import { getCurrentUser } from '@/services/user-service';
 type Notification = {
   title: string;
   message: string;
+  toolId?: string;
 };
 
 export async function sendNotification(notification: Notification) {
