@@ -3,8 +3,9 @@ import { getCurrentUser, UserProfile } from "@/services/user-service";
 import { AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import AdminDashboard from "@/components/admin-dashboard";
-import UserDashboard from "@/components/user-dashboard";
 import { Button } from "@/components/ui/button";
+import UserDashboardPage from "./user/page";
+import UserDashboard from "@/components/user-dashboard";
 
 
 export default async function DashboardPage() {

@@ -28,18 +28,13 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getCurrentUser, UserProfile } from "@/services/user-service";
-import { MoreHorizontal, Edit, PlusCircle, Star, Trash, Bell, Heart } from "lucide-react";
+import { MoreHorizontal, Edit, PlusCircle, Star, Trash, Bell, Heart, Loader } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getToolById, Tool } from "@/services/tool-service";
 
 
 // Mock Data - Replace with actual data fetching
-const bookmarkedTools = [
-    { name: "Blog Topic Generator", logo: "PenSquare", tags: ["Content", "Writing"], added: "2024-07-20"},
-    { name: "AI Image Generator", logo: "ImageIcon", tags: ["Image", "Creative"], added: "2024-07-18"},
-    { name: "Passport Photo Maker", logo: "UserCircle", tags: ["Image", "Utility"], added: "2024-07-15"},
-];
-
 const myReviews = [
     { tool: "Blog Topic Generator", rating: 5, review: "Absolutely fantastic! Generated so many great ideas.", status: "Approved" },
     { tool: "AI Image Generator", rating: 4, review: "Great tool, but sometimes the results are a bit off.", status: "Pending" },
@@ -48,15 +43,26 @@ const myReviews = [
 export default function UserDashboardPage() {
     const [user, setUser] = React.useState<UserProfile | null>(null);
     const [loading, setLoading] = React.useState(true);
+    const [bookmarkedTools, setBookmarkedTools] = React.useState<Tool[]>([]);
+    const [loadingBookmarks, setLoadingBookmarks] = React.useState(true);
 
     React.useEffect(() => {
-        async function fetchUser() {
+        async function fetchUserAndBookmarks() {
             setLoading(true);
+            setLoadingBookmarks(true);
             const currentUser = await getCurrentUser();
             setUser(currentUser);
+            if (currentUser?.bookmarks && currentUser.bookmarks.length > 0) {
+                const toolPromises = currentUser.bookmarks.map(id => getToolById(id));
+                const tools = (await Promise.all(toolPromises)).filter(Boolean) as Tool[];
+                setBookmarkedTools(tools);
+            } else {
+                setBookmarkedTools([]);
+            }
             setLoading(false);
+            setLoadingBookmarks(false);
         }
-        fetchUser();
+        fetchUserAndBookmarks();
     }, []);
 
     if (loading) {
@@ -83,13 +89,13 @@ export default function UserDashboardPage() {
                         <AvatarFallback className="text-3xl">{user.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 text-center sm:text-left">
-                        <h1 className="text-3xl font-bold">{user.name}</h1>
+                        <h1 className="text-3xl font-bold">Welcome, {user.name}!</h1>
                         <p className="text-muted-foreground">{user.email}</p>
-                        <Badge className="mt-2" variant={user.role === 'admin' ? "destructive" : "secondary"}>{user.role === 'admin' ? "Pro" : "Free"}</Badge>
+                        <Badge className="mt-2" variant={user.plan_id === 'beta' || user.plan_id === 'sigma' ? "default" : "secondary"}>{user.plan_id === 'beta' || user.plan_id === 'sigma' ? "Pro" : "Free"}</Badge>
                     </div>
                     <div className="flex gap-2">
-                        <Button variant="outline">Edit Profile</Button>
-                        <Button>Upgrade to Pro</Button>
+                        <Button variant="outline" asChild><Link href="/dashboard/settings">Edit Profile</Link></Button>
+                        <Button asChild><Link href="/dashboard/pricing">Upgrade to Pro</Link></Button>
                     </div>
                 </CardContent>
             </Card>
@@ -111,26 +117,35 @@ export default function UserDashboardPage() {
                                     <CardDescription>Your favorite tools, all in one place.</CardDescription>
                                 </CardHeader>
                                 <CardContent>
+                                    {loadingBookmarks ? (
+                                        <div className="flex justify-center items-center h-40">
+                                            <Loader className="animate-spin text-primary"/>
+                                        </div>
+                                    ) : bookmarkedTools.length > 0 ? (
                                     <Table>
                                         <TableHeader>
                                             <TableRow>
                                                 <TableHead>Tool</TableHead>
-                                                <TableHead>Tags</TableHead>
-                                                <TableHead>Date Added</TableHead>
+                                                <TableHead>Category</TableHead>
                                                 <TableHead>Action</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
                                             {bookmarkedTools.map(tool => (
-                                                <TableRow key={tool.name}>
-                                                    <TableCell className="font-medium">{tool.name}</TableCell>
-                                                    <TableCell className="flex gap-1">{tool.tags.map(tag=><Badge variant="outline" key={tag}>{tag}</Badge>)}</TableCell>
-                                                    <TableCell>{tool.added}</TableCell>
+                                                <TableRow key={tool.id}>
+                                                    <TableCell className="font-medium">{tool.title}</TableCell>
+                                                    <TableCell><Badge variant="outline">{tool.category}</Badge></TableCell>
                                                     <TableCell><Button variant="ghost" size="icon"><Trash className="w-4 h-4"/></Button></TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
                                     </Table>
+                                    ) : (
+                                        <div className="text-center text-muted-foreground py-10">
+                                            <p>You haven't bookmarked any tools yet.</p>
+                                            <Button variant="link" asChild><Link href="/ai-tools">Explore Tools</Link></Button>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         </TabsContent>
@@ -230,5 +245,3 @@ export default function UserDashboardPage() {
         </div>
     );
 }
-
-    

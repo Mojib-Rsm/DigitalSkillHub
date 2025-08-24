@@ -66,46 +66,7 @@ export default function DashboardSidebar({
                     <span>My Dashboard</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-                <SidebarMenuItem>
-                    <SidebarMenuButton>
-                        <FileText />
-                        <span>Content Generation</span>
-                        <ChevronDown className="ml-auto size-4" />
-                    </SidebarMenuButton>
-                    <SidebarMenuSub>
-                        <SidebarMenuSubItem>
-                            <SidebarMenuSubButton href="/ai-tools/one-click-writer">
-                                <Sparkles />
-                                <span>One Click Writer</span>
-                            </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                        <SidebarMenuSubItem>
-                             <SidebarMenuSubButton>
-                                <Video/>
-                                <span>Video to Blog Post</span>
-                            </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                         <SidebarMenuSubItem>
-                            <SidebarMenuSubButton>
-                                <FileText />
-                                <span>News Writer</span>
-                            </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                         <SidebarMenuSubItem>
-                            <SidebarMenuSubButton>
-                                <Layers/>
-                                <span>Bulk Generation</span>
-                            </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                         <SidebarMenuSubItem>
-                            <SidebarMenuSubButton>
-                                <RefreshCcw/>
-                                <span>Bulk Content Refresh</span>
-                            </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
+                 <SidebarMenuItem>
                   <SidebarMenuButton href="/dashboard/history">
                     <History />
                     <span>History</span>
