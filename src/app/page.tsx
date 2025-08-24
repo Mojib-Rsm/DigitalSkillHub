@@ -1,6 +1,7 @@
 
 
 import HomePageClient from "@/components/home-page-client";
+import { getActiveCoupons } from "@/services/coupon-service";
 import { getPricingPlans } from '@/services/pricing-service';
 import { getTestimonials } from '@/services/testimonial-service';
 import { getTrendingTools } from '@/services/tool-service';
@@ -11,10 +12,11 @@ import { getTrendingTools } from '@/services/tool-service';
 // This pattern optimizes for performance (fast initial load with server-rendered HTML)
 // while allowing for client-side interactivity in the child component.
 export default async function Home() {
-    const [pricingPlans, testimonials, trendingTools] = await Promise.all([
+    const [pricingPlans, testimonials, trendingTools, activeCoupons] = await Promise.all([
         getPricingPlans(),
         getTestimonials(),
-        getTrendingTools(4)
+        getTrendingTools(4),
+        getActiveCoupons(),
     ]);
 
     return (
@@ -22,6 +24,7 @@ export default async function Home() {
             pricingPlans={pricingPlans} 
             testimonials={testimonials} 
             trendingTools={trendingTools} 
+            activeCoupons={activeCoupons}
         />
     );
 }

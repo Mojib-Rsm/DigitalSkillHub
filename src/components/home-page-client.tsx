@@ -13,6 +13,7 @@ import { PricingPlan } from '@/services/pricing-service';
 import { Testimonial } from '@/services/testimonial-service';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Tool } from '@/services/tool-service';
+import type { Coupon } from "@/services/coupon-service";
 
 const faqItems = [
     {
@@ -88,20 +89,25 @@ interface HomePageClientProps {
     pricingPlans: PricingPlan[];
     testimonials: Testimonial[];
     trendingTools: Tool[];
+    activeCoupons: Coupon[];
 }
 
-export default function HomePageClient({ pricingPlans, testimonials, trendingTools }: HomePageClientProps) {
+export default function HomePageClient({ pricingPlans, testimonials, trendingTools, activeCoupons }: HomePageClientProps) {
   const loading = !pricingPlans || !testimonials || !trendingTools;
+  const primaryCoupon = activeCoupons.length > 0 ? activeCoupons[0] : null;
+
 
   return (
       <div className="flex flex-col bg-background">
         {/* Hero Section */}
         <section className="pt-12 md:pt-16 pb-8 md:pb-12 overflow-hidden">
           <div className="container mx-auto px-4 text-center">
-              <Badge variant="secondary" className="text-sm py-1.5 px-4 border-2 border-primary/50 text-primary animate-pulse">
-                  <SparklesIcon className="w-4 h-4 mr-2"/>
-                  LIMITED TIME! • Get 25% OFF with code LAUNCH25
-              </Badge>
+              {primaryCoupon && (
+                <Badge variant="secondary" className="text-sm py-1.5 px-4 border-2 border-primary/50 text-primary animate-pulse">
+                    <SparklesIcon className="w-4 h-4 mr-2"/>
+                    LIMITED TIME! • Get {primaryCoupon.discountPercentage}% OFF with code {primaryCoupon.code}
+                </Badge>
+              )}
               <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tight max-w-4xl mx-auto mt-4 animate-fade-in-up">
                 Create Professional Content 10x Faster with AI 2.0
               </h1>
@@ -385,9 +391,11 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
           <section id="pricing" className="py-12 md:py-20 bg-muted/50">
               <div className="container mx-auto px-4">
                   <div className="text-center max-w-3xl mx-auto">
-                      <Badge variant="secondary" className="text-sm py-1 px-3 border-2 border-primary/50 text-primary mb-4">
-                          🔥 Limited Time Launch Offer - 25% OFF with LAUNCH25
-                      </Badge>
+                      {primaryCoupon && (
+                        <Badge variant="secondary" className="text-sm py-1 px-3 border-2 border-primary/50 text-primary mb-4">
+                            🔥 {primaryCoupon.description || `Limited Time Offer - Use code ${primaryCoupon.code}`}
+                        </Badge>
+                      )}
                       <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
                           Choose Your AI Content Creation Plan
                       </h2>
@@ -404,16 +412,18 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                   <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
                       {pricingPlans.map((plan, index) => (
                       <Card key={`pricing-${plan.id}-${index}`} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
-                          {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR + 25% OFF</Badge>}
+                          {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR</Badge>}
                           <CardHeader>
                               <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
                               <div className="flex items-baseline gap-2">
                                   <p className="text-4xl font-bold text-primary">৳{plan.price}</p>
                                   <p className="text-xl font-medium text-muted-foreground line-through">৳{plan.originalPrice}</p>
-                                  <Badge variant="destructive">{plan.discount}</Badge>
+                                  {plan.discount && <Badge variant="destructive">{plan.discount}</Badge>}
                               </div>
                               <p className="text-muted-foreground pt-2">{plan.description}</p>
-                              <p className="text-sm text-accent font-semibold">Use code: LAUNCH25 at checkout</p>
+                              {primaryCoupon && (
+                                <p className="text-sm text-accent font-semibold">Use code: {primaryCoupon.code} at checkout for {primaryCoupon.discountPercentage}% off!</p>
+                              )}
                           </CardHeader>
                           <CardContent className="flex-grow space-y-4">
                               <div className={`p-3 rounded-lg text-center ${plan.isPopular ? 'bg-primary/10' : 'bg-muted'}`}>

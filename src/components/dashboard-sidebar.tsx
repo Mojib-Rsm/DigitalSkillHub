@@ -36,6 +36,7 @@ import {
   Bell,
   User as UserIcon,
   Database,
+  Ticket,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -103,6 +104,12 @@ export default function DashboardSidebar({
                                 <SidebarMenuSubButton href="/dashboard/admin/pricing">
                                     <DollarSign />
                                     <span>Pricing Plans</span>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                             <SidebarMenuSubItem>
+                                <SidebarMenuSubButton href="/dashboard/admin/coupons">
+                                    <Ticket />
+                                    <span>Coupons</span>
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                              <SidebarMenuSubItem>

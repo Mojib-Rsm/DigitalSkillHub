@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, Frown, Meh, BookOpen, Fingerprint } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, Frown, Meh, BookOpen, Fingerprint, Share2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
@@ -467,11 +467,12 @@ export default function OneClickWriterForm() {
             
             {/* Article Section */}
             <Card>
-                <CardHeader className="flex flex-row justify-between items-center">
+                <CardHeader className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5 text-primary"/>সম্পূর্ণ আর্টিকেল</CardTitle>
                     <div className="flex gap-2">
                         <Button variant="outline" size="sm" onClick={() => handleCopy(data.article)}><Clipboard className="mr-2"/> কপি করুন</Button>
                         <Button variant="outline" size="sm" onClick={handleDownload}><Download className="mr-2"/> ডাউনলোড (.md)</Button>
+                        <Button variant="default" size="sm"><Share2 className="mr-2"/> Publish to WordPress</Button>
                     </div>
                 </CardHeader>
                 <CardContent>

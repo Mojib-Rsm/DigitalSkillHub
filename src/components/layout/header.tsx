@@ -23,6 +23,7 @@ import { getCurrentUser } from "@/services/user-service";
 import { ThemeToggleButton } from "../theme-toggle-button";
 import { logoutAction } from "@/app/logout/actions";
 import { Separator } from "../ui/separator";
+import { getActiveCoupons } from "@/services/coupon-service";
 
 const navLinks = [
   { href: "/#features", label: "Features" },
@@ -60,6 +61,8 @@ const MobileNavLink = ({ href, label }: { href: string; label: string;}) => (
 
 export default async function Header() {
   const user = await getCurrentUser();
+  const activeCoupons = await getActiveCoupons();
+  const primaryCoupon = activeCoupons.length > 0 ? activeCoupons[0] : null;
 
   const renderAuthSection = () => {
     if (user) {
@@ -172,10 +175,12 @@ export default async function Header() {
 
   return (
     <>
-    <div className="bg-primary text-primary-foreground text-center py-1.5 text-sm font-semibold">
-        🚀 LIMITED TIME! • Get 25% OFF with code <strong className="underline">LAUNCH25</strong>
-        <Link href="/dashboard/pricing" className="ml-4 underline">View Plans</Link>
-    </div>
+    {primaryCoupon && (
+        <div className="bg-primary text-primary-foreground text-center py-1.5 text-sm font-semibold">
+           🚀 {primaryCoupon.description || `LIMITED TIME! Get ${primaryCoupon.discountPercentage}% OFF with code`} <strong className="underline">{primaryCoupon.code}</strong>
+           <Link href="/dashboard/pricing" className="ml-4 underline">View Plans</Link>
+       </div>
+    )}
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-20 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
