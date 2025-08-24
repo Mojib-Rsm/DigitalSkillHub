@@ -2,7 +2,7 @@
 'use server';
 
 import { headers } from 'next/headers';
-import { getFirestore, collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore/lite';
+import { getFirestore, collection, query, where, getDocs, orderBy, limit, doc, getDoc } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { getCurrentUser } from './user-service';
 
@@ -41,10 +41,10 @@ export async function getHistory(): Promise<HistoryItem[]> {
       return [];
     }
     
-    const historyItems = await Promise.all(historySnapshot.docs.map(async (doc) => {
-        const data = doc.data();
+    const historyItems = await Promise.all(historySnapshot.docs.map(async (docSnap) => {
+        const data = docSnap.data();
         const item: HistoryItem = {
-            id: doc.id,
+            id: docSnap.id,
             tool: data.tool,
             input: data.input,
             output: data.output,
