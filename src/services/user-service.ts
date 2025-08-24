@@ -9,6 +9,7 @@ export type UserProfile = {
   id: string;
   name: string;
   email: string;
+  phone?: string;
   role: 'admin' | 'user';
   credits: number;
   profile_image: string;
@@ -46,6 +47,7 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
         id: userSnapshot.id,
         name: userData.name,
         email: userData.email,
+        phone: userData.phone,
         role: userData.role,
         credits: userData.credits,
         profile_image: userData.profile_image,
@@ -82,6 +84,7 @@ export async function getAllUsers(): Promise<UserProfile[]> {
                 id: doc.id,
                 name: data.name,
                 email: data.email,
+                phone: data.phone,
                 role: data.role,
                 credits: data.credits,
                 profile_image: data.profile_image,

@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { updateUserProfileAction, changePasswordAction } from './actions';
-import { Sparkles, User, Palette, Shield, Star, Award } from 'lucide-react';
+import { Sparkles, User, Palette, Shield, Star, Award, Phone } from 'lucide-react';
 import { getCurrentUser, UserProfile } from '@/services/user-service';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -52,6 +52,13 @@ function ProfileForm({ user }: { user: UserProfile }) {
             <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" name="email" type="email" defaultValue={user.email} disabled />
+            </div>
+             <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                 <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input id="phone" name="phone" type="tel" placeholder="01xxxxxxxxx" defaultValue={(user as any).phone || ''} className="pl-10" />
+                </div>
             </div>
              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">

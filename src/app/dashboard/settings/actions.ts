@@ -10,6 +10,7 @@ import { revalidatePath } from 'next/cache';
 // Schema for updating profile information
 const ProfileSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters."),
+  phone: z.string().min(10, "Please enter a valid phone number.").optional().or(z.literal('')),
 });
 
 // Schema for changing the password
@@ -39,6 +40,7 @@ export async function updateUserProfileAction(
 
   const validatedFields = ProfileSchema.safeParse({
     name: formData.get('name'),
+    phone: formData.get('phone'),
   });
 
   if (!validatedFields.success) {
@@ -51,10 +53,19 @@ export async function updateUserProfileAction(
   try {
     const db = getFirestore(app);
     const userRef = doc(db, 'users', currentUser.id);
-    await updateDoc(userRef, validatedFields.data);
+
+    const dataToUpdate: Record<string, string> = {};
+    if (validatedFields.data.name) {
+        dataToUpdate.name = validatedFields.data.name;
+    }
+    if (validatedFields.data.phone) {
+        dataToUpdate.phone = validatedFields.data.phone;
+    }
+
+    await updateDoc(userRef, dataToUpdate);
 
     revalidatePath('/dashboard/settings');
-    revalidatePath('/(dashboard)/layout');
+    revalidatePath('/dashboard'); // Revalidate dashboard to update user info in sidebar potentially
     return { success: true, message: 'Profile updated successfully.' };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
