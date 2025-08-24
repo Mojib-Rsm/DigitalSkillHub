@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { updateUserProfileAction, changePasswordAction } from './actions';
-import { Sparkles, User, Palette, Shield, Star, Award, Phone, Upload, Type, CaseLower, CornerBottomLeft, Heart, Image as ImageIcon } from 'lucide-react';
+import { Sparkles, User, Palette, Shield, Star, Award, Phone, Upload, Type, CaseLower, CornerDownLeft, Heart, Image as ImageIcon } from 'lucide-react';
 import { getCurrentUser, UserProfile } from '@/services/user-service';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -290,7 +290,7 @@ function BrandingForm() {
                     </div>
                 </div>
                  <div className="space-y-2">
-                    <Label htmlFor="borderRadius" className="flex items-center gap-2"><CornerBottomLeft/> Border Radius ({borderRadius}rem)</Label>
+                    <Label htmlFor="borderRadius" className="flex items-center gap-2"><CornerDownLeft/> Border Radius ({borderRadius}rem)</Label>
                     <Slider id="borderRadius" name="borderRadius" min={0} max={1} step={0.1} value={[borderRadius]} onValueChange={(vals) => setBorderRadius(vals[0])} />
                 </div>
             </div>
@@ -373,3 +373,5 @@ export default function SettingsPage() {
     
 
     
+
+
