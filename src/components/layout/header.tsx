@@ -233,13 +233,8 @@ export default async function Header() {
                         {[...navLinks, ...moreLinks].map(link => (
                             <MobileNavLink key={link.href} href={link.href} label={link.label} />
                         ))}
-                        <Separator/>
-                        <div className="p-4 flex items-center justify-between text-foreground/80 hover:bg-muted rounded-lg cursor-pointer">
-                            <span className="font-medium text-base">Dark Mode</span>
-                            <Moon className="w-5 h-5"/>
-                        </div>
                     </div>
-                    <div className="p-4 border-t flex gap-2">
+                    <div className="p-4 border-t flex flex-col gap-2">
                         <SheetClose asChild>
                             <Button asChild size="lg" className="w-full" variant="outline">
                                 <Link href="/ai-tools">All Tools</Link>

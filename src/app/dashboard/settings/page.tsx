@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useActionState, useEffect, useRef } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,12 +10,15 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { updateUserProfileAction, changePasswordAction } from './actions';
-import { Sparkles, User, Palette, Shield, Star, Award, Phone } from 'lucide-react';
+import { Sparkles, User, Palette, Shield, Star, Award, Phone, Upload } from 'lucide-react';
 import { getCurrentUser, UserProfile } from '@/services/user-service';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import * as React from 'react';
 import { Badge } from '@/components/ui/badge';
+import Image from 'next/image';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+
 
 function SubmitButton({ children }: { children: React.ReactNode }) {
   const { pending } = useFormStatus();
@@ -30,6 +33,7 @@ function SubmitButton({ children }: { children: React.ReactNode }) {
 function ProfileForm({ user }: { user: UserProfile }) {
   const initialState = { success: false, message: '' };
   const [state, formAction] = useActionState(updateUserProfileAction, initialState);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -39,12 +43,40 @@ function ProfileForm({ user }: { user: UserProfile }) {
         title: state.success ? 'Success' : 'Error',
         description: state.message,
       });
+      if (state.success) {
+        setPreviewUrl(null);
+        // We might want to reload the page or user data here to show the new image
+      }
     }
   }, [state, toast]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+
   return (
     <form action={formAction}>
-       <CardContent className="space-y-4">
+       <CardContent className="space-y-6">
+            <div className="space-y-2">
+                <Label>Profile Picture</Label>
+                <div className="flex items-center gap-4">
+                    <Avatar className="w-20 h-20">
+                        <AvatarImage src={previewUrl || user.profile_image} />
+                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                        <Label htmlFor="photo" className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 px-3 py-2 rounded-md text-sm font-medium flex items-center justify-center">
+                            <Upload className="mr-2"/> Change Picture
+                        </Label>
+                        <Input id="photo" name="photo" type="file" className="hidden" onChange={handleFileChange} accept="image/*"/>
+                        <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 4MB.</p>
+                    </div>
+                </div>
+            </div>
             <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
                 <Input id="name" name="name" defaultValue={user.name} />
@@ -174,7 +206,7 @@ export default function SettingsPage() {
         <TabsList className="grid w-full grid-cols-3 max-w-lg">
           <TabsTrigger value="profile"><User className="mr-2"/> Profile</TabsTrigger>
           <TabsTrigger value="security"><Shield className="mr-2"/> Security</TabsTrigger>
-          <TabsTrigger value="branding" disabled><Palette className="mr-2"/> Branding</TabsTrigger>
+          <TabsTrigger value="branding"><Palette className="mr-2"/> Branding</TabsTrigger>
         </TabsList>
         <TabsContent value="profile">
           <Card>
