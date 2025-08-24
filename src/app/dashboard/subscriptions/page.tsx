@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/services/user-service";
 import { CreditCard, Download, PlusCircle, Repeat } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Label } from "@/components/ui/label";
 
 const billingHistory = [
     { date: "2024-07-15", plan: "Beta Plan", amount: "৳1499.00", status: "Paid" },
