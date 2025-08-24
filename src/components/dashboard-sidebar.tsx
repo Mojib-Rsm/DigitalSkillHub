@@ -100,7 +100,7 @@ export default function DashboardSidebar({
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                              <SidebarMenuSubItem>
-                                <SidebarMenuSubButton href="/dashboard/pricing">
+                                <SidebarMenuSubButton href="/dashboard/admin/pricing">
                                     <DollarSign />
                                     <span>Pricing Plans</span>
                                 </SidebarMenuSubButton>
