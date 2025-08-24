@@ -69,7 +69,7 @@ export default function DashboardSidebar({
                  <SidebarMenuItem>
                   <SidebarMenuButton href="/dashboard/history">
                     <History />
-                    <span>History</span>
+                    <span>{user?.role === 'admin' ? 'All History' : 'My History'}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
