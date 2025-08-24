@@ -1,8 +1,9 @@
 
 "use server";
 
-import { oneClickWriterSerp, OneClickWriterSerpOutput, OneClickWriterSerpInput, OneClickWriterSerpInputSchema } from "@/ai/flows/one-click-writer-serp";
+import { oneClickWriterSerp } from "@/ai/flows/one-click-writer-serp";
 import { saveHistoryAction } from "@/app/actions/save-history";
+import { OneClickWriterSerpInputSchema, type OneClickWriterSerpInput, type OneClickWriterSerpOutput } from "@/ai/schema/one-click-writer-serp";
 
 export async function generateArticleSerpAction(
   input: OneClickWriterSerpInput
