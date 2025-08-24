@@ -9,7 +9,7 @@ const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const FacebookCommentGeneratorActionSchema = z.object({
-  postContent: z.string(),
+  postContent: z.string().optional(),
   goal: z.string().optional(),
   photo: z
     .any()
@@ -22,7 +22,7 @@ const FacebookCommentGeneratorActionSchema = z.object({
     // If there is no photo, postContent must have at least 10 characters.
     // If there is a photo, postContent can be empty.
     if (!data.photo || data.photo.size === 0) {
-        return data.postContent.length >= 10;
+        return data.postContent && data.postContent.length >= 10;
     }
     return true;
 }, {
@@ -57,7 +57,8 @@ export async function generateFacebookComments(
         photoDataUri = `data:${photo.type};base64,${photoBuffer.toString('base64')}`;
     }
 
-    const result = await facebookCommentGenerator({ postContent, goal, photoDataUri });
+    const flowInput = { postContent: postContent || "", goal, photoDataUri };
+    const result = await facebookCommentGenerator(flowInput);
 
     if ((result.bengaliSuggestions && result.bengaliSuggestions.length > 0) || (result.englishSuggestions && result.englishSuggestions.length > 0)) {
       await saveHistoryAction({

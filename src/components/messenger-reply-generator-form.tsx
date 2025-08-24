@@ -2,18 +2,19 @@
 "use client";
 
 import React from "react";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { generateMessengerReplies } from "@/app/ai-tools/messenger-reply-generator/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, MessageCircle, PlusCircle, Trash2 } from "lucide-react";
+import { Sparkles, Clipboard, MessageCircle, PlusCircle, Trash2, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Alert, AlertDescription } from "./ui/alert";
 import { Input } from "./ui/input";
+import Image from "next/image";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -45,10 +46,11 @@ export default function MessengerReplyGeneratorForm() {
   const [state, formAction] = useActionState(generateMessengerReplies, initialState);
   const [conversationParts, setConversationParts] = useState<ConversationPart[]>([
     { id: 1, character: "Friend", text: "" },
-    { id: 2, character: "Me", text: "" },
   ]);
   const [selectedGoal, setSelectedGoal] = useState(initialState.fields?.goal || "");
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   
   useEffect(() => {
      if (state.message && state.message !== "success" && state.message !== "Validation Error") {
@@ -69,8 +71,10 @@ export default function MessengerReplyGeneratorForm() {
   };
 
   const addConversationPart = () => {
-    setConversationParts(prev => [...prev, { id: Date.now(), character: "Friend", text: "" }]);
+    const nextCharacter = conversationParts.length > 0 && conversationParts[conversationParts.length - 1].character === "Me" ? "Friend" : "Me";
+    setConversationParts(prev => [...prev, { id: Date.now(), character: nextCharacter, text: "" }]);
   };
+
 
   const removeConversationPart = (id: number) => {
     setConversationParts(prev => prev.filter(part => part.id !== id));
@@ -84,19 +88,50 @@ export default function MessengerReplyGeneratorForm() {
      setConversationParts(prev => prev.map(part => part.id === id ? {...part, text: value} : part));
   }
 
+  const handleFileChange = (file: File | null) => {
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) {
+          toast({ variant: "destructive", title: "ফাইল খুবই বড়", description: "ছবির আকার 4MB এর বেশি হতে পারবে না।" });
+          if (fileInputRef.current) fileInputRef.current.value = "";
+          setPreviewUrl(null);
+          return;
+      }
+      setPreviewUrl(URL.createObjectURL(file));
+    } else {
+      setPreviewUrl(null);
+    }
+  };
+
+  const handlePaste = (event: React.ClipboardEvent<HTMLFormElement>) => {
+    const items = event.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+            const file = items[i].getAsFile();
+            if(file && fileInputRef.current) {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInputRef.current.files = dataTransfer.files;
+                handleFileChange(file);
+                event.preventDefault();
+            }
+            break;
+        }
+    }
+  };
+
 
   return (
     <Card className="shadow-lg">
       <CardHeader>
         <CardTitle>কথোপকথনের রিপ্লাই তৈরি করুন</CardTitle>
         <CardDescription>
-          কথোপকথনের প্রতিটি ধাপ ইনপুট দিন এবং "Me" চরিত্রের জন্য একটি প্রাসঙ্গিক রিপ্লাই পান।
+          কথোপকথনের প্রতিটি ধাপ ইনপুট দিন বা স্ক্রিনশট আপলোড করুন এবং "Me" চরিত্রের জন্য একটি প্রাসঙ্গিক রিপ্লাই পান।
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={formAction} className="space-y-6">
+        <form action={formAction} onPaste={handlePaste} className="space-y-6">
           <div className="space-y-4">
-             <Label>কথোপকথনের ইতিহাস</Label>
+             <Label>কথোপকথনের ইতিহাস (ঐচ্ছিক যদি স্ক্রিনশট থাকে)</Label>
              {conversationParts.map((part, index) => (
                 <div key={part.id} className="p-4 border rounded-lg space-y-2 relative bg-muted/50">
                     <div className="grid grid-cols-1 sm:grid-cols-[150px_1fr] gap-2 items-start">
@@ -120,7 +155,7 @@ export default function MessengerReplyGeneratorForm() {
                             onChange={(e) => handleTextChange(part.id, e.target.value)}
                         />
                     </div>
-                     {conversationParts.length > 1 && (
+                     {conversationParts.length > 0 && (
                         <Button type="button" variant="ghost" size="icon" className="absolute top-1 right-1" onClick={() => removeConversationPart(part.id)}>
                             <Trash2 className="w-4 h-4 text-destructive" />
                         </Button>
@@ -133,6 +168,20 @@ export default function MessengerReplyGeneratorForm() {
                 <PlusCircle className="mr-2 h-4 w-4"/>
                 কথোপকথন যোগ করুন
              </Button>
+          </div>
+
+           <div className="space-y-2">
+            <Label htmlFor="photo">স্ক্রিনশট আপলোড করুন বা পেস্ট করুন (ঐচ্ছিক, সর্বোচ্চ 4MB)</Label>
+            <Input id="photo" name="photo" type="file" accept="image/*" ref={fileInputRef} onChange={(e) => handleFileChange(e.target.files?.[0] || null)} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"/>
+            {previewUrl && (
+                <div className="mt-2 relative w-full h-48 border rounded-md">
+                    <Image src={previewUrl} alt="Screenshot preview" fill className="rounded-md object-contain p-2"/>
+                    <Button type="button" variant="destructive" size="icon" onClick={() => handleFileChange(null)} className="absolute -top-2 -right-2 h-6 w-6 rounded-full">
+                        <X className="h-4 w-4"/>
+                    </Button>
+                </div>
+            )}
+             {state.issues?.filter((issue) => issue.toLowerCase().includes("ছবি")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
           </div>
 
           <div className="space-y-2">

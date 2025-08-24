@@ -1,17 +1,28 @@
 
 "use server";
 
-import { messengerReplyGenerator } from "@/ai/flows/messenger-reply-generator";
+import { messengerReplyGenerator, MessengerReplyGeneratorInput, MessengerReplyGeneratorOutput } from "@/ai/flows/messenger-reply-generator";
 import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
+
+
+const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const MessengerReplyGeneratorActionSchema = z.object({
   conversation: z.array(z.object({
     character: z.string(),
-    text: z.string().min(1, { message: "কথোপকথনের প্রতিটি অংশের জন্য পাঠ্য প্রয়োজন।" }),
-  })).min(1, { message: "অনুগ্রহ করে কমপক্ষে একটি কথোপকথনের অংশ যোগ করুন।" }),
+    text: z.string(),
+  })).optional(),
   goal: z.string().optional(),
   customGoal: z.string().optional(),
+  photo: z
+    .any()
+    .refine((file) => !file || file.size === 0 || file.size <= MAX_FILE_SIZE, `ছবির আকার 4MB এর বেশি হতে পারবে না।`)
+    .refine(
+      (file) => !file || file.size === 0 || ACCEPTED_IMAGE_TYPES.includes(file.type),
+      "শুধুমাত্র .jpg, .jpeg, .png এবং .webp ফরম্যাট সমর্থিত।"
+    ).optional(),
 }).refine(data => {
     if (data.goal === 'Other' && (!data.customGoal || data.customGoal.length < 5)) {
         return false;
@@ -20,6 +31,15 @@ const MessengerReplyGeneratorActionSchema = z.object({
 }, {
     message: "অন্যান্য নির্বাচন করলে অনুগ্রহ করে আপনার লক্ষ্য লিখুন (কমপক্ষে ৫ অক্ষর)।",
     path: ["customGoal"],
+}).refine(data => {
+    // If there is no photo, at least one conversation part must exist and have text.
+    if (!data.photo || data.photo.size === 0) {
+        return data.conversation && data.conversation.length > 0 && data.conversation.some(part => part.text.length > 0);
+    }
+    return true;
+}, {
+    message: "ছবি ছাড়া অন্তত একটি কথোপকথনের অংশ এবং টেক্সট যোগ করুন।",
+    path: ["conversation"],
 });
 
 type FormState = {
@@ -52,13 +72,14 @@ export async function generateMessengerReplies(
   const parsedConversation = Object.values(conversationMap).map(item => ({
       character: item.character || '',
       text: item.text || '',
-  }));
+  })).filter(part => part.text.length > 0);
 
 
   const validatedFields = MessengerReplyGeneratorActionSchema.safeParse({
-    conversation: parsedConversation,
+    conversation: parsedConversation.length > 0 ? parsedConversation : undefined,
     goal: formData.get("goal"),
     customGoal: formData.get("customGoal"),
+    photo: formData.get("photo"),
   });
 
   if (!validatedFields.success) {
@@ -82,17 +103,27 @@ export async function generateMessengerReplies(
   }
   
   try {
-    const { conversation, goal, customGoal } = validatedFields.data;
+    const { conversation, goal, customGoal, photo } = validatedFields.data;
     
     const finalGoal = goal === 'Other' ? customGoal : goal;
-    const flowInput = { conversation, goal: finalGoal };
+    let photoDataUri;
+
+    if (photo && photo.size > 0) {
+        const photoBuffer = Buffer.from(await photo.arrayBuffer());
+        photoDataUri = `data:${photo.type};base64,${photoBuffer.toString('base64')}`;
+    }
+
+    const flowInput: MessengerReplyGeneratorInput = { goal: finalGoal, photoDataUri };
+    if (conversation && conversation.length > 0) {
+        flowInput.conversation = conversation;
+    }
 
     const result = await messengerReplyGenerator(flowInput);
 
     if (result.suggestions && result.suggestions.length > 0) {
       await saveHistoryAction({
           tool: 'messenger-reply-generator',
-          input: flowInput,
+          input: { goal: finalGoal, has_image: !!photoDataUri },
           output: result,
       });
       return {

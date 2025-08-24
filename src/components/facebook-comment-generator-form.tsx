@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { generateFacebookComments } from "@/app/ai-tools/facebook-comment-generator/actions";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, MessageSquare, Upload, X } from "lucide-react";
+import { Sparkles, Clipboard, MessageSquare, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import type { FacebookCommentGeneratorOutput } from "@/ai/flows/facebook-comment-generator";
@@ -147,12 +147,10 @@ export default function FacebookCommentGeneratorForm() {
     }
     if (file) {
         if (fileInputRef.current) {
-            // Create a new DataTransfer object and add the file to it
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
             fileInputRef.current.files = dataTransfer.files;
 
-            // Manually trigger the change event
             const changeEvent = new Event('change', { bubbles: true });
             fileInputRef.current.dispatchEvent(changeEvent);
         }
@@ -173,7 +171,7 @@ export default function FacebookCommentGeneratorForm() {
       <CardContent>
         <form ref={formRef} action={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="postContent">পোস্টের বিষয়বস্তু</Label>
+            <Label htmlFor="postContent">পোস্টের বিষয়বস্তু (ঐচ্ছিক যদি ছবি থাকে)</Label>
             <Textarea
               id="postContent"
               name="postContent"

@@ -42,8 +42,10 @@ const prompt = ai.definePrompt({
 
 Generate lists of appropriate comments, replies, or captions based on the following information.
 
+{{#if postContent}}
 Facebook Post Content:
 {{{postContent}}}
+{{/if}}
 
 {{#if photoDataUri}}
 The post also includes this image:
