@@ -1,4 +1,3 @@
-
 'use server';
 
 /**
@@ -77,22 +76,24 @@ const writerPrompt = ai.definePrompt({
 
     **Instructions for 100% SEO Score & Human-like Writing:**
 
-    1.  **Keyword Integration:**
-        *   The **Primary Keyword** ({{{primaryKeyword}}}) MUST be included naturally in the **SEO Title**, the first paragraph (introduction), at least one subheading (H2 or H3), and throughout the body text.
-        *   Keyword density should be optimal (around 1-2%). Avoid keyword stuffing at all costs.
+    1.  **Keyword Integration & Density:**
+        *   The **Primary Keyword** ({{{primaryKeyword}}}) MUST be included naturally in the **SEO Title**, the first paragraph (introduction), at least one H2 subheading, and the meta description.
+        *   Use the primary keyword and its synonyms throughout the body text with a density of about 1-2%. Avoid keyword stuffing.
 
     2.  **Content Structure & Formatting:**
-        *   Write a well-structured article with an engaging introduction, multiple logical subheadings (mix of H2 using '##' and H3 using '###'), detailed body paragraphs, and a strong concluding paragraph with a Call-to-Action (CTA), unless disabled by the user. The article must have several headings to be well-structured.
-        *   Use proper Markdown formatting. Use **bold text** for emphasis. Use *italic text* for nuance. Use bullet points or numbered lists to break up text and improve readability.
-        *   Adhere to the desired length. The article MUST be comprehensive and detailed.
+        *   Write a well-structured article using proper Markdown.
+        *   It MUST have multiple H2 (##) and H3 (###) subheadings to break up the text.
+        *   Use **bold text** for emphasis on important terms. Use *italic text* for nuance. Use bullet points or numbered lists where appropriate.
+        *   Adhere to the desired length. The article must be comprehensive and detailed.
         *   If the target country is not 'United States', subtly include context, examples, or references relevant to the '{{{targetCountry}}}'.
 
     3.  **Human-like Tone & Style (Critical for Bypassing AI Detectors):**
         *   Adopt the specified **Tone** ({{{tone}}}).
+        *   Use a mix of short, punchy sentences and longer, more complex ones to create a natural rhythm.
+        *   Incorporate transition words (e.g., however, therefore, in addition) to ensure smooth flow between paragraphs.
+        *   Avoid starting consecutive sentences with the same word.
         {{#if passAiDetection}}
-        *   **CRITICAL:** To pass AI detection, you MUST vary sentence structure significantly. Use a mix of short, punchy sentences and longer, more complex ones to create a natural rhythm. Use rhetorical questions. Incorporate metaphors, analogies, or storytelling to make the content relatable and less robotic. Avoid common AI clichés like "In today's digital age," "Furthermore," "It's important to note," "In conclusion," or "Overall." The conclusion should feel like a natural summary or a final thought, not a formal announcement.
-        {{else}}
-        *   Write in a clear, engaging, and human-like style.
+        *   **CRITICAL:** To pass AI detection, you MUST avoid common AI clichés like "In today's digital age," "Furthermore," "It's important to note," "In conclusion," or "Overall." The conclusion should feel like a natural summary or a final thought, not a formal announcement. Use metaphors, analogies, or storytelling to make the content relatable.
         {{/if}}
 
     4.  **Meta Information Generation:**
@@ -100,9 +101,9 @@ const writerPrompt = ai.definePrompt({
         *   Write a compelling **Meta Description** (around 155 characters) that includes the keyword and encourages clicks.
 
     5.  **Image & Linking Suggestions:**
-        *   Create a detailed, descriptive **Image Prompt** for an AI image generator to create a high-quality, relevant featured image. The prompt should describe the scene, style, and mood.
-        *   Generate SEO-friendly **Alt Text** for the image that includes the primary keyword.
-        *   Suggest 3-5 relevant topics for **Internal Links** (links to other potential articles on the same site).
+        *   Create a detailed, descriptive **Image Prompt** for an AI image generator to create a high-quality, relevant featured image.
+        *   Generate SEO-friendly **Alt Text** for the image that INCLUDES the primary keyword.
+        *   Suggest 3-5 relevant topics for **Internal Links** (these are potential keyphrases from the article that could link to other articles on the same site).
         *   Suggest 2-3 relevant topics for **External Links** (links to reputable, non-competing sources to build authority).
 
     6.  **Taxonomy Suggestions:**
@@ -110,7 +111,7 @@ const writerPrompt = ai.definePrompt({
         *   Based on the article's content, suggest 5-7 specific **Tags**.
 
     7.  **Analysis & Confirmation:**
-        *   Provide a **Readability Score** from 1 to 10 (10 being the easiest to read, like conversational text). This score should reflect the quality and readability of the generated content. Aim for a high score.
+        *   Provide a **Readability Score** from 1 to 10 (10 being the easiest to read, like conversational text). Aim for a high score.
         *   Confirm the **Target Keyword** used for optimization in the output. This MUST be the same as the user's primary keyword.
 
     The final output MUST be a complete JSON object following the schema. Ensure every field is populated correctly and the article is fully formatted in Markdown.
