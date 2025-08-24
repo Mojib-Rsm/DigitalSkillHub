@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const iconComponents: { [key: string]: React.ElementType } = {
-    PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircleIcon, LayoutTemplate, Receipt, Clapperboard, Sparkles, Youtube, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2
+    PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircleIcon, LayoutTemplate, Receipt, Clapperboard, Sparkles, Youtube, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Bot, Search
 };
 
 const featuredTools = [
@@ -44,14 +44,11 @@ const featuredTools = [
   },
 ];
 
-
-// Dummy AI search function - replace with a real AI call
 async function aiSearch(query: string, allTools: Tool[]): Promise<Tool[]> {
     if (!query) return allTools.filter(t => t.enabled);
 
     const lowerCaseQuery = query.toLowerCase();
     
-    // A simple non-AI filter as a placeholder
     const filtered = allTools.filter(tool =>
         tool.enabled && (
             tool.title.toLowerCase().includes(lowerCaseQuery) ||

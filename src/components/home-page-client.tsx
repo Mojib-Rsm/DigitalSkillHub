@@ -81,9 +81,68 @@ const trendingCategories = [
     { title: "এসইও ও মার্কেটিং", icon: TrendingUp, href: "/ai-tools" },
 ];
 
-const iconComponents: { [key: string]: React.ElementType } = {
-    PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, Layers, RefreshCcw, SparklesIcon, TowerControl, Clapperboard, Youtube, LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, BarChart2,
+const getIconComponent = (iconName: string) => {
+    switch (iconName) {
+        case 'PenSquare': return PenSquare;
+        case 'ShoppingCart': return ShoppingCart;
+        case 'Languages': return Languages;
+        case 'Hash': return Hash;
+        case 'Briefcase': return Briefcase;
+        case 'Mail': return Mail;
+        case 'Lightbulb': return Lightbulb;
+        case 'FileText': return FileText;
+        case 'GraduationCap': return GraduationCap;
+        case 'HelpCircle': return HelpCircle;
+        case 'BookCheck': return BookCheck;
+        case 'ImageIcon': return ImageIcon;
+        case 'DollarSign': return DollarSign;
+        case 'Wand': return Wand;
+        case 'FileSignature': return FileSignature;
+        case 'Globe': return Globe;
+        case 'Film': return Film;
+        case 'Mic': return Mic;
+        case 'Code': return Code;
+        case 'Presentation': return Presentation;
+        case 'Palette': return Palette;
+        case 'Gamepad': return Gamepad;
+        case 'MessageSquare': return MessageSquare;
+        case 'UserCircle': return UserCircle;
+        case 'CornerDownRight': return CornerDownRight;
+        case 'Edit': return Edit;
+        case 'Layers': return Layers;
+        case 'RefreshCcw': return RefreshCcw;
+        case 'Sparkles': return SparklesIcon;
+        case 'TowerControl': return TowerControl;
+        case 'Clapperboard': return Clapperboard;
+        case 'Youtube': return Youtube;
+        case 'LinkIcon': return LinkIcon;
+        case 'Activity': return Activity;
+        case 'ArrowUpRight': return ArrowUpRight;
+        case 'CreditCard': return CreditCard;
+        case 'Award': return Award;
+        case 'CheckCircle': return CheckCircle;
+        case 'Clock': return Clock;
+        case 'TrendingUp': return TrendingUp;
+        case 'Users': return Users;
+        case 'ThumbsUp': return ThumbsUp;
+        case 'ShieldCheck': return ShieldCheck;
+        case 'GanttChartSquare': return GanttChartSquare;
+        case 'ChevronDown': return ChevronDown;
+        case 'BarChart2': return BarChart2;
+        case 'Search': return Search;
+        case 'Receipt': return Receipt;
+        case 'LayoutTemplate': return LayoutTemplate;
+        case 'Megaphone': return Megaphone;
+        case 'GitBranchPlus': return GitBranchPlus;
+        case 'List': return List;
+        case 'PanelTopOpen': return PanelTopOpen;
+        case 'CalendarDays': return CalendarDays;
+        case 'Quote': return Quote;
+        case 'BarChart': return BarChart;
+        default: return Bot;
+    }
 };
+
 
 interface HomePageClientProps {
     pricingPlans: PricingPlan[];
@@ -186,7 +245,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                        [...Array(4)].map((_, i) => <Skeleton key={i} className="h-64 w-full" />)
                    ) : (
                        trendingTools.map(tool => {
-                            const Icon = iconComponents[tool.icon as keyof typeof iconComponents] || Bot;
+                            const Icon = getIconComponent(tool.icon);
                             return (
                                 <Link href={tool.href} key={tool.id} className="group">
                                     <Card className="h-full flex flex-col justify-between shadow-md hover:shadow-xl hover:border-primary transition-all duration-300 transform hover:-translate-y-1">

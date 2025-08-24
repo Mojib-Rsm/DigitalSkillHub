@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview AI tool to generate a complete, SEO-optimized blog post from a single title, informed by SERP data.
