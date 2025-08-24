@@ -81,7 +81,7 @@ const trendingCategories = [
     { title: "এসইও ও মার্কেটিং", icon: TrendingUp, href: "/ai-tools" },
 ];
 
-const IconComponent = ({ iconName }: { iconName: string }) => {
+const getIconComponent = (iconName: string) => {
     switch (iconName) {
         case 'PenSquare': return <PenSquare className="w-8 h-8 text-primary" />;
         case 'ShoppingCart': return <ShoppingCart className="w-8 h-8 text-primary" />;
@@ -249,7 +249,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                                     <Card className="h-full flex flex-col justify-between shadow-md hover:shadow-xl hover:border-primary transition-all duration-300 transform hover:-translate-y-1">
                                         <CardHeader className="flex flex-row items-start gap-4">
                                             <div className="bg-primary/10 p-3 rounded-md">
-                                                <IconComponent iconName={tool.icon} />
+                                                {getIconComponent(tool.icon)}
                                             </div>
                                             <div>
                                                 <CardTitle className="text-xl">{tool.title}</CardTitle>
@@ -551,5 +551,3 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
   );
 
 }
-
-    

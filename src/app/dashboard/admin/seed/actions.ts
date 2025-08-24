@@ -8,6 +8,7 @@ import {
     writeBatch, 
     getDocs,
     query,
+    doc, // Import the 'doc' function
 } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { getCurrentUser } from '@/services/user-service';
@@ -51,7 +52,8 @@ export async function seedDatabaseAction() {
                  // Collection is empty, seed all data
                 const batch = writeBatch(db);
                 data.forEach(item => {
-                    const docRef = collectionRef.doc();
+                    // Use doc(collectionRef) to create a new document reference with an auto-generated ID
+                    const docRef = doc(collectionRef); 
                     batch.set(docRef, item);
                     documentsWritten++;
                 });
@@ -64,7 +66,8 @@ export async function seedDatabaseAction() {
                  
                  data.forEach(item => {
                      if (!existingItems.has((item as any)[uniqueKey])) {
-                         const docRef = collectionRef.doc();
+                         // Use doc(collectionRef) to create a new document reference with an auto-generated ID
+                         const docRef = doc(collectionRef);
                          batch.set(docRef, item);
                          documentsWritten++;
                          itemsAddedToBatch++;
@@ -79,7 +82,7 @@ export async function seedDatabaseAction() {
             }
         }
         
-        if (documentsWritten === 0) {
+        if (documentsWritten === 0 && collectionsSkipped > 0) {
              return { success: true, message: 'Database is already up to date. No new data was seeded.' };
         }
 
