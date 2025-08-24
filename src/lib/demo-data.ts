@@ -1,6 +1,6 @@
 
 
-import { Layers, RefreshCcw, Sparkles, TowerControl, Users, Youtube, Clock, TrendingUp, Award, CheckCircle, FileText, ImageIcon, Link as LinkIcon, PenSquare, ShoppingCart, Languages, Hash, Mail, Lightbulb, BarChart, GraduationCap, HelpCircle, BookCheck, DollarSign, Wand, FileSignature, Globe, Film, MessageSquare, UserCircle as UserCircleIcon, Edit, Clapperboard, Receipt, Briefcase, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Quote } from 'lucide-react';
+import { Layers, RefreshCcw, Sparkles, TowerControl, Users, Youtube, Clock, TrendingUp, Award, CheckCircle, FileText, ImageIcon, Link as LinkIcon, PenSquare, ShoppingCart, Languages, Hash, Mail, Lightbulb, BarChart, GraduationCap, HelpCircle, BookCheck, DollarSign, Wand, FileSignature, Globe, Film, MessageSquare, UserCircle as UserCircleIcon, Edit, Clapperboard, Receipt, Briefcase, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Quote, Search } from 'lucide-react';
 
 export type Tool = {
     id: string;
@@ -296,6 +296,7 @@ export const pricingPlans = [
 
 export const testimonials = [
      {
+        id: "1",
         feature: "Bulk Generation 2.0",
         quote: "TotthoAi 2.0's bulk generation feature is incredible! I created 50 blog posts in one afternoon using the new CSV upload. The AI images are so contextual that my engagement increased by 300%. This is the future of content creation.",
         metric: "300% engagement boost",
@@ -305,6 +306,7 @@ export const testimonials = [
         dataAiHint: "man portrait"
     },
     {
+        id: "2",
         feature: "Content Refresh Tool",
         quote: "The Content Refresh tool saved my business! I had 200+ old articles that needed updating. TotthoAi 2.0 refreshed them all with current information and better SEO in just 2 hours. My organic traffic doubled in 3 weeks.",
         metric: "2x organic traffic",
@@ -314,6 +316,7 @@ export const testimonials = [
         dataAiHint: "woman portrait"
     },
     {
+        id: "3",
         feature: "Authority Builder",
         quote: "The Topical Authority Builder is a game-changer! It created a complete content cluster around 'digital marketing in Bangladesh' with 25 interconnected articles. We now rank #1 for multiple keywords and our domain authority increased by 15 points.",
         metric: "15 point DA increase",
@@ -323,6 +326,7 @@ export const testimonials = [
         dataAiHint: "man glasses"
     },
     {
+        id: "4",
         feature: "One-Click Writer 2.0",
         quote: "One-Click Writer 2.0 is pure magic! My team generates client content 10x faster now. The custom prompts feature ensures every piece matches our clients' brand voice perfectly. We've scaled from 5 to 50 clients without hiring more writers.",
         metric: "10x faster content",
@@ -344,6 +348,17 @@ export const tools: Tool[] = [
         enabled: true,
         isFree: false,
         credits: 10,
+    },
+    {
+        id: "one-click-writer-serp",
+        title: "One-Click Writer (SERP)",
+        description: "Generate a superior article by analyzing top Google search results.",
+        href: "/ai-tools/one-click-writer-serp",
+        icon: "Search",
+        category: "Content & Writing",
+        enabled: true,
+        isFree: false,
+        credits: 15,
     },
     {
         id: "blog-topic-generator",
