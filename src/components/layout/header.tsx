@@ -174,10 +174,9 @@ export default async function Header() {
             </DropdownMenu>
         </nav>
         <div className="hidden lg:flex items-center gap-2">
-            {renderAuthSection()}
+             {renderAuthSection()}
         </div>
         <div className="lg:hidden flex items-center gap-2">
-            {renderAuthSection()}
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">

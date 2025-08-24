@@ -15,10 +15,11 @@ export type UserProfile = {
   profile_image: string;
   status: 'active' | 'banned';
   plan_id: string;
+  bookmarks?: string[];
 };
 
 export async function getCurrentUser(): Promise<UserProfile | null> {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const sessionCookie = cookieStore.get('auth-session');
   
   if (!sessionCookie?.value) {
@@ -53,6 +54,7 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
         profile_image: userData.profile_image,
         status: userData.status,
         plan_id: userData.plan_id,
+        bookmarks: userData.bookmarks || [],
     } as UserProfile;
 
   } catch (error) {

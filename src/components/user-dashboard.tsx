@@ -27,15 +27,10 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { UserProfile } from "@/services/user-service";
-import { MoreHorizontal, Edit, PlusCircle, Star, Trash, Bell, Heart } from "lucide-react";
+import { MoreHorizontal, Edit, PlusCircle, Star, Trash, Bell, Heart, Loader } from "lucide-react";
 import Link from "next/link";
-
-// User Dashboard Mock Data
-const bookmarkedTools = [
-    { name: "Blog Topic Generator", logo: "PenSquare", tags: ["Content", "Writing"], added: "2024-07-20"},
-    { name: "AI Image Generator", logo: "ImageIcon", tags: ["Image", "Creative"], added: "2024-07-18"},
-    { name: "Passport Photo Maker", logo: "UserCircle", tags: ["Image", "Utility"], added: "2024-07-15"},
-];
+import React from "react";
+import { getToolById, Tool } from "@/services/tool-service";
 
 const myReviews = [
     { tool: "Blog Topic Generator", rating: 5, review: "Absolutely fantastic! Generated so many great ideas.", status: "Approved" },
@@ -44,6 +39,26 @@ const myReviews = [
 
 
 export default function UserDashboard({ user }: { user: UserProfile }) {
+
+    const [bookmarkedTools, setBookmarkedTools] = React.useState<Tool[]>([]);
+    const [loadingBookmarks, setLoadingBookmarks] = React.useState(true);
+
+    React.useEffect(() => {
+        async function fetchBookmarkedTools() {
+            setLoadingBookmarks(true);
+            if(user.bookmarks && user.bookmarks.length > 0) {
+                const toolPromises = user.bookmarks.map(id => getToolById(id));
+                const tools = (await Promise.all(toolPromises)).filter(Boolean) as Tool[];
+                setBookmarkedTools(tools);
+            } else {
+                setBookmarkedTools([]);
+            }
+            setLoadingBookmarks(false);
+        }
+        fetchBookmarkedTools();
+    }, [user.bookmarks])
+
+
      return (
         <div className="space-y-8">
             {/* Header */}
@@ -82,26 +97,35 @@ export default function UserDashboard({ user }: { user: UserProfile }) {
                                     <CardDescription>Your favorite tools, all in one place.</CardDescription>
                                 </CardHeader>
                                 <CardContent>
+                                    {loadingBookmarks ? (
+                                        <div className="flex justify-center items-center h-40">
+                                            <Loader className="animate-spin text-primary"/>
+                                        </div>
+                                    ) : bookmarkedTools.length > 0 ? (
                                     <Table>
                                         <TableHeader>
                                             <TableRow>
                                                 <TableHead>Tool</TableHead>
-                                                <TableHead>Tags</TableHead>
-                                                <TableHead>Date Added</TableHead>
+                                                <TableHead>Category</TableHead>
                                                 <TableHead>Action</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
                                             {bookmarkedTools.map(tool => (
-                                                <TableRow key={tool.name}>
-                                                    <TableCell className="font-medium">{tool.name}</TableCell>
-                                                    <TableCell className="flex gap-1">{tool.tags.map(tag=><Badge variant="outline" key={tag}>{tag}</Badge>)}</TableCell>
-                                                    <TableCell>{tool.added}</TableCell>
+                                                <TableRow key={tool.id}>
+                                                    <TableCell className="font-medium">{tool.title}</TableCell>
+                                                    <TableCell><Badge variant="outline">{tool.category}</Badge></TableCell>
                                                     <TableCell><Button variant="ghost" size="icon"><Trash className="w-4 h-4"/></Button></TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
                                     </Table>
+                                    ) : (
+                                        <div className="text-center text-muted-foreground py-10">
+                                            <p>You haven't bookmarked any tools yet.</p>
+                                            <Button variant="link" asChild><Link href="/ai-tools">Explore Tools</Link></Button>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         </TabsContent>

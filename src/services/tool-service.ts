@@ -2,7 +2,7 @@
 
 'use server';
 
-import { getFirestore, collection, getDocs, orderBy, query, doc, updateDoc, addDoc, deleteDoc, limit as firestoreLimit, where } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, orderBy, query, doc, updateDoc, addDoc, deleteDoc, limit as firestoreLimit, where, getDoc } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { revalidatePath } from 'next/cache';
 import type { Tool } from '@/lib/demo-data';
@@ -52,6 +52,22 @@ export async function getToolByHref(href: string): Promise<Tool | null> {
     const allTools = await getTools();
     return allTools.find(tool => tool.href === href) || null;
 }
+
+export async function getToolById(id: string): Promise<Tool | null> {
+    try {
+        const db = getFirestore(app);
+        const toolRef = doc(db, 'tools', id);
+        const toolSnapshot = await getDoc(toolRef);
+        if (toolSnapshot.exists()) {
+            return { id: toolSnapshot.id, ...toolSnapshot.data() } as Tool;
+        }
+        return null;
+    } catch(error) {
+        console.error(`Error fetching tool by ID: ${id}`, error);
+        return null;
+    }
+}
+
 
 export async function getRelatedTools(category: string, currentToolId: string): Promise<Tool[]> {
     const allTools = await getTools();
