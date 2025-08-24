@@ -421,13 +421,19 @@ export default function OneClickWriterForm() {
                     </Alert>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Alert>
-                            <AlertTitle className="flex items-center gap-2"><Tag className="w-4 h-4"/>Suggested Categories</AlertTitle>
+                             <div className="flex justify-between items-center mb-2">
+                                <AlertTitle className="flex items-center gap-2"><Tag className="w-4 h-4"/>Suggested Categories</AlertTitle>
+                                <Button variant="ghost" size="sm" onClick={() => handleCopy(data.suggestedCategories.join(', '))}><Clipboard className="w-4 h-4 mr-2"/>Copy</Button>
+                            </div>
                             <AlertDescription className="flex flex-wrap gap-2 pt-2">
                                 {data.suggestedCategories.map((category) => <Badge key={category} variant="secondary">{category}</Badge>)}
                             </AlertDescription>
                         </Alert>
                             <Alert>
-                            <AlertTitle className="flex items-center gap-2"><Tag className="w-4 h-4"/>Suggested Tags</AlertTitle>
+                             <div className="flex justify-between items-center mb-2">
+                                <AlertTitle className="flex items-center gap-2"><Tag className="w-4 h-4"/>Suggested Tags</AlertTitle>
+                                <Button variant="ghost" size="sm" onClick={() => handleCopy(data.suggestedTags.join(', '))}><Clipboard className="w-4 h-4 mr-2"/>Copy</Button>
+                            </div>
                             <AlertDescription className="flex flex-wrap gap-2 pt-2">
                                 {data.suggestedTags.map((tag) => <Badge key={tag} variant="outline">{tag}</Badge>)}
                             </AlertDescription>
@@ -469,7 +475,7 @@ export default function OneClickWriterForm() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    <div className="prose dark:prose-invert max-w-none prose-headings:font-headline" dangerouslySetInnerHTML={{ __html: renderedHtml }} />
+                    <div className="prose dark:prose-invert max-w-none prose-headings:font-headline prose-img:rounded-lg prose-img:border" dangerouslySetInnerHTML={{ __html: renderedHtml }} />
                 </CardContent>
             </Card>
 
@@ -479,5 +485,3 @@ export default function OneClickWriterForm() {
     </Card>
   );
 }
-
-    

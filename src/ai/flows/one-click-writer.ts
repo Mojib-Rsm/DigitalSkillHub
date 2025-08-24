@@ -55,10 +55,11 @@ const writerPrompt = ai.definePrompt({
     name: 'oneClickWriterPrompt',
     input: { schema: OneClickWriterInputSchema },
     output: { schema: z.object({
-        article: z.string().describe("The full, well-structured article in Markdown format. It must include an engaging introduction, multiple subheadings (H2 using ##, H3 using ###), bold text using **, italics using *, and bullet points or lists where appropriate. The content should be comprehensive and meet the specified length."),
+        article: z.string().describe("The full, well-structured article in Markdown format. It must include an engaging introduction, multiple subheadings (H2 using ##, H3 using ###), bold text using **, italics using *, and bullet points or lists where appropriate. Crucially, you MUST insert the text '[IN_ARTICLE_IMAGE_PLACEHOLDER]' at a relevant location within the article body where a secondary image would make sense. The content should be comprehensive and meet the specified length."),
         seoTitle: z.string().describe('An SEO-optimized title for the article (around 60 characters).'),
         seoDescription: z.string().describe('A compelling meta description (around 155 characters) for SEO.'),
         imagePrompt: z.string().describe('A descriptive prompt for an AI image generator to create a relevant featured image.'),
+        inArticleImagePrompt: z.string().describe('A descriptive prompt for an AI image generator to create a relevant image to be placed within the article body.'),
         altText: z.string().describe('SEO-friendly alt text for the featured image, containing the primary keyword.'),
         internalLinks: z.array(z.string()).describe('A list of 3-5 relevant topics for internal links within the article, based on the content.'),
         externalLinks: z.array(z.string()).describe('A list of 2-3 relevant topics for external (reputable, non-competing) sources.'),
@@ -104,6 +105,7 @@ const writerPrompt = ai.definePrompt({
         *   Use **bold text** for emphasis on important terms. Use *italic text* for nuance. Use bullet points or numbered lists where appropriate.
         *   Adhere to the desired length. The article must be comprehensive and detailed.
         *   If the target country is not 'United States', subtly include context, examples, or references relevant to the '{{{targetCountry}}}'.
+        *   **VERY IMPORTANT**: You must insert the exact text '[IN_ARTICLE_IMAGE_PLACEHOLDER]' in a relevant place within the article body where a secondary image would enhance the content.
 
     3.  **Human-like Tone & Style (Critical for Bypassing AI Detectors):**
         *   Adopt the specified **Tone** ({{{tone}}}).
@@ -120,7 +122,8 @@ const writerPrompt = ai.definePrompt({
 
     5.  **Image & Linking Suggestions:**
         *   Create a detailed, descriptive **Image Prompt** for an AI image generator to create a high-quality, relevant featured image.
-        *   Generate SEO-friendly **Alt Text** for the image that INCLUDES the primary keyword.
+        *   Create a second, different, detailed **In-Article Image Prompt** for a relevant image to be placed within the article.
+        *   Generate SEO-friendly **Alt Text** for the featured image that INCLUDES the primary keyword.
         *   Suggest 3-5 relevant topics for **Internal Links** (these are potential keyphrases from the article that could link to other articles on the same site).
         *   Suggest 2-3 relevant topics for **External Links** (links to reputable, non-competing sources to build authority).
 
@@ -152,26 +155,45 @@ const oneClickWriterFlow = ai.defineFlow(
   },
   async (input) => {
     const writerResponse = await writerPrompt(input);
-    const { article, seoTitle, seoDescription, imagePrompt, altText, internalLinks, externalLinks, readability, seoAnalysis, targetKeyword, suggestedTags, suggestedCategories } = writerResponse.output!;
+    const { article: rawArticle, seoTitle, seoDescription, imagePrompt, inArticleImagePrompt, altText, internalLinks, externalLinks, readability, seoAnalysis, targetKeyword, suggestedTags, suggestedCategories } = writerResponse.output!;
 
-    const imageGenResponse = await ai.generate({
-      model: 'googleai/gemini-2.0-flash-preview-image-generation',
-      prompt: imagePrompt,
-      config: {
-        responseModalities: ['TEXT', 'IMAGE'],
-      },
-    });
+    // Generate both images in parallel
+    const [featuredImageResponse, inArticleImageResponse] = await Promise.all([
+        ai.generate({
+            model: 'googleai/gemini-2.0-flash-preview-image-generation',
+            prompt: imagePrompt,
+            config: { responseModalities: ['TEXT', 'IMAGE'] },
+        }),
+        ai.generate({
+            model: 'googleai/gemini-2.0-flash-preview-image-generation',
+            prompt: inArticleImagePrompt,
+            config: { responseModalities: ['TEXT', 'IMAGE'] },
+        })
+    ]);
 
-    const imageUrl = imageGenResponse.media?.url;
-    if (!imageUrl) {
+
+    const featuredImageUrl = featuredImageResponse.media?.url;
+    if (!featuredImageUrl) {
         throw new Error("Failed to generate a featured image for the article.");
     }
     
+    const inArticleImageUrl = inArticleImageResponse.media?.url;
+    
+    // Replace the placeholder in the article with the second image's URL
+    let finalArticle = rawArticle;
+    if (inArticleImageUrl) {
+        const inArticleImageMarkdown = `![${inArticleImagePrompt}](${inArticleImageUrl})`;
+        finalArticle = rawArticle.replace('[IN_ARTICLE_IMAGE_PLACEHOLDER]', inArticleImageMarkdown);
+    } else {
+        // If the in-article image fails, just remove the placeholder
+        finalArticle = rawArticle.replace('[IN_ARTICLE_IMAGE_PLACEHOLDER]', '');
+    }
+    
     return {
-        article,
+        article: finalArticle,
         seoTitle,
         seoDescription,
-        featuredImageUrl: imageUrl,
+        featuredImageUrl: featuredImageUrl,
         altText,
         internalLinks,
         externalLinks,
@@ -183,5 +205,3 @@ const oneClickWriterFlow = ai.defineFlow(
     };
   }
 );
-
-    
