@@ -18,8 +18,8 @@ import * as React from 'react';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Slider } from '../ui/slider';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
 
 
 function SubmitButton({ children }: { children: React.ReactNode }) {
@@ -369,3 +369,5 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+    
