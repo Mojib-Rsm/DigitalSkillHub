@@ -367,6 +367,15 @@ export const tools: Tool[] = [
         enabled: true,
     },
     {
+        id: "facebook-caption-generator",
+        title: "ফেসবুক ক্যাপশন জেনারেটর",
+        description: "আপনার ফেসবুক পোস্টের জন্য ছবি আপলোড করে আকর্ষণীয় ক্যাপশন তৈরি করুন।",
+        href: "/ai-tools/facebook-caption-generator",
+        icon: "MessageSquare",
+        category: "Content & Writing",
+        enabled: true,
+    },
+    {
         id: "facebook-comment-generator",
         title: "ফেসবুক কমেন্ট জেনারেটর",
         description: "যেকোনো ফেসবুক পোস্টের জন্য প্রাসঙ্গিক কমেন্ট এবং রিপ্লাই তৈরি করুন।",
@@ -646,10 +655,3 @@ export const tools: Tool[] = [
         enabled: true,
     },
 ];
-    
-
-    
-
-
-
-
