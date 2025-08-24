@@ -168,21 +168,22 @@ export default async function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="p-0">
+                  <SheetHeader className="p-4 border-b">
+                    <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+                    <div className="flex items-center justify-between bg-background p-2 rounded-lg">
+                        <Link href="/" className="flex items-center gap-2">
+                            <Bot className="h-7 w-7 text-primary" />
+                            <span className="text-xl font-bold font-headline">TotthoAi</span>
+                        </Link>
+                            <div className="flex items-center gap-2">
+                            <ThemeToggleButton/>
+                            <SheetClose asChild>
+                                <Button variant="ghost" size="icon"><X className="w-5 h-5"/></Button>
+                            </SheetClose>
+                            </div>
+                        </div>
+                  </SheetHeader>
                  <div className="flex flex-col h-full">
-                    <div className="p-4 border-b">
-                         <div className="flex items-center justify-between bg-background p-2 rounded-lg">
-                            <Link href="/" className="flex items-center gap-2">
-                                <Bot className="h-7 w-7 text-primary" />
-                                <span className="text-xl font-bold font-headline">TotthoAi</span>
-                            </Link>
-                             <div className="flex items-center gap-2">
-                                <ThemeToggleButton/>
-                                <SheetClose asChild>
-                                    <Button variant="ghost" size="icon"><X className="w-5 h-5"/></Button>
-                                </SheetClose>
-                             </div>
-                         </div>
-                    </div>
                     <div className="flex-grow p-4 space-y-2">
                         {[...navLinks, ...moreLinks].slice(0, 5).map(link => (
                             <MobileNavLink key={link.href} href={link.href} label={link.label} />
