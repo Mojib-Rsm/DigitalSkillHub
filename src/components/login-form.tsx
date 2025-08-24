@@ -121,24 +121,6 @@ function LoginFormContent() {
                         </p>
                     </CardFooter>
                 </Card>
-
-                 <Card className="mt-4">
-                    <CardHeader>
-                        <CardTitle className="flex items-center text-base"><Info className="w-5 h-5 mr-2 text-primary"/>Demo Account Info</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-sm space-y-2">
-                        <div>
-                            <p className="font-semibold">Admin User:</p>
-                            <p className="text-muted-foreground">Email: <span className="font-mono">admin@totthoai.com</span></p>
-                            <p className="text-muted-foreground">Password: <span className="font-mono">adminpassword</span></p>
-                        </div>
-                         <div>
-                            <p className="font-semibold">Regular User:</p>
-                            <p className="text-muted-foreground">Email: <span className="font-mono">user@totthoai.com</span></p>
-                            <p className="text-muted-foreground">Password: <span className="font-mono">userpassword</span></p>
-                        </div>
-                    </CardContent>
-                </Card>
             </div>
         </div>
     );
