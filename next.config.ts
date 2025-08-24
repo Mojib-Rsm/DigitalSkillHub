@@ -30,6 +30,11 @@ const nextConfig: NextConfig = {
     // Increase server action timeout to 2 minutes for video generation
     executionTimeout: 120,
   },
+  webpack: (config, { isServer }) => {
+    // This is to fix a bug with handlebars and webpack
+    config.resolve.alias.handlebars = 'handlebars/dist/handlebars.min.js';
+    return config;
+  }
 };
 
 export default nextConfig;
