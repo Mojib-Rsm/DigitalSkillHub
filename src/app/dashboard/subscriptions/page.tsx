@@ -86,7 +86,7 @@ export default function SubscriptionsPage() {
             <div>
                 <h1 className="text-3xl font-bold">Subscription & Billing</h1>
                 <p className="text-muted-foreground">
-                    Manage your subscription plan, credits, and view your billing history.
+                    Manage your subscription, credits, and view your billing history.
                 </p>
             </div>
 
@@ -163,17 +163,17 @@ export default function SubscriptionsPage() {
                              <CardDescription>We support the following payment methods.</CardDescription>
                         </CardHeader>
                         <CardContent className="flex items-center gap-4">
-                           <Image src="https://upload.wikimedia.org/wikipedia/commons/2/24/Bkash-logo.svg" alt="bKash" width={100} height={40}/>
-                           <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Nagad-Logo.wine.svg/1200px-Nagad-Logo.wine.svg.png" alt="Nagad" width={100} height={40}/>
+                           <Image src="https://logos-world.net/wp-content/uploads/2024/10/Bkash-Logo.png" alt="bKash" width={100} height={40}/>
+                           <Image src="https://wp.logos-download.com/wp-content/uploads/2022/01/Nagad_Logo_horizontally-700x294.png" alt="Nagad" width={100} height={40}/>
                         </CardContent>
                     </Card>
-                     <Card className="bg-destructive/10 border-destructive text-destructive-foreground">
+                     <Card className="bg-destructive text-destructive-foreground">
                         <CardHeader>
                             <CardTitle>Cancel Subscription</CardTitle>
                              <CardDescription className="text-destructive-foreground/80">Canceling will downgrade you to the free plan at the end of your current billing cycle.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <Button variant="destructive" className="w-full">Cancel My Subscription</Button>
+                            <Button variant="secondary" className="w-full">Cancel My Subscription</Button>
                         </CardContent>
                     </Card>
                 </div>
