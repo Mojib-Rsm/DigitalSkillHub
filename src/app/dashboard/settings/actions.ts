@@ -6,11 +6,20 @@ import { getCurrentUser } from '@/services/user-service';
 import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { revalidatePath } from 'next/cache';
+import ImageKit from 'imagekit';
+
+const imagekit = new ImageKit({
+    publicKey: process.env.IMAGEKIT_PUBLIC_KEY!,
+    privateKey: process.env.IMAGEKIT_PRIVATE_KEY!,
+    urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT!,
+});
+
 
 // Schema for updating profile information
 const ProfileSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters."),
   phone: z.string().min(10, "Please enter a valid phone number.").optional().or(z.literal('')),
+  photo: z.any().optional(),
 });
 
 // Schema for changing the password
@@ -41,6 +50,7 @@ export async function updateUserProfileAction(
   const validatedFields = ProfileSchema.safeParse({
     name: formData.get('name'),
     phone: formData.get('phone'),
+    photo: formData.get('photo'),
   });
 
   if (!validatedFields.success) {
@@ -54,7 +64,8 @@ export async function updateUserProfileAction(
     const db = getFirestore(app);
     const userRef = doc(db, 'users', currentUser.id);
 
-    const dataToUpdate: Record<string, string> = {};
+    const dataToUpdate: Record<string, any> = {};
+    
     if (validatedFields.data.name) {
         dataToUpdate.name = validatedFields.data.name;
     }
@@ -62,7 +73,21 @@ export async function updateUserProfileAction(
         dataToUpdate.phone = validatedFields.data.phone;
     }
 
-    await updateDoc(userRef, dataToUpdate);
+    // Handle file upload to ImageKit
+    const photo = validatedFields.data.photo as File;
+    if (photo && photo.size > 0) {
+        const photoBuffer = Buffer.from(await photo.arrayBuffer());
+        const uploadResponse = await imagekit.upload({
+            file: photoBuffer,
+            fileName: `${currentUser.id}_${Date.now()}_${photo.name}`,
+            folder: '/totthoai/profile_pictures',
+        });
+        dataToUpdate.profile_image = uploadResponse.url;
+    }
+
+    if (Object.keys(dataToUpdate).length > 0) {
+        await updateDoc(userRef, dataToUpdate);
+    }
 
     revalidatePath('/dashboard/settings');
     revalidatePath('/dashboard'); // Revalidate dashboard to update user info in sidebar potentially
