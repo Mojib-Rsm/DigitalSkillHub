@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircleIcon, LayoutTemplate, Receipt, Clapperboard, Sparkles, Youtube, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Search, Loader, Star } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, User as UserCircle, CornerDownRight, Edit, MessageCircleIcon, LayoutTemplate, Receipt, Clapperboard, Sparkles, Youtube, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Search, Loader, Star } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from '@/lib/utils';
