@@ -1,13 +1,14 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Bot, Menu, ChevronDown, User, LogOut, LayoutDashboard, Coins, Settings, Star, Zap } from "lucide-react";
+import { Bot, Menu, ChevronDown, User, LogOut, LayoutDashboard, Coins, Settings, Star, Zap, X, Moon } from "lucide-react";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetClose,
 } from "@/components/ui/sheet";
 import {
   DropdownMenu,
@@ -21,6 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { getCurrentUser } from "@/services/user-service";
 import { ThemeToggleButton } from "../theme-toggle-button";
 import { logoutAction } from "@/app/logout/actions";
+import { Separator } from "../ui/separator";
 
 const navLinks = [
   { href: "/#features", label: "Features" },
@@ -30,9 +32,11 @@ const navLinks = [
 ];
 
 const moreLinks = [
-    { href: "/blog", label: "Blog", description: "Insights, tutorials, and news."},
-    { href: "/community", label: "Community Jobs", description: "Find small gigs and start earning."},
-    { href: "/ai-tools", label: "AI Tools", description: "Explore our suite of AI tools."},
+    { href: "/#testimonials", label: "Testimonials" },
+    { href: "/#faq", label: "FAQ" },
+    { href: "/blog", label: "Blog" },
+    { href: "/community", label: "Community" },
+    { href: "/ai-tools", label: "All Tools" },
 ]
 
 const NavLink = ({ href, label }: { href: string; label: string }) => (
@@ -44,11 +48,13 @@ const NavLink = ({ href, label }: { href: string; label: string }) => (
     </Link>
   );
   
-  const MobileNavLink = ({ href, label }: { href: string; label: string;}) => (
-     <Link href={href} className="block px-4 py-3 text-lg font-medium hover:bg-muted rounded-lg">
+const MobileNavLink = ({ href, label }: { href: string; label: string;}) => (
+    <Link href={href} className="block px-4 py-3 text-base font-medium text-foreground/80 hover:bg-muted rounded-lg">
+    <SheetClose asChild>
         <span>{label}</span>
-     </Link>
-  )
+    </SheetClose>
+    </Link>
+)
 
 
 export default async function Header() {
@@ -109,34 +115,12 @@ export default async function Header() {
     return (
         <div className="flex items-center gap-2">
             <ThemeToggleButton />
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                     <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-full">
-                        <User className="h-5 w-5"/>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                     <DropdownMenuItem asChild>
-                         <Link href="/login">
-                            <LogOut className="mr-2 h-4 w-4"/>
-                            <span>Login</span>
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                         <Link href="/signup">
-                            <User className="mr-2 h-4 w-4"/>
-                            <span>Sign Up</span>
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator/>
-                     <DropdownMenuItem asChild>
-                         <Link href="/free-tools">
-                            <Star className="mr-2 h-4 w-4"/>
-                            <span>Free Tools</span>
-                        </Link>
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+             <Button asChild>
+                <Link href="/login">Sign In</Link>
+             </Button>
+             <Button variant="outline" asChild>
+                <Link href="/signup">Sign Up</Link>
+             </Button>
         </div>
     );
   };
@@ -166,7 +150,6 @@ export default async function Header() {
                          <DropdownMenuItem key={link.href} asChild>
                              <Link href={link.href} className="flex flex-col items-start gap-1">
                                 <p className="font-semibold">{link.label}</p>
-                                <p className="text-xs text-muted-foreground">{link.description}</p>
                             </Link>
                          </DropdownMenuItem>
                     ))}
@@ -179,39 +162,56 @@ export default async function Header() {
         <div className="lg:hidden flex items-center gap-2">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
+                <Button variant="ghost" size="icon">
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right">
-                <SheetHeader>
-                  <SheetTitle>
-                    <Link href="/" className="flex items-center gap-2 mb-8">
-                      <Bot className="h-7 w-7 text-primary" />
-                      <span className="text-xl font-bold font-headline">TotthoAi</span>
-                    </Link>
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-2">
-                  {[...navLinks, ...moreLinks].map((link) => (
-                      <MobileNavLink key={link.href} href={link.href} label={link.label} />
-                  ))}
-                </div>
-                 <div className="mt-8 pt-4 border-t">
-                    {user ? (
-                        <>
-                         <MobileNavLink href="/dashboard" label="Dashboard"/>
-                         <form action={logoutAction} className="w-full">
-                            <button type="submit" className="w-full text-left block px-4 py-3 text-lg font-medium hover:bg-muted rounded-lg">Logout</button>
-                         </form>
-                        </>
-                    ) : (
-                        <>
-                        <MobileNavLink href="/login" label="Login"/>
-                        <MobileNavLink href="/signup" label="Start Free Trial"/>
-                        </>
-                    )}
+              <SheetContent side="right" className="p-0">
+                 <div className="flex flex-col h-full">
+                    <div className="p-4 border-b">
+                         <div className="flex items-center justify-between bg-background p-2 rounded-lg">
+                            <Link href="/" className="flex items-center gap-2">
+                                <Bot className="h-7 w-7 text-primary" />
+                                <span className="text-xl font-bold font-headline">TotthoAi</span>
+                            </Link>
+                             <div className="flex items-center gap-2">
+                                <ThemeToggleButton/>
+                                <SheetClose asChild>
+                                    <Button variant="ghost" size="icon"><X className="w-5 h-5"/></Button>
+                                </SheetClose>
+                             </div>
+                         </div>
+                    </div>
+                    <div className="flex-grow p-4 space-y-2">
+                        {[...navLinks, ...moreLinks].slice(0, 5).map(link => (
+                            <MobileNavLink key={link.href} href={link.href} label={link.label} />
+                        ))}
+                        <Separator/>
+                        {moreLinks.slice(5).map(link => (
+                            <MobileNavLink key={link.href} href={link.href} label={link.label} />
+                        ))}
+                        <Separator/>
+                        <div className="p-4 flex items-center justify-between text-foreground/80 hover:bg-muted rounded-lg cursor-pointer">
+                            <span className="font-medium text-base">Dark Mode</span>
+                            <Moon className="w-5 h-5"/>
+                        </div>
+                    </div>
+                    <div className="p-4 border-t">
+                        {user ? (
+                            <SheetClose asChild>
+                                <Button asChild size="lg" className="w-full">
+                                    <Link href="/dashboard">Go to Dashboard</Link>
+                                </Button>
+                            </SheetClose>
+                        ) : (
+                             <SheetClose asChild>
+                                <Button asChild size="lg" className="w-full bg-gray-800 text-white hover:bg-gray-700">
+                                    <Link href="/login">Sign in</Link>
+                                </Button>
+                            </SheetClose>
+                        )}
+                    </div>
                  </div>
               </SheetContent>
             </Sheet>
