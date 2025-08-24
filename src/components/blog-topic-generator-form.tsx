@@ -6,13 +6,13 @@ import { useFormStatus } from "react-dom";
 import { generateTopicsAction } from "@/app/ai-tools/blog-topic-generator/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Lightbulb } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { BlogTopicGeneratorOutput } from "@/ai/flows/blog-topic-generator";
 import { Alert, AlertDescription } from "./ui/alert";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 
 function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
@@ -49,13 +49,12 @@ export default function BlogTopicGeneratorForm() {
 
     const formData = new FormData(event.currentTarget);
     const result = await generateTopicsAction({
-        digitalSkills: formData.get("digitalSkills") as string,
-        userInterests: formData.get("userInterests") as string,
+        topic: formData.get("topic") as string,
+        language: formData.get("language") as "Bengali" | "English",
     });
 
     if (result.success) {
         setData(result.data);
-        formRef.current?.reset();
     } else {
         setIssues(result.issues || ["An unknown error occurred."]);
         toast({
@@ -73,28 +72,34 @@ export default function BlogTopicGeneratorForm() {
       <CardHeader>
         <CardTitle>আপনার পরবর্তী ধারণা তৈরি করুন</CardTitle>
         <CardDescription>
-          কিছু কীওয়ার্ড সরবরাহ করুন এবং আমাদের এআইকে সৃজনশীল কাজটি করতে দিন।
+          আপনার বিষয় বা কীওয়ার্ড লিখুন এবং এআইকে সৃজনশীল কাজটি করতে দিন।
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="digitalSkills">ট্রেন্ডিং ডিজিটাল স্কিলস</Label>
-            <Input
-              id="digitalSkills"
-              name="digitalSkills"
-              placeholder="যেমন, ওয়েব ডেভেলপমেন্ট, এসইও, এআই টুলস"
+            <Label htmlFor="topic">আপনার বিষয় বা কীওয়ার্ড</Label>
+            <Textarea
+              id="topic"
+              name="topic"
+              placeholder="যেমন, ফ্রিল্যান্সিং, ডিজিটাল মার্কেটিং টিপস, এআই টুলস"
               required
+              rows={4}
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="userInterests">আপনার আগ্রহ</Label>
-            <Textarea
-              id="userInterests"
-              name="userInterests"
-              placeholder="যেমন, পাইথন, ফ্রিল্যান্সিং, সাইড হাসল"
-              required
-            />
+
+           <div className="space-y-2">
+            <Label>টপিকের ভাষা</Label>
+            <RadioGroup name="language" defaultValue="Bengali" className="flex gap-4">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Bengali" id="bengali" />
+                <Label htmlFor="bengali">বাংলা</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="English" id="english" />
+                <Label htmlFor="english">English</Label>
+              </div>
+            </RadioGroup>
           </div>
 
           {issues.length > 0 && (

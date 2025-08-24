@@ -6,8 +6,8 @@ import { saveHistoryAction } from "@/app/actions/save-history";
 import { z } from "zod";
 
 const BlogTopicGeneratorActionSchema = z.object({
-  digitalSkills: z.string().min(3, { message: "Please enter at least one digital skill." }),
-  userInterests: z.string().min(3, { message: "Please enter at least one user interest." }),
+  topic: z.string().min(5, { message: "Please enter a topic with at least 5 characters." }),
+  language: z.enum(['Bengali', 'English']),
 });
 
 type BlogTopicGeneratorInput = z.infer<typeof BlogTopicGeneratorActionSchema>;
