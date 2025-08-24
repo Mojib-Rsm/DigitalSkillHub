@@ -1,3 +1,4 @@
+
 'use server';
 
 import { z } from 'zod';
@@ -68,7 +69,7 @@ export async function signupAction(
       plan_id: 'alpha',
       role: 'user',
       status: 'active',
-      profile_image: `https://i.pravatar.cc/150?u=${email}`,
+      profile_image: '/Tottho Ai avatar.png',
       createdAt: new Date().toISOString(),
     });
 
