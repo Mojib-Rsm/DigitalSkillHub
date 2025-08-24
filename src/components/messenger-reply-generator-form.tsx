@@ -45,7 +45,7 @@ export default function MessengerReplyGeneratorForm() {
   const initialState = { message: "", suggestions: [], issues: [], fields: {} };
   const [state, formAction] = useActionState(generateMessengerReplies, initialState);
   const [conversationParts, setConversationParts] = useState<ConversationPart[]>([
-    { id: 1, character: "Friend", text: "" },
+    { id: Date.now(), character: "Friend", text: "" },
   ]);
   const [selectedGoal, setSelectedGoal] = useState(initialState.fields?.goal || "");
   const { toast } = useToast();
