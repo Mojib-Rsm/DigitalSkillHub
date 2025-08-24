@@ -177,7 +177,7 @@ export default async function Header() {
             {renderAuthSection()}
         </div>
         <div className="lg:hidden flex items-center gap-2">
-            <ThemeToggleButton />
+            {renderAuthSection()}
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon">
