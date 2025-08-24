@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, Frown, Meh, BookOpen, Fingerprint } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
@@ -58,6 +58,49 @@ async function markdownToHtml(markdown: string): Promise<string> {
     .process(markdown);
   return String(file);
 }
+
+const ScoreCircle = ({ score, text, interpretation }: { score: number, text: string, interpretation: string }) => {
+    const circumference = 2 * Math.PI * 52; // 2 * pi * radius
+    const strokeDashoffset = circumference - (score / 100) * circumference;
+    let colorClass = 'text-green-500';
+    if (score < 50) colorClass = 'text-red-500';
+    else if (score < 80) colorClass = 'text-yellow-500';
+
+    return (
+        <div className="flex flex-col items-center gap-2">
+            <div className="relative w-32 h-32">
+                <svg className="w-full h-full" viewBox="0 0 120 120">
+                    <circle
+                        className="text-muted"
+                        strokeWidth="10"
+                        stroke="currentColor"
+                        fill="transparent"
+                        r="52"
+                        cx="60"
+                        cy="60"
+                    />
+                    <circle
+                        className={`transform -rotate-90 origin-center transition-all duration-1000 ${colorClass}`}
+                        strokeWidth="10"
+                        strokeDasharray={circumference}
+                        style={{ strokeDashoffset }}
+                        strokeLinecap="round"
+                        stroke="currentColor"
+                        fill="transparent"
+                        r="52"
+                        cx="60"
+                        cy="60"
+                    />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <span className={`text-3xl font-bold ${colorClass}`}>{score}</span>
+                </div>
+            </div>
+            <p className="text-sm font-semibold">{text}</p>
+            <p className="text-xs text-muted-foreground text-center max-w-xs">{interpretation}</p>
+        </div>
+    )
+};
 
 
 export default function OneClickWriterForm() {
@@ -314,61 +357,84 @@ export default function OneClickWriterForm() {
                 </CardFooter>
             </Card>
 
-             {/* SEO & Analysis Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><TrendingUp className="w-5 h-5 text-primary"/>এসইও ও মেটা তথ্য</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
+            {/* Premium SEO & Readability Analysis */}
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Fingerprint className="w-5 h-5 text-primary"/>Premium SEO & Readability Analysis</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <ScoreCircle score={data.readability.score} text="Readability" interpretation={data.readability.interpretation} />
+                    <div className="space-y-4">
                         <Alert>
-                            <AlertTitle>এসইও টাইটেল</AlertTitle>
-                            <AlertDescription className="flex justify-between items-center">
-                            <p>{data.seoTitle}</p>
-                            <Button variant="ghost" size="icon" onClick={() => handleCopy(data.seoTitle)}><Clipboard className="w-4 h-4"/></Button>
-                            </AlertDescription>
-                        </Alert>
-                        <Alert>
-                            <AlertTitle>মেটা ডেসক্রিপশন</AlertTitle>
-                            <AlertDescription className="flex justify-between items-center">
-                            <p>{data.seoDescription}</p>
-                                <Button variant="ghost" size="icon" onClick={() => handleCopy(data.seoDescription)}><Clipboard className="w-4 h-4"/></Button>
-                            </AlertDescription>
+                            <Smile className="h-4 w-4" />
+                            <AlertTitle>Sentiment</AlertTitle>
+                            <AlertDescription>{data.seoAnalysis.sentiment}</AlertDescription>
                         </Alert>
                          <Alert>
+                            <BookOpen className="h-4 w-4" />
+                            <AlertTitle>Word Count</AlertTitle>
+                            <AlertDescription>{data.seoAnalysis.wordCount} words</AlertDescription>
+                        </Alert>
+                         <Alert>
+                            <TrendingUp className="h-4 w-4" />
+                            <AlertTitle>Flesch-Kincaid Grade</AlertTitle>
+                            <AlertDescription>{data.readability.gradeLevel}</AlertDescription>
+                        </Alert>
+                    </div>
+                    <div className="lg:col-span-2">
+                        <Alert>
+                             <AlertTitle>LSI Keywords</AlertTitle>
+                             <AlertDescription className="flex flex-wrap gap-2 pt-2">
+                                 {data.seoAnalysis.lsiKeywords.map(keyword => <Badge key={keyword} variant="outline">{keyword}</Badge>)}
+                            </AlertDescription>
+                        </Alert>
+                    </div>
+                </CardContent>
+            </Card>
+
+             {/* SEO & Meta Section */}
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><TrendingUp className="w-5 h-5 text-primary"/>এসইও ও মেটা তথ্য</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                     <Alert>
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <AlertTitle>টার্গেট কীওয়ার্ড</AlertTitle>
+                        <AlertDescription>
+                            প্রধান কীওয়ার্ড: <strong>"{data.targetKeyword}"</strong> সঠিকভাবে ব্যবহার করা হয়েছে।
+                        </AlertDescription>
+                    </Alert>
+                    <Alert>
+                        <AlertTitle>এসইও টাইটেল</AlertTitle>
+                        <AlertDescription className="flex justify-between items-center">
+                        <p>{data.seoTitle}</p>
+                        <Button variant="ghost" size="icon" onClick={() => handleCopy(data.seoTitle)}><Clipboard className="w-4 h-4"/></Button>
+                        </AlertDescription>
+                    </Alert>
+                    <Alert>
+                        <AlertTitle>মেটা ডেসক্রিপশন</AlertTitle>
+                        <AlertDescription className="flex justify-between items-center">
+                        <p>{data.seoDescription}</p>
+                            <Button variant="ghost" size="icon" onClick={() => handleCopy(data.seoDescription)}><Clipboard className="w-4 h-4"/></Button>
+                        </AlertDescription>
+                    </Alert>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Alert>
                             <AlertTitle className="flex items-center gap-2"><Tag className="w-4 h-4"/>Suggested Categories</AlertTitle>
                             <AlertDescription className="flex flex-wrap gap-2 pt-2">
-                              {data.suggestedCategories.map((category) => <Badge key={category} variant="secondary">{category}</Badge>)}
+                                {data.suggestedCategories.map((category) => <Badge key={category} variant="secondary">{category}</Badge>)}
                             </AlertDescription>
                         </Alert>
-                         <Alert>
+                            <Alert>
                             <AlertTitle className="flex items-center gap-2"><Tag className="w-4 h-4"/>Suggested Tags</AlertTitle>
                             <AlertDescription className="flex flex-wrap gap-2 pt-2">
-                              {data.suggestedTags.map((tag) => <Badge key={tag} variant="outline">{tag}</Badge>)}
+                                {data.suggestedTags.map((tag) => <Badge key={tag} variant="outline">{tag}</Badge>)}
                             </AlertDescription>
                         </Alert>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5 text-primary"/>কনটেন্ট বিশ্লেষণ</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                         <div className="space-y-2">
-                            <div className="flex justify-between items-center mb-1">
-                                <Label>পড়ার যোগ্যতা (Readability)</Label>
-                                <span className="font-bold">{data.readabilityScore}/10</span>
-                            </div>
-                            <Progress value={data.readabilityScore * 10} className="w-full" />
-                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Alert>
-                            <CheckCircle className="h-4 w-4 text-green-500" />
-                            <AlertTitle>টার্গেট কীওয়ার্ড</AlertTitle>
-                            <AlertDescription>
-                             প্রধান কীওয়ার্ড: <strong>"{data.targetKeyword}"</strong> সঠিকভাবে ব্যবহার করা হয়েছে।
-                            </AlertDescription>
-                        </Alert>
-                         <Alert>
                             <AlertTitle>অভ্যন্তরীণ লিঙ্কিং পরামর্শ</AlertTitle>
                             <AlertDescription>
                                 <ul className="list-disc pl-5 mt-2 space-y-1">
@@ -379,7 +445,7 @@ export default function OneClickWriterForm() {
                         <Alert>
                             <AlertTitle>বহিরাগত লিঙ্কিং পরামর্শ</AlertTitle>
                             <AlertDescription>
-                                 <ul className="list-disc pl-5 mt-2 space-y-1">
+                                    <ul className="list-disc pl-5 mt-2 space-y-1">
                                 {data.externalLinks.map((link, i) => (
                                     <li key={i} className="flex items-center gap-2">
                                         <span>{link}</span>
@@ -389,9 +455,9 @@ export default function OneClickWriterForm() {
                                 </ul>
                             </AlertDescription>
                         </Alert>
-                    </CardContent>
-                </Card>
-            </div>
+                    </div>
+                </CardContent>
+            </Card>
             
             {/* Article Section */}
             <Card>

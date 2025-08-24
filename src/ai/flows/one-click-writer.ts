@@ -34,7 +34,16 @@ const OneClickWriterOutputSchema = z.object({
   altText: z.string().describe('SEO-friendly alt text for the featured image.'),
   internalLinks: z.array(z.string()).describe('A list of 3-5 suggested topics for internal links within the article.'),
   externalLinks: z.array(z.string()).describe('A list of 2-3 suggested topics for external (reputable source) links.'),
-  readabilityScore: z.number().min(1).max(10).describe('A score from 1-10 indicating how easy the article is to read.'),
+  readability: z.object({
+      score: z.number().min(0).max(100).describe('A score from 0 to 100 indicating how easy the article is to read (100 being very easy).'),
+      gradeLevel: z.string().describe("The Flesch-Kincaid grade level of the text."),
+      interpretation: z.string().describe("A brief interpretation of the readability score."),
+  }).describe("A detailed readability analysis."),
+  seoAnalysis: z.object({
+    sentiment: z.enum(['Positive', 'Negative', 'Neutral']).describe("The overall sentiment of the article."),
+    wordCount: z.number().describe("The total word count of the article."),
+    lsiKeywords: z.array(z.string()).describe("A list of 5-7 Latent Semantic Indexing (LSI) keywords found in the text."),
+  }).describe("A premium SEO analysis of the content."),
   targetKeyword: z.string().describe('The primary keyword used for optimization.'),
   suggestedTags: z.array(z.string()).describe('A list of 5-7 relevant tags for the article.'),
   suggestedCategories: z.array(z.string()).describe('A list of 1-3 relevant categories for the article.'),
@@ -53,7 +62,16 @@ const writerPrompt = ai.definePrompt({
         altText: z.string().describe('SEO-friendly alt text for the featured image, containing the primary keyword.'),
         internalLinks: z.array(z.string()).describe('A list of 3-5 relevant topics for internal links within the article, based on the content.'),
         externalLinks: z.array(z.string()).describe('A list of 2-3 relevant topics for external (reputable, non-competing) sources.'),
-        readabilityScore: z.number().min(1).max(10).describe('A score from 1 to 10 indicating how easy the article is to read (10 being very easy).'),
+        readability: z.object({
+            score: z.number().min(0).max(100).describe('A score from 0 to 100 indicating how easy the article is to read (100 being very easy).'),
+            gradeLevel: z.string().describe("The Flesch-Kincaid grade level of the text."),
+            interpretation: z.string().describe("A brief, one-sentence interpretation of what the score means (e.g., 'Easy to read for a general audience')."),
+        }).describe("A detailed readability analysis."),
+        seoAnalysis: z.object({
+            sentiment: z.enum(['Positive', 'Negative', 'Neutral']).describe("The overall sentiment of the article."),
+            wordCount: z.number().describe("The total word count of the generated article."),
+            lsiKeywords: z.array(z.string()).describe("A list of 5-7 Latent Semantic Indexing (LSI) keywords that are contextually related to the main keyword."),
+        }).describe("A premium SEO analysis of the content."),
         targetKeyword: z.string().describe('The primary keyword that was used for optimization.'),
         suggestedTags: z.array(z.string()).describe('A list of 5-7 relevant, specific tags for the article.'),
         suggestedCategories: z.array(z.string()).describe('A list of 1-3 relevant, broad categories for the article.'),
@@ -106,12 +124,15 @@ const writerPrompt = ai.definePrompt({
         *   Suggest 3-5 relevant topics for **Internal Links** (these are potential keyphrases from the article that could link to other articles on the same site).
         *   Suggest 2-3 relevant topics for **External Links** (links to reputable, non-competing sources to build authority).
 
-    6.  **Taxonomy Suggestions:**
+    6. **Analysis & Metrics:**
+        *   **Readability:** Analyze the generated text and provide a score from 0-100, the Flesch-Kincaid grade level, and a one-sentence interpretation.
+        *   **SEO Analysis:** Determine the article's sentiment (Positive, Negative, Neutral), calculate the total word count, and list 5-7 LSI keywords.
+    
+    7.  **Taxonomy Suggestions:**
         *   Based on the article's content, suggest 1-3 broad **Categories**.
         *   Based on the article's content, suggest 5-7 specific **Tags**.
 
-    7.  **Analysis & Confirmation:**
-        *   Provide a **Readability Score** from 1 to 10 (10 being the easiest to read, like conversational text). Aim for a high score.
+    8.  **Confirmation:**
         *   Confirm the **Target Keyword** used for optimization in the output. This MUST be the same as the user's primary keyword.
 
     The final output MUST be a complete JSON object following the schema. Ensure every field is populated correctly and the article is fully formatted in Markdown.
@@ -131,7 +152,7 @@ const oneClickWriterFlow = ai.defineFlow(
   },
   async (input) => {
     const writerResponse = await writerPrompt(input);
-    const { article, seoTitle, seoDescription, imagePrompt, altText, internalLinks, externalLinks, readabilityScore, targetKeyword, suggestedTags, suggestedCategories } = writerResponse.output!;
+    const { article, seoTitle, seoDescription, imagePrompt, altText, internalLinks, externalLinks, readability, seoAnalysis, targetKeyword, suggestedTags, suggestedCategories } = writerResponse.output!;
 
     const imageGenResponse = await ai.generate({
       model: 'googleai/gemini-2.0-flash-preview-image-generation',
@@ -154,7 +175,8 @@ const oneClickWriterFlow = ai.defineFlow(
         altText,
         internalLinks,
         externalLinks,
-        readabilityScore,
+        readability,
+        seoAnalysis,
         targetKeyword,
         suggestedTags,
         suggestedCategories,
