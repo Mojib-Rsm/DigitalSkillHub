@@ -19,7 +19,7 @@ export type UserProfile = {
 };
 
 export async function getCurrentUser(): Promise<UserProfile | null> {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionCookie = cookieStore.get('auth-session');
   
   if (!sessionCookie?.value) {
