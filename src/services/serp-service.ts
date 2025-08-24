@@ -6,7 +6,7 @@ import axios from 'axios';
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const GOOGLE_CSE_ID = process.env.GOOGLE_CSE_ID;
 
-type SerpResult = {
+export type SerpResult = {
     title: string;
     link: string;
     snippet: string;

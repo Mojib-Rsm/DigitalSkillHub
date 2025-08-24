@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
-import { generateArticleSerpAction } from "@/app/ai-tools/one-click-writer-serp/actions";
+import { getSerpAnalysisAction, generateArticleFromSerpAction } from "@/app/ai-tools/one-click-writer-serp/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import type { OneClickWriterSerpOutput } from "@/ai/flows/one-click-writer-serp";
+import { OneClickWriterSerpInput, type OneClickWriterSerpOutput } from "@/ai/schema/one-click-writer-serp";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "./ui/command";
 import { cn } from "@/lib/utils";
@@ -23,6 +23,9 @@ import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
+import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import type { SerpResult } from "@/services/serp-service";
 
 function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
   const { pending } = useFormStatus();
@@ -31,12 +34,12 @@ function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
       {pending || isSubmitting ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Analyzing SERP & Writing...
+          Analyzing SERP...
         </>
       ) : (
         <>
           <Search className="mr-2 h-5 w-5" />
-          Generate SERP-Informed Article
+          Analyze SERP & Generate Article
         </>
       )}
     </Button>
@@ -55,8 +58,11 @@ async function markdownToHtml(markdown: string): Promise<string> {
 export default function OneClickWriterSerpForm() {
   const { toast } = useToast();
   const [data, setData] = useState<OneClickWriterSerpOutput | undefined>(undefined);
+  const [serpResults, setSerpResults] = useState<SerpResult[]>([]);
+  const [currentInput, setCurrentInput] = useState<OneClickWriterSerpInput | null>(null);
   const [issues, setIssues] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isWriting, setIsWriting] = useState(false);
   const [renderedHtml, setRenderedHtml] = useState("");
   const [country, setCountry] = useState("United States");
   const [countrySelectOpen, setCountrySelectOpen] = useState(false);
@@ -66,6 +72,28 @@ export default function OneClickWriterSerpForm() {
         markdownToHtml(data.article).then(setRenderedHtml);
     }
   }, [data]);
+  
+  useEffect(() => {
+    if (serpResults.length > 0 && currentInput) {
+        setIsAnalyzing(false);
+        setIsWriting(true);
+        const generate = async () => {
+            const result = await generateArticleFromSerpAction(currentInput, serpResults);
+            if (result.success && result.data) {
+                setData(result.data);
+            } else {
+                setIssues(result.issues || ["An unknown error occurred."]);
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: result.issues?.join(", ") || "An unknown error occurred.",
+                });
+            }
+            setIsWriting(false);
+        };
+        generate();
+    }
+  }, [serpResults, currentInput, toast])
 
   const handleCopy = (textToCopy: string) => {
     navigator.clipboard.writeText(textToCopy);
@@ -85,8 +113,9 @@ export default function OneClickWriterSerpForm() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      setIsSubmitting(true);
+      setIsAnalyzing(true);
       setData(undefined);
+      setSerpResults([]);
       setIssues([]);
 
       const formData = new FormData(event.currentTarget);
@@ -97,11 +126,12 @@ export default function OneClickWriterSerpForm() {
           tone: formData.get('tone') as 'Formal' | 'Casual' | 'Friendly' | 'Professional',
           targetCountry: formData.get('targetCountry') as string,
       };
+      setCurrentInput(input);
       
-      const result = await generateArticleSerpAction(input);
+      const result = await getSerpAnalysisAction(input);
 
-      if (result.success) {
-        setData(result.data);
+      if (result.success && result.data) {
+        setSerpResults(result.data);
       } else {
         setIssues(result.issues || ["An unknown error occurred."]);
         toast({
@@ -109,8 +139,8 @@ export default function OneClickWriterSerpForm() {
             title: "Error",
             description: result.issues?.join(", ") || "An unknown error occurred.",
         });
+        setIsAnalyzing(false);
       }
-      setIsSubmitting(false);
   }
 
   return (
@@ -195,19 +225,66 @@ export default function OneClickWriterSerpForm() {
                 </Alert>
             )}
 
-          <SubmitButton isSubmitting={isSubmitting} />
+          <SubmitButton isSubmitting={isAnalyzing || isWriting} />
         </form>
 
-        {isSubmitting && (
+        {(isAnalyzing || isWriting) && (
              <div className="mt-8 text-center">
                 <div className="inline-block bg-muted/50 p-4 rounded-lg">
-                    <p className="text-muted-foreground font-semibold animate-pulse">Analyzing Google SERP and writing your article...</p>
-                    <p className="text-muted-foreground text-sm">This may take up to a minute. Please don't leave the page.</p>
+                    <p className="text-muted-foreground font-semibold animate-pulse">{isAnalyzing ? "Analyzing Google SERP..." : "Writing your article..."}</p>
+                    {isAnalyzing && (
+                        <Carousel
+                            plugins={[Autoplay({ delay: 2000 })]}
+                            className="w-full max-w-xs mx-auto mt-4"
+                            opts={{
+                                align: "start",
+                                loop: true,
+                            }}
+                        >
+                            <CarouselContent>
+                                {Array.from({ length: 5 }).map((_, index) => (
+                                    <CarouselItem key={index} className="basis-1/3">
+                                        <div className="p-1">
+                                            <Card className="bg-background">
+                                                <CardContent className="flex flex-col items-center justify-center p-2 gap-1 aspect-square">
+                                                    <Search className="w-5 h-5 text-primary"/>
+                                                    <span className="text-xs font-semibold text-muted-foreground">Analyzing...</span>
+                                                </CardContent>
+                                            </Card>
+                                        </div>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                        </Carousel>
+                    )}
+                     {isWriting && serpResults.length > 0 && (
+                        <Carousel
+                            plugins={[Autoplay({ delay: 1500 })]}
+                            className="w-full max-w-xs mx-auto mt-4"
+                             opts={{ align: "start", loop: true, }}
+                        >
+                            <CarouselContent>
+                                {serpResults.map((result, index) => (
+                                    <CarouselItem key={index} className="basis-1/2">
+                                        <div className="p-1">
+                                            <Card className="bg-background">
+                                                <CardContent className="flex flex-col items-center justify-center p-2 gap-1 text-center">
+                                                    <Image src={`https://www.google.com/s2/favicons?domain=${new URL(result.link).hostname}&sz=32`} alt="favicon" width={16} height={16} className="mb-1"/>
+                                                    <span className="text-[10px] font-semibold text-muted-foreground truncate w-full">{new URL(result.link).hostname}</span>
+                                                </CardContent>
+                                            </Card>
+                                        </div>
+                                    </CarouselItem>
+                                ))}
+                            </CarouselContent>
+                        </Carousel>
+                    )}
+                    <p className="text-muted-foreground text-sm mt-2">This may take up to a minute. Please don't leave the page.</p>
                 </div>
             </div>
         )}
 
-        {data && !isSubmitting && (
+        {data && !isAnalyzing && !isWriting && (
           <div className="mt-8 space-y-8">
             <h3 className="text-3xl font-bold font-headline text-center">Your Generated Article</h3>
             

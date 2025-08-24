@@ -8,7 +8,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { getSerpResults } from '@/services/serp-service';
+import { getSerpResults, SerpResult } from '@/services/serp-service';
 import { OneClickWriterSerpInputSchema, OneClickWriterSerpOutputSchema, type OneClickWriterSerpInput, type OneClickWriterSerpOutput } from '@/ai/schema/one-click-writer-serp';
 
 
@@ -33,7 +33,10 @@ const serpAnalysisTool = ai.defineTool(
 
 const writerPrompt = ai.definePrompt({
     name: 'oneClickWriterSerpPrompt',
-    input: { schema: OneClickWriterSerpInputSchema },
+    input: { schema: z.object({
+        ...OneClickWriterSerpInputSchema.shape,
+        serpResults: z.array(z.custom<SerpResult>()),
+    }) },
     output: { schema: z.object({
         article: z.string().describe("The full, well-structured article in Markdown format. It must include an engaging introduction, multiple subheadings (H2 using ##, H3 using ###), bold text using **, and lists where appropriate. The content should be comprehensive, well-researched, and reflect insights from the provided SERP data."),
         seoTitle: z.string().describe('An SEO-optimized title for the article (around 60 characters).'),
@@ -41,7 +44,6 @@ const writerPrompt = ai.definePrompt({
         imagePrompt: z.string().describe('A descriptive prompt for an AI image generator to create a relevant featured image.'),
         altText: z.string().describe('SEO-friendly alt text for the featured image, containing the primary keyword.'),
     })},
-    tools: [serpAnalysisTool],
     prompt: `You are an expert content creator and SEO specialist. Your primary goal is to generate a comprehensive, engaging, and SEO-optimized blog post that is better than the current top-ranking articles on Google. The article must be ready for publication.
 
     **User Inputs:**
@@ -51,10 +53,17 @@ const writerPrompt = ai.definePrompt({
     - **Tone:** {{{tone}}}
     - **Target Country:** {{{targetCountry}}}
 
+    **SERP Analysis Results (Top Competitors):**
+    {{#each serpResults}}
+    - **Title:** {{{this.title}}}
+      **Snippet:** {{{this.snippet}}}
+      **Link:** {{{this.link}}}
+    {{/each}}
+
     **Instructions:**
-    1. **SERP Analysis:** Use the 'serpAnalysisTool' with the '{{{primaryKeyword}}}' to analyze the top 10 Google search results. Understand the user intent, common questions, and key sub-topics covered by top competitors.
+    1. **Analyze Competitors:** Deeply analyze the provided SERP data. Identify the user intent, common questions, key sub-topics, and content formats (e.g., lists, how-to guides) used by the top-ranking articles.
     2. **Content Generation:**
-        *   Write a comprehensive article in **{{{language}}}** that covers the topic in-depth, addressing all key points found in the SERP analysis and adding unique value.
+        *   Write a comprehensive article in **{{{language}}}** that covers the topic in-depth, addressing all key points found in the SERP analysis and adding unique value or a better perspective.
         *   The article must have a compelling introduction and a strong conclusion.
         *   Structure the content with multiple H2 (##) and H3 (###) subheadings. Use Markdown for formatting.
         *   Naturally integrate the **Primary Keyword** ({{{primaryKeyword}}}) in the SEO Title, meta description, introduction, and at least one H2 subheading. Maintain a keyword density of 1-2%.
@@ -70,8 +79,14 @@ const writerPrompt = ai.definePrompt({
     The final output MUST be a complete JSON object following the schema.`,
 });
 
-export async function oneClickWriterSerp(input: OneClickWriterSerpInput): Promise<OneClickWriterSerpOutput> {
-  const writerResponse = await writerPrompt(input);
+export async function getSerpAnalysis(input: OneClickWriterSerpInput): Promise<SerpResult[]> {
+    return getSerpResults(input.primaryKeyword);
+}
+
+
+export async function generateArticleFromSerp(input: OneClickWriterSerpInput, serpResults: SerpResult[]): Promise<OneClickWriterSerpOutput> {
+  
+  const writerResponse = await writerPrompt({ ...input, serpResults });
   const { article, seoTitle, seoDescription, imagePrompt, altText } = writerResponse.output!;
 
   const { media } = await ai.generate({
