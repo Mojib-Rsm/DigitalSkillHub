@@ -1,8 +1,9 @@
 
+
 'use server';
 
 import { cookies } from 'next/headers';
-import { getFirestore, doc, getDoc, collection, getDocs, query, where } from 'firebase/firestore/lite';
+import { getFirestore, doc, getDoc, collection, getDocs, query, where, updateDoc } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 
 export type UserProfile = {
@@ -63,6 +64,19 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
   }
 }
 
+export async function updateUserProfile(userId: string, data: Partial<UserProfile>) {
+    try {
+        const db = getFirestore(app);
+        const userRef = doc(db, 'users', userId);
+        await updateDoc(userRef, data);
+        return { success: true };
+    } catch(error) {
+        console.error(`Failed to update user profile for ${userId}`, error);
+        return { success: false, message: (error as Error).message };
+    }
+}
+
+
 export async function getAllUsers(): Promise<UserProfile[]> {
     const currentUser = await getCurrentUser();
     // Security Rule should enforce this, but double-checking here.
@@ -91,7 +105,8 @@ export async function getAllUsers(): Promise<UserProfile[]> {
                 credits: data.credits,
                 profile_image: data.profile_image,
                 status: data.status,
-                plan_id: data.plan_id
+                plan_id: data.plan_id,
+                bookmarks: data.bookmarks || [],
              } as UserProfile;
         });
     } catch (error) {

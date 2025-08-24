@@ -10,6 +10,8 @@ export type Tool = {
     icon: string;
     category: string;
     enabled: boolean;
+    isFree: boolean;
+    credits: number;
 };
 
 export const allCourses = [
@@ -175,11 +177,12 @@ export const users = [
         email: "admin@totthoai.com",
         password: "adminpassword",
         role: "admin",
-        profile_image: "https://placehold.co/100x100.png",
+        profile_image: "/Tottho Ai avatar.png",
         plan_id: "sigma",
         credits: 9999,
         is_verified: true,
         status: "active",
+        bookmarks: ["one-click-writer", "image-generator", "video-generator"],
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
     },
@@ -188,11 +191,12 @@ export const users = [
         email: "user@totthoai.com",
         password: "userpassword",
         role: "user",
-        profile_image: "https://placehold.co/100x100.png",
+        profile_image: "/Tottho Ai avatar.png",
         plan_id: "beta",
         credits: 100,
         is_verified: true,
         status: "active",
+        bookmarks: ["facebook-caption-generator", "blog-topic-generator"],
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
     }
@@ -338,6 +342,8 @@ export const tools: Tool[] = [
         icon: "Sparkles",
         category: "Content & Writing",
         enabled: true,
+        isFree: false,
+        credits: 10,
     },
     {
         id: "blog-topic-generator",
@@ -347,6 +353,8 @@ export const tools: Tool[] = [
         icon: "PenSquare",
         category: "Content & Writing",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "product-description-generator",
@@ -356,6 +364,8 @@ export const tools: Tool[] = [
         icon: "ShoppingCart",
         category: "Content & Writing",
         enabled: true,
+        isFree: false,
+        credits: 1,
     },
     {
         id: "social-media-post-generator",
@@ -365,6 +375,8 @@ export const tools: Tool[] = [
         icon: "Hash",
         category: "Content & Writing",
         enabled: true,
+        isFree: false,
+        credits: 1,
     },
     {
         id: "facebook-caption-generator",
@@ -374,6 +386,8 @@ export const tools: Tool[] = [
         icon: "MessageSquare",
         category: "Content & Writing",
         enabled: true,
+        isFree: false,
+        credits: 1,
     },
     {
         id: "facebook-comment-generator",
@@ -383,6 +397,8 @@ export const tools: Tool[] = [
         icon: "MessageSquare",
         category: "Content & Writing",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "messenger-reply-generator",
@@ -392,6 +408,8 @@ export const tools: Tool[] = [
         icon: "MessageSquare",
         category: "Content & Writing",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "cover-letter-generator",
@@ -401,6 +419,8 @@ export const tools: Tool[] = [
         icon: "FileSignature",
         category: "Content & Writing",
         enabled: true,
+        isFree: false,
+        credits: 2,
     },
     {
         id: "ad-copy-generator",
@@ -410,6 +430,8 @@ export const tools: Tool[] = [
         icon: "Megaphone",
         category: "Content & Writing",
         enabled: true,
+        isFree: false,
+        credits: 2,
     },
     {
         id: "script-writer",
@@ -419,6 +441,8 @@ export const tools: Tool[] = [
         icon: "Youtube",
         category: "Content & Writing",
         enabled: true,
+        isFree: false,
+        credits: 5,
     },
     {
         id: "story-plot-generator",
@@ -428,6 +452,8 @@ export const tools: Tool[] = [
         icon: "GitBranchPlus",
         category: "Content & Writing",
         enabled: true,
+        isFree: false,
+        credits: 3,
     },
     {
         id: "poetry-lyrics-maker",
@@ -437,6 +463,8 @@ export const tools: Tool[] = [
         icon: "Mic",
         category: "Content & Writing",
         enabled: true,
+        isFree: false,
+        credits: 2,
     },
     {
         id: "content-outline-generator",
@@ -446,6 +474,8 @@ export const tools: Tool[] = [
         icon: "List",
         category: "Content & Writing",
         enabled: true,
+        isFree: false,
+        credits: 2,
     },
     {
         id: "headline-generator",
@@ -455,6 +485,8 @@ export const tools: Tool[] = [
         icon: "PanelTopOpen",
         category: "Content & Writing",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "content-calendar-planner",
@@ -464,6 +496,8 @@ export const tools: Tool[] = [
         icon: "CalendarDays",
         category: "Productivity & Business",
         enabled: true,
+        isFree: false,
+        credits: 4,
     },
     {
         id: "image-generator",
@@ -473,6 +507,8 @@ export const tools: Tool[] = [
         icon: "ImageIcon",
         category: "Image Generation",
         enabled: true,
+        isFree: false,
+        credits: 5,
     },
     {
         id: "passport-photo-maker",
@@ -482,6 +518,8 @@ export const tools: Tool[] = [
         icon: "UserCircleIcon",
         category: "Image Generation",
         enabled: true,
+        isFree: false,
+        credits: 2,
     },
      {
         id: "handwriting-extractor",
@@ -491,6 +529,8 @@ export const tools: Tool[] = [
         icon: "Edit",
         category: "Productivity & Business",
         enabled: true,
+        isFree: false,
+        credits: 5,
     },
     {
         id: "video-generator",
@@ -500,6 +540,8 @@ export const tools: Tool[] = [
         icon: "Film",
         category: "Video & Animation",
         enabled: true,
+        isFree: false,
+        credits: 20,
     },
     {
         id: "image-to-video-generator",
@@ -509,6 +551,8 @@ export const tools: Tool[] = [
         icon: "Clapperboard",
         category: "Video & Animation",
         enabled: true,
+        isFree: false,
+        credits: 15,
     },
     {
         id: "prompt-generator",
@@ -518,6 +562,8 @@ export const tools: Tool[] = [
         icon: "Sparkles",
         category: "Productivity & Business",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "professional-email-writer",
@@ -527,6 +573,8 @@ export const tools: Tool[] = [
         icon: "Mail",
         category: "Productivity & Business",
         enabled: true,
+        isFree: false,
+        credits: 2,
     },
     {
         id: "note-summarizer",
@@ -536,6 +584,8 @@ export const tools: Tool[] = [
         icon: "BookCheck",
         category: "Productivity & Business",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
      {
         id: "bengali-translator",
@@ -545,6 +595,8 @@ export const tools: Tool[] = [
         icon: "Languages",
         category: "Productivity & Business",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "refund-policy-generator",
@@ -554,6 +606,8 @@ export const tools: Tool[] = [
         icon: "Receipt",
         category: "Productivity & Business",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "resume-helper",
@@ -563,6 +617,8 @@ export const tools: Tool[] = [
         icon: "FileText",
         category: "Productivity & Business",
         enabled: true,
+        isFree: false,
+        credits: 3,
     },
     {
         id: "business-name-generator",
@@ -572,6 +628,8 @@ export const tools: Tool[] = [
         icon: "Lightbulb",
         category: "Productivity & Business",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "website-blueprint-generator",
@@ -581,6 +639,8 @@ export const tools: Tool[] = [
         icon: "LayoutTemplate",
         category: "Productivity & Business",
         enabled: true,
+        isFree: false,
+        credits: 5,
     },
     {
         id: "seo-keyword-suggester",
@@ -590,6 +650,8 @@ export const tools: Tool[] = [
         icon: "BarChart",
         category: "SEO & Marketing",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "seo-score-checker",
@@ -599,6 +661,8 @@ export const tools: Tool[] = [
         icon: "BarChart2",
         category: "SEO & Marketing",
         enabled: true,
+        isFree: false,
+        credits: 2,
     },
     {
         id: "interview-question-practice",
@@ -608,6 +672,8 @@ export const tools: Tool[] = [
         icon: "Briefcase",
         category: "Productivity & Business",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "freelance-idea-generator",
@@ -617,6 +683,8 @@ export const tools: Tool[] = [
         icon: "Wand",
         category: "Productivity & Business",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "price-rate-calculator",
@@ -626,6 +694,8 @@ export const tools: Tool[] = [
         icon: "DollarSign",
         category: "Productivity & Business",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "domain-name-suggester",
@@ -635,6 +705,8 @@ export const tools: Tool[] = [
         icon: "Globe",
         category: "SEO & Marketing",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "course-recommender",
@@ -644,6 +716,8 @@ export const tools: Tool[] = [
         icon: "GraduationCap",
         category: "Productivity & Business",
         enabled: true,
+        isFree: true,
+        credits: 0,
     },
     {
         id: "quiz-generator",
@@ -653,5 +727,7 @@ export const tools: Tool[] = [
         icon: "HelpCircle",
         category: "Productivity & Business",
         enabled: true,
+        isFree: false,
+        credits: 1,
     },
 ];

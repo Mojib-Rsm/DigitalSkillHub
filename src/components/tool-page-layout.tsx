@@ -1,14 +1,16 @@
 
+
 "use client";
 
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
-import { ArrowLeft, ArrowRight, Bot, Sparkles, Quote } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bot, Sparkles, Quote, Star, Heart } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
 import type { Tool } from "@/lib/demo-data";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getCurrentUser, updateUserProfile } from "@/services/user-service";
 
 const iconComponents: { [key: string]: React.ElementType } = {
     PenSquare: require("lucide-react").PenSquare,
@@ -66,14 +68,42 @@ export default function ToolPageLayout({
     relatedTools: Tool[];
     helperTool?: HelperTool;
 }) {
+  const pathname = usePathname();
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  
+  // This is a simplified client-side check. 
+  // In a real app, this state should be synced with the database.
+  useEffect(() => {
+    const bookmarks = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+    setIsBookmarked(bookmarks.includes(pathname));
+  }, [pathname]);
+
+  const handleBookmark = () => {
+      const newBookmarkState = !isBookmarked;
+      const bookmarks = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+      if (newBookmarkState) {
+          bookmarks.push(pathname);
+      } else {
+          const index = bookmarks.indexOf(pathname);
+          if (index > -1) {
+              bookmarks.splice(index, 1);
+          }
+      }
+      localStorage.setItem("bookmarks", JSON.stringify(bookmarks));
+      setIsBookmarked(newBookmarkState);
+  }
+
   return (
     <div className="container mx-auto px-4 py-12">
-        <div className="mb-8">
+        <div className="flex justify-between items-center mb-8">
             <Button variant="outline" asChild>
                 <Link href="/ai-tools">
                     <ArrowLeft className="mr-2" />
                     সকল টুল দেখুন
                 </Link>
+            </Button>
+             <Button variant="ghost" size="icon" onClick={handleBookmark}>
+                <Heart className={isBookmarked ? "text-red-500 fill-current" : ""}/>
             </Button>
         </div>
         <div className="text-center mb-12">

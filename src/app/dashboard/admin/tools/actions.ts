@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { z } from 'zod';
@@ -13,6 +14,8 @@ const toolSchema = z.object({
   icon: z.string().min(1),
   category: z.string().min(3),
   enabled: z.boolean(),
+  isFree: z.boolean(),
+  credits: z.coerce.number().min(0),
 });
 
 type FormState = {

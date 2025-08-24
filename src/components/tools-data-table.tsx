@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -22,7 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, PlusCircle, Pen, Trash } from "lucide-react";
+import { MoreHorizontal, PlusCircle, Pen, Trash, DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { updateTool } from "@/services/tool-service";
 import type { Tool } from "@/lib/demo-data";
@@ -107,6 +108,7 @@ export default function ToolsDataTable({ initialTools }: ToolsDataTableProps) {
             <TableRow>
               <TableHead>Tool</TableHead>
               <TableHead>Category</TableHead>
+              <TableHead>Pricing</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -117,6 +119,15 @@ export default function ToolsDataTable({ initialTools }: ToolsDataTableProps) {
                 <TableCell className="font-medium">{tool.title}</TableCell>
                 <TableCell>
                   <Badge variant="outline">{tool.category}</Badge>
+                </TableCell>
+                <TableCell>
+                    {tool.isFree ? (
+                        <Badge variant="secondary">Free</Badge>
+                    ) : (
+                        <Badge variant="default" className="flex items-center gap-1">
+                            <DollarSign className="w-3 h-3"/> {tool.credits} Credits
+                        </Badge>
+                    )}
                 </TableCell>
                 <TableCell>
                   <Switch

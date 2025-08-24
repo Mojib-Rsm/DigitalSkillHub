@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import {
@@ -23,6 +24,7 @@ import { useToast } from "@/hooks/use-toast";
 import { saveToolAction } from "@/app/dashboard/admin/tools/actions";
 import { Sparkles } from "lucide-react";
 import type { Tool } from "@/lib/demo-data";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 
 const toolSchema = z.object({
@@ -32,6 +34,8 @@ const toolSchema = z.object({
   icon: z.string().min(1, "Icon name is required."),
   category: z.string().min(3, "Category is required."),
   enabled: z.boolean(),
+  isFree: z.boolean(),
+  credits: z.coerce.number().min(0, "Credits cannot be negative.").default(0),
 });
 
 type ToolFormValues = z.infer<typeof toolSchema>;
@@ -56,21 +60,30 @@ export function ToolDialog({ isOpen, setIsOpen, tool, onSave }: ToolDialogProps)
       icon: "",
       category: "",
       enabled: true,
+      isFree: true,
+      credits: 0,
     },
   });
+
+  const isFree = form.watch("isFree");
 
   useEffect(() => {
     if (tool) {
       form.reset(tool);
     } else {
       form.reset({
-        title: "", description: "", href: "/ai-tools/", icon: "", category: "", enabled: true,
+        title: "", description: "", href: "/ai-tools/", icon: "", category: "", enabled: true, isFree: true, credits: 0,
       });
     }
   }, [tool, form]);
 
   const onSubmit = async (data: ToolFormValues) => {
     setIsSubmitting(true);
+    // If tool is free, credits should be 0
+    if (data.isFree) {
+        data.credits = 0;
+    }
+
     const result = await saveToolAction(tool ? tool.id : null, data);
     
     if (result.success && result.tool) {
@@ -93,7 +106,7 @@ export function ToolDialog({ isOpen, setIsOpen, tool, onSave }: ToolDialogProps)
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
                 <FormField
                     control={form.control}
                     name="title"
@@ -133,34 +146,76 @@ export function ToolDialog({ isOpen, setIsOpen, tool, onSave }: ToolDialogProps)
                         </FormItem>
                     )}
                 />
-                <div className="grid grid-cols-2 gap-4">
+                 <FormField
+                    control={form.control}
+                    name="icon"
+                    render={({ field }) => (
+                        <FormItem className="grid grid-cols-4 items-center gap-4">
+                            <FormLabel className="text-right">Icon</FormLabel>
+                            <FormControl className="col-span-3">
+                                <Input {...field} placeholder="e.g., PenSquare"/>
+                            </FormControl>
+                            <FormMessage className="col-span-4 pl-[calc(25%+1rem)]"/>
+                        </FormItem>
+                    )}
+                />
+                 <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                        <FormItem className="grid grid-cols-4 items-center gap-4">
+                            <FormLabel className="text-right">Category</FormLabel>
+                            <FormControl className="col-span-3">
+                                <Input {...field} placeholder="e.g., Content & Writing" />
+                            </FormControl>
+                            <FormMessage className="col-span-4 pl-[calc(25%+1rem)]"/>
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="isFree"
+                    render={({ field }) => (
+                        <FormItem className="grid grid-cols-4 items-center gap-4">
+                            <FormLabel className="text-right">Pricing</FormLabel>
+                             <FormControl className="col-span-3">
+                                <RadioGroup
+                                    onValueChange={(value) => field.onChange(value === "true")}
+                                    defaultValue={String(field.value)}
+                                    className="flex items-center space-x-4"
+                                >
+                                    <FormItem className="flex items-center space-x-2">
+                                        <FormControl>
+                                            <RadioGroupItem value="true" />
+                                        </FormControl>
+                                        <FormLabel className="font-normal">Free</FormLabel>
+                                    </FormItem>
+                                     <FormItem className="flex items-center space-x-2">
+                                        <FormControl>
+                                            <RadioGroupItem value="false" />
+                                        </FormControl>
+                                        <FormLabel className="font-normal">Paid (Credits)</FormLabel>
+                                    </FormItem>
+                                </RadioGroup>
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+                {!isFree && (
                     <FormField
                         control={form.control}
-                        name="icon"
+                        name="credits"
                         render={({ field }) => (
-                            <FormItem className="grid grid-cols-2 items-center gap-4">
-                                <FormLabel className="text-right">Icon</FormLabel>
-                                <FormControl>
-                                    <Input {...field} placeholder="e.g., PenSquare"/>
+                            <FormItem className="grid grid-cols-4 items-center gap-4">
+                                <FormLabel className="text-right">Credit Cost</FormLabel>
+                                <FormControl className="col-span-3">
+                                    <Input type="number" {...field} />
                                 </FormControl>
-                                <FormMessage className="col-span-2 pl-[calc(50%+0.5rem)]"/>
+                                <FormMessage className="col-span-4 pl-[calc(25%+1rem)]"/>
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name="category"
-                        render={({ field }) => (
-                            <FormItem className="grid grid-cols-2 items-center gap-4">
-                                <FormLabel className="text-right">Category</FormLabel>
-                                <FormControl>
-                                    <Input {...field} placeholder="e.g., Content & Writing" />
-                                </FormControl>
-                                <FormMessage className="col-span-2 pl-[calc(50%+0.5rem)]"/>
-                            </FormItem>
-                        )}
-                    />
-                </div>
+                )}
                  <FormField
                     control={form.control}
                     name="enabled"
