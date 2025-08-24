@@ -10,10 +10,10 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { updateUserProfileAction, changePasswordAction } from './actions';
-import { Sparkles, User, Palette, Shield, Star, Award, Phone, Upload, Type, CaseLower, CornerDownLeft, Heart, Image as ImageIcon, CornerDownRight } from 'lucide-react';
+import { Sparkles, User, Palette, Shield, Star, Award, Phone, Upload, Type, CaseLower, CornerDownLeft, Heart, Image as ImageIcon, CornerDownRight, Link as LinkIcon } from 'lucide-react';
 import { getCurrentUser, UserProfile } from '@/services/user-service';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import * as React from 'react';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
@@ -178,7 +178,6 @@ function PasswordForm() {
 function BrandingForm() {
   const { toast } = useToast();
   const [color, setColor] = useState("#22A5C1");
-  const [borderRadius, setBorderRadius] = useState(0.5);
   
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setColor(e.target.value);
@@ -246,6 +245,47 @@ function BrandingForm() {
   )
 }
 
+function WordPressIntegrationForm() {
+  const { toast } = useToast();
+
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+      title: "Connection Saved (Demo)",
+      description: "In a real application, your connection details would be securely saved.",
+    });
+  };
+  
+  return (
+    <form onSubmit={handleSave}>
+        <CardContent className="space-y-6">
+             <Alert>
+                <LinkIcon className="h-4 w-4" />
+                <AlertTitle>Important Security Note</AlertTitle>
+                <AlertDescription>
+                    For security, please use an <a href="https://wordpress.org/documentation/article/application-passwords/" target="_blank" rel="noopener noreferrer" className="underline font-semibold">Application Password</a> from your WordPress admin panel instead of your main password. This is a more secure way to connect applications.
+                </AlertDescription>
+            </Alert>
+             <div className="space-y-2">
+                <Label htmlFor="wpUrl">WordPress Site URL</Label>
+                <Input id="wpUrl" name="wpUrl" placeholder="https://your-website.com" />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="wpUsername">WordPress Username</Label>
+                <Input id="wpUsername" name="wpUsername" placeholder="Your WordPress admin username" />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="wpAppPassword">Application Password</Label>
+                <Input id="wpAppPassword" name="wpAppPassword" type="password" placeholder="Enter your application password" />
+            </div>
+        </CardContent>
+        <CardFooter>
+            <Button type="submit">Save Connection</Button>
+        </CardFooter>
+    </form>
+  )
+}
+
 
 export default function SettingsPage() {
     const [user, setUser] = React.useState<UserProfile | null>(null);
@@ -276,10 +316,11 @@ export default function SettingsPage() {
       </div>
 
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 max-w-lg">
+        <TabsList className="grid w-full grid-cols-4 max-w-lg">
           <TabsTrigger value="profile"><User className="mr-2"/> Profile</TabsTrigger>
           <TabsTrigger value="security"><Shield className="mr-2"/> Security</TabsTrigger>
           <TabsTrigger value="branding"><Palette className="mr-2"/> Branding</TabsTrigger>
+          <TabsTrigger value="integrations"><LinkIcon className="mr-2"/> Integrations</TabsTrigger>
         </TabsList>
         <TabsContent value="profile">
           <Card>
@@ -308,6 +349,15 @@ export default function SettingsPage() {
             <BrandingForm/>
           </Card>
         </TabsContent>
+        <TabsContent value="integrations">
+           <Card>
+            <CardHeader>
+              <CardTitle>WordPress Integration</CardTitle>
+              <CardDescription>Connect your WordPress site to automatically post generated content.</CardDescription>
+            </CardHeader>
+            <WordPressIntegrationForm/>
+          </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
@@ -316,6 +366,7 @@ export default function SettingsPage() {
     
 
     
+
 
 
 
