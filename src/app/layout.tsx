@@ -7,6 +7,7 @@ import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://totthoai.mojib.me'),
   title: {
     default: 'TotthoAi - Your AI Toolbox | AI Content & Image Generator',
     template: '%s | TotthoAi',
@@ -35,6 +36,10 @@ export const metadata: Metadata = {
     google: 'UOjLl8nKnBXzX4B4Iexn70-dASolNycUEKKZ2o4fg0E',
   },
   authors: [{ name: "Mojib Rsm" }, { name: "Oftern" }, { name: "TotthoAI" }],
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
