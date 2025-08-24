@@ -146,9 +146,9 @@ export default function DashboardSidebar({
             )}
            <SidebarMenu className="p-2">
                  <SidebarMenuItem>
-                  <SidebarMenuButton href="/dashboard/pricing">
+                  <SidebarMenuButton href="/dashboard/subscriptions">
                     <DollarSign />
-                    <span>Account & Billing</span>
+                    <span>Subscription & Billing</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                  <SidebarMenuItem>
