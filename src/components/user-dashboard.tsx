@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { UserProfile } from "@/services/user-service";
-import { MoreHorizontal, Edit, PlusCircle, Star, Trash, Bell, Heart, Loader } from "lucide-react";
+import { MoreHorizontal, Edit, PlusCircle, Star, Trash, Bell, Heart, Loader, Sparkles, MessageSquare, ImageIcon, Lightbulb, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { getToolById, Tool } from "@/services/tool-service";
@@ -37,6 +37,32 @@ const myReviews = [
     { tool: "AI Image Generator", rating: 4, review: "Great tool, but sometimes the results are a bit off.", status: "Pending" },
 ]
 
+const featuredTools = [
+    {
+        title: "One-Click Article Writer",
+        description: "Generate a full blog post from a single title.",
+        href: "/ai-tools/one-click-writer",
+        icon: Sparkles,
+    },
+    {
+        title: "Facebook Comment Generator",
+        description: "Create relevant comments and replies for any post.",
+        href: "/ai-tools/facebook-comment-generator",
+        icon: MessageSquare,
+    },
+    {
+        title: "AI Image Generator",
+        description: "Turn your text descriptions into stunning images.",
+        href: "/ai-tools/image-generator",
+        icon: ImageIcon,
+    },
+    {
+        title: "Prompt Generator",
+        description: "Create detailed and effective prompts for AI.",
+        href: "/ai-tools/prompt-generator",
+        icon: Lightbulb,
+    }
+]
 
 export default function UserDashboard({ user }: { user: UserProfile }) {
 
@@ -79,6 +105,38 @@ export default function UserDashboard({ user }: { user: UserProfile }) {
                     </div>
                 </CardContent>
             </Card>
+
+            {/* Featured Tools Section */}
+            <div className="space-y-4">
+                <h2 className="text-2xl font-bold">Featured Tools</h2>
+                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {featuredTools.map((tool) => {
+                        const Icon = tool.icon;
+                        return (
+                             <Link href={tool.href} key={tool.title} className="group">
+                                <Card className="h-full flex flex-col justify-between shadow-sm hover:shadow-lg hover:border-primary transition-all duration-300 transform hover:-translate-y-1">
+                                    <CardHeader>
+                                        <div className="flex items-center gap-3">
+                                            <div className="bg-primary/10 p-2 rounded-md">
+                                                <Icon className="w-6 h-6 text-primary" />
+                                            </div>
+                                            <CardTitle className="text-base">{tool.title}</CardTitle>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <p className="text-sm text-muted-foreground">{tool.description}</p>
+                                    </CardContent>
+                                     <CardFooter className="p-4 pt-0">
+                                        <div className="text-xs text-primary font-semibold flex items-center gap-1">
+                                            Use Tool <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform"/>
+                                        </div>
+                                    </CardFooter>
+                                </Card>
+                            </Link>
+                        )
+                    })}
+                </div>
+            </div>
 
              {/* Main Content */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
