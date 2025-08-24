@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { PricingPlan } from '@/services/pricing-service';
 import { Testimonial } from '@/services/testimonial-service';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Tool } from '@/lib/demo-data';
+import type { Tool } from '@/services/tool-service';
 
 const faqItems = [
     {
@@ -477,7 +476,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                       </Accordion>
                   </div>
                   <div className="text-center mt-8">
-                       <p className="text-muted-foreground">Still have questions? <Link href="#" className="text-primary font-semibold hover:underline">Contact our support team</Link></p>
+                       <p className="text-muted-foreground">Still have questions? <Link href="/contact" className="text-primary font-semibold hover:underline">Contact our support team</Link></p>
                   </div>
               </div>
           </section>

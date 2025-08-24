@@ -5,6 +5,8 @@
 import { getFirestore, collection, getDocs, orderBy, query, doc, updateDoc, addDoc, deleteDoc, limit as firestoreLimit, where, getDoc } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { revalidatePath } from 'next/cache';
+
+// The type is now imported from demo-data to keep it consistent
 import type { Tool } from '@/lib/demo-data';
 
 
