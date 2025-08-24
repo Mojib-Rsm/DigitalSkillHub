@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircleIcon, LayoutTemplate, Receipt, Clapperboard, Sparkles, Youtube, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Search, Loader } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircleIcon, LayoutTemplate, Receipt, Clapperboard, Sparkles, Youtube, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Search, Loader, Star } from "lucide-react";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from '@/lib/utils';
@@ -16,6 +16,34 @@ import { Skeleton } from '@/components/ui/skeleton';
 const iconComponents: { [key: string]: React.ElementType } = {
     PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Edit, MessageCircleIcon, LayoutTemplate, Receipt, Clapperboard, Sparkles, Youtube, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2
 };
+
+const featuredTools = [
+  {
+    title: "One-Click Article Writer",
+    description: "Generate a full blog post from a single title. SEO-optimized and ready to publish.",
+    href: "/ai-tools/one-click-writer",
+    icon: Sparkles,
+  },
+  {
+    title: "Facebook Comment Generator",
+    description: "Instantly create relevant comments and replies for any Facebook post or image.",
+    href: "/ai-tools/facebook-comment-generator",
+    icon: MessageSquare,
+  },
+  {
+    title: "AI Image Generator",
+    description: "Turn your text descriptions into stunning, high-quality images for any purpose.",
+    href: "/ai-tools/image-generator",
+    icon: ImageIcon,
+  },
+   {
+    title: "Handwriting Extractor",
+    description: "Convert handwritten notes from images into editable text, tables, or documents.",
+    href: "/ai-tools/handwriting-extractor",
+    icon: Edit,
+  },
+];
+
 
 // Dummy AI search function - replace with a real AI call
 async function aiSearch(query: string, allTools: Tool[]): Promise<Tool[]> {
@@ -88,6 +116,37 @@ export default function AiToolsPage() {
              {isSearching && <Loader className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 animate-spin"/>}
         </div>
         <p className="text-center text-xs text-muted-foreground mt-2">আমাদের স্মার্ট সার্চ ব্যবহার করে আপনার প্রয়োজনীয় টুলটি মুহূর্তেই খুঁজে নিন</p>
+      </div>
+      
+       <div className="mb-16">
+        <h2 className="text-3xl font-bold text-center mb-8 font-headline flex items-center justify-center gap-3"><Star className="text-primary"/> ফিচার্ড টুলস</h2>
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredTools.map((tool) => {
+                 const Icon = tool.icon;
+                 return (
+                     <Link href={tool.href} key={tool.title} className="group">
+                        <Card className="h-full flex flex-col justify-between shadow-lg hover:shadow-2xl hover:border-primary transition-all duration-300 transform hover:-translate-y-2 border-2 border-transparent">
+                            <CardHeader>
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-primary/10 p-2 rounded-md">
+                                        <Icon className="w-6 h-6 text-primary" />
+                                    </div>
+                                    <CardTitle className="text-lg">{tool.title}</CardTitle>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-muted-foreground">{tool.description}</p>
+                            </CardContent>
+                            <CardFooter className="p-4 pt-0">
+                                <div className="text-sm text-primary font-semibold flex items-center gap-1">
+                                    এখনই ব্যবহার করুন <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform"/>
+                                </div>
+                            </CardFooter>
+                        </Card>
+                    </Link>
+                )
+            })}
+        </div>
       </div>
 
 

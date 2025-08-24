@@ -36,13 +36,9 @@ function SubmitButton() {
 export default function CoverLetterGeneratorForm() {
   const initialState = { message: "", coverLetter: "", issues: [], fields: {} };
   const [state, formAction] = useActionState(generateCoverLetter, initialState);
-  const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (state.message === "success") {
-      // Do not reset the form, user may want to tweak inputs.
-    }
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
@@ -71,7 +67,7 @@ export default function CoverLetterGeneratorForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form ref={formRef} action={formAction} className="space-y-6">
+        <form action={formAction} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="jobTitle">পদের নাম</Label>

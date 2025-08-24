@@ -83,11 +83,6 @@ export default function FacebookCommentGeneratorForm() {
       const response = await generateFacebookComments(formData);
       if (response.success && response.data) {
         setResult(response.data);
-        formRef.current?.reset();
-        setPreviewUrl(null);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
       } else if (response.issues) {
         setIssues(response.issues);
       }
@@ -136,7 +131,7 @@ export default function FacebookCommentGeneratorForm() {
     }
   }
 
-  const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+  const handlePaste = (event: React.ClipboardEvent<HTMLFormElement>) => {
     const items = event.clipboardData.items;
     let file = null;
     for (let i = 0; i < items.length; i++) {

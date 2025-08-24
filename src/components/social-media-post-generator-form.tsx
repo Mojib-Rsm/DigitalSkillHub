@@ -36,13 +36,9 @@ function SubmitButton() {
 export default function SocialMediaPostGeneratorForm() {
   const initialState = { message: "", post: "", issues: [], fields: {} };
   const [state, formAction] = useActionState(generatePost, initialState);
-  const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    if (state.message === "success") {
-      formRef.current?.reset();
-    }
     if (state.message !== "" && state.message !== "success" && state.message !== "Validation Error") {
         toast({
             variant: "destructive",
@@ -71,7 +67,7 @@ export default function SocialMediaPostGeneratorForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form ref={formRef} action={formAction} className="space-y-6">
+        <form action={formAction} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="topic">পোস্টের বিষয়</Label>
             <Input

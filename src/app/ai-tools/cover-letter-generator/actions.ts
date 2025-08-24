@@ -50,14 +50,16 @@ export async function generateCoverLetter(
       return {
         message: "success",
         coverLetter: result.coverLetter,
+        fields: validatedFields.data,
       };
     } else {
-        return { message: "Failed to generate cover letter. Please try again." }
+        return { message: "Failed to generate cover letter. Please try again.", fields: validatedFields.data }
     }
   } catch (error) {
     console.error(error);
     return {
       message: "An unexpected error occurred. Please try again.",
+       fields: validatedFields.data,
     };
   }
 }
