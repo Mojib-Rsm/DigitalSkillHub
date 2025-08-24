@@ -94,7 +94,7 @@ interface HomePageClientProps {
 
 export default function HomePageClient({ pricingPlans, testimonials, trendingTools, activeCoupons }: HomePageClientProps) {
   const loading = !pricingPlans || !testimonials || !trendingTools;
-  const primaryCoupon = activeCoupons.length > 0 ? activeCoupons[0] : null;
+  const primaryCoupon = activeCoupons && activeCoupons.length > 0 ? activeCoupons[0] : null;
 
 
   return (

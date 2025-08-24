@@ -4,7 +4,7 @@
 
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
-import { ArrowLeft, ArrowRight, Bot, Sparkles, Quote, Star, Heart } from "lucide-react";
+import { ArrowLeft, ArrowRight, Bot, Sparkles, Quote, Star, Heart, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, BarChart, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, MessageSquare, UserCircle as UserCircleIcon, Edit, Clapperboard, Receipt, LayoutTemplate, Megaphone, Youtube, GitBranchPlus, Mic, List, PanelTopOpen, CalendarDays, BarChart2 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
@@ -13,39 +13,40 @@ import React, { useEffect, useState } from "react";
 import { getCurrentUser, updateUserProfile } from "@/services/user-service";
 
 const iconComponents: { [key: string]: React.ElementType } = {
-    PenSquare: require("lucide-react").PenSquare,
-    ShoppingCart: require("lucide-react").ShoppingCart,
-    Languages: require("lucide-react").Languages,
-    Hash: require("lucide-react").Hash,
-    Briefcase: require("lucide-react").Briefcase,
-    Mail: require("lucide-react").Mail,
-    Lightbulb: require("lucide-react").Lightbulb,
-    BarChart: require("lucide-react").BarChart,
-    FileText: require("lucide-react").FileText,
-    GraduationCap: require("lucide-react").GraduationCap,
-    HelpCircle: require("lucide-react").HelpCircle,
-    BookCheck: require("lucide-react").BookCheck,
-    ImageIcon: require("lucide-react").Image,
-    DollarSign: require("lucide-react").DollarSign,
-    Wand: require("lucide-react").Wand,
-    FileSignature: require("lucide-react").FileSignature,
-    Globe: require("lucide-react").Globe,
-    Film: require("lucide-react").Film,
-    MessageSquare: require("lucide-react").MessageSquare,
-    UserCircleIcon: require("lucide-react").UserCircle,
-    Edit: require("lucide-react").Edit,
-    Clapperboard: require("lucide-react").Clapperboard,
-    Receipt: require("lucide-react").Receipt,
-    LayoutTemplate: require("lucide-react").LayoutTemplate,
-    Sparkles: require("lucide-react").Sparkles,
-    Megaphone: require("lucide-react").Megaphone,
-    Youtube: require("lucide-react").Youtube,
-    GitBranchPlus: require("lucide-react").GitBranchPlus,
-    Mic: require("lucide-react").Mic,
-    List: require("lucide-react").List,
-    PanelTopOpen: require("lucide-react").PanelTopOpen,
-    CalendarDays: require("lucide-react").CalendarDays,
-    Quote: require("lucide-react").Quote,
+    PenSquare,
+    ShoppingCart,
+    Languages,
+    Hash,
+    Briefcase,
+    Mail,
+    Lightbulb,
+    BarChart,
+    FileText,
+    GraduationCap,
+    HelpCircle,
+    BookCheck,
+    ImageIcon,
+    DollarSign,
+    Wand,
+    FileSignature,
+    Globe,
+    Film,
+    MessageSquare,
+    UserCircleIcon,
+    Edit,
+    Clapperboard,
+    Receipt,
+    LayoutTemplate,
+    Sparkles,
+    Megaphone,
+    Youtube,
+    GitBranchPlus,
+    Mic,
+    List,
+    PanelTopOpen,
+    CalendarDays,
+    BarChart2,
+    Quote,
 };
 
 type HelperTool = {
