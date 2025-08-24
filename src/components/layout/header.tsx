@@ -29,15 +29,10 @@ const navLinks = [
   { href: "/#features", label: "Features" },
   { href: "/#whats-new", label: "What's New" },
   { href: "/#pricing", label: "Pricing" },
-  { href: "/free-tools", label: "Free Tools" },
 ];
 
 const moreLinks = [
     { href: "/about", label: "About Us" },
-    { href: "/careers", label: "Careers" },
-    { href: "/press-kit", label: "Press Kit" },
-    { href: "/blog", label: "Blog" },
-    { href: "/community", label: "Community" },
     { href: "/ai-tools", label: "All Tools" },
 ]
 

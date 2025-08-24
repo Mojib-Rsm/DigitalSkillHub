@@ -10,13 +10,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '',
     '/about',
     '/ai-tools',
-    '/blog',
-    '/careers',
-    '/community',
     '/contact',
     '/courses',
-    '/free-tools',
-    '/press-kit',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
@@ -51,3 +46,4 @@ export default function sitemap(): MetadataRoute.Sitemap {
       ...legalRoutes
     ];
 }
+

@@ -13,13 +13,9 @@ const footerLinks = {
     ],
     support: [
         { label: "Contact Support", href: "/contact" },
-        { label: "Community", href: "/community" },
-        { label: "Free Tools", href: "/free-tools" },
     ],
     company: [
         { label: "About Us", href: "/about" },
-        { label: "Careers", href: "/careers" },
-        { label: "Press Kit", href: "/press-kit" },
     ],
     legal: [
         { label: "Privacy Policy", href: "/legal/privacy-policy" },
