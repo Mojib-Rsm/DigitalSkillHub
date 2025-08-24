@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { updateUserProfileAction, changePasswordAction } from './actions';
-import { Sparkles, User, Palette, Shield, Star, Award, Phone, Upload } from 'lucide-react';
+import { Sparkles, User, Palette, Shield, Star, Award, Phone, Upload, Type, CaseLower, CornerBottomLeft, Heart, Image as ImageIcon } from 'lucide-react';
 import { getCurrentUser, UserProfile } from '@/services/user-service';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -18,6 +18,8 @@ import * as React from 'react';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Slider } from '../ui/slider';
 
 
 function SubmitButton({ children }: { children: React.ReactNode }) {
@@ -174,8 +176,11 @@ function PasswordForm() {
 }
 
 function BrandingForm() {
+  const { toast } = useToast();
   const [color, setColor] = useState("#22A5C1");
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [faviconPreview, setFaviconPreview] = useState<string | null>(null);
+  const [borderRadius, setBorderRadius] = useState(0.5);
   
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -184,40 +189,115 @@ function BrandingForm() {
     }
   };
 
+  const handleFaviconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setFaviconPreview(URL.createObjectURL(file));
+    }
+  };
+
   const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setColor(e.target.value);
-    // In a real app, this would also update the CSS variables
+  };
+
+  const handleSaveBranding = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+      title: "Branding Saved!",
+      description: "Your branding settings have been updated.",
+    });
+    // In a real app, you would send this data to your backend
+    console.log({
+        logo: logoPreview,
+        favicon: faviconPreview,
+        primaryColor: color,
+        borderRadius: borderRadius,
+    });
   };
   
   return (
-    <form>
-        <CardContent className="space-y-6">
-            <div className="space-y-2">
-                <Label>Company Logo</Label>
-                 <div className="flex items-center gap-4">
-                    <div className="w-20 h-20 border rounded-md flex items-center justify-center bg-muted">
-                        {logoPreview ? <Image src={logoPreview} alt="Logo Preview" width={80} height={80} className="object-contain"/> : <Palette className="w-8 h-8 text-muted-foreground"/>}
+    <form onSubmit={handleSaveBranding}>
+        <CardContent className="space-y-8">
+            <div className="space-y-4 rounded-lg border p-4">
+                 <h4 className="font-semibold text-lg">Company Identity</h4>
+                <div className="space-y-2">
+                    <Label>Company Logo</Label>
+                    <div className="flex items-center gap-4">
+                        <div className="w-20 h-20 border rounded-md flex items-center justify-center bg-muted">
+                            {logoPreview ? <Image src={logoPreview} alt="Logo Preview" width={80} height={80} className="object-contain"/> : <Palette className="w-8 h-8 text-muted-foreground"/>}
+                        </div>
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="logo" className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 px-3 py-2 rounded-md text-sm font-medium flex items-center justify-center">
+                                <Upload className="mr-2"/> Upload Logo
+                            </Label>
+                            <Input id="logo" name="logo" type="file" className="hidden" onChange={handleLogoChange} accept="image/*"/>
+                            <p className="text-xs text-muted-foreground">Recommended: 256x256px PNG with transparent background.</p>
+                        </div>
                     </div>
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                        <Label htmlFor="logo" className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 px-3 py-2 rounded-md text-sm font-medium flex items-center justify-center">
-                            <Upload className="mr-2"/> Upload Logo
-                        </Label>
-                        <Input id="logo" name="logo" type="file" className="hidden" onChange={handleLogoChange} accept="image/*"/>
-                        <p className="text-xs text-muted-foreground">Recommended: 256x256px PNG with transparent background.</p>
+                </div>
+                 <div className="space-y-2">
+                    <Label>Favicon</Label>
+                    <div className="flex items-center gap-4">
+                        <div className="w-20 h-20 border rounded-md flex items-center justify-center bg-muted">
+                            {faviconPreview ? <Image src={faviconPreview} alt="Favicon Preview" width={80} height={80} className="object-contain"/> : <Heart className="w-8 h-8 text-muted-foreground"/>}
+                        </div>
+                        <div className="grid w-full max-w-sm items-center gap-1.5">
+                            <Label htmlFor="favicon" className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 px-3 py-2 rounded-md text-sm font-medium flex items-center justify-center">
+                                <Upload className="mr-2"/> Upload Favicon
+                            </Label>
+                            <Input id="favicon" name="favicon" type="file" className="hidden" onChange={handleFaviconChange} accept="image/x-icon, image/png, image/svg+xml"/>
+                            <p className="text-xs text-muted-foreground">Recommended: 32x32px .ico, .png, or .svg</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div className="space-y-2">
-                <Label htmlFor="primaryColor">Primary Color</Label>
-                <div className="flex items-center gap-2">
-                    <Input id="primaryColor" name="primaryColor" value={color} onChange={handleColorChange} className="max-w-xs"/>
-                    <div className="w-10 h-10 rounded-md border" style={{ backgroundColor: color }}></div>
+
+             <div className="space-y-4 rounded-lg border p-4">
+                <h4 className="font-semibold text-lg">Typography</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div className="space-y-2">
+                        <Label htmlFor="headlineFont" className="flex items-center gap-2"><Type/> Headline Font</Label>
+                        <Select name="headlineFont" defaultValue="Tiro Bangla">
+                            <SelectTrigger id="headlineFont"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Tiro Bangla">Tiro Bangla</SelectItem>
+                                <SelectItem value="Poppins">Poppins</SelectItem>
+                                <SelectItem value="Montserrat">Montserrat</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="bodyFont" className="flex items-center gap-2"><CaseLower/> Body Font</Label>
+                        <Select name="bodyFont" defaultValue="Hind Siliguri">
+                            <SelectTrigger id="bodyFont"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Hind Siliguri">Hind Siliguri</SelectItem>
+                                <SelectItem value="Inter">Inter</SelectItem>
+                                <SelectItem value="Roboto">Roboto</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
             </div>
+
+            <div className="space-y-4 rounded-lg border p-4">
+                 <h4 className="font-semibold text-lg">Layout & Appearance</h4>
+                <div className="space-y-2">
+                    <Label htmlFor="primaryColor">Primary Color</Label>
+                    <div className="flex items-center gap-2">
+                        <Input id="primaryColor" name="primaryColor" value={color} onChange={handleColorChange} className="w-24 p-1"/>
+                        <div className="w-10 h-10 rounded-md border" style={{ backgroundColor: color }}></div>
+                    </div>
+                </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="borderRadius" className="flex items-center gap-2"><CornerBottomLeft/> Border Radius ({borderRadius}rem)</Label>
+                    <Slider id="borderRadius" name="borderRadius" min={0} max={1} step={0.1} value={[borderRadius]} onValueChange={(vals) => setBorderRadius(vals[0])} />
+                </div>
+            </div>
+           
         </CardContent>
         <CardFooter>
-            <Button disabled>Save Branding</Button>
-            <p className="text-sm text-muted-foreground ml-4">Branding customization is a premium feature.</p>
+            <Button type="submit">Save Branding</Button>
         </CardFooter>
     </form>
   )
@@ -289,4 +369,3 @@ export default function SettingsPage() {
     </div>
   );
 }
-
