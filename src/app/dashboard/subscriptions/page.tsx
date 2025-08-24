@@ -163,8 +163,8 @@ export default function SubscriptionsPage() {
                              <CardDescription>We support the following payment methods.</CardDescription>
                         </CardHeader>
                         <CardContent className="flex items-center gap-4">
-                           <Image src="https://logos-world.net/wp-content/uploads/2024/10/Bkash-Logo.png" alt="bKash" width={100} height={40}/>
-                           <Image src="https://wp.logos-download.com/wp-content/uploads/2022/01/Nagad_Logo_horizontally-700x294.png" alt="Nagad" width={100} height={40}/>
+                           <Image src="/Bkash-Logo.png" alt="bKash" width={100} height={40}/>
+                           <Image src="/Nagad_Logo.png" alt="Nagad" width={100} height={40}/>
                         </CardContent>
                     </Card>
                      <Card className="bg-destructive text-destructive-foreground">
