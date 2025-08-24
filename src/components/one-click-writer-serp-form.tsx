@@ -21,8 +21,7 @@ import { countries } from "@/lib/countries";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
-import remarkRehype from 'remark-rehype';
-import rehypeStringify from 'rehype-stringify';
+import remarkRehype from 'rehype-stringify';
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import type { SerpResult } from "@/services/serp-service";
@@ -269,7 +268,7 @@ export default function OneClickWriterSerpForm() {
                                         <div className="p-1">
                                             <Card className="bg-background">
                                                 <CardContent className="flex flex-col items-center justify-center p-2 gap-1 text-center">
-                                                    <Image src={`https://www.google.com/s2/favicons?domain=${new URL(result.link).hostname}&sz=32`} alt="favicon" width={16} height={16} className="mb-1"/>
+                                                    <img src={`https://www.google.com/s2/favicons?domain=${new URL(result.link).hostname}&sz=32`} alt="favicon" width={16} height={16} className="mb-1"/>
                                                     <span className="text-[10px] font-semibold text-muted-foreground truncate w-full">{new URL(result.link).hostname}</span>
                                                 </CardContent>
                                             </Card>
