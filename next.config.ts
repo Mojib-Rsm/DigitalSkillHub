@@ -31,11 +31,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  serverActions: {
-    bodySizeLimit: '4mb', // Increase body size limit for image uploads
-    // Increase server action timeout to 2 minutes for video generation
-    executionTimeout: 120,
-  },
   webpack: (config, { isServer }) => {
     // This is to fix a bug with handlebars and webpack
     config.resolve.alias.handlebars = 'handlebars/dist/handlebars.min.js';
