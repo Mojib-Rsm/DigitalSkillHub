@@ -5,6 +5,13 @@ import { adminDb } from '@/lib/firebase-admin';
 import { allCourses, blogPosts, jobPostings, pricingPlans, testimonials, tools, users } from '@/lib/demo-data';
 
 export async function seedDatabase() {
+    if (!adminDb) {
+        return {
+            success: false,
+            message: "Firebase Admin SDK is not initialized. Please check your server environment variables."
+        };
+    }
+    
     let totalOperationsCount = 0;
     const collectionsToSeed = [
         { name: 'courses', data: allCourses },
