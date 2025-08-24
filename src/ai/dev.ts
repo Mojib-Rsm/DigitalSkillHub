@@ -44,3 +44,4 @@ import '@/ai/flows/content-outline-generator.ts';
 import '@/ai/flows/headline-generator.ts';
 import '@/ai/flows/content-calendar-planner.ts';
 import '@/ai/flows/facebook-caption-generator.ts';
+import '@/app/dashboard/admin/seed/actions.ts';

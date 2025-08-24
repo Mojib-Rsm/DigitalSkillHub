@@ -35,6 +35,7 @@ import {
   LineChart,
   Bell,
   User as UserIcon,
+  Database,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -116,10 +117,10 @@ export default function DashboardSidebar({
                                     <span>Notifications</span>
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
-                            <SidebarMenuSubItem>
-                                <SidebarMenuSubButton href="/dashboard/admin/seed-data">
-                                    <DatabaseZap />
-                                    <span>Seed Data</span>
+                              <SidebarMenuSubItem>
+                                <SidebarMenuSubButton href="/dashboard/admin/seed">
+                                    <Database />
+                                    <span>Seed Database</span>
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                         </SidebarMenuSub>
