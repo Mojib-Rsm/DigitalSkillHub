@@ -173,6 +173,56 @@ function PasswordForm() {
     );
 }
 
+function BrandingForm() {
+  const [color, setColor] = useState("#22A5C1");
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setLogoPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setColor(e.target.value);
+    // In a real app, this would also update the CSS variables
+  };
+  
+  return (
+    <form>
+        <CardContent className="space-y-6">
+            <div className="space-y-2">
+                <Label>Company Logo</Label>
+                 <div className="flex items-center gap-4">
+                    <div className="w-20 h-20 border rounded-md flex items-center justify-center bg-muted">
+                        {logoPreview ? <Image src={logoPreview} alt="Logo Preview" width={80} height={80} className="object-contain"/> : <Palette className="w-8 h-8 text-muted-foreground"/>}
+                    </div>
+                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                        <Label htmlFor="logo" className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 px-3 py-2 rounded-md text-sm font-medium flex items-center justify-center">
+                            <Upload className="mr-2"/> Upload Logo
+                        </Label>
+                        <Input id="logo" name="logo" type="file" className="hidden" onChange={handleLogoChange} accept="image/*"/>
+                        <p className="text-xs text-muted-foreground">Recommended: 256x256px PNG with transparent background.</p>
+                    </div>
+                </div>
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="primaryColor">Primary Color</Label>
+                <div className="flex items-center gap-2">
+                    <Input id="primaryColor" name="primaryColor" value={color} onChange={handleColorChange} className="max-w-xs"/>
+                    <div className="w-10 h-10 rounded-md border" style={{ backgroundColor: color }}></div>
+                </div>
+            </div>
+        </CardContent>
+        <CardFooter>
+            <Button disabled>Save Branding</Button>
+            <p className="text-sm text-muted-foreground ml-4">Branding customization is a premium feature.</p>
+        </CardFooter>
+    </form>
+  )
+}
+
 
 export default function SettingsPage() {
     const [user, setUser] = React.useState<UserProfile | null>(null);
@@ -232,12 +282,11 @@ export default function SettingsPage() {
               <CardTitle>App Branding</CardTitle>
               <CardDescription>Customize the look and feel of your application.</CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Branding settings coming soon.</p>
-            </CardContent>
+            <BrandingForm/>
           </Card>
         </TabsContent>
       </Tabs>
     </div>
   );
 }
+
