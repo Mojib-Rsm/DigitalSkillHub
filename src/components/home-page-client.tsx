@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard, Search, Edit, Clapperboard, Receipt, BarChart2 } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle, CornerDownRight, Clock, TrendingUp, Award, CheckCircle, Youtube, Star, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard, Search, Edit, Clapperboard, Receipt, BarChart2, List, PanelTopOpen, CalendarDays, GitBranchPlus } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -81,68 +81,67 @@ const trendingCategories = [
     { title: "এসইও ও মার্কেটিং", icon: TrendingUp, href: "/ai-tools" },
 ];
 
-const getIconComponent = (iconName: string) => {
+const IconComponent = ({ iconName }: { iconName: string }) => {
     switch (iconName) {
-        case 'PenSquare': return PenSquare;
-        case 'ShoppingCart': return ShoppingCart;
-        case 'Languages': return Languages;
-        case 'Hash': return Hash;
-        case 'Briefcase': return Briefcase;
-        case 'Mail': return Mail;
-        case 'Lightbulb': return Lightbulb;
-        case 'FileText': return FileText;
-        case 'GraduationCap': return GraduationCap;
-        case 'HelpCircle': return HelpCircle;
-        case 'BookCheck': return BookCheck;
-        case 'ImageIcon': return ImageIcon;
-        case 'DollarSign': return DollarSign;
-        case 'Wand': return Wand;
-        case 'FileSignature': return FileSignature;
-        case 'Globe': return Globe;
-        case 'Film': return Film;
-        case 'Mic': return Mic;
-        case 'Code': return Code;
-        case 'Presentation': return Presentation;
-        case 'Palette': return Palette;
-        case 'Gamepad': return Gamepad;
-        case 'MessageSquare': return MessageSquare;
-        case 'UserCircle': return UserCircle;
-        case 'CornerDownRight': return CornerDownRight;
-        case 'Edit': return Edit;
-        case 'Layers': return Layers;
-        case 'RefreshCcw': return RefreshCcw;
-        case 'Sparkles': return SparklesIcon;
-        case 'TowerControl': return TowerControl;
-        case 'Clapperboard': return Clapperboard;
-        case 'Youtube': return Youtube;
-        case 'LinkIcon': return LinkIcon;
-        case 'Activity': return Activity;
-        case 'ArrowUpRight': return ArrowUpRight;
-        case 'CreditCard': return CreditCard;
-        case 'Award': return Award;
-        case 'CheckCircle': return CheckCircle;
-        case 'Clock': return Clock;
-        case 'TrendingUp': return TrendingUp;
-        case 'Users': return Users;
-        case 'ThumbsUp': return ThumbsUp;
-        case 'ShieldCheck': return ShieldCheck;
-        case 'GanttChartSquare': return GanttChartSquare;
-        case 'ChevronDown': return ChevronDown;
-        case 'BarChart2': return BarChart2;
-        case 'Search': return Search;
-        case 'Receipt': return Receipt;
-        case 'LayoutTemplate': return LayoutTemplate;
-        case 'Megaphone': return Megaphone;
-        case 'GitBranchPlus': return GitBranchPlus;
-        case 'List': return List;
-        case 'PanelTopOpen': return PanelTopOpen;
-        case 'CalendarDays': return CalendarDays;
-        case 'Quote': return Quote;
-        case 'BarChart': return BarChart;
-        default: return Bot;
+        case 'PenSquare': return <PenSquare className="w-8 h-8 text-primary" />;
+        case 'ShoppingCart': return <ShoppingCart className="w-8 h-8 text-primary" />;
+        case 'Languages': return <Languages className="w-8 h-8 text-primary" />;
+        case 'Hash': return <Hash className="w-8 h-8 text-primary" />;
+        case 'Briefcase': return <Briefcase className="w-8 h-8 text-primary" />;
+        case 'Mail': return <Mail className="w-8 h-8 text-primary" />;
+        case 'Lightbulb': return <Lightbulb className="w-8 h-8 text-primary" />;
+        case 'FileText': return <FileText className="w-8 h-8 text-primary" />;
+        case 'GraduationCap': return <GraduationCap className="w-8 h-8 text-primary" />;
+        case 'HelpCircle': return <HelpCircle className="w-8 h-8 text-primary" />;
+        case 'BookCheck': return <BookCheck className="w-8 h-8 text-primary" />;
+        case 'ImageIcon': return <ImageIcon className="w-8 h-8 text-primary" />;
+        case 'DollarSign': return <DollarSign className="w-8 h-8 text-primary" />;
+        case 'Wand': return <Wand className="w-8 h-8 text-primary" />;
+        case 'FileSignature': return <FileSignature className="w-8 h-8 text-primary" />;
+        case 'Globe': return <Globe className="w-8 h-8 text-primary" />;
+        case 'Film': return <Film className="w-8 h-8 text-primary" />;
+        case 'Mic': return <Mic className="w-8 h-8 text-primary" />;
+        case 'Code': return <Code className="w-8 h-8 text-primary" />;
+        case 'Presentation': return <Presentation className="w-8 h-8 text-primary" />;
+        case 'Palette': return <Palette className="w-8 h-8 text-primary" />;
+        case 'Gamepad': return <Gamepad className="w-8 h-8 text-primary" />;
+        case 'MessageSquare': return <MessageSquare className="w-8 h-8 text-primary" />;
+        case 'UserCircle': return <UserCircle className="w-8 h-8 text-primary" />;
+        case 'CornerDownRight': return <CornerDownRight className="w-8 h-8 text-primary" />;
+        case 'Edit': return <Edit className="w-8 h-8 text-primary" />;
+        case 'Layers': return <Layers className="w-8 h-8 text-primary" />;
+        case 'RefreshCcw': return <RefreshCcw className="w-8 h-8 text-primary" />;
+        case 'Sparkles': return <SparklesIcon className="w-8 h-8 text-primary" />;
+        case 'TowerControl': return <TowerControl className="w-8 h-8 text-primary" />;
+        case 'Clapperboard': return <Clapperboard className="w-8 h-8 text-primary" />;
+        case 'Youtube': return <Youtube className="w-8 h-8 text-primary" />;
+        case 'LinkIcon': return <LinkIcon className="w-8 h-8 text-primary" />;
+        case 'Activity': return <Activity className="w-8 h-8 text-primary" />;
+        case 'ArrowUpRight': return <ArrowUpRight className="w-8 h-8 text-primary" />;
+        case 'CreditCard': return <CreditCard className="w-8 h-8 text-primary" />;
+        case 'Award': return <Award className="w-8 h-8 text-primary" />;
+        case 'CheckCircle': return <CheckCircle className="w-8 h-8 text-primary" />;
+        case 'Clock': return <Clock className="w-8 h-8 text-primary" />;
+        case 'TrendingUp': return <TrendingUp className="w-8 h-8 text-primary" />;
+        case 'Users': return <Users className="w-8 h-8 text-primary" />;
+        case 'ThumbsUp': return <ThumbsUp className="w-8 h-8 text-primary" />;
+        case 'ShieldCheck': return <ShieldCheck className="w-8 h-8 text-primary" />;
+        case 'GanttChartSquare': return <GanttChartSquare className="w-8 h-8 text-primary" />;
+        case 'ChevronDown': return <ChevronDown className="w-8 h-8 text-primary" />;
+        case 'BarChart2': return <BarChart2 className="w-8 h-8 text-primary" />;
+        case 'Search': return <Search className="w-8 h-8 text-primary" />;
+        case 'Receipt': return <Receipt className="w-8 h-8 text-primary" />;
+        case 'LayoutTemplate': return <LayoutTemplate className="w-8 h-8 text-primary" />;
+        case 'Megaphone': return <Megaphone className="w-8 h-8 text-primary" />;
+        case 'GitBranchPlus': return <GitBranchPlus className="w-8 h-8 text-primary" />;
+        case 'List': return <List className="w-8 h-8 text-primary" />;
+        case 'PanelTopOpen': return <PanelTopOpen className="w-8 h-8 text-primary" />;
+        case 'CalendarDays': return <CalendarDays className="w-8 h-8 text-primary" />;
+        case 'Quote': return <Bot className="w-8 h-8 text-primary" />; // Assumed Quote is not a standard icon, using Bot as fallback
+        case 'BarChart': return <BarChart className="w-8 h-8 text-primary" />;
+        default: return <Bot className="w-8 h-8 text-primary" />;
     }
 };
-
 
 interface HomePageClientProps {
     pricingPlans: PricingPlan[];
@@ -245,13 +244,12 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                        [...Array(4)].map((_, i) => <Skeleton key={i} className="h-64 w-full" />)
                    ) : (
                        trendingTools.map(tool => {
-                            const Icon = getIconComponent(tool.icon);
                             return (
                                 <Link href={tool.href} key={tool.id} className="group">
                                     <Card className="h-full flex flex-col justify-between shadow-md hover:shadow-xl hover:border-primary transition-all duration-300 transform hover:-translate-y-1">
                                         <CardHeader className="flex flex-row items-start gap-4">
                                             <div className="bg-primary/10 p-3 rounded-md">
-                                                <Icon className="w-8 h-8 text-primary" />
+                                                <IconComponent iconName={tool.icon} />
                                             </div>
                                             <div>
                                                 <CardTitle className="text-xl">{tool.title}</CardTitle>
@@ -553,3 +551,5 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
   );
 
 }
+
+    

@@ -31,40 +31,59 @@ export async function seedDatabaseAction() {
 
     try {
         const collectionsToSeed = [
-            { name: 'tools', data: tools },
-            { name: 'courses', data: allCourses },
-            { name: 'blog', data: blogPosts },
-            { name: 'jobs', data: jobPostings },
-            { name: 'pricing', data: pricingPlans },
-            { name: 'testimonials', data: testimonials },
-            { name: 'users', data: users },
+            { name: 'tools', data: tools, uniqueKey: 'id' },
+            { name: 'courses', data: allCourses, uniqueKey: 'title' },
+            { name: 'blog', data: blogPosts, uniqueKey: 'title' },
+            { name: 'jobs', data: jobPostings, uniqueKey: 'title' },
+            { name: 'pricing', data: pricingPlans, uniqueKey: 'id' },
+            { name: 'testimonials', data: testimonials, uniqueKey: 'id' },
+            { name: 'users', data: users, uniqueKey: 'email' },
         ];
 
         let documentsWritten = 0;
+        let collectionsSkipped = 0;
 
-        for (const { name, data } of collectionsToSeed) {
+        for (const { name, data, uniqueKey } of collectionsToSeed) {
             const collectionRef = collection(db, name);
             const snapshot = await getDocs(query(collectionRef));
             
-            if (!snapshot.empty) {
-                console.log(`Collection '${name}' is not empty. Skipping seeding.`);
-                continue;
+            if (snapshot.empty) {
+                 // Collection is empty, seed all data
+                const batch = writeBatch(db);
+                data.forEach(item => {
+                    const docRef = collectionRef.doc();
+                    batch.set(docRef, item);
+                    documentsWritten++;
+                });
+                await batch.commit();
+            } else {
+                 // Collection exists, check for missing items
+                 const existingItems = new Set(snapshot.docs.map(doc => doc.data()[uniqueKey]));
+                 const batch = writeBatch(db);
+                 let itemsAddedToBatch = 0;
+                 
+                 data.forEach(item => {
+                     if (!existingItems.has((item as any)[uniqueKey])) {
+                         const docRef = collectionRef.doc();
+                         batch.set(docRef, item);
+                         documentsWritten++;
+                         itemsAddedToBatch++;
+                     }
+                 });
+
+                 if (itemsAddedToBatch > 0) {
+                     await batch.commit();
+                 } else {
+                    collectionsSkipped++;
+                 }
             }
-
-            const batch = writeBatch(db);
-            data.forEach(item => {
-                const docRef = collectionRef.doc();
-                batch.set(docRef, item);
-                documentsWritten++;
-            });
-            await batch.commit();
         }
-
+        
         if (documentsWritten === 0) {
-             return { success: true, message: 'Database already contains data. No new data was seeded.' };
+             return { success: true, message: 'Database is already up to date. No new data was seeded.' };
         }
 
-        return { success: true, message: `Successfully seeded ${documentsWritten} documents across ${collectionsToSeed.length} collections.` };
+        return { success: true, message: `Successfully seeded ${documentsWritten} new documents.` };
 
     } catch (error) {
         console.error("Error seeding database:", error);
