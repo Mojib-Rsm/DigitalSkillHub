@@ -1,4 +1,6 @@
 
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -6,20 +8,75 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { getCurrentUser } from "@/services/user-service";
 import { CreditCard, Download, PlusCircle, Repeat } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
+import { useEffect, useState } from "react";
+import type { UserProfile } from "@/services/user-service";
+import Image from "next/image";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+
+// Extend jsPDF with autoTable
+interface jsPDFWithAutoTable extends jsPDF {
+    autoTable: (options: any) => jsPDF;
+}
+
 
 const billingHistory = [
-    { date: "2024-07-15", plan: "Beta Plan", amount: "৳1499.00", status: "Paid" },
-    { date: "2024-06-15", plan: "Alpha Plan", amount: "৳499.00", status: "Paid" },
-    { date: "2024-05-15", plan: "Alpha Plan", amount: "৳499.00", status: "Paid" },
+    { date: "2024-07-15", plan: "Beta Plan", amount: "৳1499.00", status: "Paid", invoiceId: "INV-20240715" },
+    { date: "2024-06-15", plan: "Alpha Plan", amount: "৳499.00", status: "Paid", invoiceId: "INV-20240615" },
+    { date: "2024-05-15", plan: "Alpha Plan", amount: "৳499.00", status: "Paid", invoiceId: "INV-20240515" },
 ];
 
-export default async function SubscriptionsPage() {
-    const user = await getCurrentUser();
+export default function SubscriptionsPage() {
+    const [user, setUser] = useState<UserProfile | null>(null);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const currentUser = await getCurrentUser();
+            if (!currentUser) {
+                router.push('/login');
+            } else {
+                setUser(currentUser);
+            }
+            setLoading(false);
+        };
+        fetchUser();
+    }, [router]);
+    
+    const handleDownloadInvoice = (invoice: typeof billingHistory[0]) => {
+        const doc = new jsPDF() as jsPDFWithAutoTable;
+
+        doc.setFontSize(20);
+        doc.text("Invoice", 10, 20);
+        
+        doc.setFontSize(12);
+        doc.text(`Invoice ID: ${invoice.invoiceId}`, 10, 30);
+        doc.text(`Date: ${invoice.date}`, 10, 37);
+        doc.text(`User: ${user?.name} (${user?.email})`, 10, 44);
+
+        doc.autoTable({
+            startY: 60,
+            head: [['Description', 'Amount', 'Status']],
+            body: [[`Subscription: ${invoice.plan}`, invoice.amount, invoice.status]],
+            theme: 'striped',
+        });
+        
+        const finalY = (doc as any).lastAutoTable.finalY;
+        doc.setFontSize(10);
+        doc.text("Thank you for your business!", 10, finalY + 10);
+
+        doc.save(`Invoice-${invoice.invoiceId}.pdf`);
+    };
+
+    if (loading) {
+        return <div>Loading...</div>
+    }
 
     if (!user) {
-        redirect('/login');
+        return null;
     }
 
     const creditUsagePercentage = (user.credits / 1000) * 100; // Assuming max credits for calculation, this should be dynamic
@@ -87,7 +144,7 @@ export default async function SubscriptionsPage() {
                                             <TableCell>{item.plan}</TableCell>
                                             <TableCell>{item.amount}</TableCell>
                                             <TableCell>
-                                                <Button variant="outline" size="sm">
+                                                <Button variant="outline" size="sm" onClick={() => handleDownloadInvoice(item)}>
                                                     <Download className="mr-2"/>
                                                     Download
                                                 </Button>
@@ -103,21 +160,14 @@ export default async function SubscriptionsPage() {
                     <Card>
                         <CardHeader>
                             <CardTitle>Payment Method</CardTitle>
+                             <CardDescription>We support the following payment methods.</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <div className="flex items-center gap-3 p-4 border rounded-md">
-                                <CreditCard className="w-8 h-8 text-muted-foreground"/>
-                                <div>
-                                    <p className="font-semibold">Visa ending in 1234</p>
-                                    <p className="text-sm text-muted-foreground">Expires 12/2026</p>
-                                </div>
-                            </div>
+                        <CardContent className="flex items-center gap-4">
+                           <Image src="https://upload.wikimedia.org/wikipedia/commons/2/24/Bkash-logo.svg" alt="bKash" width={100} height={40}/>
+                           <Image src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Nagad-Logo.wine.svg/1200px-Nagad-Logo.wine.svg.png" alt="Nagad" width={100} height={40}/>
                         </CardContent>
-                         <CardFooter>
-                            <Button variant="outline">Update Payment Method</Button>
-                        </CardFooter>
                     </Card>
-                     <Card className="bg-destructive/10 border-destructive/20 text-destructive-foreground">
+                     <Card className="bg-destructive/10 border-destructive text-destructive-foreground">
                         <CardHeader>
                             <CardTitle>Cancel Subscription</CardTitle>
                              <CardDescription className="text-destructive-foreground/80">Canceling will downgrade you to the free plan at the end of your current billing cycle.</CardDescription>
