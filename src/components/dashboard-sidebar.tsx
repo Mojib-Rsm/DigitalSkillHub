@@ -53,9 +53,9 @@ export default function DashboardSidebar({
     <SidebarProvider>
       <Sidebar side="left" collapsible="icon">
         <SidebarHeader>
-           <SidebarMenuButton href="/" className="h-12 justify-start gap-3 px-3">
-              <Bot className="text-primary size-7" />
-              <span className="font-bold text-xl">TotthoAi</span>
+           <SidebarMenuButton href="/" className="h-20 justify-start gap-2 px-4">
+              <Bot className="text-primary size-8" />
+              <span className="font-bold font-headline text-2xl">TotthoAi</span>
             </SidebarMenuButton>
         </SidebarHeader>
         <SidebarContent className="p-2">
@@ -74,7 +74,7 @@ export default function DashboardSidebar({
                     </SidebarMenuButton>
                     <SidebarMenuSub>
                         <SidebarMenuSubItem>
-                            <SidebarMenuSubButton>
+                            <SidebarMenuSubButton href="/ai-tools/one-click-writer">
                                 <Sparkles />
                                 <span>One Click Writer</span>
                             </SidebarMenuSubButton>
