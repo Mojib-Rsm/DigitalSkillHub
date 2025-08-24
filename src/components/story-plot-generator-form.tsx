@@ -1,8 +1,7 @@
 
 "use client";
 
-import React from "react";
-import { useActionState, useEffect } from "react";
+import React, { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { generateStoryPlot } from "@/app/ai-tools/story-plot-generator/actions";
 import { Button } from "@/components/ui/button";

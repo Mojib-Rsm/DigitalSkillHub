@@ -1,8 +1,7 @@
 
 "use client";
 
-import React from "react";
-import { useActionState, useEffect } from "react";
+import React, { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { generatePoetryOrLyrics } from "@/app/ai-tools/poetry-lyrics-maker/actions";
 import { Button } from "@/components/ui/button";

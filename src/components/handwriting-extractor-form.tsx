@@ -1,8 +1,7 @@
 
 "use client";
 
-import React from "react";
-import { useActionState, useEffect, useRef, useState } from "react";
+import React, { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { extractHandwritingAction } from "@/app/ai-tools/handwriting-extractor/actions";
 import { Button } from "@/components/ui/button";

@@ -1,8 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
-import { useActionState, useEffect } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { generateScript } from "@/app/ai-tools/script-writer/actions";
 import { Button } from "@/components/ui/button";
