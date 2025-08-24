@@ -8,7 +8,7 @@ import Footer from '@/components/layout/footer';
 
 export const metadata: Metadata = {
   title: {
-    default: 'TotthoAi - আপনার এআই টুলবক্স | AI Content & Image Generator',
+    default: 'TotthoAi - Your AI Toolbox | AI Content & Image Generator',
     template: '%s | TotthoAi',
   },
   description:
