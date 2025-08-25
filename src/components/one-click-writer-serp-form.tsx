@@ -20,6 +20,7 @@ import type { OneClickWriterOutput } from "@/ai/flows/one-click-writer";
 import Image from "next/image";
 import { Textarea } from "./ui/textarea";
 import { Badge } from "./ui/badge";
+import { Separator } from "./ui/separator";
 
 // Remark and rehype plugins for markdown rendering
 import { unified } from 'unified';
@@ -76,8 +77,8 @@ async function markdownToHtml(markdown: string): Promise<string> {
   return String(file);
 }
 
-const ScoreCircle = ({ score, text, interpretation }: { score: number, text: string, interpretation: string }) => {
-    const circumference = 2 * Math.PI * 52; // 2 * pi * radius
+const ScoreCircle = ({ score, text }: { score: number, text: string }) => {
+    const circumference = 2 * Math.PI * 28; // 2 * pi * radius
     const strokeDashoffset = circumference - (score / 100) * circumference;
     let colorClass = 'text-green-500';
     if (score < 50) colorClass = 'text-red-500';
@@ -85,36 +86,35 @@ const ScoreCircle = ({ score, text, interpretation }: { score: number, text: str
 
     return (
         <div className="flex flex-col items-center gap-2">
-            <div className="relative w-32 h-32">
-                <svg className="w-full h-full" viewBox="0 0 120 120">
+            <div className="relative w-20 h-20">
+                <svg className="w-full h-full" viewBox="0 0 64 64">
                     <circle
                         className="text-muted"
-                        strokeWidth="10"
+                        strokeWidth="6"
                         stroke="currentColor"
                         fill="transparent"
-                        r="52"
-                        cx="60"
-                        cy="60"
+                        r="28"
+                        cx="32"
+                        cy="32"
                     />
                     <circle
                         className={`transform -rotate-90 origin-center transition-all duration-1000 ${colorClass}`}
-                        strokeWidth="10"
+                        strokeWidth="6"
                         strokeDasharray={circumference}
                         style={{ strokeDashoffset }}
                         strokeLinecap="round"
                         stroke="currentColor"
                         fill="transparent"
-                        r="52"
-                        cx="60"
-                        cy="60"
+                        r="28"
+                        cx="32"
+                        cy="32"
                     />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                    <span className={`text-3xl font-bold ${colorClass}`}>{score}</span>
+                    <span className={`text-xl font-bold ${colorClass}`}>{score}</span>
                 </div>
             </div>
-            <p className="text-sm font-semibold">{text}</p>
-            <p className="text-xs text-muted-foreground text-center max-w-xs">{interpretation}</p>
+            <p className="text-xs font-semibold">{text}</p>
         </div>
     )
 };
@@ -126,7 +126,7 @@ export default function OneClickWriterSerpForm() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [serpData, setSerpData] = useState<SerpAnalysisResult | null>(null);
-  const [country, setCountry] = useState("Bangladesh");
+  const [country, setCountry] = useState("United States of America");
   const [countrySelectOpen, setCountrySelectOpen] = useState(false);
   const [primaryKeyword, setPrimaryKeyword] = useState("");
   const [article, setArticle] = useState<OneClickWriterOutput | null>(null);
@@ -232,72 +232,66 @@ export default function OneClickWriterSerpForm() {
     document.body.removeChild(link);
   }
 
+  // Final Editor View
   if (article) {
     return (
-        <div className="space-y-8">
-            <Button variant="outline" onClick={() => setArticle(null)}><ArrowLeft className="mr-2"/> Go Back & Edit</Button>
-            <h3 className="text-3xl font-bold font-headline text-center">Your Generated Article</h3>
-            
-             <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Fingerprint className="w-5 h-5 text-primary"/>SEO & Readability Analysis</CardTitle>
-                </CardHeader>
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <ScoreCircle score={article.readability.score} text="Readability" interpretation={article.readability.interpretation} />
-                     <div className="space-y-4">
-                        <Alert>
-                            <Smile className="h-4 w-4" />
-                            <AlertTitle>Sentiment</AlertTitle>
-                            <AlertDescription>{article.seoAnalysis.sentiment}</AlertDescription>
-                        </Alert>
-                         <Alert>
-                            <BookOpen className="h-4 w-4" />
-                            <AlertTitle>Word Count</AlertTitle>
-                            <AlertDescription>{article.seoAnalysis.wordCount} words</AlertDescription>
-                        </Alert>
-                    </div>
-                    <div className="lg:col-span-2">
-                        <Alert>
-                             <AlertTitle>LSI Keywords</AlertTitle>
-                             <AlertDescription className="flex flex-wrap gap-2 pt-2">
-                                 {article.seoAnalysis.lsiKeywords.map(keyword => <Badge key={keyword} variant="outline">{keyword}</Badge>)}
-                            </AlertDescription>
-                        </Alert>
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5 text-primary"/>Article & Meta Data</CardTitle>
-                    <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => handleCopy(article.article)}><Clipboard className="mr-2"/> Copy Article</Button>
-                        <Button variant="outline" size="sm" onClick={handleDownload}><Download className="mr-2"/> Download (.md)</Button>
-                        <Button variant="default" size="sm"><Share2 className="mr-2"/> Publish</Button>
-                    </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                     <Alert>
-                        <AlertTitle>SEO Title</AlertTitle>
-                        <AlertDescription className="flex justify-between items-center">
-                        <p>{article.seoTitle}</p>
-                        <Button variant="ghost" size="icon" onClick={() => handleCopy(article.seoTitle)}><Clipboard className="w-4 h-4"/></Button>
-                        </AlertDescription>
-                    </Alert>
-                    <Alert>
-                        <AlertTitle>Meta Description</AlertTitle>
-                        <AlertDescription className="flex justify-between items-center">
-                        <p>{article.seoDescription}</p>
-                            <Button variant="ghost" size="icon" onClick={() => handleCopy(article.seoDescription)}><Clipboard className="w-4 h-4"/></Button>
-                        </AlertDescription>
-                    </Alert>
-                    <div className="prose dark:prose-invert max-w-none prose-headings:font-headline prose-img:rounded-lg prose-img:border" dangerouslySetInnerHTML={{ __html: renderedHtml }} />
-                </CardContent>
-            </Card>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-4">
+                 <Card>
+                    <CardHeader className="flex flex-row justify-between items-center">
+                        <CardTitle>Editor</CardTitle>
+                        <div className="flex gap-2">
+                             <Button variant="outline" size="sm" onClick={() => handleCopy(article.article)}><Clipboard className="mr-2"/> Copy</Button>
+                            <Button variant="outline" size="sm" onClick={handleDownload}><Download className="mr-2"/> Download</Button>
+                            <Button variant="default" size="sm"><Share2 className="mr-2"/> Publish</Button>
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                       <div className="prose dark:prose-invert max-w-none prose-headings:font-headline prose-img:rounded-lg prose-img:border" dangerouslySetInnerHTML={{ __html: renderedHtml }} />
+                    </CardContent>
+                </Card>
+            </div>
+             <div className="space-y-4 sticky top-4 self-start">
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>SEO Score</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex justify-around items-center">
+                       <ScoreCircle score={article.readability.score} text="Readability" />
+                       <ScoreCircle score={85} text="SEO Score" />
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Meta Information</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                         <div className="space-y-1">
+                            <Label>Meta Title</Label>
+                            <Textarea defaultValue={article.seoTitle} rows={2} />
+                        </div>
+                        <div className="space-y-1">
+                            <Label>Meta Description</Label>
+                            <Textarea defaultValue={article.seoDescription} rows={3} />
+                        </div>
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Internal Link Suggestions</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                            {article.internalLinks.map(link => <li key={link}>{link}</li>)}
+                        </ul>
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
     )
   }
 
+  // Content Brief/Outline View
   if (serpData) {
     return (
          <Card className="shadow-lg">
@@ -357,80 +351,81 @@ export default function OneClickWriterSerpForm() {
     )
   }
 
-  return (
-    <div>
-         <Card className="shadow-lg">
-            <CardHeader>
-                <CardTitle>Keyword & Location</CardTitle>
-                <CardDescription>
-                    Enter your primary keyword and target country to begin SERP analysis.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <form onSubmit={handleAnalysis} className="space-y-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="primaryKeyword">Keyword or Topic</Label>
-                        <Input id="primaryKeyword" name="primaryKeyword" placeholder="e.g., best travel destinations in asia" required className="text-base" />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="country">Target Country</Label>
-                        <input type="hidden" name="targetCountry" value={country} />
-                        <Popover open={countrySelectOpen} onOpenChange={setCountrySelectOpen}>
-                            <PopoverTrigger asChild>
-                            <Button
-                                variant="outline"
-                                role="combobox"
-                                aria-expanded={countrySelectOpen}
-                                className="w-full justify-between font-normal"
-                            >
-                                {country
-                                ? countries.find((c) => c.value === country)?.label
-                                : "Select country..."}
-                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                            <Command>
-                                <CommandInput placeholder="Search country..." />
-                                <CommandEmpty>No country found.</CommandEmpty>
-                                <CommandGroup className="max-h-64 overflow-y-auto">
-                                {countries.map((c) => (
-                                    <CommandItem
-                                    key={c.value}
-                                    value={c.value}
-                                    onSelect={(currentValue) => {
-                                        setCountry(countries.find(c => c.value.toLowerCase() === currentValue.toLowerCase())?.value || "")
-                                        setCountrySelectOpen(false)
-                                    }}
-                                    >
-                                    <Check
-                                        className={cn(
-                                        "mr-2 h-4 w-4",
-                                        country === c.value ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                    {c.label}
-                                    </CommandItem>
-                                ))}
-                                </CommandGroup>
-                            </Command>
-                            </PopoverContent>
-                        </Popover>
-                    </div>
-                    {issues.length > 0 && (
-                        <Alert variant="destructive">
-                            <AlertTitle>Error</AlertTitle>
-                            <AlertDescription>
-                                <ul className="list-disc pl-5">
-                                    {issues.map((issue, i) => <li key={i}>{issue}</li>)}
-                                </ul>
-                            </AlertDescription>
-                        </Alert>
-                    )}
-                    <AnalyzeButton />
-                </form>
-            </CardContent>
-        </Card>
-    </div>
-  );
+    // Initial View: Keyword & GEO
+    return (
+        <div>
+            <Card className="shadow-lg">
+                <CardHeader>
+                    <CardTitle>Keyword & Location</CardTitle>
+                    <CardDescription>
+                        Enter your primary keyword and target country to begin SERP analysis.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleAnalysis} className="space-y-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="primaryKeyword">Keyword or Topic</Label>
+                            <Input id="primaryKeyword" name="primaryKeyword" placeholder="e.g., best travel destinations in asia" required className="text-base" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="country">Target Country</Label>
+                            <input type="hidden" name="targetCountry" value={country} />
+                            <Popover open={countrySelectOpen} onOpenChange={setCountrySelectOpen}>
+                                <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    aria-expanded={countrySelectOpen}
+                                    className="w-full justify-between font-normal"
+                                >
+                                    {country
+                                    ? countries.find((c) => c.value === country)?.label
+                                    : "Select country..."}
+                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                                <Command>
+                                    <CommandInput placeholder="Search country..." />
+                                    <CommandEmpty>No country found.</CommandEmpty>
+                                    <CommandGroup className="max-h-64 overflow-y-auto">
+                                    {countries.map((c) => (
+                                        <CommandItem
+                                        key={c.value}
+                                        value={c.value}
+                                        onSelect={(currentValue) => {
+                                            setCountry(countries.find(c => c.value.toLowerCase() === currentValue.toLowerCase())?.value || "")
+                                            setCountrySelectOpen(false)
+                                        }}
+                                        >
+                                        <Check
+                                            className={cn(
+                                            "mr-2 h-4 w-4",
+                                            country === c.value ? "opacity-100" : "opacity-0"
+                                            )}
+                                        />
+                                        {c.label}
+                                        </CommandItem>
+                                    ))}
+                                    </CommandGroup>
+                                </Command>
+                                </PopoverContent>
+                            </Popover>
+                        </div>
+                        {issues.length > 0 && (
+                            <Alert variant="destructive">
+                                <AlertTitle>Error</AlertTitle>
+                                <AlertDescription>
+                                    <ul className="list-disc pl-5">
+                                        {issues.map((issue, i) => <li key={i}>{issue}</li>)}
+                                    </ul>
+                                </AlertDescription>
+                            </Alert>
+                        )}
+                        <AnalyzeButton />
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
+    );
 }
