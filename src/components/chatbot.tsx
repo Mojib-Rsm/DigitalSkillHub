@@ -33,7 +33,7 @@ export default function Chatbot() {
     // Load messages from session storage when component mounts
     try {
       const storedMessages = sessionStorage.getItem("chatMessages");
-      if (storedMessages) {
+      if (storedMessages && storedMessages.length > 0) { // Check if not null or empty
         setMessages(JSON.parse(storedMessages));
       }
     } catch (error) {

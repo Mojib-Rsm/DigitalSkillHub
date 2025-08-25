@@ -13,7 +13,6 @@ import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Progress } from "./ui/progress";
 import type { OneClickWriterOutput } from "@/ai/flows/one-click-writer";
 import { Badge } from "./ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -143,11 +142,13 @@ export default function OneClickWriterForm() {
       setIssues([]);
 
       const formData = new FormData(event.currentTarget);
+      const toneValue = formData.get('tone') as string;
+      
       const input = {
           title: formData.get('title') as string,
           primaryKeyword: formData.get('primaryKeyword') as string,
           contentLength: formData.get('contentLength') as 'Auto' | 'Short' | 'Medium' | 'Long' | 'Ultra Long',
-          tone: formData.get('tone') as 'Formal' | 'Casual' | 'Friendly' | 'Professional',
+          tone: toneValue.charAt(0).toUpperCase() + toneValue.slice(1) as 'Formal' | 'Casual' | 'Friendly' | 'Professional',
           targetCountry: formData.get('targetCountry') as string,
           includeFaq: formData.get('includeFaq') === 'on',
           includeKeyTakeaways: formData.get('includeKeyTakeaways') === 'on',

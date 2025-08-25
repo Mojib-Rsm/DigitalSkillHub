@@ -3,8 +3,6 @@
 
 import { oneClickWriter, OneClickWriterOutput, OneClickWriterInput } from "@/ai/flows/one-click-writer";
 import { saveHistoryAction } from "@/app/actions/save-history";
-import { z } from "zod";
-
 
 export async function generateArticleAction(
   input: OneClickWriterInput
@@ -39,5 +37,3 @@ export async function generateArticleAction(
     };
   }
 }
-
-    

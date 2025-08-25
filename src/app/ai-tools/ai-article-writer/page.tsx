@@ -1,5 +1,4 @@
 
-
 import AiArticleWriterForm from "@/components/ai-article-writer-form";
 import ToolPageLayout from "@/components/tool-page-layout";
 import { getRelatedTools, getToolByHref } from "@/services/tool-service";
@@ -29,4 +28,3 @@ export default async function AiArticleWriterPage() {
         </ToolPageLayout>
     );
 }
-
