@@ -25,6 +25,7 @@ import rehypeStringify from 'rehype-stringify';
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import type { SerpResult } from "@/services/serp-service";
+import Image from "next/image";
 
 function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
   const { pending } = useFormStatus();
@@ -52,6 +53,29 @@ async function markdownToHtml(markdown: string): Promise<string> {
     .use(rehypeStringify)
     .process(markdown);
   return String(file);
+}
+
+const CountdownTimer = ({ duration }: { duration: number }) => {
+    const [timeLeft, setTimeLeft] = useState(duration);
+
+    useEffect(() => {
+        if (timeLeft <= 0) return;
+
+        const intervalId = setInterval(() => {
+            setTimeLeft(timeLeft - 1);
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, [timeLeft]);
+    
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+
+    return (
+        <p className="text-muted-foreground text-sm mt-2">
+            Estimated time remaining: {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+        </p>
+    )
 }
 
 export default function OneClickWriterSerpForm() {
@@ -145,9 +169,9 @@ export default function OneClickWriterSerpForm() {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle>SERP-Informed Article Generation</CardTitle>
+        <CardTitle>AI-Powered Article Writer</CardTitle>
         <CardDescription>
-          Provide a topic and keyword. The AI will analyze top Google results to create a superior, SEO-optimized article.
+          Research and create GEO optimized top ranking articles. SEO optimized writing with AI detection bypass.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -231,6 +255,7 @@ export default function OneClickWriterSerpForm() {
              <div className="mt-8 text-center">
                 <div className="inline-block bg-muted/50 p-4 rounded-lg">
                     <p className="text-muted-foreground font-semibold animate-pulse">{isAnalyzing ? "Analyzing Google SERP..." : "Writing your article..."}</p>
+                    {isWriting && <CountdownTimer duration={120} />}
                     {isAnalyzing && (
                         <Carousel
                             plugins={[Autoplay({ delay: 2000 })]}
@@ -278,7 +303,7 @@ export default function OneClickWriterSerpForm() {
                             </CarouselContent>
                         </Carousel>
                     )}
-                    <p className="text-muted-foreground text-sm mt-2">This may take up to a minute. Please don't leave the page.</p>
+                    <p className="text-muted-foreground text-sm mt-2">This may take a few moments. Please don't leave the page.</p>
                 </div>
             </div>
         )}
