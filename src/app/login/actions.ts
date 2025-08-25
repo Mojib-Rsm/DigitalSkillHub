@@ -43,7 +43,8 @@ export async function loginAction(
     userSnapshot = await getDocs(q);
 
   } catch (error) {
-    console.error('Firestore connection error during login:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.error('Firestore connection error during login:', errorMessage);
     return {
       message: 'Could not connect to the database. Please check your network and try again.',
       success: false,
