@@ -352,7 +352,7 @@ export const tools: Tool[] = [
     {
         id: "ai-article-writer",
         title: "AI-Powered Article Writer",
-        description: "Research and create GEO optimized top ranking articles.",
+        description: "Research and create GEO optimized top ranking articles. SEO optimized writing with AI detection bypass.",
         href: "/ai-tools/ai-article-writer",
         icon: "Search",
         category: "Content & Writing",
@@ -418,7 +418,7 @@ export const tools: Tool[] = [
     {
         id: "messenger-reply-generator",
         title: "মেসেঞ্জার রিপ্লাই জেনারেটর",
-        description: "যেকোনো মেসেঞ্জার কথোপকথনের জন্য প্রাসঙ্গিক উত্তর তৈরি করুন।",
+        description: "যেকোনো মেসেঞ্জার কথোপকথনের জন্য প্রাসঙ্গিক রিপ্লাই তৈরি করুন।",
         href: "/ai-tools/messenger-reply-generator",
         icon: "MessageSquare",
         category: "Content & Writing",
@@ -747,4 +747,3 @@ export const tools: Tool[] = [
     },
 ];
 
-    
