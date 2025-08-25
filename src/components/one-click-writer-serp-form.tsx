@@ -171,11 +171,6 @@ export default function OneClickWriterSerpForm() {
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       setPrimaryKeyword(value);
-      if (value) {
-          setShowSuggestions(true);
-      } else {
-          setShowSuggestions(false);
-      }
   }
 
   const handleSuggestionClick = (suggestion: string) => {
@@ -421,37 +416,25 @@ export default function OneClickWriterSerpForm() {
             </CardHeader>
             <CardContent>
                  <form onSubmit={handleAnalysis} className="space-y-4">
-                     <div className="grid grid-cols-[1fr_auto_auto_auto] gap-2 items-start">
+                     <div className="grid grid-cols-1 gap-2 items-start">
                        <div className="relative col-span-4">
                             <div className="flex flex-wrap items-center gap-2 p-2 border rounded-md min-h-12" onClick={() => secondaryInputRef.current?.focus()}>
                                {primaryKeyword && <Badge>{primaryKeyword} <button type="button" onClick={() => setPrimaryKeyword('')} className="ml-1 rounded-full hover:bg-background/20 p-0.5"><X className="w-3 h-3"/></button></Badge>}
                                {secondaryKeywords.map((kw, index) => (
                                    <Badge variant="secondary" key={index}>{kw} <button type="button" onClick={() => removeSecondaryKeyword(index)} className="ml-1 rounded-full hover:bg-background/20 p-0.5"><X className="w-3 h-3"/></button></Badge>
                                ))}
-                               {!primaryKeyword ? (
-                                    <Input
-                                        id="primaryKeyword"
-                                        name="primaryKeyword"
-                                        placeholder="Enter your primary keyword"
-                                        required
-                                        className="text-base h-auto border-none focus-visible:ring-0 p-0 m-0"
-                                        value={primaryKeyword}
-                                        onChange={handleKeywordChange}
-                                        onFocus={() => setShowSuggestions(true)}
-                                        onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-                                    />
-                               ) : (
-                                   <Input
-                                        id="secondaryKeywords"
-                                        name="secondaryKeywordInput"
-                                        placeholder="Secondary keywords..."
-                                        className="text-base h-auto border-none focus-visible:ring-0 p-0 m-0"
-                                        value={secondaryKeywordInput}
-                                        onChange={(e) => setSecondaryKeywordInput(e.target.value)}
-                                        onKeyDown={handleSecondaryKeywordKeyDown}
-                                        ref={secondaryInputRef}
-                                    />
-                               )}
+                                <Input
+                                    id="primaryKeyword"
+                                    name="primaryKeyword"
+                                    placeholder="Enter your primary keyword"
+                                    required
+                                    className="text-base h-auto border-none focus-visible:ring-0 p-0 m-0 flex-1 min-w-[200px]"
+                                    value={primaryKeyword}
+                                    onChange={handleKeywordChange}
+                                    onFocus={() => setShowSuggestions(true)}
+                                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                                    ref={secondaryInputRef}
+                                />
                             </div>
                             
                              {showSuggestions && primaryKeyword && (
