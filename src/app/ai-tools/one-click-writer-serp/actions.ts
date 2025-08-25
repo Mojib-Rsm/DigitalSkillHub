@@ -3,10 +3,10 @@
 
 import { oneClickWriterSerp } from "@/ai/flows/one-click-writer-serp";
 import { saveHistoryAction } from "@/app/actions/save-history";
-import { getSerpResults, getKeywordData, getRelatedQuestions, SerpResult, KeywordData, RelatedQuestion } from '@/services/serp-service';
-import { z } from "zod";
+import { getSerpResults, getKeywordData, getRelatedQuestions, type SerpResult, type KeywordData, type RelatedQuestion } from '@/services/serp-service';
 import type { OneClickWriterOutput } from "@/ai/flows/one-click-writer";
 import { OneClickWriterSerpInputSchema, type OneClickWriterSerpInput } from "@/ai/schema/one-click-writer-serp";
+import { z } from "zod";
 
 
 const SerpAnalysisInputSchema = z.object({
@@ -58,8 +58,8 @@ export async function getSerpAnalysisAction(
         }
     } catch (error: any) {
         console.error("Error in getSerpAnalysisAction:", error.message);
-        if (error.response?.data?.error?.message) {
-             console.error(`Google Search API Error: ${error.response.data.error.message}`);
+        if (error.response?.data?.error) {
+             console.error(`Google Search API Error: ${JSON.stringify(error.response.data.error)}`);
              return { success: false, issues: [`Google Search API Error: ${error.response.data.error.message}`] };
         }
         return {
@@ -81,8 +81,16 @@ export async function generateArticleFromSerpAction(
     };
   }
 
+  // Capitalize the first letter of tone, audience, and purpose
+  const processedInput = {
+    ...validatedFields.data,
+    tone: validatedFields.data.tone.charAt(0).toUpperCase() + validatedFields.data.tone.slice(1),
+    audience: validatedFields.data.audience.charAt(0).toUpperCase() + validatedFields.data.audience.slice(1),
+    purpose: validatedFields.data.purpose.charAt(0).toUpperCase() + validatedFields.data.purpose.slice(1),
+  };
+
   try {
-    const result = await oneClickWriterSerp(validatedFields.data);
+    const result = await oneClickWriterSerp(processedInput);
     if (result) {
         await saveHistoryAction({
             tool: 'one-click-writer-serp',

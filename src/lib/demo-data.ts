@@ -339,10 +339,10 @@ export const testimonials = [
 
 export const tools: Tool[] = [
     {
-        id: "ai-article-writer",
-        title: "AI Article Writer",
+        id: "one-click-writer-serp",
+        title: "SERP Article",
         description: "Generate a full, SEO-optimized blog post with a rich editor and real-time feedback.",
-        href: "/ai-tools/ai-article-writer",
+        href: "/ai-tools/one-click-writer-serp",
         icon: "Search",
         category: "Content & Writing",
         enabled: true,
@@ -354,6 +354,17 @@ export const tools: Tool[] = [
         title: "One-Click Writer",
         description: "Generate a simple, complete article from just a title. Fast and easy.",
         href: "/ai-tools/one-click-writer",
+        icon: "Sparkles",
+        category: "Content & Writing",
+        enabled: false,
+        isFree: false,
+        credits: 10,
+    },
+     {
+        id: "ai-article-writer",
+        title: "AI Article Writer",
+        description: "Generate a simple, complete article from just a title. Fast and easy.",
+        href: "/ai-tools/ai-article-writer",
         icon: "Sparkles",
         category: "Content & Writing",
         enabled: true,
@@ -746,5 +757,6 @@ export const tools: Tool[] = [
         credits: 2,
     },
 ];
+
 
 

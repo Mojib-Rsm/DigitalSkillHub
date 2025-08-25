@@ -5,7 +5,7 @@ import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { Search } from "lucide-react";
 import { notFound } from "next/navigation";
 
-export default async function OneClickWriterSerpPage() {
+export default async function SerpArticlePage() {
     const tool = await getToolByHref('/ai-tools/one-click-writer-serp');
     if (!tool) notFound();
     
