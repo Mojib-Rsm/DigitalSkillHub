@@ -91,22 +91,6 @@ class SerpApi {
             return [];
         }
     }
-
-    async getAutocomplete(query: string): Promise<string[]> {
-        try {
-            const response = await axios.get(this.baseUrl, {
-                params: {
-                    engine: 'google_autocomplete',
-                    q: query,
-                    api_key: this.apiKey,
-                },
-            });
-            return response.data.suggestions?.map((item: any) => item.value) || [];
-        } catch (error: any) {
-             console.error('Error fetching from SerpApi for autocomplete:', error.message);
-             return [];
-        }
-    }
 }
 
 class DataForSeo {
@@ -176,10 +160,16 @@ export async function getRelatedQuestions(query: string): Promise<RelatedQuestio
 }
 
 export async function getKeywordSuggestions(query: string): Promise<string[]> {
-    if (!SERPAPI_KEY) {
-        console.warn('SerpApi key not set, skipping keyword suggestions fetch. See setup_guide.md for instructions.');
+    if (!GOOGLE_API_KEY || !GOOGLE_CSE_ID) {
+        console.warn('Google CSE not configured, skipping keyword suggestions.');
         return [];
     }
-    const serpApi = new SerpApi();
-    return serpApi.getAutocomplete(query);
+    try {
+        const results = await getSerpResults(query);
+        // Use the titles of the search results as suggestions
+        return results.map(r => r.title);
+    } catch (error) {
+        console.error('Error getting keyword suggestions via SERP:', error);
+        return [];
+    }
 }

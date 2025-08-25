@@ -136,7 +136,6 @@ export default function OneClickWriterSerpForm() {
   
   const [primaryKeyword, setPrimaryKeyword] = useState("");
   const [secondaryKeywords, setSecondaryKeywords] = useState<string[]>([]);
-  const [secondaryKeywordInput, setSecondaryKeywordInput] = useState("");
   
   const [debouncedKeyword] = useDebounce(primaryKeyword, 500);
   const [article, setArticle] = useState<OneClickWriterOutput | null>(null);
@@ -144,8 +143,6 @@ export default function OneClickWriterSerpForm() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-
-  const secondaryInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (article?.article) {
@@ -179,11 +176,11 @@ export default function OneClickWriterSerpForm() {
   }
 
   const handleSecondaryKeywordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if ((e.key === 'Enter' || e.key === ',') && secondaryKeywordInput.trim()) {
+      if ((e.key === 'Enter' || e.key === ',') && e.currentTarget.value.trim()) {
           e.preventDefault();
-          const newKeywords = secondaryKeywordInput.split(',').map(k => k.trim()).filter(Boolean);
+          const newKeywords = e.currentTarget.value.split(',').map(k => k.trim()).filter(Boolean);
           setSecondaryKeywords([...secondaryKeywords, ...newKeywords]);
-          setSecondaryKeywordInput("");
+          e.currentTarget.value = "";
       }
   }
 
@@ -199,6 +196,7 @@ export default function OneClickWriterSerpForm() {
       setIssues([]);
 
       const formData = new FormData(event.currentTarget);
+      formData.delete('primaryKeyword'); // remove default from form
       formData.append('primaryKeyword', primaryKeyword);
       secondaryKeywords.forEach(kw => formData.append('secondaryKeywords[]', kw));
 
@@ -418,24 +416,18 @@ export default function OneClickWriterSerpForm() {
                  <form onSubmit={handleAnalysis} className="space-y-4">
                      <div className="grid grid-cols-1 gap-2 items-start">
                        <div className="relative col-span-4">
-                            <div className="flex flex-wrap items-center gap-2 p-2 border rounded-md min-h-12" onClick={() => secondaryInputRef.current?.focus()}>
-                               {primaryKeyword && <Badge>{primaryKeyword} <button type="button" onClick={() => setPrimaryKeyword('')} className="ml-1 rounded-full hover:bg-background/20 p-0.5"><X className="w-3 h-3"/></button></Badge>}
-                               {secondaryKeywords.map((kw, index) => (
-                                   <Badge variant="secondary" key={index}>{kw} <button type="button" onClick={() => removeSecondaryKeyword(index)} className="ml-1 rounded-full hover:bg-background/20 p-0.5"><X className="w-3 h-3"/></button></Badge>
-                               ))}
-                                <Input
-                                    id="primaryKeyword"
-                                    name="primaryKeyword"
-                                    placeholder="Enter your primary keyword"
-                                    required
-                                    className="text-base h-auto border-none focus-visible:ring-0 p-0 m-0 flex-1 min-w-[200px]"
-                                    value={primaryKeyword}
-                                    onChange={handleKeywordChange}
-                                    onFocus={() => setShowSuggestions(true)}
-                                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                                    ref={secondaryInputRef}
-                                />
-                            </div>
+                            <Input
+                                id="primaryKeyword"
+                                name="primaryKeyword"
+                                placeholder="Enter your primary keyword"
+                                required
+                                className="text-base h-12"
+                                value={primaryKeyword}
+                                onChange={handleKeywordChange}
+                                onFocus={() => setShowSuggestions(true)}
+                                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                                autoComplete="off"
+                            />
                             
                              {showSuggestions && primaryKeyword && (
                                 <Card className="absolute z-10 w-full mt-1 shadow-md">
