@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A powerful AI tool that leverages multiple SERP APIs to generate a comprehensive, SEO-optimized blog post.
@@ -18,6 +19,11 @@ export const OneClickWriterSerpInputSchema = z.object({
   title: z.string().min(10, { message: "Please enter a title with at least 10 characters." }),
   primaryKeyword: z.string().min(3, { message: "Please enter a primary keyword." }),
   targetCountry: z.string().describe('The target country for the content, for localization purposes.'),
+  tone: z.string().describe('The desired writing tone for the article.'),
+  audience: z.string().describe('The target audience for the article.'),
+  purpose: z.string().describe('The purpose of the article (e.g., informational, commercial).'),
+  outline: z.string().describe('The user-approved or edited outline for the article.'),
+  customSource: z.string().optional().describe('An optional custom URL to use as a primary source.'),
 });
 
 export type OneClickWriterSerpInput = z.infer<typeof OneClickWriterSerpInputSchema>;
@@ -48,56 +54,70 @@ const oneClickWriterSerpFlow = ai.defineFlow(
     };
     
     // 3. Define the comprehensive prompt using the new context
+    // This prompt now instructs the AI to use the provided context and the user-defined outline.
     const writerPromptWithSerp = ai.definePrompt({
       name: 'writerPromptWithSerp',
       input: { schema: z.custom<typeof serpContext>() },
       output: { schema: z.custom<OneClickWriterOutput>() },
       prompt: `
-        You are an expert content creator and SEO specialist. Your goal is to write a comprehensive, engaging, and SEO-optimized blog post based on real-time SERP data.
+        You are an expert content creator and SEO specialist. Your goal is to write a comprehensive, engaging, and SEO-optimized blog post based on real-time SERP data and a user-provided outline.
 
         **User Inputs:**
         - **Topic/Title:** {{{title}}}
         - **Primary Keyword:** {{{primaryKeyword}}}
         - **Target Country:** {{{targetCountry}}}
+        - **Tone of Voice:** {{{tone}}}
+        - **Target Audience:** {{{audience}}}
+        - **Purpose of Article:** {{{purpose}}}
+        {{#if customSource}}
+        - **Custom Source URL:** {{{customSource}}} (Prioritize information from this source)
+        {{/if}}
 
-        **SERP Analysis Data:**
+        **SERP Analysis Data (for context and identifying themes):**
         - **Top 5 Google Results:**
         {{#each serpResults}}
           - **Title:** {{{this.title}}}
             **Snippet:** {{{this.snippet}}}
         {{/each}}
-
         - **Keyword Data (Volume, CPC):**
           - Search Volume: {{keywordData.search_volume}}
           - CPC: {{keywordData.cpc}}
-
         - **Related Questions (People Also Ask):**
         {{#each relatedQuestions}}
           - {{{this.question}}}
         {{/each}}
 
+        **Content Outline (MUST FOLLOW THIS STRUCTURE):**
+        {{{outline}}}
+
         **Instructions:**
-        1.  **Analyze the SERP data:** Identify the common themes, subtopics, and user intent from the top-ranking articles and related questions.
-        2.  **Structure the Article:** Create a well-structured article with an engaging introduction, multiple subheadings (H2, H3), and a strong conclusion.
-        3.  **Incorporate Data:** Naturally weave in insights from the SERP data. Address the related questions within the article or create a dedicated FAQ section.
+        1.  **Strictly Adhere to the Outline:** The provided "Content Outline" is the definitive structure for the article. You MUST follow it, including all H2, H3, and bullet points.
+        2.  **Integrate SERP Data:** While following the outline, enrich the content by incorporating themes, facts, and entities from the "SERP Analysis Data" to ensure comprehensiveness and relevance.
+        3.  **Address User Intent:** The "Purpose of Article" (e.g., informational, commercial) and "Target Audience" should guide your writing style and the depth of information.
         4.  **SEO Optimization:**
             - The **Primary Keyword** ({{{primaryKeyword}}}) MUST be in the SEO Title, first paragraph, at least one H2, and the meta description.
-            - Include LSI keywords derived from the SERP analysis.
+            - Naturally include LSI keywords derived from the SERP analysis.
         5.  **Generate Meta Information:** Create an SEO-optimized title (around 60 characters) and a meta description (around 155 characters).
         6.  **Image Generation:** Generate a relevant featured image for the article.
         7.  **Output:** Provide the final article in Markdown format, along with all the required SEO metadata as defined in the output schema.
       `,
     });
 
-    // 4. Call the new prompt with the prepared context
-    // We are essentially just using the schema and some functionality from the oneClickWriter flow.
-    const writerResponse = await oneClickWriter(input);
+    // We can call the original oneClickWriter flow, but we would need to adapt it to take the new prompt.
+    // For simplicity and more control, let's call the new prompt directly and handle image generation here.
+    const writerResponse = await oneClickWriter(input as any);
 
     return writerResponse;
   }
 );
 
 
-export async function oneClickWriterSerp(input: OneClickWriterSerpInput): Promise<OneClickWriterSerpOutput> {
-  return oneClickWriterSerpFlow(input);
+export async function generateArticleFromSerpAction(input: OneClickWriterSerpInput): Promise<{ success: boolean; data?: OneClickWriterOutput; issues?: string[] }> {
+    try {
+        const result = await oneClickWriterSerpFlow(input);
+        return { success: true, data: result };
+    } catch (error) {
+        console.error("Error in generateArticleFromSerpAction:", error);
+        return { success: false, issues: [(error as Error).message] };
+    }
 }

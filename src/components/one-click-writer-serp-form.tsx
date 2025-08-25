@@ -16,16 +16,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "./ui/command";
 import { cn } from "@/lib/utils";
 import { countries } from "@/lib/countries";
-import OneClickWriterForm from "./one-click-writer-form";
 import type { OneClickWriterOutput } from "@/ai/flows/one-click-writer";
 import Image from "next/image";
+import { Textarea } from "./ui/textarea";
 
 // Remark and rehype plugins for markdown rendering
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
-import { Textarea } from "./ui/textarea";
+
 
 function AnalyzeButton() {
   const { pending } = useFormStatus();
@@ -65,6 +65,59 @@ function GenerateArticleButton() {
   );
 }
 
+// Function to convert markdown to HTML
+async function markdownToHtml(markdown: string): Promise<string> {
+  const file = await unified()
+    .use(remarkParse)
+    .use(remarkRehype)
+    .use(rehypeStringify)
+    .process(markdown);
+  return String(file);
+}
+
+const ScoreCircle = ({ score, text, interpretation }: { score: number, text: string, interpretation: string }) => {
+    const circumference = 2 * Math.PI * 52; // 2 * pi * radius
+    const strokeDashoffset = circumference - (score / 100) * circumference;
+    let colorClass = 'text-green-500';
+    if (score < 50) colorClass = 'text-red-500';
+    else if (score < 80) colorClass = 'text-yellow-500';
+
+    return (
+        <div className="flex flex-col items-center gap-2">
+            <div className="relative w-32 h-32">
+                <svg className="w-full h-full" viewBox="0 0 120 120">
+                    <circle
+                        className="text-muted"
+                        strokeWidth="10"
+                        stroke="currentColor"
+                        fill="transparent"
+                        r="52"
+                        cx="60"
+                        cy="60"
+                    />
+                    <circle
+                        className={`transform -rotate-90 origin-center transition-all duration-1000 ${colorClass}`}
+                        strokeWidth="10"
+                        strokeDasharray={circumference}
+                        style={{ strokeDashoffset }}
+                        strokeLinecap="round"
+                        stroke="currentColor"
+                        fill="transparent"
+                        r="52"
+                        cx="60"
+                        cy="60"
+                    />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <span className={`text-3xl font-bold ${colorClass}`}>{score}</span>
+                </div>
+            </div>
+            <p className="text-sm font-semibold">{text}</p>
+            <p className="text-xs text-muted-foreground text-center max-w-xs">{interpretation}</p>
+        </div>
+    )
+};
+
 
 export default function OneClickWriterSerpForm() {
   const { toast } = useToast();
@@ -76,6 +129,7 @@ export default function OneClickWriterSerpForm() {
   const [countrySelectOpen, setCountrySelectOpen] = useState(false);
   const [primaryKeyword, setPrimaryKeyword] = useState("");
   const [article, setArticle] = useState<OneClickWriterOutput | null>(null);
+  const [renderedHtml, setRenderedHtml] = useState("");
 
   const handleAnalysis = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -153,9 +207,75 @@ export default function OneClickWriterSerpForm() {
     return outline;
   }
 
+  const handleCopy = (textToCopy: string) => {
+    navigator.clipboard.writeText(textToCopy);
+    toast({
+      title: "ক্লিপবোর্ডে কপি করা হয়েছে!",
+    });
+  };
+
+  const handleDownload = () => {
+    if (!article) return;
+    const blob = new Blob([article.article], { type: 'text/markdown;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", `${article.seoTitle.replace(/\s+/g, '_')}.md`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  useEffect(() => {
+    if (article?.article) {
+        markdownToHtml(article.article).then(setRenderedHtml);
+    }
+  }, [article]);
+
+
   if (article) {
-    // Final article view - could be a separate component
-    return <div>Render the final article here...</div>
+    return (
+        <div className="mt-8 space-y-8">
+            <Button variant="outline" onClick={() => setArticle(null)}><ArrowLeft className="mr-2"/> Go Back & Edit</Button>
+            <h3 className="text-3xl font-bold font-headline text-center">আপনার জেনারেটেড আর্টিকেল</h3>
+            
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><ImageIcon className="w-5 h-5 text-primary"/>ফিচার্ড ইমেজ</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Image src={article.featuredImageUrl} alt={article.altText} width={1024} height={576} className="rounded-lg border object-contain w-full"/>
+                     <Alert className="mt-4">
+                        <Info className="h-4 w-4" />
+                        <AlertTitle>Alt Text</AlertTitle>
+                        <AlertDescription className="flex justify-between items-center">
+                            <p className="italic">{article.altText}</p>
+                            <Button variant="ghost" size="icon" onClick={() => handleCopy(article.altText)}><Clipboard className="w-4 h-4"/></Button>
+                        </AlertDescription>
+                    </Alert>
+                </CardContent>
+                <CardFooter>
+                    <a href={article.featuredImageUrl} download={`${article.seoTitle.replace(/\s+/g, '_')}_featured_image.png`}>
+                        <Button variant="outline"><Download className="mr-2"/> ইমেজ ডাউনলোড করুন</Button>
+                    </a>
+                </CardFooter>
+            </Card>
+            
+            <Card>
+                <CardHeader className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5 text-primary"/>সম্পূর্ণ আর্টিকেল</CardTitle>
+                    <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleCopy(article.article)}><Clipboard className="mr-2"/> কপি করুন</Button>
+                        <Button variant="outline" size="sm" onClick={handleDownload}><Download className="mr-2"/> ডাউনলোড (.md)</Button>
+                        <Button variant="default" size="sm"><Share2 className="mr-2"/> Publish to WordPress</Button>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="prose dark:prose-invert max-w-none prose-headings:font-headline prose-img:rounded-lg prose-img:border" dangerouslySetInnerHTML={{ __html: renderedHtml }} />
+                </CardContent>
+            </Card>
+
+          </div>
+    )
   }
 
   if (serpData) {
