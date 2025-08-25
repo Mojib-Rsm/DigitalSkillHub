@@ -92,30 +92,61 @@ export async function getTrendingTools(limit: number = 4): Promise<Tool[]> {
         historySnapshot.forEach(doc => {
             const toolId = doc.data().tool;
             if (toolId) {
-                // The toolId in history is the href, so we need to map it to the tool's ID
-                const toolHref = `/ai-tools/${toolId}`;
-                 toolUsage[toolHref] = (toolUsage[toolHref] || 0) + 1;
+                toolUsage[toolId] = (toolUsage[toolId] || 0) + 1;
             }
         });
 
         // 3. Get all available tools
         const allTools = await getTools();
         const enabledTools = allTools.filter(tool => tool.enabled);
+        
+        // Create a map of tool IDs (slugs) to tools for efficient lookup
+        const toolMap = new Map<string, Tool>();
+        for (const tool of enabledTools) {
+             // The tool ID in history is the slug, e.g. "one-click-writer"
+             // which is the end part of the href.
+            const slug = tool.href.split('/').pop() || tool.id;
+            if(!toolMap.has(slug)) {
+                toolMap.set(slug, tool);
+            }
+        }
 
-        // 4. Sort tools by usage
-        const sortedTools = enabledTools.sort((a, b) => {
-            const usageA = toolUsage[a.href] || 0;
-            const usageB = toolUsage[b.href] || 0;
-            return usageB - usageA;
+        // 4. Sort tool slugs by usage
+        const sortedToolSlugs = Object.keys(toolUsage).sort((a, b) => {
+            return toolUsage[b] - toolUsage[a];
         });
 
-        // 5. Return the top N tools
-        return sortedTools.slice(0, limit);
+        // 5. Map sorted slugs back to tool objects and ensure they are unique and enabled
+        const trendingTools: Tool[] = [];
+        const addedTools = new Set<string>();
+
+        for (const toolSlug of sortedToolSlugs) {
+            if (trendingTools.length >= limit) break;
+            
+            const tool = toolMap.get(toolSlug);
+            if (tool && !addedTools.has(tool.id)) {
+                trendingTools.push(tool);
+                addedTools.add(tool.id);
+            }
+        }
+        
+        // If there are not enough trending tools, fill with other enabled tools
+        if (trendingTools.length < limit) {
+             for (const tool of enabledTools) {
+                if (trendingTools.length >= limit) break;
+                if (!addedTools.has(tool.id)) {
+                    trendingTools.push(tool);
+                    addedTools.add(tool.id);
+                }
+            }
+        }
+        
+        return trendingTools;
 
     } catch (error) {
         console.error("Error fetching trending tools:", error);
         // Fallback to fetching latest tools if history processing fails
-        return getTools(limit);
+        return (await getTools()).filter(t => t.enabled).slice(0, limit);
     }
 }
 
