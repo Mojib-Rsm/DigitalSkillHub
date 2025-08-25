@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { getSerpAnalysisAction, generateArticleFromSerpAction } from "@/app/ai-tools/one-click-writer-serp/actions";
 import type { SerpAnalysisResult } from "@/app/ai-tools/one-click-writer-serp/actions";
