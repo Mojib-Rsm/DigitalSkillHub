@@ -1,37 +1,90 @@
+
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users can only read their own data.
-    // Admins can read any user's data.
-    match /users/{userId} {
-      allow read: if request.auth.uid == userId || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-      allow write: if request.auth.uid == userId;
+
+    // Allow public read access to collections that don't contain sensitive data
+    match /tools/{toolId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == resource.data.uid;
     }
 
-    // Admins can manage all collections
-    match /{document=**} {
-      allow read, write: if get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-    }
-
-    // Public collections can be read by anyone.
     match /courses/{courseId} {
-        allow read: if true;
+      allow read: if true;
     }
-     match /blog/{blogId} {
-        allow read: if true;
+
+    match /blog/{postId} {
+      allow read: if true;
     }
-     match /jobs/{jobId} {
-        allow read: if true;
+    
+    match /jobs/{jobId} {
+      allow read: if true;
+    }
+
+    match /pricing/{planId} {
+      allow read: if true;
+    }
+
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+    }
+    
+    match /coupons/{couponId} {
+      allow read: if true;
+    }
+    
+    match /notifications/{notificationId} {
+      allow read: if true;
+    }
+
+    // Secure the users collection
+    match /users/{userId} {
+      // Allow users to read their own data
+      allow read: if request.auth != null && request.auth.uid == userId;
+      // Allow users to create their own account
+      allow create: if request.auth != null;
+      // Allow users to update their own data
+      allow update: if request.auth != null && request.auth.uid == userId;
+      // Prevent users from deleting their own account for now
+      allow delete: if false;
+    }
+
+    // Secure the history collection
+    match /history/{historyId} {
+        // Allow users to read their own history
+        allow read: if request.auth != null && request.auth.uid == resource.data.uid;
+        // Allow users to create their own history
+        allow create: if request.auth != null && request.auth.uid == request.resource.data.uid;
+        // Prevent users from updating or deleting history
+        allow update, delete: if false;
+    }
+
+    // Admin-only rules
+    // This is a simplified example. In a real app, you would have more robust role checking.
+    function isAdmin() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    match /users/{userId} {
+        // Admins can view/edit any user
+        allow read, update: if isAdmin();
+    }
+     match /history/{historyId} {
+        // Admins can view any history
+        allow read: if isAdmin();
+    }
+    match /coupons/{couponId} {
+        // Admins can manage coupons
+        allow write: if isAdmin();
     }
      match /pricing/{planId} {
-        allow read: if true;
-    }
-     match /testimonials/{testimonialId} {
-        allow read: if true;
+        // Admins can manage pricing
+        allow write: if isAdmin();
     }
      match /tools/{toolId} {
-        allow read: if true;
+        // Admins can manage tools
+        allow write: if isAdmin();
     }
   }
 }
