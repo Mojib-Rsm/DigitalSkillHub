@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
@@ -87,19 +86,6 @@ export default function SeedDataPage() {
           <form action={formAction}>
             <SubmitButton />
           </form>
-
-          {state.message && !state.success && (
-            <Alert variant="destructive" className="mt-4">
-              <AlertDescription>{state.message}</AlertDescription>
-            </Alert>
-          )}
-
-          {state.success && state.message && (
-             <Alert className="mt-4">
-                <AlertTitle>Success!</AlertTitle>
-              <AlertDescription>{state.message}</AlertDescription>
-            </Alert>
-          )}
         </CardContent>
       </Card>
     </div>
