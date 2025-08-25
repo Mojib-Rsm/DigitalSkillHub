@@ -19,6 +19,7 @@ import { countries } from "@/lib/countries";
 import type { OneClickWriterOutput } from "@/ai/flows/one-click-writer";
 import Image from "next/image";
 import { Textarea } from "./ui/textarea";
+import { Badge } from "./ui/badge";
 
 // Remark and rehype plugins for markdown rendering
 import { unified } from 'unified';
@@ -131,6 +132,12 @@ export default function OneClickWriterSerpForm() {
   const [article, setArticle] = useState<OneClickWriterOutput | null>(null);
   const [renderedHtml, setRenderedHtml] = useState("");
 
+  useEffect(() => {
+    if (article?.article) {
+        markdownToHtml(article.article).then(setRenderedHtml);
+    }
+  }, [article]);
+
   const handleAnalysis = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       setIsAnalyzing(true);
@@ -172,7 +179,7 @@ export default function OneClickWriterSerpForm() {
           customSource: formData.get('customSource') as string,
        };
 
-       const result = await generateArticleFromSerpAction(input as any);
+       const result = await generateArticleFromSerpAction(input);
 
        if (result.success && result.data) {
             setArticle(result.data);
@@ -225,55 +232,68 @@ export default function OneClickWriterSerpForm() {
     document.body.removeChild(link);
   }
 
-  useEffect(() => {
-    if (article?.article) {
-        markdownToHtml(article.article).then(setRenderedHtml);
-    }
-  }, [article]);
-
-
   if (article) {
     return (
-        <div className="mt-8 space-y-8">
+        <div className="space-y-8">
             <Button variant="outline" onClick={() => setArticle(null)}><ArrowLeft className="mr-2"/> Go Back & Edit</Button>
-            <h3 className="text-3xl font-bold font-headline text-center">আপনার জেনারেটেড আর্টিকেল</h3>
+            <h3 className="text-3xl font-bold font-headline text-center">Your Generated Article</h3>
             
-            <Card>
+             <Card>
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><ImageIcon className="w-5 h-5 text-primary"/>ফিচার্ড ইমেজ</CardTitle>
+                    <CardTitle className="flex items-center gap-2"><Fingerprint className="w-5 h-5 text-primary"/>SEO & Readability Analysis</CardTitle>
                 </CardHeader>
-                <CardContent>
-                    <Image src={article.featuredImageUrl} alt={article.altText} width={1024} height={576} className="rounded-lg border object-contain w-full"/>
-                     <Alert className="mt-4">
-                        <Info className="h-4 w-4" />
-                        <AlertTitle>Alt Text</AlertTitle>
-                        <AlertDescription className="flex justify-between items-center">
-                            <p className="italic">{article.altText}</p>
-                            <Button variant="ghost" size="icon" onClick={() => handleCopy(article.altText)}><Clipboard className="w-4 h-4"/></Button>
-                        </AlertDescription>
-                    </Alert>
+                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <ScoreCircle score={article.readability.score} text="Readability" interpretation={article.readability.interpretation} />
+                     <div className="space-y-4">
+                        <Alert>
+                            <Smile className="h-4 w-4" />
+                            <AlertTitle>Sentiment</AlertTitle>
+                            <AlertDescription>{article.seoAnalysis.sentiment}</AlertDescription>
+                        </Alert>
+                         <Alert>
+                            <BookOpen className="h-4 w-4" />
+                            <AlertTitle>Word Count</AlertTitle>
+                            <AlertDescription>{article.seoAnalysis.wordCount} words</AlertDescription>
+                        </Alert>
+                    </div>
+                    <div className="lg:col-span-2">
+                        <Alert>
+                             <AlertTitle>LSI Keywords</AlertTitle>
+                             <AlertDescription className="flex flex-wrap gap-2 pt-2">
+                                 {article.seoAnalysis.lsiKeywords.map(keyword => <Badge key={keyword} variant="outline">{keyword}</Badge>)}
+                            </AlertDescription>
+                        </Alert>
+                    </div>
                 </CardContent>
-                <CardFooter>
-                    <a href={article.featuredImageUrl} download={`${article.seoTitle.replace(/\s+/g, '_')}_featured_image.png`}>
-                        <Button variant="outline"><Download className="mr-2"/> ইমেজ ডাউনলোড করুন</Button>
-                    </a>
-                </CardFooter>
             </Card>
-            
+
             <Card>
                 <CardHeader className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5 text-primary"/>সম্পূর্ণ আর্টিকেল</CardTitle>
+                    <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5 text-primary"/>Article & Meta Data</CardTitle>
                     <div className="flex gap-2">
-                        <Button variant="outline" size="sm" onClick={() => handleCopy(article.article)}><Clipboard className="mr-2"/> কপি করুন</Button>
-                        <Button variant="outline" size="sm" onClick={handleDownload}><Download className="mr-2"/> ডাউনলোড (.md)</Button>
-                        <Button variant="default" size="sm"><Share2 className="mr-2"/> Publish to WordPress</Button>
+                        <Button variant="outline" size="sm" onClick={() => handleCopy(article.article)}><Clipboard className="mr-2"/> Copy Article</Button>
+                        <Button variant="outline" size="sm" onClick={handleDownload}><Download className="mr-2"/> Download (.md)</Button>
+                        <Button variant="default" size="sm"><Share2 className="mr-2"/> Publish</Button>
                     </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="space-y-4">
+                     <Alert>
+                        <AlertTitle>SEO Title</AlertTitle>
+                        <AlertDescription className="flex justify-between items-center">
+                        <p>{article.seoTitle}</p>
+                        <Button variant="ghost" size="icon" onClick={() => handleCopy(article.seoTitle)}><Clipboard className="w-4 h-4"/></Button>
+                        </AlertDescription>
+                    </Alert>
+                    <Alert>
+                        <AlertTitle>Meta Description</AlertTitle>
+                        <AlertDescription className="flex justify-between items-center">
+                        <p>{article.seoDescription}</p>
+                            <Button variant="ghost" size="icon" onClick={() => handleCopy(article.seoDescription)}><Clipboard className="w-4 h-4"/></Button>
+                        </AlertDescription>
+                    </Alert>
                     <div className="prose dark:prose-invert max-w-none prose-headings:font-headline prose-img:rounded-lg prose-img:border" dangerouslySetInnerHTML={{ __html: renderedHtml }} />
                 </CardContent>
             </Card>
-
           </div>
     )
   }
