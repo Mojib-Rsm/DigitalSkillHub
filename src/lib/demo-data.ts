@@ -351,8 +351,8 @@ export const tools: Tool[] = [
     },
     {
         id: "one-click-writer-serp",
-        title: "One-Click Writer (SERP)",
-        description: "Generate a superior article by analyzing top Google search results.",
+        title: "AI-Powered Article Writer",
+        description: "Research and create GEO optimized top ranking articles. seo optimized writing with ai detection",
         href: "/ai-tools/one-click-writer-serp",
         icon: "Search",
         category: "Content & Writing",
