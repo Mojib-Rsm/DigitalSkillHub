@@ -6,6 +6,8 @@ import { saveHistoryAction } from "@/app/actions/save-history";
 import { getSerpResults, getKeywordData, getRelatedQuestions, SerpResult, KeywordData, RelatedQuestion } from '@/services/serp-service';
 import { z } from "zod";
 import type { OneClickWriterOutput } from "@/ai/flows/one-click-writer";
+import type { OneClickWriterSerpInput } from "@/ai/schema/one-click-writer-serp";
+import { OneClickWriterSerpInputSchema } from "@/ai/schema/one-click-writer-serp";
 
 const SerpAnalysisInputSchema = z.object({
   primaryKeyword: z.string().min(3, { message: "Please enter a primary keyword." }),
@@ -56,6 +58,11 @@ export async function getSerpAnalysisAction(
         }
     } catch (error) {
         console.error("Error in getSerpAnalysisAction:", error);
+        if (error instanceof Error) {
+            if (error.message.includes("429")) {
+                return { success: false, issues: ["You have exceeded your Google Search API quota. Please check your usage in the Google Cloud Console."] };
+            }
+        }
         return {
             success: false,
             issues: ["An unknown error occurred while fetching SERP data."]
@@ -63,29 +70,24 @@ export async function getSerpAnalysisAction(
     }
 }
 
-export const OneClickWriterSerpInputSchema = z.object({
-  title: z.string().min(10, { message: "Please enter a title with at least 10 characters." }),
-  primaryKeyword: z.string().min(3, { message: "Please enter a primary keyword." }),
-  targetCountry: z.string().describe('The target country for the content, for localization purposes.'),
-  tone: z.string().describe('The desired writing tone for the article.'),
-  audience: z.string().describe('The target audience for the article.'),
-  purpose: z.string().describe('The purpose of the article (e.g., informational, commercial).'),
-  outline: z.string().describe('The user-approved or edited outline for the article.'),
-  customSource: z.string().optional().describe('An optional custom URL to use as a primary source.'),
-});
-export type OneClickWriterSerpInput = z.infer<typeof OneClickWriterSerpInputSchema>;
-
-
 export async function generateArticleFromSerpAction(
   input: OneClickWriterSerpInput
 ): Promise<{ success: boolean; data?: OneClickWriterOutput; issues?: string[] }> {
   
+  const validatedFields = OneClickWriterSerpInputSchema.safeParse(input);
+   if (!validatedFields.success) {
+    return {
+      success: false,
+      issues: validatedFields.error.flatten().formErrors,
+    };
+  }
+
   try {
-    const result = await oneClickWriterSerp(input);
+    const result = await oneClickWriterSerp(validatedFields.data);
     if (result) {
         await saveHistoryAction({
             tool: 'one-click-writer-serp',
-            input: input,
+            input: validatedFields.data,
             output: result,
         });
       return {
