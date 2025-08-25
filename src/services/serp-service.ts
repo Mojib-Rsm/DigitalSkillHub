@@ -26,7 +26,6 @@ export async function getSerpResults(query: string): Promise<SerpResult[]> {
                 key: GOOGLE_API_KEY,
                 cx: GOOGLE_CSE_ID,
                 q: query,
-                num: 10, // Get top 10 results
             },
         });
 
