@@ -360,17 +360,6 @@ export const tools: Tool[] = [
         credits: 15,
     },
     {
-        id: "ai-article-writer",
-        title: "AI Article Writer",
-        description: "Generate a high-quality article on any topic in seconds.",
-        href: "/ai-tools/ai-article-writer",
-        icon: "PenSquare",
-        category: "Content & Writing",
-        enabled: false,
-        isFree: false,
-        credits: 8,
-    },
-    {
         id: "blog-topic-generator",
         title: "ব্লগ টপিক জেনারেটর",
         description: "আপনার আগ্রহের উপর ভিত্তি করে সৃজনশীল ব্লগ পোস্টের ধারণা তৈরি করুন।",
