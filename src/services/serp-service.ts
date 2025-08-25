@@ -28,7 +28,7 @@ export type RelatedQuestion = {
 
 export async function getSerpResults(query: string): Promise<SerpResult[]> {
     if (!GOOGLE_API_KEY || !GOOGLE_CSE_ID) {
-        console.error("Google API Key or CSE ID is not configured in .env file.");
+        console.error("Google API Key or CSE ID is not configured in .env file. Please check the setup guide.");
         // Don't throw, just return empty as it might be an optional service
         return [];
     }
@@ -54,9 +54,10 @@ export async function getSerpResults(query: string): Promise<SerpResult[]> {
 
         return [];
     } catch (error: any) {
-        console.error("Error fetching SERP results from Google:", error.response?.data?.error || error.message);
         if (error.response?.data?.error?.message) {
-             console.error(`Google Search API Error: ${error.response.data.error.message}`);
+             console.error(`Google Search API Error: ${error.response.data.error.message}. Please check your API key and quota in the setup guide.`);
+        } else {
+            console.error("Error fetching SERP results from Google:", error.message);
         }
         // Don't throw, return empty array
         return [];
@@ -70,7 +71,7 @@ class SerpApi {
 
     constructor() {
         if (!SERPAPI_KEY) {
-            throw new Error('SerpApi key is not configured.');
+            throw new Error('SerpApi key is not configured. Please add SERPAPI_KEY to your .env file. See setup_guide.md');
         }
         this.apiKey = SERPAPI_KEY;
     }
@@ -84,9 +85,9 @@ class SerpApi {
                     api_key: this.apiKey,
                 },
             });
-            return response.data.related_questions || [];
-        } catch (error) {
-            console.error('Error fetching from SerpApi:', error);
+            return response.data.related_questions?.map((item: any) => ({ question: item.question })) || [];
+        } catch (error: any) {
+            console.error('Error fetching from SerpApi:', error.message);
             return [];
         }
     }
@@ -99,7 +100,7 @@ class DataForSeo {
 
     constructor() {
         if (!DATAFORSEO_LOGIN || !DATAFORSEO_PASSWORD) {
-            throw new Error('DataForSEO credentials are not configured.');
+            throw new Error('DataForSEO credentials are not configured. Please add them to your .env file. See setup_guide.md');
         }
         this.login = DATAFORSEO_LOGIN;
         this.password = DATAFORSEO_PASSWORD;
@@ -117,15 +118,24 @@ class DataForSeo {
                 auth: {
                     username: this.login,
                     password: this.password
+                },
+                headers: {
+                    'Content-Type': 'application/json'
                 }
             });
+
+            if (response.data.tasks_error > 0) {
+                 console.error('DataForSEO task error:', response.data.tasks[0].error_message);
+                 return { search_volume: null, cpc: null };
+            }
+
             const result = response.data.tasks[0]?.result[0];
             return {
                 search_volume: result?.search_volume || 0,
                 cpc: result?.cpc || 0
             };
-        } catch (error) {
-            console.error('Error fetching from DataForSEO:', error);
+        } catch (error: any) {
+            console.error('Error fetching from DataForSEO:', error.response?.data || error.message);
             return { search_volume: null, cpc: null };
         }
     }
@@ -133,7 +143,7 @@ class DataForSeo {
 
 export async function getKeywordData(keyword: string, country: string): Promise<KeywordData> {
     if (!DATAFORSEO_LOGIN || !DATAFORSEO_PASSWORD) {
-        console.warn('DataForSEO credentials not set, skipping keyword data fetch.');
+        console.warn('DataForSEO credentials not set, skipping keyword data fetch. See setup_guide.md for instructions.');
         return { search_volume: null, cpc: null };
     }
     const dataForSeo = new DataForSeo();
@@ -142,7 +152,7 @@ export async function getKeywordData(keyword: string, country: string): Promise<
 
 export async function getRelatedQuestions(query: string): Promise<RelatedQuestion[]> {
      if (!SERPAPI_KEY) {
-        console.warn('SerpApi key not set, skipping related questions fetch.');
+        console.warn('SerpApi key not set, skipping related questions fetch. See setup_guide.md for instructions.');
         return [];
     }
     const serpApi = new SerpApi();
