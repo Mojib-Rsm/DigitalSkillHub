@@ -94,7 +94,7 @@ export default function SeedDataPage() {
             </Alert>
           )}
 
-          {state.success && (
+          {state.success && state.message && (
              <Alert className="mt-4">
                 <AlertTitle>Success!</AlertTitle>
               <AlertDescription>{state.message}</AlertDescription>
