@@ -6,8 +6,8 @@ import { saveHistoryAction } from "@/app/actions/save-history";
 import { getSerpResults, getKeywordData, getRelatedQuestions, SerpResult, KeywordData, RelatedQuestion } from '@/services/serp-service';
 import { z } from "zod";
 import type { OneClickWriterOutput } from "@/ai/flows/one-click-writer";
-import type { OneClickWriterSerpInput } from "@/ai/schema/one-click-writer-serp";
-import { OneClickWriterSerpInputSchema } from "@/ai/schema/one-click-writer-serp";
+import { OneClickWriterSerpInputSchema, type OneClickWriterSerpInput } from "@/ai/schema/one-click-writer-serp";
+
 
 const SerpAnalysisInputSchema = z.object({
   primaryKeyword: z.string().min(3, { message: "Please enter a primary keyword." }),
@@ -56,12 +56,11 @@ export async function getSerpAnalysisAction(
                 relatedQuestions
             }
         }
-    } catch (error) {
-        console.error("Error in getSerpAnalysisAction:", error);
-        if (error instanceof Error) {
-            if (error.message.includes("429")) {
-                return { success: false, issues: ["You have exceeded your Google Search API quota. Please check your usage in the Google Cloud Console."] };
-            }
+    } catch (error: any) {
+        console.error("Error in getSerpAnalysisAction:", error.message);
+        if (error.response?.data?.error?.message) {
+             console.error(`Google Search API Error: ${error.response.data.error.message}`);
+             return { success: false, issues: [`Google Search API Error: ${error.response.data.error.message}`] };
         }
         return {
             success: false,
