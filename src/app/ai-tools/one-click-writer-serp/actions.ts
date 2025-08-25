@@ -11,8 +11,10 @@ import { z } from "zod";
 
 const SerpAnalysisInputSchema = z.object({
   primaryKeyword: z.string().min(3, { message: "Please enter a primary keyword." }),
+  secondaryKeywords: z.array(z.string()).optional(),
   targetCountry: z.string().min(2, { message: "Please select a target country." }),
 });
+
 
 export type SerpAnalysisResult = {
     serpResults: SerpResult[];
@@ -37,8 +39,12 @@ export async function getKeywordSuggestionsAction(query: string): Promise<string
 export async function getSerpAnalysisAction(
   formData: FormData
 ): Promise<{ success: boolean; data?: SerpAnalysisResult; issues?: string[] }> {
+    const primaryKeyword = formData.get("primaryKeyword") as string;
+    const secondaryKeywords = formData.getAll("secondaryKeywords[]") as string[];
+
     const validatedFields = SerpAnalysisInputSchema.safeParse({
-        primaryKeyword: formData.get("primaryKeyword"),
+        primaryKeyword,
+        secondaryKeywords,
         targetCountry: formData.get("targetCountry"),
     });
 

@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { getSerpAnalysisAction, generateArticleFromSerpAction, getKeywordSuggestionsAction } from "@/app/ai-tools/one-click-writer-serp/actions";
 import type { SerpAnalysisResult } from "@/app/ai-tools/one-click-writer-serp/actions";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -133,13 +133,19 @@ export default function OneClickWriterSerpForm() {
   const [serpData, setSerpData] = useState<SerpAnalysisResult | null>(null);
   const [country, setCountry] = useState("Bangladesh");
   const [countrySelectOpen, setCountrySelectOpen] = useState(false);
+  
   const [primaryKeyword, setPrimaryKeyword] = useState("");
+  const [secondaryKeywords, setSecondaryKeywords] = useState<string[]>([]);
+  const [secondaryKeywordInput, setSecondaryKeywordInput] = useState("");
+  
   const [debouncedKeyword] = useDebounce(primaryKeyword, 500);
   const [article, setArticle] = useState<OneClickWriterOutput | null>(null);
   const [renderedHtml, setRenderedHtml] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const secondaryInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (article?.article) {
@@ -177,6 +183,20 @@ export default function OneClickWriterSerpForm() {
       setShowSuggestions(false);
   }
 
+  const handleSecondaryKeywordKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if ((e.key === 'Enter' || e.key === ',') && secondaryKeywordInput.trim()) {
+          e.preventDefault();
+          const newKeywords = secondaryKeywordInput.split(',').map(k => k.trim()).filter(Boolean);
+          setSecondaryKeywords([...secondaryKeywords, ...newKeywords]);
+          setSecondaryKeywordInput("");
+      }
+  }
+
+  const removeSecondaryKeyword = (index: number) => {
+      setSecondaryKeywords(secondaryKeywords.filter((_, i) => i !== index));
+  }
+
+
   const handleAnalysis = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       setIsAnalyzing(true);
@@ -184,6 +204,9 @@ export default function OneClickWriterSerpForm() {
       setIssues([]);
 
       const formData = new FormData(event.currentTarget);
+      formData.append('primaryKeyword', primaryKeyword);
+      secondaryKeywords.forEach(kw => formData.append('secondaryKeywords[]', kw));
+
       const result = await getSerpAnalysisAction(formData);
 
       if (result.success && result.data) {
@@ -398,20 +421,40 @@ export default function OneClickWriterSerpForm() {
             </CardHeader>
             <CardContent>
                  <form onSubmit={handleAnalysis} className="space-y-4">
-                    <div className="grid grid-cols-[1fr_auto_auto_auto] gap-2 items-center">
-                       <div className="relative">
-                            <Input 
-                                id="primaryKeyword" 
-                                name="primaryKeyword" 
-                                placeholder="Enter your keyword" 
-                                required 
-                                className="text-base h-12"
-                                value={primaryKeyword}
-                                onChange={handleKeywordChange}
-                                onFocus={() => setShowSuggestions(true)}
-                                onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-                            />
-                             {showSuggestions && (
+                     <div className="grid grid-cols-[1fr_auto_auto_auto] gap-2 items-start">
+                       <div className="relative col-span-4">
+                            <div className="flex flex-wrap items-center gap-2 p-2 border rounded-md min-h-12" onClick={() => secondaryInputRef.current?.focus()}>
+                               {primaryKeyword && <Badge>{primaryKeyword} <button type="button" onClick={() => setPrimaryKeyword('')} className="ml-1 rounded-full hover:bg-background/20 p-0.5"><X className="w-3 h-3"/></button></Badge>}
+                               {secondaryKeywords.map((kw, index) => (
+                                   <Badge variant="secondary" key={index}>{kw} <button type="button" onClick={() => removeSecondaryKeyword(index)} className="ml-1 rounded-full hover:bg-background/20 p-0.5"><X className="w-3 h-3"/></button></Badge>
+                               ))}
+                               {!primaryKeyword ? (
+                                    <Input
+                                        id="primaryKeyword"
+                                        name="primaryKeyword"
+                                        placeholder="Enter your primary keyword"
+                                        required
+                                        className="text-base h-auto border-none focus-visible:ring-0 p-0 m-0"
+                                        value={primaryKeyword}
+                                        onChange={handleKeywordChange}
+                                        onFocus={() => setShowSuggestions(true)}
+                                        onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                                    />
+                               ) : (
+                                   <Input
+                                        id="secondaryKeywords"
+                                        name="secondaryKeywordInput"
+                                        placeholder="Secondary keywords..."
+                                        className="text-base h-auto border-none focus-visible:ring-0 p-0 m-0"
+                                        value={secondaryKeywordInput}
+                                        onChange={(e) => setSecondaryKeywordInput(e.target.value)}
+                                        onKeyDown={handleSecondaryKeywordKeyDown}
+                                        ref={secondaryInputRef}
+                                    />
+                               )}
+                            </div>
+                            
+                             {showSuggestions && primaryKeyword && (
                                 <Card className="absolute z-10 w-full mt-1 shadow-md">
                                     <CardContent className="p-2">
                                          <ScrollArea className="h-48">
@@ -433,8 +476,10 @@ export default function OneClickWriterSerpForm() {
                                 </Card>
                             )}
                        </div>
+                    </div>
+                     <div className="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
                         <Select name="top" defaultValue="top-10">
-                            <SelectTrigger className="w-[100px] h-12">
+                            <SelectTrigger className="w-full h-12">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -510,7 +555,7 @@ export default function OneClickWriterSerpForm() {
                       <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Keyword</TableHead>
+                                <TableHead>Keyword(s)</TableHead>
                                 <TableHead>Created at</TableHead>
                                 <TableHead>Word Count</TableHead>
                                 <TableHead>Content Score</TableHead>

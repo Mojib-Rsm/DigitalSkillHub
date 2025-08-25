@@ -4,6 +4,7 @@ import { z } from 'zod';
 export const OneClickWriterSerpInputSchema = z.object({
   title: z.string().min(10, { message: "Please enter a title with at least 10 characters." }),
   primaryKeyword: z.string().min(3, { message: "Please enter a primary keyword." }),
+  secondaryKeywords: z.array(z.string()).optional(),
   targetCountry: z.string().describe('The target country for the content, for localization purposes.'),
   tone: z.string().describe('The desired writing tone for the article.'),
   audience: z.string().describe('The target audience for the article.'),
