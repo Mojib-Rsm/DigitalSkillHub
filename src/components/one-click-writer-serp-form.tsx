@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -21,12 +21,29 @@ import Image from "next/image";
 import { Textarea } from "./ui/textarea";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./ui/select";
+import { ScrollArea } from "./ui/scroll-area";
 
 // Remark and rehype plugins for markdown rendering
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
+
+// Mock data for keyword suggestions, to be replaced with API call
+const keywordSuggestions = [
+    "example keyword",
+    "example keyword in cucumber",
+    "example keywords",
+    "example keywords in abstract",
+    "example keywords in research paper",
+    "example keyword 2",
+    "example keywords in python",
+    "freelancing tips for beginners",
+    "how to earn money online",
+    "digital marketing bangladesh",
+];
 
 
 function AnalyzeButton() {
@@ -126,17 +143,35 @@ export default function OneClickWriterSerpForm() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [serpData, setSerpData] = useState<SerpAnalysisResult | null>(null);
-  const [country, setCountry] = useState("United States of America");
+  const [country, setCountry] = useState("Bangladesh");
   const [countrySelectOpen, setCountrySelectOpen] = useState(false);
   const [primaryKeyword, setPrimaryKeyword] = useState("");
   const [article, setArticle] = useState<OneClickWriterOutput | null>(null);
   const [renderedHtml, setRenderedHtml] = useState("");
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     if (article?.article) {
         markdownToHtml(article.article).then(setRenderedHtml);
     }
   }, [article]);
+
+  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setPrimaryKeyword(value);
+      if (value) {
+          setShowSuggestions(true);
+          setSuggestions(keywordSuggestions.filter(s => s.toLowerCase().includes(value.toLowerCase())));
+      } else {
+          setShowSuggestions(false);
+      }
+  }
+
+  const handleSuggestionClick = (suggestion: string) => {
+      setPrimaryKeyword(suggestion);
+      setShowSuggestions(false);
+  }
 
   const handleAnalysis = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
@@ -149,7 +184,6 @@ export default function OneClickWriterSerpForm() {
 
       if (result.success && result.data) {
         setSerpData(result.data);
-        setPrimaryKeyword(formData.get('primaryKeyword') as string);
       } else {
         setIssues(result.issues || ["An unknown error occurred."]);
         toast({
@@ -353,79 +387,133 @@ export default function OneClickWriterSerpForm() {
 
     // Initial View: Keyword & GEO
     return (
-        <div>
-            <Card className="shadow-lg">
-                <CardHeader>
-                    <CardTitle>Keyword & Location</CardTitle>
-                    <CardDescription>
-                        Enter your primary keyword and target country to begin SERP analysis.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleAnalysis} className="space-y-6">
-                        <div className="space-y-2">
-                            <Label htmlFor="primaryKeyword">Keyword or Topic</Label>
-                            <Input id="primaryKeyword" name="primaryKeyword" placeholder="e.g., best travel destinations in asia" required className="text-base" />
+        <Card className="shadow-lg">
+            <CardHeader>
+                <CardTitle>AI-Powered Article Writer</CardTitle>
+                <CardDescription>Research and create GEO optimized top ranking articles.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                 <form onSubmit={handleAnalysis} className="space-y-4">
+                    <div className="grid grid-cols-[1fr_auto_auto_auto] gap-2 items-center">
+                       <div className="relative">
+                            <Input 
+                                id="primaryKeyword" 
+                                name="primaryKeyword" 
+                                placeholder="Enter your keyword" 
+                                required 
+                                className="text-base h-12"
+                                value={primaryKeyword}
+                                onChange={handleKeywordChange}
+                                onFocus={() => setShowSuggestions(true)}
+                            />
+                             {showSuggestions && suggestions.length > 0 && (
+                                <Card className="absolute z-10 w-full mt-1 shadow-md">
+                                    <CardContent className="p-2">
+                                         <ScrollArea className="h-48">
+                                            {suggestions.map((s, i) => (
+                                                <button key={i} type="button" className="w-full text-left p-2 hover:bg-muted rounded-md" onClick={() => handleSuggestionClick(s)}>
+                                                    {s}
+                                                </button>
+                                            ))}
+                                        </ScrollArea>
+                                    </CardContent>
+                                </Card>
+                            )}
+                       </div>
+                        <Select defaultValue="top-10">
+                            <SelectTrigger className="w-[100px] h-12">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="top-10">Top 10</SelectItem>
+                                <SelectItem value="top-20">Top 20</SelectItem>
+                                <SelectItem value="top-50">Top 50</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <input type="hidden" name="targetCountry" value={country} />
+                        <Popover open={countrySelectOpen} onOpenChange={setCountrySelectOpen}>
+                            <PopoverTrigger asChild>
+                            <Button
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={countrySelectOpen}
+                                className="w-[180px] justify-between font-normal h-12"
+                            >
+                                {country
+                                ? countries.find((c) => c.value === country)?.label
+                                : "Select country..."}
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[180px] p-0">
+                            <Command>
+                                <CommandInput placeholder="Search country..." />
+                                <CommandEmpty>No country found.</CommandEmpty>
+                                <CommandGroup className="max-h-64 overflow-y-auto">
+                                {countries.map((c) => (
+                                    <CommandItem
+                                    key={c.value}
+                                    value={c.value}
+                                    onSelect={(currentValue) => {
+                                        setCountry(countries.find(c => c.value.toLowerCase() === currentValue.toLowerCase())?.value || "")
+                                        setCountrySelectOpen(false)
+                                    }}
+                                    >
+                                    <Check
+                                        className={cn(
+                                        "mr-2 h-4 w-4",
+                                        country === c.value ? "opacity-100" : "opacity-0"
+                                        )}
+                                    />
+                                    {c.label}
+                                    </CommandItem>
+                                ))}
+                                </CommandGroup>
+                            </Command>
+                            </PopoverContent>
+                        </Popover>
+                         <Button type="submit" size="lg" className="h-12 text-base">Create</Button>
+                    </div>
+                     {issues.length > 0 && (
+                        <Alert variant="destructive">
+                            <AlertTitle>Error</AlertTitle>
+                            <AlertDescription>
+                                <ul className="list-disc pl-5">
+                                    {issues.map((issue, i) => <li key={i}>{issue}</li>)}
+                                </ul>
+                            </AlertDescription>
+                        </Alert>
+                    )}
+                 </form>
+                 <Separator className="my-6"/>
+                 <div className="space-y-4">
+                     <div className="flex justify-between items-center">
+                        <h3 className="font-semibold">Recent Articles</h3>
+                        <div className="flex items-center gap-2">
+                           <Input placeholder="Search Articles" className="h-9 max-w-sm"/>
+                           <Button variant="outline" size="icon" className="h-9 w-9"><Briefcase/></Button>
                         </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="country">Target Country</Label>
-                            <input type="hidden" name="targetCountry" value={country} />
-                            <Popover open={countrySelectOpen} onOpenChange={setCountrySelectOpen}>
-                                <PopoverTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    aria-expanded={countrySelectOpen}
-                                    className="w-full justify-between font-normal"
-                                >
-                                    {country
-                                    ? countries.find((c) => c.value === country)?.label
-                                    : "Select country..."}
-                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                                <Command>
-                                    <CommandInput placeholder="Search country..." />
-                                    <CommandEmpty>No country found.</CommandEmpty>
-                                    <CommandGroup className="max-h-64 overflow-y-auto">
-                                    {countries.map((c) => (
-                                        <CommandItem
-                                        key={c.value}
-                                        value={c.value}
-                                        onSelect={(currentValue) => {
-                                            setCountry(countries.find(c => c.value.toLowerCase() === currentValue.toLowerCase())?.value || "")
-                                            setCountrySelectOpen(false)
-                                        }}
-                                        >
-                                        <Check
-                                            className={cn(
-                                            "mr-2 h-4 w-4",
-                                            country === c.value ? "opacity-100" : "opacity-0"
-                                            )}
-                                        />
-                                        {c.label}
-                                        </CommandItem>
-                                    ))}
-                                    </CommandGroup>
-                                </Command>
-                                </PopoverContent>
-                            </Popover>
-                        </div>
-                        {issues.length > 0 && (
-                            <Alert variant="destructive">
-                                <AlertTitle>Error</AlertTitle>
-                                <AlertDescription>
-                                    <ul className="list-disc pl-5">
-                                        {issues.map((issue, i) => <li key={i}>{issue}</li>)}
-                                    </ul>
-                                </AlertDescription>
-                            </Alert>
-                        )}
-                        <AnalyzeButton />
-                    </form>
-                </CardContent>
-            </Card>
-        </div>
+                     </div>
+                      <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Keyword</TableHead>
+                                <TableHead>Created at</TableHead>
+                                <TableHead>Word Count</TableHead>
+                                <TableHead>Content Score</TableHead>
+                                <TableHead>Status</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                                    No articles found.
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                 </div>
+            </CardContent>
+        </Card>
     );
 }
