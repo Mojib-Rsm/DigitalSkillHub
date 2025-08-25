@@ -1,5 +1,4 @@
 
-
 import { Layers, RefreshCcw, Sparkles, TowerControl, Users, Youtube, Clock, TrendingUp, Award, CheckCircle, FileText, ImageIcon, Link as LinkIcon, PenSquare, ShoppingCart, Languages, Hash, Mail, Lightbulb, BarChart, GraduationCap, HelpCircle, BookCheck, DollarSign, Wand, FileSignature, Globe, Film, MessageSquare, UserCircle as UserCircleIcon, Edit, Clapperboard, Receipt, Briefcase, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Quote, Search } from 'lucide-react';
 
 export type Tool = {
@@ -757,3 +756,5 @@ export const tools: Tool[] = [
         credits: 2,
     },
 ];
+
+    
