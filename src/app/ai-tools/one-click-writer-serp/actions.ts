@@ -3,7 +3,7 @@
 
 import { oneClickWriterSerp } from "@/ai/flows/one-click-writer-serp";
 import { saveHistoryAction } from "@/app/actions/save-history";
-import { getSerpResults, getKeywordData, getRelatedQuestions, type SerpResult, type KeywordData, type RelatedQuestion } from '@/services/serp-service';
+import { getSerpResults, getKeywordData, getRelatedQuestions, type SerpResult, type KeywordData, type RelatedQuestion, getKeywordSuggestions } from '@/services/serp-service';
 import type { OneClickWriterOutput } from "@/ai/flows/one-click-writer";
 import { OneClickWriterSerpInputSchema, type OneClickWriterSerpInput } from "@/ai/schema/one-click-writer-serp";
 import { z } from "zod";
@@ -19,6 +19,20 @@ export type SerpAnalysisResult = {
     keywordData: KeywordData;
     relatedQuestions: RelatedQuestion[];
 }
+
+export async function getKeywordSuggestionsAction(query: string): Promise<string[]> {
+    if (query.length < 2) {
+        return [];
+    }
+    try {
+        const suggestions = await getKeywordSuggestions(query);
+        return suggestions;
+    } catch (error) {
+        console.error("Error fetching keyword suggestions:", error);
+        return [];
+    }
+}
+
 
 export async function getSerpAnalysisAction(
   formData: FormData
@@ -57,11 +71,11 @@ export async function getSerpAnalysisAction(
             }
         }
     } catch (error: any) {
-        console.error("Error in getSerpAnalysisAction:", error.message);
         if (error.response?.data?.error) {
              console.error(`Google Search API Error: ${JSON.stringify(error.response.data.error)}`);
              return { success: false, issues: [`Google Search API Error: ${error.response.data.error.message}`] };
         }
+        console.error("Error in getSerpAnalysisAction:", error.message);
         return {
             success: false,
             issues: ["An unknown error occurred while fetching SERP data."]

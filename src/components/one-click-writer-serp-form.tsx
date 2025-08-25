@@ -1,9 +1,9 @@
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useFormStatus } from "react-dom";
-import { getSerpAnalysisAction, generateArticleFromSerpAction } from "@/app/ai-tools/one-click-writer-serp/actions";
+import { getSerpAnalysisAction, generateArticleFromSerpAction, getKeywordSuggestionsAction } from "@/app/ai-tools/one-click-writer-serp/actions";
 import type { SerpAnalysisResult } from "@/app/ai-tools/one-click-writer-serp/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -24,26 +24,14 @@ import { Separator } from "./ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./ui/select";
 import { ScrollArea } from "./ui/scroll-area";
+import { useDebounce } from 'use-debounce';
+
 
 // Remark and rehype plugins for markdown rendering
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
-
-// Mock data for keyword suggestions, to be replaced with API call
-const keywordSuggestions = [
-    "example keyword",
-    "example keyword in cucumber",
-    "example keywords",
-    "example keywords in abstract",
-    "example keywords in research paper",
-    "example keyword 2",
-    "example keywords in python",
-    "freelancing tips for beginners",
-    "how to earn money online",
-    "digital marketing bangladesh",
-];
 
 
 function AnalyzeButton() {
@@ -146,9 +134,11 @@ export default function OneClickWriterSerpForm() {
   const [country, setCountry] = useState("Bangladesh");
   const [countrySelectOpen, setCountrySelectOpen] = useState(false);
   const [primaryKeyword, setPrimaryKeyword] = useState("");
+  const [debouncedKeyword] = useDebounce(primaryKeyword, 500);
   const [article, setArticle] = useState<OneClickWriterOutput | null>(null);
   const [renderedHtml, setRenderedHtml] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
@@ -157,12 +147,26 @@ export default function OneClickWriterSerpForm() {
     }
   }, [article]);
 
+  useEffect(() => {
+      const fetchSuggestions = async () => {
+          if (debouncedKeyword.length > 2) {
+              setSuggestionsLoading(true);
+              const result = await getKeywordSuggestionsAction(debouncedKeyword);
+              setSuggestions(result);
+              setSuggestionsLoading(false);
+          } else {
+              setSuggestions([]);
+          }
+      };
+      fetchSuggestions();
+  }, [debouncedKeyword]);
+
+
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       setPrimaryKeyword(value);
       if (value) {
           setShowSuggestions(true);
-          setSuggestions(keywordSuggestions.filter(s => s.toLowerCase().includes(value.toLowerCase())));
       } else {
           setShowSuggestions(false);
       }
@@ -405,22 +409,31 @@ export default function OneClickWriterSerpForm() {
                                 value={primaryKeyword}
                                 onChange={handleKeywordChange}
                                 onFocus={() => setShowSuggestions(true)}
+                                onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
                             />
-                             {showSuggestions && suggestions.length > 0 && (
+                             {showSuggestions && (
                                 <Card className="absolute z-10 w-full mt-1 shadow-md">
                                     <CardContent className="p-2">
                                          <ScrollArea className="h-48">
-                                            {suggestions.map((s, i) => (
-                                                <button key={i} type="button" className="w-full text-left p-2 hover:bg-muted rounded-md" onClick={() => handleSuggestionClick(s)}>
-                                                    {s}
-                                                </button>
-                                            ))}
+                                            {suggestionsLoading ? (
+                                                <div className="flex items-center justify-center p-4">
+                                                    <Loader className="w-5 h-5 animate-spin" />
+                                                </div>
+                                            ) : suggestions.length > 0 ? (
+                                                suggestions.map((s, i) => (
+                                                    <button key={i} type="button" className="w-full text-left p-2 hover:bg-muted rounded-md" onClick={() => handleSuggestionClick(s)}>
+                                                        {s}
+                                                    </button>
+                                                ))
+                                            ) : (
+                                                 <p className="p-2 text-sm text-muted-foreground">No suggestions found.</p>
+                                            )}
                                         </ScrollArea>
                                     </CardContent>
                                 </Card>
                             )}
                        </div>
-                        <Select defaultValue="top-10">
+                        <Select name="top" defaultValue="top-10">
                             <SelectTrigger className="w-[100px] h-12">
                                 <SelectValue />
                             </SelectTrigger>

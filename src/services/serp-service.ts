@@ -87,8 +87,24 @@ class SerpApi {
             });
             return response.data.related_questions?.map((item: any) => ({ question: item.question })) || [];
         } catch (error: any) {
-            console.error('Error fetching from SerpApi:', error.message);
+            console.error('Error fetching from SerpApi for related questions:', error.message);
             return [];
+        }
+    }
+
+    async getAutocomplete(query: string): Promise<string[]> {
+        try {
+            const response = await axios.get(this.baseUrl, {
+                params: {
+                    engine: 'google_autocomplete',
+                    q: query,
+                    api_key: this.apiKey,
+                },
+            });
+            return response.data.suggestions?.map((item: any) => item.value) || [];
+        } catch (error: any) {
+             console.error('Error fetching from SerpApi for autocomplete:', error.message);
+             return [];
         }
     }
 }
@@ -157,4 +173,13 @@ export async function getRelatedQuestions(query: string): Promise<RelatedQuestio
     }
     const serpApi = new SerpApi();
     return serpApi.getRelatedQuestions(query);
+}
+
+export async function getKeywordSuggestions(query: string): Promise<string[]> {
+    if (!SERPAPI_KEY) {
+        console.warn('SerpApi key not set, skipping keyword suggestions fetch. See setup_guide.md for instructions.');
+        return [];
+    }
+    const serpApi = new SerpApi();
+    return serpApi.getAutocomplete(query);
 }
