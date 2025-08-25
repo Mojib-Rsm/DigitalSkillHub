@@ -56,7 +56,7 @@ export async function getActiveCoupons(): Promise<Coupon[]> {
      try {
         const db = getFirestore(app);
         const couponsCol = collection(db, 'coupons');
-        const q = query(couponsCol, where('isActive', '==', true), orderBy('discountPercentage', 'desc'));
+        const q = query(couponsCol, where('isActive', '==', true));
         const couponSnapshot = await getDocs(q);
 
         const couponList = couponSnapshot.docs

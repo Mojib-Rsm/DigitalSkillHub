@@ -32,12 +32,12 @@ export async function seedDatabaseAction() {
 
     try {
         const collectionsToSeed = [
-            { name: 'tools', data: tools, uniqueKey: 'id' },
+            { name: 'tools', data: tools, uniqueKey: 'href' },
             { name: 'courses', data: allCourses, uniqueKey: 'title' },
             { name: 'blog', data: blogPosts, uniqueKey: 'title' },
             { name: 'jobs', data: jobPostings, uniqueKey: 'title' },
-            { name: 'pricing', data: pricingPlans, uniqueKey: 'id' },
-            { name: 'testimonials', data: testimonials, uniqueKey: 'id' },
+            { name: 'pricing', data: pricingPlans, uniqueKey: 'name' },
+            { name: 'testimonials', data: testimonials, uniqueKey: 'quote' },
             { name: 'users', data: users, uniqueKey: 'email' },
         ];
 
@@ -52,9 +52,9 @@ export async function seedDatabaseAction() {
                  // Collection is empty, seed all data
                 const batch = writeBatch(db);
                 data.forEach(item => {
-                    // Use doc(collectionRef) to create a new document reference with an auto-generated ID
+                    const { id, ...itemData } = item as any; // Exclude the id field
                     const docRef = doc(collectionRef); 
-                    batch.set(docRef, item);
+                    batch.set(docRef, itemData);
                     documentsWritten++;
                 });
                 await batch.commit();
@@ -66,9 +66,9 @@ export async function seedDatabaseAction() {
                  
                  data.forEach(item => {
                      if (!existingItems.has((item as any)[uniqueKey])) {
-                         // Use doc(collectionRef) to create a new document reference with an auto-generated ID
+                         const { id, ...itemData } = item as any; // Exclude the id field
                          const docRef = doc(collectionRef);
-                         batch.set(docRef, item);
+                         batch.set(docRef, itemData);
                          documentsWritten++;
                          itemsAddedToBatch++;
                      }
