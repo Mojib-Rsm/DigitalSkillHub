@@ -15,7 +15,7 @@ export async function getSerpAnalysisAction(
   if (!validatedFields.success) {
       return {
           success: false,
-          issues: validatedFields.error.flatten().fieldErrors as any,
+          issues: validatedFields.error.flatten().formErrors,
       };
   }
 
@@ -49,7 +49,7 @@ export async function generateArticleFromSerpAction(
   if (!validatedFields.success) {
       return {
           success: false,
-          issues: validatedFields.error.flatten().fieldErrors as any,
+          issues: validatedFields.error.flatten().formErrors,
       };
   }
 
