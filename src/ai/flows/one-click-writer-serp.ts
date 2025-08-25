@@ -14,8 +14,9 @@ import { z } from 'genkit';
 import { getSerpResults, getKeywordData, getRelatedQuestions, type SerpResult, type KeywordData, type RelatedQuestion } from '@/services/serp-service';
 import type { OneClickWriterOutput } from '@/ai/flows/one-click-writer';
 import { oneClickWriter } from './one-click-writer';
+import type { OneClickWriterSerpInput } from '@/app/ai-tools/one-click-writer-serp/actions';
 
-export const OneClickWriterSerpInputSchema = z.object({
+const OneClickWriterSerpInputSchema = z.object({
   title: z.string().min(10, { message: "Please enter a title with at least 10 characters." }),
   primaryKeyword: z.string().min(3, { message: "Please enter a primary keyword." }),
   targetCountry: z.string().describe('The target country for the content, for localization purposes.'),
@@ -25,9 +26,6 @@ export const OneClickWriterSerpInputSchema = z.object({
   outline: z.string().describe('The user-approved or edited outline for the article.'),
   customSource: z.string().optional().describe('An optional custom URL to use as a primary source.'),
 });
-
-export type OneClickWriterSerpInput = z.infer<typeof OneClickWriterSerpInputSchema>;
-export type OneClickWriterSerpOutput = OneClickWriterOutput;
 
 
 const oneClickWriterSerpFlow = ai.defineFlow(
@@ -112,12 +110,12 @@ const oneClickWriterSerpFlow = ai.defineFlow(
 );
 
 
-export async function generateArticleFromSerpAction(input: OneClickWriterSerpInput): Promise<{ success: boolean; data?: OneClickWriterOutput; issues?: string[] }> {
+export async function oneClickWriterSerp(input: OneClickWriterSerpInput): Promise<OneClickWriterOutput> {
     try {
         const result = await oneClickWriterSerpFlow(input);
-        return { success: true, data: result };
+        return result;
     } catch (error) {
-        console.error("Error in generateArticleFromSerpAction:", error);
-        return { success: false, issues: [(error as Error).message] };
+        console.error("Error in oneClickWriterSerp flow:", error);
+        throw new Error((error as Error).message);
     }
 }
