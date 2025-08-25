@@ -43,8 +43,7 @@ import '@/ai/flows/facebook-caption-generator.ts';
 import '@/app/dashboard/admin/seed/actions.ts';
 import '@/app/dashboard/admin/coupons/actions.ts';
 import '@/ai/flows/ai-article-writer.ts';
-
-
-
-
-
+import '@/ai/flows/contact-support.ts';
+import '@/ai/flows/disclaimer-generator.ts';
+import '@/ai/flows/privacy-policy-generator.ts';
+import '@/ai/flows/terms-of-service-generator.ts';
