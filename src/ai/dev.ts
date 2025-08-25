@@ -30,6 +30,7 @@ import '@/ai/flows/messenger-reply-generator.ts';
 import '@/ai/flows/website-blueprint-generator.ts';
 import '@/ai/flows/prompt-generator.ts';
 import '@/ai/flows/one-click-writer.ts';
+import '@/ai/flows/one-click-writer-serp.ts';
 import '@/ai/flows/seo-score-checker.ts';
 import '@/ai/flows/ad-copy-generator.ts';
 import '@/ai/flows/script-writer.ts';
@@ -41,5 +42,6 @@ import '@/ai/flows/content-calendar-planner.ts';
 import '@/ai/flows/facebook-caption-generator.ts';
 import '@/app/dashboard/admin/seed/actions.ts';
 import '@/app/dashboard/admin/coupons/actions.ts';
+
 
 
