@@ -349,11 +349,11 @@ export const tools: Tool[] = [
         isFree: false,
         credits: 10,
     },
-    {
-        id: "ai-article-writer",
+     {
+        id: "one-click-writer-serp",
         title: "AI-Powered Article Writer",
-        description: "Research and create GEO optimized top ranking articles. SEO optimized writing with AI detection bypass.",
-        href: "/ai-tools/ai-article-writer",
+        description: "Research and create GEO optimized top ranking articles.",
+        href: "/ai-tools/one-click-writer-serp",
         icon: "Search",
         category: "Content & Writing",
         enabled: true,
@@ -746,4 +746,5 @@ export const tools: Tool[] = [
         credits: 2,
     },
 ];
+
 

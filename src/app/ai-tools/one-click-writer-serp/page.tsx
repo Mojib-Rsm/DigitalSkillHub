@@ -1,12 +1,12 @@
 
-import AiArticleWriterForm from "@/components/ai-article-writer-form";
+import OneClickWriterSerpForm from "@/components/one-click-writer-serp-form";
 import ToolPageLayout from "@/components/tool-page-layout";
 import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { Search } from "lucide-react";
 import { notFound } from "next/navigation";
 
-export default async function AiArticleWriterPage() {
-    const tool = await getToolByHref('/ai-tools/ai-article-writer');
+export default async function OneClickWriterSerpPage() {
+    const tool = await getToolByHref('/ai-tools/one-click-writer-serp');
     if (!tool) notFound();
     
     const relatedTools = await getRelatedTools(tool.category, tool.id);
@@ -17,9 +17,13 @@ export default async function AiArticleWriterPage() {
             description={tool.description}
             icon={<Search className="w-12 h-12 text-primary" />}
             relatedTools={relatedTools}
+            helperTool={{
+                buttonText: "বিষয়বস্তু আইডিয়া নিন",
+                href: "/ai-tools/blog-topic-generator"
+            }}
         >
             <div className="max-w-4xl mx-auto">
-                <AiArticleWriterForm />
+                <OneClickWriterSerpForm />
             </div>
         </ToolPageLayout>
     );
