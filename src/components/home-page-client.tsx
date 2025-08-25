@@ -15,6 +15,7 @@ import { Testimonial } from '@/services/testimonial-service';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Tool } from '@/services/tool-service';
 import type { Coupon } from "@/services/coupon-service";
+import React from "react";
 
 const faqItems = [
     {
@@ -95,8 +96,13 @@ interface HomePageClientProps {
 }
 
 export default function HomePageClient({ pricingPlans, testimonials, trendingTools, activeCoupons }: HomePageClientProps) {
+  const [isMounted, setIsMounted] = React.useState(false);
   const loading = !pricingPlans || !testimonials || !trendingTools;
   const primaryCoupon = activeCoupons && activeCoupons.length > 0 ? activeCoupons[0] : null;
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
 
   return (
@@ -476,16 +482,22 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                       </p>
                   </div>
                   <div className="mt-12 max-w-4xl mx-auto">
-                      <Accordion type="single" collapsible className="w-full">
-                          {faqItems.map((item, index) => (
-                             <AccordionItem value={`item-${index}`} key={index}>
-                                  <AccordionTrigger className="text-lg text-left font-semibold hover:no-underline">{item.question}</AccordionTrigger>
-                                  <AccordionContent className="text-base text-muted-foreground">
-                                      {item.answer}
-                                  </AccordionContent>
-                              </AccordionItem>
-                          ))}
-                      </Accordion>
+                      {!isMounted ? (
+                        <div className="space-y-4">
+                          {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}
+                        </div>
+                      ) : (
+                        <Accordion type="single" collapsible className="w-full">
+                            {faqItems.map((item, index) => (
+                               <AccordionItem value={`item-${index}`} key={index}>
+                                    <AccordionTrigger className="text-lg text-left font-semibold hover:no-underline">{item.question}</AccordionTrigger>
+                                    <AccordionContent className="text-base text-muted-foreground">
+                                        {item.answer}
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+                      )}
                   </div>
                   <div className="text-center mt-8">
                        <p className="text-muted-foreground">Still have questions? <Link href="/contact" className="text-primary font-semibold hover:underline">Contact our support team</Link></p>
