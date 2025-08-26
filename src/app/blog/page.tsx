@@ -67,7 +67,7 @@ export default async function BlogPage() {
     />
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">
-        <h1 className="font-headline text-5xl font-bold">দক্ষতার স্প্রাউট ব্লগ</h1>
+        <h1 className="font-headline text-5xl font-bold">TotthoAi ব্লগ</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">
           ডিজিটাল দক্ষতা এবং ফ্রিল্যান্সিং জগত থেকে অন্তর্দৃষ্টি, টিউটোরিয়াল এবং খবর।
         </p>

@@ -2,7 +2,7 @@
 
 'use server';
 
-import { auth } from "next-auth";
+import { auth } from '@/auth';
 import { getFirestore, doc, getDoc, collection, getDocs, query, where, updateDoc } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 
@@ -22,11 +22,11 @@ export type UserProfile = {
 export async function getCurrentUser(): Promise<UserProfile | null> {
   const session = await auth();
 
-  if (!session?.user?.email || !(session.user as any).id) {
+  if (!session?.user?.email || !session?.user?.id) {
     return null;
   }
   
-  const userId = (session.user as any).id;
+  const userId = session.user.id;
 
   try {
     const db = getFirestore(app);
