@@ -19,6 +19,7 @@ The API key authenticates your requests to Google's services.
 3.  **Enable the Custom Search API:**
     *   In the search bar at the top, search for "**Custom Search API**" and select it from the results.
     *   Click the "**ENABLE**" button. Wait for it to finish.
+    *   Also, enable the **"Generative Language API"** for the AI features to work.
 
 4.  **Create an API Key:**
     *   Navigate to the credentials page. You can do this by searching for "APIs & Services > Credentials" in the search bar or using the navigation menu.
@@ -32,7 +33,7 @@ The API key authenticates your requests to Google's services.
     GOOGLE_API_KEY=YOUR_API_KEY_HERE
     ```
 
-> **Security Warning:** It is highly recommended to restrict your API key. In the Cloud Console, find your new API key, click the three dots menu, select "Edit API key", and under "API restrictions", select "Restrict key" and choose the "Custom Search API".
+> **Security Warning:** It is highly recommended to restrict your API key. In the Cloud Console, find your new API key, click the three dots menu, select "Edit API key", and under "API restrictions", select "Restrict key" and choose the "Custom Search API" and "Generative Language API".
 
 ### Step 2: Get your GOOGLE_CSE_ID (Programmable Search Engine ID)
 
@@ -62,6 +63,18 @@ The CSE ID (or Search Engine ID) tells Google *which* search engine to use for y
     ```env
     GOOGLE_CSE_ID=YOUR_SEARCH_ENGINE_ID_HERE
     ```
+
+---
+
+## Important: Checking API Quotas
+
+If you encounter "Quota Exceeded" errors, it means you've hit the free usage limits for one of the Google APIs.
+
+1.  **Go to the Google Cloud Console** for your project.
+2.  Use the search bar to find the API you need to check (e.g., "Custom Search API" or "Generative Language API").
+3.  Select the API from the search results.
+4.  In the left sidebar for that API, click on **"Quotas"**.
+5.  Here you can see your usage for different time periods. If you are consistently hitting the limits, you may need to **enable billing** on your Google Cloud project to increase the quotas.
 
 ---
 
