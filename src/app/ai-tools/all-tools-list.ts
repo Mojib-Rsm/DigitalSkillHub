@@ -1,6 +1,5 @@
 // This file centralizes the list of AI tools for use in the sitemap and other components.
 export const allTools = [
-    { href: "/ai-tools/one-click-writer" },
     { href: "/ai-tools/one-click-writer-serp" },
     { href: "/ai-tools/blog-topic-generator" },
     { href: "/ai-tools/product-description-generator" },
