@@ -38,6 +38,12 @@ const nextConfig: NextConfig = {
   webpack: (config, { isServer }) => {
     // This is to fix a bug with handlebars and webpack
     config.resolve.alias.handlebars = 'handlebars/dist/handlebars.min.js';
+    
+    // Fix for express dependency in genkit
+    if (!isServer) {
+      config.resolve.alias.express = false;
+    }
+    
     return config;
   }
 };
