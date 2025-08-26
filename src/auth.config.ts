@@ -3,7 +3,6 @@ import Google from 'next-auth/providers/google';
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 
-
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
@@ -23,83 +22,81 @@ export const authConfig = {
     error: '/login', // Redirect to login page on error
   },
   callbacks: {
-    async jwt({ token, user, account }) {
-      if (account && user) {
-        // This is the first sign-in or a new session
-        token.id = user.id;
-        token.accessToken = account.access_token;
-        
-        const db = getFirestore(app);
-        const userRef = doc(db, 'users', user.id);
-        const userSnap = await getDoc(userRef);
+    async signIn({ user, account }) {
+      if (account?.provider === 'google') {
+        if (!user.id || !user.email) return false; // Mandatory fields
 
-        if (userSnap.exists()) {
+        try {
+          const db = getFirestore(app);
+          const userRef = doc(db, 'users', user.id);
+          const userSnap = await getDoc(userRef);
+
+          if (!userSnap.exists()) {
+            await setDoc(userRef, {
+              name: user.name,
+              email: user.email,
+              profile_image: user.image,
+              role: 'user',
+              credits: 100,
+              plan_id: 'free',
+              is_verified: true,
+              status: 'active',
+              bookmarks: [],
+              created_at: serverTimestamp(),
+              updated_at: serverTimestamp(),
+            });
+          } else {
+            await updateDoc(userRef, {
+              name: user.name,
+              profile_image: user.image,
+              updated_at: serverTimestamp(),
+            });
+          }
+          return true; // Indicate successful sign-in
+        } catch (error) {
+          console.error("Firestore error during sign-in:", error);
+          return false; // Prevent sign-in if database operation fails
+        }
+      }
+      return false; // Deny sign in for other providers or if check fails
+    },
+    async jwt({ token, user, account, profile }) {
+      if (user) { // This block is only executed on sign-in
+        token.id = user.id;
+        try {
+          const db = getFirestore(app);
+          const userRef = doc(db, 'users', user.id);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
             const data = userSnap.data();
             token.role = data.role;
             token.credits = data.credits;
             token.planId = data.plan_id;
-        } else {
-            // This case might happen if the user record is deleted from Firestore but the session is still active
-            // Or for a completely new user before the 'signIn' event has created the document.
-            // We can set default values here as a fallback.
-            token.role = 'user'; 
+          } else {
+            // This can happen if the db write in `signIn` hasn't completed
+            // or if there's an issue. Set defaults.
+            token.role = 'user';
             token.credits = 100;
             token.planId = 'free';
+          }
+        } catch (error) {
+          console.error("Firestore error in JWT callback:", error);
+          // Set defaults on error
+          token.role = 'user';
+          token.credits = 100;
+          token.planId = 'free';
         }
       }
       return token;
     },
     async session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
+      if (session.user && token.id) {
+        session.user.id = token.id as string;
         (session.user as any).role = token.role;
         (session.user as any).credits = token.credits;
         (session.user as any).planId = token.planId;
       }
       return session;
     },
-  },
-  events: {
-    async signIn({ user, account }) {
-      if (!user.id || !user.email) {
-        console.error("User ID or email is missing from provider response.");
-        return;
-      }
-      
-      const db = getFirestore(app);
-      const userRef = doc(db, 'users', user.id);
-
-      try {
-        const userSnap = await getDoc(userRef);
-
-        if (!userSnap.exists()) {
-          // New user, create a document in Firestore
-          await setDoc(userRef, {
-            name: user.name,
-            email: user.email,
-            profile_image: user.image,
-            role: 'user',
-            credits: 100, // Initial credits
-            plan_id: 'free',
-            is_verified: true,
-            status: 'active',
-            bookmarks: [],
-            created_at: serverTimestamp(),
-            updated_at: serverTimestamp(),
-          });
-        } else {
-          // Existing user, update image and name just in case it changed
-          await updateDoc(userRef, {
-            name: user.name,
-            profile_image: user.image,
-            updated_at: serverTimestamp(),
-          });
-        }
-      } catch (e) {
-        console.error("Error interacting with Firestore during sign-in event:", e);
-        // Prevent sign-in if database operation fails
-        throw new Error("Could not save user data to database.");
-      }
-    }
   },
 } satisfies NextAuthConfig;
