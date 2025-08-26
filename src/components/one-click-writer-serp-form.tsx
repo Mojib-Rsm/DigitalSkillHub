@@ -135,7 +135,9 @@ const Stepper = ({ currentStep }: { currentStep: number }) => {
                     <div className="flex items-center gap-2">
                         <div className={cn(
                             "w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all",
-                            index + 1 <= currentStep ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                            index + 1 < currentStep ? "bg-primary text-primary-foreground" : 
+                            index + 1 === currentStep ? "border-2 border-primary text-primary" :
+                            "bg-muted text-muted-foreground"
                         )}>
                             {index + 1 < currentStep ? <Check className="w-5 h-5"/> : index + 1}
                         </div>
@@ -418,7 +420,7 @@ export default function OneClickWriterSerpForm() {
                 </div>
                  <div className="flex items-center gap-4">
                     <Stepper currentStep={currentStep} />
-                    <Button variant="ghost" size="sm">Skip to Editor <ChevronRight className="w-4 h-4 ml-1"/></Button>
+                    <Button variant="link" size="sm" className="hidden md:flex">Skip to Editor <ChevronRight className="w-4 h-4 ml-1"/></Button>
                 </div>
             </CardHeader>
             
@@ -438,25 +440,27 @@ export default function OneClickWriterSerpForm() {
                     <div className="lg:border-l lg:pl-6">
                         <Tabs defaultValue="top-ranked">
                             <TabsList className="grid w-full grid-cols-2">
-                                <TabsTrigger value="ai-generated">AI Generated Titles</TabsTrigger>
-                                <TabsTrigger value="top-ranked">Top Ranked Titles</TabsTrigger>
+                                <TabsTrigger value="ai-generated">AI Generated</TabsTrigger>
+                                <TabsTrigger value="top-ranked">Top Ranked</TabsTrigger>
                             </TabsList>
                             <TabsContent value="ai-generated">
                                 <p className="p-4 text-center text-muted-foreground">AI title generation coming soon.</p>
                             </TabsContent>
                             <TabsContent value="top-ranked">
-                                <div className="space-y-2 mt-4">
-                                {serpData.serpResults.slice(0, 10).map((result, i) => (
-                                    <button 
-                                        key={i} 
-                                        className="w-full text-left p-3 rounded-md hover:bg-muted"
-                                        onClick={() => setBlogTitle(result.title)}
-                                    >
-                                        <p className="font-semibold text-sm text-primary">#{i + 1}</p>
-                                        <p className="text-sm">{result.title}</p>
-                                    </button>
-                                ))}
-                                </div>
+                                <ScrollArea className="h-72">
+                                    <div className="space-y-2 mt-4">
+                                    {serpData.serpResults.slice(0, 10).map((result, i) => (
+                                        <button 
+                                            key={i} 
+                                            className="w-full text-left p-3 rounded-md hover:bg-muted"
+                                            onClick={() => setBlogTitle(result.title)}
+                                        >
+                                            <p className="font-semibold text-sm text-primary">#{i + 1}</p>
+                                            <p className="text-sm">{result.title}</p>
+                                        </button>
+                                    ))}
+                                    </div>
+                                </ScrollArea>
                             </TabsContent>
                         </Tabs>
                     </div>
@@ -471,7 +475,7 @@ export default function OneClickWriterSerpForm() {
                 </div>
             )}
              {currentStep === 1 && (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
                     <div className="lg:col-span-2 space-y-6">
                          <Card>
                             <CardHeader><CardTitle>General Guidelines</CardTitle></CardHeader>
@@ -521,18 +525,79 @@ export default function OneClickWriterSerpForm() {
                                 </div>
                             </CardContent>
                         </Card>
-                         <CardFooter className="flex justify-between p-0 pt-6">
-                            <Button variant="outline" onClick={() => setSerpData(null)}>
-                                <ArrowLeft className="mr-2"/> Previous
-                            </Button>
-                             <Button onClick={() => setCurrentStep(2)}>
-                                Create Title <ChevronRight className="ml-2"/>
-                            </Button>
-                        </CardFooter>
                     </div>
                      <div className="space-y-6 lg:border-l lg:pl-6">
-                        {/* Placeholder for future side content */}
+                        <Card>
+                             <CardHeader>
+                                <CardTitle>Content Configuration</CardTitle>
+                             </CardHeader>
+                              <CardContent className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Tone of Voice</Label>
+                                    <Select defaultValue="professional">
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="professional">Professional</SelectItem>
+                                            <SelectItem value="casual">Casual</SelectItem>
+                                            <SelectItem value="friendly">Friendly</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Language Variant</Label>
+                                    <Select defaultValue="american">
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="american">American</SelectItem>
+                                            <SelectItem value="british">British</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>No. of AI Images</Label>
+                                    <Input type="number" defaultValue={1} />
+                                    <p className="text-xs text-muted-foreground">50 AI Image Credits Left</p>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox id="featured-image" />
+                                    <Label htmlFor="featured-image">Only Featured Image</Label>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Style</Label>
+                                    <Select defaultValue="digital-art">
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="digital-art">Digital Art</SelectItem>
+                                            <SelectItem value="photo">Photo</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Aspect Ratio</Label>
+                                    <Select defaultValue="16:9">
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="16:9">16:9</SelectItem>
+                                            <SelectItem value="1:1">1:1</SelectItem>
+                                            <SelectItem value="9:16">9:16</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                 <div className="flex items-center justify-between">
+                                    <Label>Anti-AI Detection</Label>
+                                    <Switch />
+                                </div>
+                            </CardContent>
+                        </Card>
                      </div>
+                      <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t">
+                        <Button variant="outline" onClick={() => setSerpData(null)}>
+                            <ArrowLeft className="mr-2"/> Previous
+                        </Button>
+                         <Button onClick={() => setCurrentStep(2)}>
+                            Create Title <ChevronRight className="ml-2"/>
+                        </Button>
+                    </div>
                 </div>
             )}
         </div>
