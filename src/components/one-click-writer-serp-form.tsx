@@ -155,6 +155,42 @@ const Stepper = ({ currentStep }: { currentStep: number }) => {
     );
 };
 
+const ProgressCircle = ({ progress }: { progress: number }) => {
+    const circumference = 2 * Math.PI * 40;
+    const offset = circumference - (progress / 100) * circumference;
+
+    return (
+        <div className="relative w-48 h-48">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                <circle
+                    className="text-muted/20"
+                    strokeWidth="8"
+                    stroke="currentColor"
+                    fill="transparent"
+                    r="40"
+                    cx="50"
+                    cy="50"
+                />
+                <circle
+                    className="text-primary transition-all duration-500"
+                    strokeWidth="8"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={offset}
+                    strokeLinecap="round"
+                    stroke="currentColor"
+                    fill="transparent"
+                    r="40"
+                    cx="50"
+                    cy="50"
+                />
+            </svg>
+            <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-4xl font-bold text-primary">{Math.round(progress)}%</span>
+            </div>
+        </div>
+    );
+};
+
 
 export default function OneClickWriterSerpForm() {
   const { toast } = useToast();
@@ -177,6 +213,7 @@ export default function OneClickWriterSerpForm() {
   
   const [currentStep, setCurrentStep] = useState(1);
   const [blogTitle, setBlogTitle] = useState("");
+  const [generationProgress, setGenerationProgress] = useState(0);
 
   const [outlineItems, setOutlineItems] = useState([
       { id: 1, level: 'H2', text: 'Key Highlights' },
@@ -206,6 +243,25 @@ export default function OneClickWriterSerpForm() {
       };
       fetchSuggestions();
   }, [debouncedKeyword]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (currentStep === 4) {
+        setGenerationProgress(0);
+        interval = setInterval(() => {
+            setGenerationProgress(prev => {
+                if (prev >= 100) {
+                    clearInterval(interval);
+                    // handle completion
+                    return 100;
+                }
+                // Simulate random progress jumps
+                return Math.min(100, prev + Math.random() * 10);
+            });
+        }, 300); // update every 300ms
+    }
+    return () => clearInterval(interval);
+  }, [currentStep]);
 
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -268,6 +324,10 @@ export default function OneClickWriterSerpForm() {
       // Logic for creating outline will go here
       setCurrentStep(3);
   }
+
+  const handleGenerateContent = () => {
+      setCurrentStep(4);
+  };
 
   const handleGeneration = async (event: React.FormEvent<HTMLFormElement>) => {
        event.preventDefault();
@@ -491,15 +551,46 @@ export default function OneClickWriterSerpForm() {
                 </div>
             )}
              {currentStep === 3 && (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
                     <div className="lg:col-span-2 space-y-4">
                          <Card>
+                             <CardHeader className="flex flex-row justify-between items-center">
+                                 <CardTitle className="text-lg">Outline Editor</CardTitle>
+                                 <div className="flex items-center gap-2">
+                                     <Switch id="highlight-terms" />
+                                     <Label htmlFor="highlight-terms" className="text-sm font-normal">Highlight Key Terms</Label>
+                                     <Button size="icon" variant="ghost"><RefreshCw className="w-4 h-4"/></Button>
+                                     <Button size="icon" variant="ghost"><Download className="w-4 h-4"/></Button>
+                                     <Button size="icon" variant="ghost"><Trash2 className="w-4 h-4"/></Button>
+                                 </div>
+                             </CardHeader>
                             <CardContent className="p-4">
                                 <div className="space-y-2">
-                                    {outlineItems.map(item => (
-                                        <div key={item.id} className="flex items-center gap-2 p-1 rounded">
-                                            <Badge variant={item.level === 'H2' ? 'secondary' : 'default'} className="cursor-pointer">{item.level}</Badge>
-                                            <p className="text-sm flex-1">{item.text}</p>
+                                    {outlineItems.map((item, index) => (
+                                        <div key={item.id} className="flex items-center gap-2 p-1 rounded hover:bg-muted/50">
+                                            <GripVertical className="cursor-move text-muted-foreground" />
+                                            <Select defaultValue={item.level} onValueChange={(value) => {
+                                                const newItems = [...outlineItems];
+                                                newItems[index].level = value;
+                                                setOutlineItems(newItems);
+                                            }}>
+                                                <SelectTrigger className="w-20 h-7 text-xs">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="H2">H2</SelectItem>
+                                                    <SelectItem value="H3">H3</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <Input 
+                                                value={item.text} 
+                                                className="h-7 text-sm border-none focus-visible:ring-1 focus-visible:ring-ring"
+                                                onChange={(e) => {
+                                                    const newItems = [...outlineItems];
+                                                    newItems[index].text = e.target.value;
+                                                    setOutlineItems(newItems);
+                                                }}
+                                            />
                                         </div>
                                     ))}
                                 </div>
@@ -507,18 +598,79 @@ export default function OneClickWriterSerpForm() {
                         </Card>
                     </div>
                      <div className="space-y-6 lg:border-l lg:pl-6">
-                        <div className="flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-muted/50">
-                            <p className="text-muted-foreground font-semibold">To Explore the Top Ranking Outlines</p>
-                            <Button variant="outline" className="mt-2"><Search className="w-4 h-4 mr-2"/> Click here</Button>
-                        </div>
+                         <Tabs defaultValue="top-ranked">
+                            <TabsList className="grid w-full grid-cols-3">
+                                <TabsTrigger value="top-ranked">Top Ranked</TabsTrigger>
+                                <TabsTrigger value="questions">Questions</TabsTrigger>
+                                <TabsTrigger value="gaps">Gaps/Gains</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="top-ranked">
+                               <div className="flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-muted/50 mt-4">
+                                    <p className="text-muted-foreground font-semibold">To Explore the Top Ranking Outlines</p>
+                                    <Button variant="outline" className="mt-2"><Search className="w-4 h-4 mr-2"/> Click here</Button>
+                                </div>
+                            </TabsContent>
+                             <TabsContent value="questions">
+                                <div className="mt-4 space-y-4">
+                                     <div className="flex items-center gap-2 border-b pb-2">
+                                        <Input placeholder="Search Questions..." className="h-9"/>
+                                        <Button variant="ghost" size="icon" title="Google"><HelpCircle className="w-5 h-5"/></Button>
+                                        <Button variant="ghost" size="icon" title="Quora"><Quote className="w-5 h-5"/></Button>
+                                        <Button variant="ghost" size="icon" title="Reddit"><Bot className="w-5 h-5"/></Button>
+                                     </div>
+                                     <p className="p-4 text-center text-muted-foreground">No questions found.</p>
+                                </div>
+                            </TabsContent>
+                             <TabsContent value="gaps">
+                                <p className="p-4 text-center text-muted-foreground mt-4">Gaps/Gains analysis coming soon.</p>
+                             </TabsContent>
+                        </Tabs>
                     </div>
                      <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t mt-auto">
                         <Button variant="outline" onClick={() => setCurrentStep(2)}>
                             <ArrowLeft className="mr-2"/> Previous
                         </Button>
-                         <Button onClick={() => setCurrentStep(4)}>
+                         <Button onClick={handleGenerateContent}>
                             Generate Content <ChevronRight className="ml-2"/>
                         </Button>
+                    </div>
+                </div>
+            )}
+             {currentStep === 4 && (
+                 <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6 p-6 min-h-[600px]">
+                    <div className="border-r pr-6 space-y-4">
+                        <h2 className="text-xl font-bold">Outline</h2>
+                        <div className="space-y-1 text-sm">
+                            {outlineItems.map(item => (
+                                <div key={item.id} className={cn("p-1 rounded", item.level === 'H3' && 'ml-4')}>
+                                    <span className={cn("font-semibold", item.level === 'H2' ? 'text-foreground' : 'text-muted-foreground')}>{item.level}: </span>
+                                    <span className="text-muted-foreground">{item.text}</span>
+                                </div>
+                            ))}
+                        </div>
+                         <div className="pt-4 mt-auto space-y-2 border-t">
+                            <Button variant="outline" className="w-full" onClick={() => setCurrentStep(3)}>
+                                <ArrowLeft className="mr-2"/> Previous
+                            </Button>
+                             <Button variant="secondary" className="w-full">
+                                Export to Editor
+                            </Button>
+                        </div>
+                    </div>
+                    <div className="flex flex-col items-center justify-center text-center p-8">
+                        <ProgressCircle progress={generationProgress} />
+                        <h2 className="text-2xl font-bold mt-6">First Draft</h2>
+                        <p className="text-muted-foreground mt-2 max-w-sm">Your personalized article will be ready in just 3-4 minutes.</p>
+                        <p className="text-muted-foreground mt-1">We'll notify you via email once it's completed.</p>
+                        <p className="text-muted-foreground mt-4">You may go to the dashboard and continue with your work.</p>
+                        <Button className="mt-6">Go to Dashboard <ArrowRight className="ml-2 w-4 h-4"/></Button>
+                        <Alert className="mt-8 text-left max-w-md">
+                            <Info className="h-4 w-4" />
+                            <AlertTitle className="font-semibold">Did you know?</AlertTitle>
+                            <AlertDescription>
+                                75% of users never scroll past the first page of search results? Cruise Mode is your first-class ticket to that exclusive club.
+                            </AlertDescription>
+                        </Alert>
                     </div>
                 </div>
             )}
@@ -638,10 +790,7 @@ export default function OneClickWriterSerpForm() {
                             </CardContent>
                         </Card>
                      </div>
-                      <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t mt-auto">
-                        <Button variant="outline" onClick={() => setSerpData(null)}>
-                            <ArrowLeft className="mr-2"/> Previous
-                        </Button>
+                      <div className="lg:col-span-3 flex justify-end p-0 pt-6 border-t mt-auto">
                          <Button onClick={() => setCurrentStep(2)}>
                             Create Title <ChevronRight className="ml-2"/>
                         </Button>
@@ -805,5 +954,7 @@ export default function OneClickWriterSerpForm() {
         </Card>
     );
 }
+
+    
 
     
