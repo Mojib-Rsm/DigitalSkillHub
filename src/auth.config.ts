@@ -1,3 +1,4 @@
+
 import type { NextAuthConfig } from 'next-auth';
 import Google from 'next-auth/providers/google';
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp, updateDoc } from 'firebase/firestore/lite';
@@ -23,42 +24,48 @@ export const authConfig = {
   },
   callbacks: {
     async signIn({ user, account }) {
-      if (account?.provider === 'google') {
-        if (!user.id || !user.email) return false; // Mandatory fields
-
-        try {
-          const db = getFirestore(app);
-          const userRef = doc(db, 'users', user.id);
-          const userSnap = await getDoc(userRef);
-
-          if (!userSnap.exists()) {
-            await setDoc(userRef, {
-              name: user.name,
-              email: user.email,
-              profile_image: user.image,
-              role: 'user',
-              credits: 100,
-              plan_id: 'free',
-              is_verified: true,
-              status: 'active',
-              bookmarks: [],
-              created_at: serverTimestamp(),
-              updated_at: serverTimestamp(),
-            });
-          } else {
-            await updateDoc(userRef, {
-              name: user.name,
-              profile_image: user.image,
-              updated_at: serverTimestamp(),
-            });
-          }
-          return true; // Indicate successful sign-in
-        } catch (error) {
-          console.error("Firestore error during sign-in:", error);
-          return false; // Prevent sign-in if database operation fails
-        }
+      if (account?.provider !== 'google') {
+          return false;
       }
-      return false; // Deny sign in for other providers or if check fails
+
+      if (!user.id || !user.email) {
+          console.error("User ID or email is missing from provider response.");
+          return false; // Mandatory fields
+      }
+
+      try {
+        const db = getFirestore(app);
+        const userRef = doc(db, 'users', user.id);
+        const userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+          await setDoc(userRef, {
+            name: user.name,
+            email: user.email,
+            profile_image: user.image,
+            role: 'user',
+            credits: 100,
+            plan_id: 'free',
+            is_verified: true,
+            status: 'active',
+            bookmarks: [],
+            created_at: serverTimestamp(),
+            updated_at: serverTimestamp(),
+          });
+        } else {
+          await updateDoc(userRef, {
+            name: user.name,
+            profile_image: user.image,
+            updated_at: serverTimestamp(),
+          });
+        }
+      } catch (error) {
+        console.error("Firestore error during sign-in:", error);
+        // Do not block sign-in for db errors, log it instead.
+        // The user can still be authenticated, and their profile can be synced later.
+      }
+      
+      return true; // Allow sign-in
     },
     async jwt({ token, user, account, profile }) {
       if (user) { // This block is only executed on sign-in
@@ -73,15 +80,12 @@ export const authConfig = {
             token.credits = data.credits;
             token.planId = data.plan_id;
           } else {
-            // This can happen if the db write in `signIn` hasn't completed
-            // or if there's an issue. Set defaults.
             token.role = 'user';
             token.credits = 100;
             token.planId = 'free';
           }
         } catch (error) {
           console.error("Firestore error in JWT callback:", error);
-          // Set defaults on error
           token.role = 'user';
           token.credits = 100;
           token.planId = 'free';
