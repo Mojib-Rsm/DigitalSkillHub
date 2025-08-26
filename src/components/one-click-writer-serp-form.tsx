@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown, ChevronRight, PlayCircle, Settings, File, Wand, ListChecks } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown, ChevronRight, PlayCircle, Settings, File, Wand, ListChecks, RefreshCw, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -22,10 +22,12 @@ import { Textarea } from "./ui/textarea";
 import { Badge } from "./ui/badge";
 import { Separator } from "./ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./ui/select";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel } from "./ui/select";
 import { ScrollArea } from "./ui/scroll-area";
 import { useDebounce } from 'use-debounce';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Switch } from "./ui/switch";
+import { Checkbox } from "./ui/checkbox";
 
 
 // Remark and rehype plugins for markdown rendering
@@ -408,7 +410,7 @@ export default function OneClickWriterSerpForm() {
   if (serpData) {
     return (
         <div className="bg-background rounded-lg shadow-lg border">
-            <CardHeader className="flex flex-row justify-between items-center p-4 border-b">
+            <header className="flex flex-row justify-between items-center p-4 border-b">
                 <div className="flex items-center gap-4">
                     <Button variant="outline" size="icon" onClick={() => {
                         if (currentStep > 1) setCurrentStep(currentStep - 1);
@@ -418,11 +420,17 @@ export default function OneClickWriterSerpForm() {
                         <p className="text-sm text-muted-foreground">All Articles / <span className="font-semibold text-foreground">{primaryKeyword}</span></p>
                     </div>
                 </div>
-                 <div className="flex items-center gap-4">
+                 <div className="hidden md:flex items-center gap-4">
                     <Stepper currentStep={currentStep} />
                     <Button variant="link" size="sm" className="hidden md:flex">Skip to Editor <ChevronRight className="w-4 h-4 ml-1"/></Button>
                 </div>
-            </CardHeader>
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm">Cruise Mode <PlayCircle className="w-4 h-4 ml-2"/></Button>
+                    <Button variant="ghost" size="icon"><Settings className="w-5 h-5"/></Button>
+                    <Button variant="ghost" size="icon"><File className="w-5 h-5"/></Button>
+                    <Button variant="ghost" size="icon"><Wand className="w-5 h-5"/></Button>
+                </div>
+            </header>
             
             {currentStep === 2 && (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
@@ -464,12 +472,82 @@ export default function OneClickWriterSerpForm() {
                             </TabsContent>
                         </Tabs>
                     </div>
-                     <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t">
+                     <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t mt-auto">
                         <Button variant="outline" onClick={() => setCurrentStep(1)}>
                             <ArrowLeft className="mr-2"/> Previous
                         </Button>
                          <Button onClick={handleCreateOutline}>
                             Create Outline <ChevronRight className="ml-2"/>
+                        </Button>
+                    </div>
+                </div>
+            )}
+             {currentStep === 3 && (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+                    <div className="lg:col-span-2 space-y-4">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-2xl font-bold flex items-center gap-2">Build Outline <Info className="w-4 h-4 text-muted-foreground"/></h2>
+                            <div className="flex items-center gap-2">
+                                <Label htmlFor="highlight-key-terms">Highlight Key Terms</Label>
+                                <Switch id="highlight-key-terms"/>
+                            </div>
+                        </div>
+                        <Card>
+                            <CardHeader className="flex-row justify-between items-center">
+                                <div>
+                                    <CardTitle className="text-lg">Title: {blogTitle}</CardTitle>
+                                    <CardDescription>Headings 13/9 - 10 <Info className="w-3 h-3 inline-block"/></CardDescription>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <Button variant="ghost" size="icon"><RefreshCw className="w-4 h-4"/></Button>
+                                    <Button variant="ghost" size="icon"><Download className="w-4 h-4"/></Button>
+                                    <Button variant="ghost" size="icon"><Trash2 className="w-4 h-4"/></Button>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-2 p-4 border rounded-md h-96 overflow-y-auto">
+                                    <div className="flex items-center gap-2 p-2 rounded hover:bg-muted">
+                                        <Badge variant="secondary">H2</Badge>
+                                        <Input defaultValue="Key Highlights" className="h-8 border-none bg-transparent"/>
+                                    </div>
+                                    <div className="flex items-center gap-2 p-2 rounded hover:bg-muted">
+                                        <Badge variant="secondary">H2</Badge>
+                                        <Input defaultValue="Introduction" className="h-8 border-none bg-transparent"/>
+                                    </div>
+                                    <div className="flex items-center gap-2 p-2 rounded hover:bg-muted">
+                                        <Badge variant="secondary">H2</Badge>
+                                        <Input defaultValue="Exploring Mojib Rsm's Digital Presence" className="h-8 border-none bg-transparent"/>
+                                    </div>
+                                    <div className="pl-8 space-y-2">
+                                         <div className="flex items-center gap-2 p-2 rounded hover:bg-muted">
+                                            <Badge>H3</Badge>
+                                            <Input defaultValue="Overview of Mojib Rsm's Background and Creative Work" className="h-8 border-none bg-transparent"/>
+                                        </div>
+                                         <div className="flex items-center gap-2 p-2 rounded hover:bg-muted">
+                                            <Badge>H3</Badge>
+                                            <Input defaultValue="Mojib Rsm's Major Social Media Channels and Online Profiles" className="h-8 border-none bg-transparent"/>
+                                        </div>
+                                    </div>
+                                     <div className="flex items-center gap-2 p-2 rounded hover:bg-muted">
+                                        <Badge variant="secondary">H2</Badge>
+                                        <Input defaultValue="The Creative Content of Mojib Rsm on Instagram" className="h-8 border-none bg-transparent"/>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                     <div className="space-y-6 lg:border-l lg:pl-6 text-center">
+                        <div className="flex flex-col items-center justify-center h-full">
+                             <p className="text-muted-foreground font-semibold">To Explore the Top Ranking Outlines</p>
+                             <Button variant="outline" className="mt-2"><Search className="w-4 h-4 mr-2"/> Click here</Button>
+                        </div>
+                    </div>
+                     <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t mt-auto">
+                        <Button variant="outline" onClick={() => setCurrentStep(2)}>
+                            <ArrowLeft className="mr-2"/> Previous
+                        </Button>
+                         <Button onClick={() => setCurrentStep(4)}>
+                            Generate Content <ChevronRight className="ml-2"/>
                         </Button>
                     </div>
                 </div>
@@ -590,7 +668,7 @@ export default function OneClickWriterSerpForm() {
                             </CardContent>
                         </Card>
                      </div>
-                      <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t">
+                      <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t mt-auto">
                         <Button variant="outline" onClick={() => setSerpData(null)}>
                             <ArrowLeft className="mr-2"/> Previous
                         </Button>
