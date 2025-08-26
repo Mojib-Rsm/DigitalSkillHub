@@ -297,6 +297,41 @@ export default function OneClickWriterSerpForm() {
       }
   }
 
+  const AnalysisProgressRow = () => (
+    <TableRow className="bg-muted/50">
+        <TableCell className="font-medium">
+            <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-muted-foreground"/>
+                <span>{primaryKeyword}</span>
+            </div>
+            {secondaryKeywords.length > 0 && <Badge variant="secondary" className="mt-1">+{secondaryKeywords.length} more</Badge>}
+        </TableCell>
+        <TableCell colSpan={3}>
+            <div className="flex items-center gap-4">
+                <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 border-2 border-primary">
+                    <TrendingUp className="w-5 h-5 text-primary animate-pulse" />
+                </div>
+                 <div className="flex-1 h-1 bg-border rounded-full relative">
+                    <div className="absolute top-1/2 -translate-y-1/2 flex justify-between w-full">
+                       {[...Array(5)].map((_, i) => (
+                           <div key={i} className="h-2 w-2 rounded-full bg-border"></div>
+                       ))}
+                    </div>
+                </div>
+            </div>
+        </TableCell>
+         <TableCell>
+             <div className="flex items-center gap-2">
+                 <div>
+                    <p className="font-semibold text-sm">Generating Competition Overview</p>
+                    <p className="text-xs text-muted-foreground">Use this section to determine the ideal no. of words, H-tags, Images, etc.</p>
+                 </div>
+                 <Sparkles className="w-4 h-4 text-primary animate-spin"/>
+            </div>
+        </TableCell>
+    </TableRow>
+  )
+
   // Final Editor View
   if (article) {
     return (
@@ -480,16 +515,31 @@ export default function OneClickWriterSerpForm() {
                 <form onSubmit={handleAnalysis}>
                     <Card className="bg-muted/50">
                         <CardContent className="p-4 flex flex-col md:flex-row gap-4 items-center">
-                            <Input
-                                id="primaryKeyword"
-                                name="primaryKeyword"
-                                placeholder="Enter Keyword(s)"
-                                required
-                                className="text-base h-12 flex-grow"
-                                value={primaryKeyword}
-                                onChange={handleKeywordChange}
-                                autoComplete="off"
-                            />
+                            <div className="flex-grow w-full relative">
+                                <Input
+                                    id="primaryKeyword"
+                                    name="primaryKeyword"
+                                    placeholder="Enter Keyword(s)"
+                                    required
+                                    className="text-base h-12 flex-grow"
+                                    value={primaryKeyword}
+                                    onChange={handleKeywordChange}
+                                    onFocus={() => setShowSuggestions(true)}
+                                    onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                                    autoComplete="off"
+                                />
+                                {showSuggestions && (suggestions.length > 0 || suggestionsLoading) && (
+                                    <div className="absolute z-10 w-full bg-background border rounded-md shadow-lg mt-1">
+                                        {suggestionsLoading ? (
+                                            <div className="p-3 text-center text-sm text-muted-foreground">Loading...</div>
+                                        ) : (
+                                            suggestions.map(s => (
+                                                <div key={s} onMouseDown={() => handleSuggestionClick(s)} className="p-3 hover:bg-muted cursor-pointer text-sm">{s}</div>
+                                            ))
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                             <div className="flex w-full md:w-auto gap-4">
                                 <Select name="top" defaultValue="top-10">
                                     <SelectTrigger className="w-full md:w-[120px] h-12">
@@ -569,6 +619,7 @@ export default function OneClickWriterSerpForm() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
+                            {isAnalyzing && <AnalysisProgressRow />}
                             <TableRow>
                                 <TableCell className="font-medium">
                                     <p>bangladesh politics</p>
