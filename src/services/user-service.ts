@@ -3,7 +3,7 @@
 'use server';
 
 import { auth } from '@/auth';
-import { getFirestore, doc, getDoc, collection, getDocs, query, where, updateDoc } from 'firebase/firestore/lite';
+import { getFirestore, doc, getDoc, collection, getDocs, query, where, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 
 export type UserProfile = {
@@ -27,38 +27,47 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
   }
   
   const userId = session.user.id;
+  const db = getFirestore(app);
+  const userRef = doc(db, 'users', userId);
 
   try {
-    const db = getFirestore(app);
-    const userRef = doc(db, 'users', userId);
     const userSnapshot = await getDoc(userRef);
 
-    if (!userSnapshot.exists()) {
-        console.warn(`No user found in Firestore with ID: ${userId}, but session exists.`);
-        return null;
-    }
-    
-    const userData = userSnapshot.data();
-    
-    if (!userData) {
-      return null;
-    }
-    
-    return {
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.data();
+      return {
         id: userSnapshot.id,
-        name: userData.name,
-        email: userData.email,
-        phone: userData.phone,
-        role: userData.role,
-        credits: userData.credits,
-        profile_image: userData.profile_image,
-        status: userData.status,
-        plan_id: userData.plan_id,
-        bookmarks: userData.bookmarks || [],
-    } as UserProfile;
+        ...userData,
+      } as UserProfile;
+    } else {
+      // User is authenticated but doesn't have a profile in Firestore yet.
+      // This can happen for the very first login. Let's create it.
+      console.log(`User profile for ${userId} not found, creating a new one.`);
+      const newUserProfile: Omit<UserProfile, 'id'> = {
+          name: session.user.name || 'New User',
+          email: session.user.email,
+          role: 'user', // Default role
+          credits: 100, // Initial credits
+          profile_image: session.user.image || '/default-avatar.png',
+          status: 'active',
+          plan_id: 'free',
+          bookmarks: [],
+      };
+
+      await setDoc(userRef, {
+        ...newUserProfile,
+        created_at: serverTimestamp(),
+        updated_at: serverTimestamp(),
+      });
+
+      return {
+          id: userId,
+          ...newUserProfile,
+      } as UserProfile
+    }
 
   } catch (error) {
-    console.error('Failed to get user profile from Firestore:', error);
+    console.error(`Failed to get or create user profile (${userId}) from Firestore:`, error);
     return null;
   }
 }
