@@ -161,6 +161,8 @@ export default function OneClickWriterSerpForm() {
   const [generationProgress, setGenerationProgress] = useState(0);
 
   const [outlineItems, setOutlineItems] = useState<OutlineItem[]>([]);
+  const [showRankedOutlines, setShowRankedOutlines] = useState(false);
+
 
   useEffect(() => {
     if (article?.article) {
@@ -459,11 +461,45 @@ export default function OneClickWriterSerpForm() {
                             </CardContent>
                         </Card>
                     </div>
-                    <div className="space-y-6 lg:border-l lg:pl-6">
-                        <div className="flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-muted/50 mt-4">
-                           <p className="text-muted-foreground font-semibold">To Explore the Top Ranking Outlines</p>
-                           <Button variant="outline" className="mt-2"><Search className="w-4 h-4 mr-2"/> Click here</Button>
-                        </div>
+                     <div className="space-y-6 lg:border-l lg:pl-6">
+                        {showRankedOutlines ? (
+                            <Tabs defaultValue="outlines">
+                                <TabsList className="grid w-full grid-cols-3">
+                                    <TabsTrigger value="outlines">Outlines</TabsTrigger>
+                                    <TabsTrigger value="questions">Questions</TabsTrigger>
+                                    <TabsTrigger value="gaps">Gaps/Gains</TabsTrigger>
+                                </TabsList>
+                                <TabsContent value="outlines">
+                                    <ScrollArea className="h-96">
+                                        <p className="text-muted-foreground text-center p-4">Top ranked outlines will appear here.</p>
+                                    </ScrollArea>
+                                </TabsContent>
+                                <TabsContent value="questions">
+                                     <div className="space-y-2">
+                                        <div className="flex items-center gap-2 border-b pb-2">
+                                            <Search className="w-4 h-4 text-muted-foreground"/>
+                                            <Input placeholder="Search Questions..." className="border-none h-8"/>
+                                            <Button variant="ghost" size="icon"><Youtube className="w-5 h-5 text-red-500"/></Button>
+                                            <Button variant="ghost" size="icon"><MessageSquareIcon className="w-5 h-5 text-blue-500"/></Button>
+                                            <Button variant="ghost" size="icon"><ThumbsUp className="w-5 h-5 text-green-500"/></Button>
+                                        </div>
+                                        <ScrollArea className="h-80">
+                                            <p className="text-muted-foreground text-center p-4">Related questions will appear here.</p>
+                                        </ScrollArea>
+                                     </div>
+                                </TabsContent>
+                                <TabsContent value="gaps">
+                                    <p className="text-muted-foreground text-center p-4">Content gaps will appear here.</p>
+                                </TabsContent>
+                            </Tabs>
+                        ) : (
+                             <div className="flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-muted/50 mt-4">
+                               <p className="text-muted-foreground font-semibold">To Explore the Top Ranking Outlines</p>
+                               <Button variant="outline" className="mt-2" onClick={() => setShowRankedOutlines(true)}>
+                                   <Search className="w-4 h-4 mr-2"/> Click here
+                               </Button>
+                            </div>
+                        )}
                     </div>
                      <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t mt-auto">
                         <Button variant="outline" onClick={() => setCurrentStep(2)}>
