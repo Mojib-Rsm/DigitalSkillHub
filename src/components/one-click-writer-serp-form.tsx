@@ -28,6 +28,7 @@ import { useDebounce } from 'use-debounce';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Switch } from "./ui/switch";
 import { Checkbox } from "./ui/checkbox";
+import ArticleEditor from "./article-editor";
 
 
 // Remark and rehype plugins for markdown rendering
@@ -56,25 +57,6 @@ function AnalyzeButton() {
   );
 }
 
-function GenerateArticleButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" disabled={pending} size="lg" className="w-full">
-      {pending ? (
-         <>
-          <Sparkles className="mr-2 h-5 w-5 animate-spin" />
-          Generating Article...
-        </>
-      ) : (
-        <>
-          <FileText className="mr-2 h-5 w-5" />
-          Generate Article
-        </>
-      )}
-    </Button>
-  );
-}
-
 // Function to convert markdown to HTML
 async function markdownToHtml(markdown: string): Promise<string> {
   const file = await unified()
@@ -84,49 +66,6 @@ async function markdownToHtml(markdown: string): Promise<string> {
     .process(markdown);
   return String(file);
 }
-
-const ScoreCircle = ({ score, text }: { score: number, text: string }) => {
-    const circumference = 2 * Math.PI * 28; // 2 * pi * radius
-    const strokeDashoffset = circumference - (score / 100) * circumference;
-    let colorClass = 'text-green-500';
-    if (score < 50) colorClass = 'text-red-500';
-    else if (score < 80) colorClass = 'text-yellow-500';
-
-    return (
-        <div className="flex flex-col items-center gap-2">
-            <div className="relative w-20 h-20">
-                <svg className="w-full h-full" viewBox="0 0 64 64">
-                    <circle
-                        className="text-muted"
-                        strokeWidth="6"
-                        stroke="currentColor"
-                        fill="transparent"
-                        r="28"
-                        cx="32"
-                        cy="32"
-                    />
-                    <circle
-                        className={`transform -rotate-90 origin-center transition-all duration-1000 ${colorClass}`}
-                        strokeWidth="6"
-                        strokeDasharray={circumference}
-                        style={{ strokeDashoffset }}
-                        strokeLinecap="round"
-                        stroke="currentColor"
-                        fill="transparent"
-                        r="28"
-                        cx="32"
-                        cy="32"
-                    />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <span className={`text-xl font-bold ${colorClass}`}>{score}</span>
-                </div>
-            </div>
-            <p className="text-xs font-semibold">{text}</p>
-        </div>
-    )
-};
-
 
 const Stepper = ({ currentStep }: { currentStep: number }) => {
     const steps = ["Context", "Title", "Outline", "First Draft"];
@@ -358,27 +297,12 @@ export default function OneClickWriterSerpForm() {
               description: result.issues?.join(", ") || "An unknown error occurred.",
           });
       }
-      // This will be set to false by the progress effect
-      // setIsGenerating(false);
   };
 
-  const handleCopy = (textToCopy: string) => {
-    navigator.clipboard.writeText(textToCopy);
-    toast({
-      title: "ক্লিপবোর্ডে কপি করা হয়েছে!",
-    });
+  const handleExportToEditor = () => {
+      setCurrentStep(5);
   };
 
-  const handleDownload = () => {
-    if (!article) return;
-    const blob = new Blob([article.article], { type: 'text/markdown;charset=utf-8;' });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", `${article.seoTitle.replace(/\s+/g, '_')}.md`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
 
   const AnalysisProgressRow = () => (
     <TableRow className="bg-muted/50">
@@ -505,7 +429,7 @@ export default function OneClickWriterSerpForm() {
                             </CardContent>
                         </Card>
                     </div>
-                     <div className="space-y-6 lg:border-l lg:pl-6">
+                    <div className="space-y-6 lg:border-l lg:pl-6">
                         <div className="flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-muted/50 mt-4">
                            <p className="text-muted-foreground font-semibold">To Explore the Top Ranking Outlines</p>
                            <Button variant="outline" className="mt-2"><Search className="w-4 h-4 mr-2"/> Click here</Button>
@@ -562,7 +486,7 @@ export default function OneClickWriterSerpForm() {
                     </div>
                   );
               }
-              // Final Editor View
+              // Final Draft View
               return (
                     <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6 p-6 min-h-[600px]">
                         <div className="border-r pr-6 space-y-4 h-full overflow-y-auto">
@@ -621,12 +545,23 @@ export default function OneClickWriterSerpForm() {
                             <Button variant="outline" onClick={() => setCurrentStep(3)}>
                                 <ArrowLeft className="mr-2"/> Previous
                             </Button>
-                             <Button>
+                             <Button onClick={handleExportToEditor}>
                                 Export to Editor
                             </Button>
                         </div>
                     </div>
                 );
+            case 5: // Full Editor View
+                if (!article) {
+                    // This should not happen, but as a fallback
+                    return (
+                        <div className="p-8 text-center">
+                            <p>An error occurred. Please go back and try generating the article again.</p>
+                            <Button onClick={() => setCurrentStep(3)}>Go Back</Button>
+                        </div>
+                    );
+                }
+                return <ArticleEditor article={article} />;
           default: // Step 1: Initial View
             return null;
       }
