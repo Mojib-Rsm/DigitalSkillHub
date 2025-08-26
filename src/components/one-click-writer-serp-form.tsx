@@ -222,6 +222,10 @@ export default function OneClickWriterSerpForm() {
       { id: 4, level: 'H3', text: "Overview of Mojib Rsm's Background and Creative Work" },
       { id: 5, level: 'H3', text: "Mojib Rsm's Major Social Media Channels and Online Profiles" },
       { id: 6, level: 'H2', text: 'The Creative Content of Mojib Rsm on Instagram' },
+      { id: 7, level: 'H3', text: 'Types of Posts and Artistic Themes Featured' },
+      { id: 8, level: 'H3', text: 'Audience Engagement, Collaborations, and Visual Storytelling' },
+      { id: 9, level: 'H2', text: 'Conclusion' },
+      { id: 10, level: 'H2', text: 'Frequently Asked Questions' },
   ]);
 
   useEffect(() => {
@@ -246,13 +250,15 @@ export default function OneClickWriterSerpForm() {
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (currentStep === 4) {
+    if (isGenerating) {
         setGenerationProgress(0);
         interval = setInterval(() => {
             setGenerationProgress(prev => {
                 if (prev >= 100) {
                     clearInterval(interval);
                     // handle completion
+                    setIsGenerating(false); // Stop the progress bar
+                    // The actual article display will be handled by the handleSubmit logic
                     return 100;
                 }
                 // Simulate random progress jumps
@@ -261,7 +267,7 @@ export default function OneClickWriterSerpForm() {
         }, 300); // update every 300ms
     }
     return () => clearInterval(interval);
-  }, [currentStep]);
+  }, [isGenerating]);
 
 
   const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -325,42 +331,36 @@ export default function OneClickWriterSerpForm() {
       setCurrentStep(3);
   }
 
-  const handleGenerateContent = () => {
-      setCurrentStep(4);
-  };
+  const handleGenerateContent = async () => {
+      setIsGenerating(true);
+      setIssues([]);
 
-  const handleGeneration = async (event: React.FormEvent<HTMLFormElement>) => {
-       event.preventDefault();
-       setIsGenerating(true);
-       setArticle(null);
-       setIssues([]);
+      const input = {
+        title: blogTitle,
+        primaryKeyword: primaryKeyword,
+        targetCountry: country,
+        tone: "Friendly",
+        audience: "General",
+        purpose: "Informational",
+        outline: outlineItems.map(item => `${"#".repeat(parseInt(item.level.substring(1)))} ${item.text}`).join('\n'),
+      };
+      
+      const result = await generateArticleFromSerpAction(input);
 
-       const formData = new FormData(event.currentTarget);
-       const input = {
-          title: formData.get('title') as string,
-          primaryKeyword: primaryKeyword,
-          targetCountry: country,
-          tone: formData.get('tone') as string,
-          audience: formData.get('audience') as string,
-          purpose: formData.get('purpose') as string,
-          outline: formData.get('outline') as string,
-          customSource: formData.get('customSource') as string,
-       };
-
-       const result = await generateArticleFromSerpAction(input);
-
-       if (result.success && result.data) {
+      if (result.success && result.data) {
             setArticle(result.data);
-       } else {
-           setIssues(result.issues || ["An unknown error occurred."]);
-           toast({
-               variant: "destructive",
-               title: "Error",
-               description: result.issues?.join(", ") || "An unknown error occurred.",
-           });
-       }
-       setIsGenerating(false);
-  }
+            setCurrentStep(4); // Move to the editor view
+      } else {
+          setIssues(result.issues || ["An unknown error occurred."]);
+          toast({
+              variant: "destructive",
+              title: "Error",
+              description: result.issues?.join(", ") || "An unknown error occurred.",
+          });
+      }
+      // This will be set to false by the progress effect
+      // setIsGenerating(false);
+  };
 
   const handleCopy = (textToCopy: string) => {
     navigator.clipboard.writeText(textToCopy);
@@ -415,93 +415,12 @@ export default function OneClickWriterSerpForm() {
     </TableRow>
   )
 
-  // Final Editor View
-  if (article) {
-    return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-4">
-                 <Card>
-                    <CardHeader className="flex flex-row justify-between items-center">
-                        <CardTitle>Editor</CardTitle>
-                        <div className="flex gap-2">
-                             <Button variant="outline" size="sm" onClick={() => handleCopy(article.article)}><Clipboard className="mr-2"/> Copy</Button>
-                            <Button variant="outline" size="sm" onClick={handleDownload}><Download className="mr-2"/> Download</Button>
-                            <Button variant="default" size="sm"><Share2 className="mr-2"/> Publish</Button>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                       <div className="prose dark:prose-invert max-w-none prose-headings:font-headline prose-img:rounded-lg prose-img:border" dangerouslySetInnerHTML={{ __html: renderedHtml }} />
-                    </CardContent>
-                </Card>
-            </div>
-             <div className="space-y-4 sticky top-4 self-start">
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>SEO Score</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex justify-around items-center">
-                       <ScoreCircle score={article.readability.score} text="Readability" />
-                       <ScoreCircle score={85} text="SEO Score" />
-                    </CardContent>
-                </Card>
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Meta Information</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                         <div className="space-y-1">
-                            <Label>Meta Title</Label>
-                            <Textarea defaultValue={article.seoTitle} rows={2} />
-                        </div>
-                        <div className="space-y-1">
-                            <Label>Meta Description</Label>
-                            <Textarea defaultValue={article.seoDescription} rows={3} />
-                        </div>
-                    </CardContent>
-                </Card>
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Internal Link Suggestions</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
-                            {article.internalLinks.map(link => <li key={link}>{link}</li>)}
-                        </ul>
-                    </CardContent>
-                </Card>
-            </div>
-        </div>
-    )
-  }
-
-  // Wrapper for steps 2 and beyond
-  if (serpData) {
-    return (
-        <div className="bg-background rounded-lg shadow-lg border">
-            <header className="flex flex-row justify-between items-center p-4 border-b">
-                <div className="flex items-center gap-4">
-                    <Button variant="outline" size="icon" onClick={() => {
-                        if (currentStep > 1) setCurrentStep(currentStep - 1);
-                        else setSerpData(null);
-                    }}><ArrowLeft/></Button>
-                    <div>
-                        <p className="text-sm text-muted-foreground">All Articles / <span className="font-semibold text-foreground">{primaryKeyword}</span></p>
-                    </div>
-                </div>
-                 <div className="hidden md:flex items-center gap-4">
-                    <Stepper currentStep={currentStep} />
-                    <Button variant="link" size="sm" className="hidden md:flex">Skip to Editor <ChevronRight className="w-4 h-4 ml-1"/></Button>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm">Cruise Mode <PlayCircle className="w-4 h-4 ml-2"/></Button>
-                    <Button variant="ghost" size="icon"><Settings className="w-5 h-5"/></Button>
-                    <Button variant="ghost" size="icon"><File className="w-5 h-5"/></Button>
-                    <Button variant="ghost" size="icon"><Wand className="w-5 h-5"/></Button>
-                </div>
-            </header>
-            
-            {currentStep === 2 && (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+  // Wrapper for all steps
+  const renderContentByStep = () => {
+      switch (currentStep) {
+          case 2: // Title Selection
+              return (
+                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
                     <div className="lg:col-span-2 space-y-6">
                         <h2 className="text-2xl font-bold">Enter the Blog Title (H1) <span className="text-destructive">*</span></h2>
                         <Textarea 
@@ -525,7 +444,7 @@ export default function OneClickWriterSerpForm() {
                             <TabsContent value="top-ranked">
                                 <ScrollArea className="h-72">
                                     <div className="space-y-2 mt-4">
-                                    {serpData.serpResults.slice(0, 10).map((result, i) => (
+                                    {serpData?.serpResults.slice(0, 10).map((result, i) => (
                                         <button 
                                             key={i} 
                                             className="w-full text-left p-3 rounded-md hover:bg-muted"
@@ -549,9 +468,10 @@ export default function OneClickWriterSerpForm() {
                         </Button>
                     </div>
                 </div>
-            )}
-             {currentStep === 3 && (
-                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+              );
+          case 3: // Outline Builder
+            return (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
                     <div className="lg:col-span-2 space-y-4">
                          <Card>
                              <CardHeader className="flex flex-row justify-between items-center">
@@ -569,19 +489,7 @@ export default function OneClickWriterSerpForm() {
                                     {outlineItems.map((item, index) => (
                                         <div key={item.id} className="flex items-center gap-2 p-1 rounded hover:bg-muted/50">
                                             <GripVertical className="cursor-move text-muted-foreground" />
-                                            <Select defaultValue={item.level} onValueChange={(value) => {
-                                                const newItems = [...outlineItems];
-                                                newItems[index].level = value;
-                                                setOutlineItems(newItems);
-                                            }}>
-                                                <SelectTrigger className="w-20 h-7 text-xs">
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="H2">H2</SelectItem>
-                                                    <SelectItem value="H3">H3</SelectItem>
-                                                </SelectContent>
-                                            </Select>
+                                            <Badge variant={item.level === 'H2' ? 'default' : 'secondary'}>{item.level}</Badge>
                                             <Input 
                                                 value={item.text} 
                                                 className="h-7 text-sm border-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -598,33 +506,10 @@ export default function OneClickWriterSerpForm() {
                         </Card>
                     </div>
                      <div className="space-y-6 lg:border-l lg:pl-6">
-                         <Tabs defaultValue="top-ranked">
-                            <TabsList className="grid w-full grid-cols-3">
-                                <TabsTrigger value="top-ranked">Top Ranked</TabsTrigger>
-                                <TabsTrigger value="questions">Questions</TabsTrigger>
-                                <TabsTrigger value="gaps">Gaps/Gains</TabsTrigger>
-                            </TabsList>
-                            <TabsContent value="top-ranked">
-                               <div className="flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-muted/50 mt-4">
-                                    <p className="text-muted-foreground font-semibold">To Explore the Top Ranking Outlines</p>
-                                    <Button variant="outline" className="mt-2"><Search className="w-4 h-4 mr-2"/> Click here</Button>
-                                </div>
-                            </TabsContent>
-                             <TabsContent value="questions">
-                                <div className="mt-4 space-y-4">
-                                     <div className="flex items-center gap-2 border-b pb-2">
-                                        <Input placeholder="Search Questions..." className="h-9"/>
-                                        <Button variant="ghost" size="icon" title="Google"><HelpCircle className="w-5 h-5"/></Button>
-                                        <Button variant="ghost" size="icon" title="Quora"><Quote className="w-5 h-5"/></Button>
-                                        <Button variant="ghost" size="icon" title="Reddit"><Bot className="w-5 h-5"/></Button>
-                                     </div>
-                                     <p className="p-4 text-center text-muted-foreground">No questions found.</p>
-                                </div>
-                            </TabsContent>
-                             <TabsContent value="gaps">
-                                <p className="p-4 text-center text-muted-foreground mt-4">Gaps/Gains analysis coming soon.</p>
-                             </TabsContent>
-                        </Tabs>
+                        <div className="flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-muted/50 mt-4">
+                           <p className="text-muted-foreground font-semibold">To Explore the Top Ranking Outlines</p>
+                           <Button variant="outline" className="mt-2"><Search className="w-4 h-4 mr-2"/> Click here</Button>
+                        </div>
                     </div>
                      <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t mt-auto">
                         <Button variant="outline" onClick={() => setCurrentStep(2)}>
@@ -635,170 +520,145 @@ export default function OneClickWriterSerpForm() {
                         </Button>
                     </div>
                 </div>
-            )}
-             {currentStep === 4 && (
-                 <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6 p-6 min-h-[600px]">
-                    <div className="border-r pr-6 space-y-4">
-                        <h2 className="text-xl font-bold">Outline</h2>
-                        <div className="space-y-1 text-sm">
-                            {outlineItems.map(item => (
-                                <div key={item.id} className={cn("p-1 rounded", item.level === 'H3' && 'ml-4')}>
-                                    <span className={cn("font-semibold", item.level === 'H2' ? 'text-foreground' : 'text-muted-foreground')}>{item.level}: </span>
-                                    <span className="text-muted-foreground">{item.text}</span>
-                                </div>
-                            ))}
+            );
+          case 4: // Content Generation
+              if (isGenerating || !article) {
+                  return (
+                     <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6 p-6 min-h-[600px]">
+                        <div className="border-r pr-6 space-y-4">
+                            <h2 className="text-xl font-bold">Outline</h2>
+                            <div className="space-y-1 text-sm">
+                                {outlineItems.map(item => (
+                                    <div key={item.id} className={cn("p-1 rounded", item.level === 'H3' && 'ml-4')}>
+                                        <span className={cn("font-semibold", item.level === 'H2' ? 'text-foreground' : 'text-muted-foreground')}>{item.level}: </span>
+                                        <span className="text-muted-foreground">{item.text}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="pt-4 mt-auto space-y-2 border-t">
+                                <Button variant="outline" className="w-full" onClick={() => setCurrentStep(3)}>
+                                    <ArrowLeft className="mr-2"/> Previous
+                                </Button>
+                                <Button variant="secondary" className="w-full">
+                                    Export to Editor
+                                </Button>
+                            </div>
                         </div>
-                         <div className="pt-4 mt-auto space-y-2 border-t">
-                            <Button variant="outline" className="w-full" onClick={() => setCurrentStep(3)}>
+                        <div className="flex flex-col items-center justify-center text-center p-8">
+                            <ProgressCircle progress={generationProgress} />
+                            <h2 className="text-2xl font-bold mt-6">First Draft</h2>
+                            <p className="text-muted-foreground mt-2 max-w-sm">Your personalized article will be ready in just 3-4 minutes.</p>
+                            <p className="text-muted-foreground mt-1">We'll notify you via email once it's completed.</p>
+                            <p className="text-muted-foreground mt-4">You may go to the dashboard and continue with your work.</p>
+                            <Button className="mt-6">Go to Dashboard <ArrowRight className="ml-2 w-4 h-4"/></Button>
+                             <Alert className="mt-8 text-left max-w-md">
+                                <Info className="h-4 w-4" />
+                                <AlertTitle className="font-semibold">Did you know?</AlertTitle>
+                                <AlertDescription>
+                                    75% of users never scroll past the first page of search results? Cruise Mode is your first-class ticket to that exclusive club.
+                                </AlertDescription>
+                            </Alert>
+                        </div>
+                    </div>
+                  );
+              }
+              // Final Editor View
+              return (
+                    <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6 p-6 min-h-[600px]">
+                        <div className="border-r pr-6 space-y-4 h-full overflow-y-auto">
+                            <h2 className="text-xl font-bold">Outline</h2>
+                            <div className="space-y-1 text-sm">
+                                <div className="p-2 rounded bg-muted/50">
+                                    <p className="font-bold">{blogTitle}</p>
+                                </div>
+                                {outlineItems.map(item => (
+                                    <div key={item.id} className={cn("p-1 rounded", item.level === 'H3' && 'ml-4')}>
+                                        <span className={cn("font-semibold", item.level === 'H2' ? 'text-foreground' : 'text-muted-foreground')}>{item.level}: </span>
+                                        <span className="text-muted-foreground">{item.text}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="p-4 border rounded-lg space-y-2">
+                                <div className="grid grid-cols-[120px_1fr] items-center">
+                                    <Label className="text-muted-foreground">Meta Title</Label>
+                                    <p className="text-sm font-semibold">{article.seoTitle}</p>
+                                </div>
+                                <div className="grid grid-cols-[120px_1fr] items-start">
+                                    <Label className="text-muted-foreground">Meta Description</Label>
+                                    <p className="text-sm">{article.seoDescription}</p>
+                                </div>
+                                <div className="grid grid-cols-[120px_1fr] items-center">
+                                    <Label className="text-muted-foreground">URL Slug</Label>
+                                    <p className="text-sm">{primaryKeyword.replace(/\s+/g, '-')}</p>
+                                </div>
+                                 <div className="grid grid-cols-[120px_1fr] items-center">
+                                    <Label className="text-muted-foreground">Schema</Label>
+                                    <div>
+                                        <Badge variant="secondary">BlogPosting</Badge>
+                                        <Badge variant="secondary" className="ml-2">SpeakableSpecification</Badge>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-4 border rounded-lg min-h-[400px]">
+                                <div
+                                    className="prose dark:prose-invert max-w-none"
+                                    dangerouslySetInnerHTML={{ __html: renderedHtml }}
+                                />
+                            </div>
+                            <div className="flex justify-between items-center p-2 border rounded-lg bg-muted/50">
+                               <div className="flex items-center gap-4">
+                                  <p className="text-sm">Content Score: <span className="font-bold text-primary">{article.readability.score}</span></p>
+                                  <p className="text-sm">Word Count: <span className="font-bold text-primary">{article.seoAnalysis.wordCount}</span></p>
+                               </div>
+                               <div>
+                                  <p className="text-sm">Key Terms Usage: <span className="font-bold text-primary">1 <span className="text-muted-foreground">/ Suggested: 1+</span></span> <CheckCircle className="inline w-4 h-4 text-green-500"/></p>
+                               </div>
+                            </div>
+                        </div>
+                         <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t mt-auto">
+                            <Button variant="outline" onClick={() => setCurrentStep(3)}>
                                 <ArrowLeft className="mr-2"/> Previous
                             </Button>
-                             <Button variant="secondary" className="w-full">
+                             <Button>
                                 Export to Editor
                             </Button>
                         </div>
                     </div>
-                    <div className="flex flex-col items-center justify-center text-center p-8">
-                        <ProgressCircle progress={generationProgress} />
-                        <h2 className="text-2xl font-bold mt-6">First Draft</h2>
-                        <p className="text-muted-foreground mt-2 max-w-sm">Your personalized article will be ready in just 3-4 minutes.</p>
-                        <p className="text-muted-foreground mt-1">We'll notify you via email once it's completed.</p>
-                        <p className="text-muted-foreground mt-4">You may go to the dashboard and continue with your work.</p>
-                        <Button className="mt-6">Go to Dashboard <ArrowRight className="ml-2 w-4 h-4"/></Button>
-                        <Alert className="mt-8 text-left max-w-md">
-                            <Info className="h-4 w-4" />
-                            <AlertTitle className="font-semibold">Did you know?</AlertTitle>
-                            <AlertDescription>
-                                75% of users never scroll past the first page of search results? Cruise Mode is your first-class ticket to that exclusive club.
-                            </AlertDescription>
-                        </Alert>
+                );
+          default: // Step 1: Initial View
+            return null;
+      }
+  }
+
+  if (serpData) {
+      return (
+        <div className="bg-background rounded-lg shadow-lg border">
+            <header className="flex flex-row justify-between items-center p-4 border-b">
+                <div className="flex items-center gap-4">
+                    <Button variant="outline" size="icon" onClick={() => {
+                        if (currentStep > 1) setCurrentStep(currentStep - 1);
+                        else setSerpData(null);
+                    }}><ArrowLeft/></Button>
+                    <div>
+                        <p className="text-sm text-muted-foreground">All Articles / <span className="font-semibold text-foreground">{primaryKeyword}</span></p>
                     </div>
                 </div>
-            )}
-             {currentStep === 1 && (
-                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
-                    <div className="lg:col-span-2 space-y-6">
-                         <Card>
-                            <CardHeader><CardTitle>General Guidelines</CardTitle></CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="articleType">Article Type</Label>
-                                    <Select name="articleType" defaultValue="General">
-                                        <SelectTrigger><SelectValue/></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="General">General (Recommended)</SelectItem>
-                                            <SelectItem value="Blog">Blog Post</SelectItem>
-                                            <SelectItem value="News">News Article</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="instruction">Instruction for AI (Optional)</Label>
-                                    <Textarea id="instruction" name="instruction" placeholder="Give custom instruction or guidelines to our AI for blog generation" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card>
-                            <CardHeader><CardTitle>GEO Guidelines</CardTitle></CardHeader>
-                            <CardContent className="space-y-4">
-                                 <div className="space-y-2">
-                                    <Label>Reference Articles (AI + SERP)</Label>
-                                    <div className="p-3 border rounded-md flex justify-between items-center">
-                                        <p className="text-sm text-muted-foreground">3 Selected - Up to 5</p>
-                                        <Button size="icon" variant="ghost"><Settings className="w-4 h-4"/></Button>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Prompt Library</Label>
-                                     <div className="p-3 border rounded-md flex justify-between items-center">
-                                        <div>
-                                            <p className="text-sm">Manage Prompt Library</p>
-                                        </div>
-                                        <Badge variant="outline">GEO Optimization</Badge>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Key Terms</Label>
-                                    <div className="p-3 border rounded-md flex justify-between items-center">
-                                        <p className="text-sm text-muted-foreground">Manage Key Terms</p>
-                                        <Button size="icon" variant="ghost"><Settings className="w-4 h-4"/></Button>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-                     <div className="space-y-6 lg:border-l lg:pl-6">
-                        <Card>
-                             <CardHeader>
-                                <CardTitle>Content Configuration</CardTitle>
-                             </CardHeader>
-                              <CardContent className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label>Tone of Voice</Label>
-                                    <Select defaultValue="professional">
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="professional">Professional</SelectItem>
-                                            <SelectItem value="casual">Casual</SelectItem>
-                                            <SelectItem value="friendly">Friendly</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Language Variant</Label>
-                                    <Select defaultValue="american">
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="american">American</SelectItem>
-                                            <SelectItem value="british">British</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>No. of AI Images</Label>
-                                    <Input type="number" defaultValue={1} />
-                                    <p className="text-xs text-muted-foreground">50 AI Image Credits Left</p>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox id="featured-image" />
-                                    <Label htmlFor="featured-image">Only Featured Image</Label>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Style</Label>
-                                    <Select defaultValue="digital-art">
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="digital-art">Digital Art</SelectItem>
-                                            <SelectItem value="photo">Photo</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Aspect Ratio</Label>
-                                    <Select defaultValue="16:9">
-                                        <SelectTrigger><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="16:9">16:9</SelectItem>
-                                            <SelectItem value="1:1">1:1</SelectItem>
-                                            <SelectItem value="9:16">9:16</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                 <div className="flex items-center justify-between">
-                                    <Label>Anti-AI Detection</Label>
-                                    <Switch />
-                                </div>
-                            </CardContent>
-                        </Card>
-                     </div>
-                      <div className="lg:col-span-3 flex justify-end p-0 pt-6 border-t mt-auto">
-                         <Button onClick={() => setCurrentStep(2)}>
-                            Create Title <ChevronRight className="ml-2"/>
-                        </Button>
-                    </div>
+                 <div className="hidden md:flex items-center gap-4">
+                    <Stepper currentStep={currentStep} />
+                    <Button variant="link" size="sm" className="hidden md:flex">Skip to Editor <ChevronRight className="w-4 h-4 ml-1"/></Button>
                 </div>
-            )}
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm">Cruise Mode <PlayCircle className="w-4 h-4 ml-2"/></Button>
+                    <Button variant="ghost" size="icon"><Settings className="w-5 h-5"/></Button>
+                    <Button variant="ghost" size="icon"><File className="w-5 h-5"/></Button>
+                    <Button variant="ghost" size="icon"><Wand className="w-5 h-5"/></Button>
+                </div>
+            </header>
+            {renderContentByStep()}
         </div>
-    )
+      )
   }
 
     // Initial View: Keyword & GEO
@@ -954,7 +814,3 @@ export default function OneClickWriterSerpForm() {
         </Card>
     );
 }
-
-    
-
-    
