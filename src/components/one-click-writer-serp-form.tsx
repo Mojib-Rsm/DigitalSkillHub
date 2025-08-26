@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown, ChevronRight, PlayCircle, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -122,6 +122,32 @@ const ScoreCircle = ({ score, text }: { score: number, text: string }) => {
             <p className="text-xs font-semibold">{text}</p>
         </div>
     )
+};
+
+
+const Stepper = ({ currentStep }: { currentStep: number }) => {
+    const steps = ["Context", "Title", "Outline", "First Draft"];
+    return (
+        <div className="flex items-center gap-2">
+            {steps.map((step, index) => (
+                <React.Fragment key={step}>
+                    <div className="flex items-center gap-2">
+                        <div className={cn(
+                            "w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm",
+                            index + 1 === currentStep ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                        )}>
+                            {index + 1}
+                        </div>
+                        <span className={cn(
+                             "font-semibold",
+                             index + 1 === currentStep ? "text-primary" : "text-muted-foreground"
+                        )}>{step}</span>
+                    </div>
+                    {index < steps.length - 1 && <ChevronRight className="w-5 h-5 text-muted-foreground" />}
+                </React.Fragment>
+            ))}
+        </div>
+    );
 };
 
 
@@ -394,113 +420,120 @@ export default function OneClickWriterSerpForm() {
   // Content Brief/Outline View
   if (serpData) {
     return (
-         <Card className="shadow-lg">
-            <CardHeader>
+        <div className="bg-background rounded-lg shadow-lg border">
+            <CardHeader className="flex flex-row justify-between items-center p-4 border-b">
                 <div className="flex items-center gap-4">
                     <Button variant="outline" size="icon" onClick={() => setSerpData(null)}><ArrowLeft/></Button>
                     <div>
-                        <CardTitle>Context & Outline</CardTitle>
-                        <CardDescription>Refine the context and outline before generating the article.</CardDescription>
+                        <p className="text-sm text-muted-foreground">All Articles / <span className="font-semibold text-foreground">{primaryKeyword}</span></p>
+                        <div className="flex items-center gap-2 mt-1">
+                           <Button variant="secondary" size="sm" className="h-7"><PlayCircle className="w-4 h-4 mr-2"/>Cruise Mode</Button>
+                        </div>
                     </div>
+                </div>
+                 <div className="flex items-center gap-4">
+                    <Stepper currentStep={1} />
+                    <Button variant="ghost" size="sm">Skip to Editor <ChevronRight className="w-4 h-4 ml-1"/></Button>
                 </div>
             </CardHeader>
-            <CardContent>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 space-y-6">
-                        <form onSubmit={handleGeneration} className="space-y-6">
-                             <Card>
-                                <CardHeader>
-                                    <CardTitle>Content Settings</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="title">Article Title</Label>
-                                            <Input id="title" name="title" defaultValue={primaryKeyword} required />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="purpose">Purpose of Article</Label>
-                                            <Input id="purpose" name="purpose" placeholder="e.g., Informational, Commercial, Review" required />
-                                        </div>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="tone">Tone of Voice</Label>
-                                            <Input id="tone" name="tone" placeholder="e.g., Formal, Casual, Humorous" required />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="audience">Target Audience</Label>
-                                            <Input id="audience" name="audience" placeholder="e.g., Beginners, Experts, Students" required />
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="customSource">Custom Source / URL (Optional)</Label>
-                                        <Input id="customSource" name="customSource" placeholder="Enter a URL to include as a primary source" />
-                                    </div>
-                                </CardContent>
-                            </Card>
-                            
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Content Brief / Outline</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                     <Textarea ref={outlineRef} id="outline" name="outline" rows={15} defaultValue={initialOutline} required/>
-                                </CardContent>
-                            </Card>
-                            
-                            {issues.length > 0 && (
-                                <Alert variant="destructive">
-                                    <AlertTitle>Error</AlertTitle>
-                                    <AlertDescription>
-                                        <ul className="list-disc pl-5">
-                                            {issues.map((issue, i) => <li key={i}>{issue}</li>)}
-                                        </ul>
-                                    </AlertDescription>
-                                </Alert>
-                            )}
-                            <GenerateArticleButton/>
-                        </form>
-                    </div>
-                     <div className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+                <div className="lg:col-span-2 space-y-6">
+                    <form onSubmit={handleGeneration} className="space-y-6">
                         <Card>
-                            <CardHeader>
-                                <CardTitle className="text-base flex items-center gap-2"><BarChart className="w-4 h-4"/> Top 10 SERP Results</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                 <ScrollArea className="h-64">
-                                    <div className="space-y-3">
-                                    {serpData.serpResults.map((result, i) => (
-                                        <div key={i}>
-                                            <a href={result.link} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary hover:underline">{result.title}</a>
-                                            <p className="text-xs text-muted-foreground">{result.snippet}</p>
-                                        </div>
-                                    ))}
-                                    </div>
-                                </ScrollArea>
+                            <CardHeader><CardTitle>General Guidelines</CardTitle></CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="articleType">Article Type</Label>
+                                    <Select name="articleType" defaultValue="General">
+                                        <SelectTrigger><SelectValue/></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="General">General (Recommended)</SelectItem>
+                                            <SelectItem value="Blog">Blog Post</SelectItem>
+                                            <SelectItem value="News">News Article</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="instruction">Instruction for AI (Optional)</Label>
+                                    <Textarea id="instruction" name="instruction" placeholder="Give custom instruction or guidelines to our AI for blog generation" />
+                                </div>
                             </CardContent>
                         </Card>
-                         <Card>
-                            <CardHeader>
-                                <CardTitle className="text-base flex items-center gap-2"><HelpCircle className="w-4 h-4"/> Related Questions</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <ScrollArea className="h-48">
-                                    <div className="space-y-3">
-                                    {serpData.relatedQuestions.map((q, i) => (
-                                        <div key={i} className="flex items-start gap-2">
-                                            <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleUseQuestion(q.question)}><PlusCircle className="w-4 h-4"/></Button>
-                                            <p className="text-sm text-muted-foreground">{q.question}</p>
-                                        </div>
-                                    ))}
+                        <Card>
+                            <CardHeader><CardTitle>GEO Guidelines</CardTitle></CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Reference Articles (AI + SERP)</Label>
+                                    <div className="p-3 border rounded-md flex justify-between items-center">
+                                        <p className="text-sm text-muted-foreground">2 Selected - Up to 5</p>
+                                        <Button size="icon" variant="ghost"><Settings className="w-4 h-4"/></Button>
                                     </div>
-                                </ScrollArea>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Prompt Library</Label>
+                                     <div className="p-3 border rounded-md flex justify-between items-center">
+                                        <div>
+                                            <p className="text-sm">Manage Prompt Library</p>
+                                        </div>
+                                        <Badge variant="outline">GEO Optimization</Badge>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Key Terms</Label>
+                                    <div className="p-3 border rounded-md flex justify-between items-center">
+                                        <p className="text-sm text-muted-foreground">Manage Key Terms</p>
+                                        <Button size="icon" variant="ghost"><Settings className="w-4 h-4"/></Button>
+                                    </div>
+                                </div>
                             </CardContent>
                         </Card>
-                     </div>
+                         <CardFooter className="flex justify-between p-0 pt-6">
+                            <Button variant="outline" onClick={() => setSerpData(null)}>
+                                <ArrowLeft className="mr-2"/> Previous
+                            </Button>
+                             <Button type="submit">
+                                Create Title <ChevronRight className="ml-2"/>
+                            </Button>
+                        </CardFooter>
+                    </form>
                 </div>
-            </CardContent>
-         </Card>
+                <div className="space-y-6 lg:border-l lg:pl-6">
+                     <Card>
+                        <CardHeader>
+                            <CardTitle className="text-base flex items-center gap-2"><BarChart className="w-4 h-4"/> Top 10 SERP Results</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                                <ScrollArea className="h-64">
+                                <div className="space-y-3">
+                                {serpData.serpResults.map((result, i) => (
+                                    <div key={i}>
+                                        <a href={result.link} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary hover:underline">{result.title}</a>
+                                        <p className="text-xs text-muted-foreground">{result.snippet}</p>
+                                    </div>
+                                ))}
+                                </div>
+                            </ScrollArea>
+                        </CardContent>
+                    </Card>
+                        <Card>
+                        <CardHeader>
+                            <CardTitle className="text-base flex items-center gap-2"><HelpCircle className="w-4 h-4"/> Related Questions</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <ScrollArea className="h-48">
+                                <div className="space-y-3">
+                                {serpData.relatedQuestions.map((q, i) => (
+                                    <div key={i} className="flex items-start gap-2">
+                                        <p className="text-sm text-muted-foreground">{q.question}</p>
+                                    </div>
+                                ))}
+                                </div>
+                            </ScrollArea>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        </div>
     )
   }
 
@@ -657,3 +690,4 @@ export default function OneClickWriterSerpForm() {
         </Card>
     );
 }
+
