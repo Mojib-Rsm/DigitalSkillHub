@@ -57,14 +57,15 @@ function LoginFormContent() {
                  toast({
                     variant: "destructive",
                     title: "Login Failed",
-                    description: result.message,
+                    description: result.message, // Display the actual server error
                 });
             }
         } catch (error) {
+             const errorMessage = error instanceof Error ? error.message : "An unknown client-side error occurred.";
              toast({
                 variant: "destructive",
                 title: "Login Error",
-                description: "An unexpected error occurred during login."
+                description: errorMessage,
             });
         } finally {
             setIsSubmitting(false);

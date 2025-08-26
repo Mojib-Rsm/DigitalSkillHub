@@ -1,6 +1,7 @@
 
 'use server';
 
+import 'dotenv/config';
 import { z } from 'zod';
 import { cookies } from 'next/headers';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore/lite';
@@ -22,58 +23,53 @@ type FormState = {
 export async function loginAction(
   formData: FormData
 ): Promise<FormState> {
-  const validatedFields = LoginSchema.safeParse(
-    Object.fromEntries(formData.entries())
-  );
-
-  if (!validatedFields.success) {
-    return {
-      message: 'Invalid form data. Please check your inputs.',
-      success: false,
-    };
-  }
-
-  const { email, password } = validatedFields.data;
-  let userSnapshot;
-
   try {
+    const validatedFields = LoginSchema.safeParse(
+      Object.fromEntries(formData.entries())
+    );
+
+    if (!validatedFields.success) {
+      return {
+        message: 'Invalid form data. Please check your inputs.',
+        success: false,
+      };
+    }
+
+    const { email, password } = validatedFields.data;
     const db = getFirestore(app);
     const usersCol = collection(db, 'users');
     const q = query(usersCol, where('email', '==', email));
-    userSnapshot = await getDocs(q);
+    const userSnapshot = await getDocs(q);
+
+    if (userSnapshot.empty) {
+      return { message: 'No user found with this email.', success: false };
+    }
+
+    const userData = userSnapshot.docs[0].data();
+    const userId = userSnapshot.docs[0].id;
+    
+    const isPasswordValid = userData.password === password;
+
+    if (!isPasswordValid) {
+      return { message: 'Invalid password. Please try again.', success: false };
+    }
+
+    cookies().set('auth-session', userId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 24, // 24 hours
+        path: '/',
+    });
+
+    return { message: 'Login successful!', success: true };
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error('Firestore connection error during login:', errorMessage);
+    console.error('Error in loginAction:', errorMessage);
+    // Return the detailed error message to the client for debugging
     return {
-      message: 'Could not connect to the database. Please check your network and try again.',
+      message: `Server Error: ${errorMessage}`,
       success: false,
     };
   }
-
-  if (userSnapshot.empty) {
-    return { message: 'No user found with this email.', success: false };
-  }
-
-  const userData = userSnapshot.docs[0].data();
-  const userId = userSnapshot.docs[0].id;
-  
-  // WARNING: In a real-world application, never store or compare plaintext passwords.
-  // This is a simplified example for this specific environment.
-  // Use a library like bcrypt to hash passwords during registration and compare them during login.
-  const isPasswordValid = userData.password === password;
-
-  if (!isPasswordValid) {
-    return { message: 'Invalid password. Please try again.', success: false };
-  }
-
-  // In a real app, you would generate a secure JWT. For this demo, we'll use the user ID.
-  cookies().set('auth-session', userId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24, // 24 hours
-      path: '/',
-  });
-
-  return { message: 'Login successful!', success: true };
 }
