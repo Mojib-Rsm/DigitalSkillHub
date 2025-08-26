@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -37,7 +37,7 @@ import rehypeStringify from 'rehype-stringify';
 function AnalyzeButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending} size="lg" className="w-full">
+    <Button type="submit" disabled={pending} size="lg" className="h-12 w-full md:w-auto">
       {pending ? (
          <>
           <Sparkles className="mr-2 h-5 w-5 animate-spin" />
@@ -477,118 +477,85 @@ export default function OneClickWriterSerpForm() {
                 <CardDescription>Research and create GEO optimized top ranking articles.</CardDescription>
             </CardHeader>
             <CardContent>
-                 <form onSubmit={handleAnalysis} className="space-y-4">
-                     <div className="grid grid-cols-1 gap-2 items-start">
-                       <div className="relative col-span-4">
+                <form onSubmit={handleAnalysis}>
+                    <Card className="bg-muted/50">
+                        <CardContent className="p-4 flex flex-col md:flex-row gap-4 items-center">
                             <Input
                                 id="primaryKeyword"
                                 name="primaryKeyword"
-                                placeholder="Enter your primary keyword"
+                                placeholder="Enter Keyword(s)"
                                 required
-                                className="text-base h-12"
+                                className="text-base h-12 flex-grow"
                                 value={primaryKeyword}
                                 onChange={handleKeywordChange}
-                                onFocus={() => setShowSuggestions(true)}
-                                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                                 autoComplete="off"
                             />
-                            
-                             {showSuggestions && primaryKeyword && (
-                                <Card className="absolute z-10 w-full mt-1 shadow-md">
-                                    <CardContent className="p-2">
-                                         <ScrollArea className="h-48">
-                                            {suggestionsLoading ? (
-                                                <div className="flex items-center justify-center p-4">
-                                                    <Loader className="w-5 h-5 animate-spin" />
-                                                </div>
-                                            ) : suggestions.length > 0 ? (
-                                                suggestions.map((s, i) => (
-                                                    <button key={i} type="button" className="w-full text-left p-2 hover:bg-muted rounded-md" onClick={() => handleSuggestionClick(s)}>
-                                                        {s}
-                                                    </button>
-                                                ))
-                                            ) : (
-                                                 <p className="p-2 text-sm text-muted-foreground">No suggestions found.</p>
-                                            )}
-                                        </ScrollArea>
-                                    </CardContent>
-                                </Card>
-                            )}
-                       </div>
-                    </div>
-                     <div className="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
-                        <Select name="top" defaultValue="top-10">
-                            <SelectTrigger className="w-full h-12">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="top-10">Top 10</SelectItem>
-                                <SelectItem value="top-20">Top 20</SelectItem>
-                                <SelectItem value="top-50">Top 50</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <input type="hidden" name="targetCountry" value={country} />
-                        <Popover open={countrySelectOpen} onOpenChange={setCountrySelectOpen}>
-                            <PopoverTrigger asChild>
-                            <Button
-                                variant="outline"
-                                role="combobox"
-                                aria-expanded={countrySelectOpen}
-                                className="w-[180px] justify-between font-normal h-12"
-                            >
-                                {country
-                                ? countries.find((c) => c.value === country)?.label
-                                : "Select country..."}
-                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[180px] p-0">
-                            <Command>
-                                <CommandInput placeholder="Search country..." />
-                                <CommandEmpty>No country found.</CommandEmpty>
-                                <CommandGroup className="max-h-64 overflow-y-auto">
-                                {countries.map((c) => (
-                                    <CommandItem
-                                    key={c.value}
-                                    value={c.value}
-                                    onSelect={(currentValue) => {
-                                        setCountry(countries.find(c => c.value.toLowerCase() === currentValue.toLowerCase())?.value || "")
-                                        setCountrySelectOpen(false)
-                                    }}
+                            <div className="flex w-full md:w-auto gap-4">
+                                <Select name="top" defaultValue="top-10">
+                                    <SelectTrigger className="w-full md:w-[120px] h-12">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="top-10">Top 10</SelectItem>
+                                        <SelectItem value="top-20">Top 20</SelectItem>
+                                        <SelectItem value="top-50">Top 50</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <input type="hidden" name="targetCountry" value={country} />
+                                <Popover open={countrySelectOpen} onOpenChange={setCountrySelectOpen}>
+                                    <PopoverTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        role="combobox"
+                                        aria-expanded={countrySelectOpen}
+                                        className="w-full md:w-[180px] justify-between font-normal h-12"
                                     >
-                                    <Check
-                                        className={cn(
-                                        "mr-2 h-4 w-4",
-                                        country === c.value ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                    {c.label}
-                                    </CommandItem>
-                                ))}
-                                </CommandGroup>
-                            </Command>
-                            </PopoverContent>
-                        </Popover>
-                         <Button type="submit" size="lg" className="h-12 text-base">Create</Button>
-                    </div>
-                     {issues.length > 0 && (
-                        <Alert variant="destructive">
-                            <AlertTitle>Error</AlertTitle>
-                            <AlertDescription>
-                                <ul className="list-disc pl-5">
-                                    {issues.map((issue, i) => <li key={i}>{issue}</li>)}
-                                </ul>
-                            </AlertDescription>
-                        </Alert>
-                    )}
-                 </form>
+                                        {country
+                                        ? countries.find((c) => c.value === country)?.label
+                                        : "Select country..."}
+                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                    </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-[180px] p-0">
+                                    <Command>
+                                        <CommandInput placeholder="Search country..." />
+                                        <CommandEmpty>No country found.</CommandEmpty>
+                                        <CommandGroup className="max-h-64 overflow-y-auto">
+                                        {countries.map((c) => (
+                                            <CommandItem
+                                            key={c.value}
+                                            value={c.value}
+                                            onSelect={(currentValue) => {
+                                                setCountry(countries.find(c => c.value.toLowerCase() === currentValue.toLowerCase())?.value || "")
+                                                setCountrySelectOpen(false)
+                                            }}
+                                            >
+                                            <Check
+                                                className={cn(
+                                                "mr-2 h-4 w-4",
+                                                country === c.value ? "opacity-100" : "opacity-0"
+                                                )}
+                                            />
+                                            {c.label}
+                                            </CommandItem>
+                                        ))}
+                                        </CommandGroup>
+                                    </Command>
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+                             <AnalyzeButton/>
+                        </CardContent>
+                    </Card>
+                </form>
+
                  <Separator className="my-6"/>
                  <div className="space-y-4">
                      <div className="flex justify-between items-center">
-                        <h3 className="font-semibold">Recent Articles</h3>
+                        <Input placeholder="Search Articles" className="h-9 max-w-sm"/>
                         <div className="flex items-center gap-2">
-                           <Input placeholder="Search Articles" className="h-9 max-w-sm"/>
-                           <Button variant="outline" size="icon" className="h-9 w-9"><Briefcase/></Button>
+                           <Button variant="outline" size="sm"><Filter className="mr-2 h-4 w-4"/> Filter By</Button>
+                           <Button variant="outline" size="sm"><ArrowUpDown className="mr-2 h-4 w-4"/> Sort By: Created At</Button>
                         </div>
                      </div>
                       <Table>
@@ -603,9 +570,34 @@ export default function OneClickWriterSerpForm() {
                         </TableHeader>
                         <TableBody>
                             <TableRow>
-                                <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
-                                    No articles found.
+                                <TableCell className="font-medium">
+                                    <p>bangladesh politics</p>
+                                    <Badge variant="secondary">Bangladesh</Badge>
                                 </TableCell>
+                                <TableCell>1 day ago</TableCell>
+                                <TableCell>0 Words</TableCell>
+                                <TableCell>-</TableCell>
+                                <TableCell><Badge variant="outline" className="text-blue-600 border-blue-600">Writing in progress</Badge></TableCell>
+                            </TableRow>
+                            <TableRow>
+                                <TableCell className="font-medium">
+                                    <p>bangladesh politics (+1 more)</p>
+                                    <Badge variant="secondary">Bangladesh</Badge>
+                                </TableCell>
+                                <TableCell>1 day ago</TableCell>
+                                <TableCell>0 Words</TableCell>
+                                <TableCell>-</TableCell>
+                                <TableCell><Badge variant="outline" className="text-blue-600 border-blue-600">Writing in progress</Badge></TableCell>
+                            </TableRow>
+                             <TableRow>
+                                <TableCell className="font-medium">
+                                    <p>BLood donate</p>
+                                    <Badge variant="secondary">United States</Badge>
+                                </TableCell>
+                                <TableCell>1 day ago</TableCell>
+                                <TableCell>1480 Words</TableCell>
+                                <TableCell><Badge>86</Badge></TableCell>
+                                <TableCell><Badge variant="outline" className="text-orange-600 border-orange-600">Editing in progress</Badge></TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
