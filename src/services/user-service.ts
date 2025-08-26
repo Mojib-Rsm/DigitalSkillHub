@@ -2,7 +2,7 @@
 
 'use server';
 
-import { cookies } from 'next/headers';
+import { auth } from "next-auth";
 import { getFirestore, doc, getDoc, collection, getDocs, query, where, updateDoc } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 
@@ -20,22 +20,21 @@ export type UserProfile = {
 };
 
 export async function getCurrentUser(): Promise<UserProfile | null> {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get('auth-session');
-  
-  if (!sessionCookie?.value) {
+  const session = await auth();
+
+  if (!session?.user?.email || !(session.user as any).id) {
     return null;
   }
   
-  const uid = sessionCookie.value;
+  const userId = (session.user as any).id;
 
   try {
     const db = getFirestore(app);
-    const userRef = doc(db, 'users', uid);
+    const userRef = doc(db, 'users', userId);
     const userSnapshot = await getDoc(userRef);
 
     if (!userSnapshot.exists()) {
-        console.warn(`No user found with ID: ${uid}`);
+        console.warn(`No user found in Firestore with ID: ${userId}, but session exists.`);
         return null;
     }
     

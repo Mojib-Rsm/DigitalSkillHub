@@ -7,14 +7,17 @@ const protectedPaths = [
     '/dashboard',
 ];
 
-
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
-
     const isProtected = protectedPaths.some(path => pathname.startsWith(path));
 
     if (isProtected) {
-        const sessionCookie = request.cookies.get('auth-session');
+        // Auth.js v5 uses different cookie names depending on the environment
+        const sessionCookieName = process.env.NODE_ENV === 'production' 
+            ? '__Secure-authjs.session-token' 
+            : 'authjs.session-token';
+            
+        const sessionCookie = request.cookies.get(sessionCookieName);
 
         if (!sessionCookie) {
             const url = request.nextUrl.clone();
