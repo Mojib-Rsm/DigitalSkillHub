@@ -1,15 +1,15 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { Suspense } from 'react';
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bot, Chrome } from "lucide-react";
-import { signIn } from "next-auth/react";
+import { signIn } from "@auth/react";
 import { useSearchParams } from "next/navigation";
 
-export default function LoginForm() {
+function LoginFormContent() {
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get('redirect') || '/dashboard';
 
@@ -47,5 +47,14 @@ export default function LoginForm() {
                 </Card>
             </div>
         </div>
+    );
+}
+
+
+export default function LoginForm() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <LoginFormContent />
+        </Suspense>
     );
 }
