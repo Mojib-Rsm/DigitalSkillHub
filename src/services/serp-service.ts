@@ -160,16 +160,26 @@ export async function getRelatedQuestions(query: string): Promise<RelatedQuestio
 }
 
 export async function getKeywordSuggestions(query: string): Promise<string[]> {
-    if (!GOOGLE_API_KEY || !GOOGLE_CSE_ID) {
-        console.warn('Google CSE not configured, skipping keyword suggestions.');
+    if (!GOOGLE_API_KEY) {
+        console.warn('Google API Key not configured, skipping keyword suggestions.');
         return [];
     }
+    const url = `https://suggestqueries.google.com/complete/search`;
     try {
-        const results = await getSerpResults(query);
-        // Use the titles of the search results as suggestions
-        return results.map(r => r.title);
-    } catch (error) {
-        console.error('Error getting keyword suggestions via SERP:', error);
+        const response = await axios.get(url, {
+            params: {
+                client: 'firefox',
+                q: query,
+            },
+        });
+        
+        if (response.data && Array.isArray(response.data[1])) {
+            return response.data[1];
+        }
+
+        return [];
+    } catch (error: any) {
+        console.error('Error fetching keyword suggestions from Google:', error.message);
         return [];
     }
 }

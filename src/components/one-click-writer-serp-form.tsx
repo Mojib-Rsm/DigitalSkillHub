@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown, ChevronRight, PlayCircle, Settings } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown, ChevronRight, PlayCircle, Settings, File, Wand, ListChecks } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -25,6 +25,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./ui/select";
 import { ScrollArea } from "./ui/scroll-area";
 import { useDebounce } from 'use-debounce';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
 
 // Remark and rehype plugins for markdown rendering
@@ -133,10 +134,10 @@ const Stepper = ({ currentStep }: { currentStep: number }) => {
                 <React.Fragment key={step}>
                     <div className="flex items-center gap-2">
                         <div className={cn(
-                            "w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm",
-                            index + 1 === currentStep ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                            "w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all",
+                            index + 1 <= currentStep ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                         )}>
-                            {index + 1}
+                            {index + 1 < currentStep ? <Check className="w-5 h-5"/> : index + 1}
                         </div>
                         <span className={cn(
                              "font-semibold",
@@ -169,8 +170,9 @@ export default function OneClickWriterSerpForm() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [initialOutline, setInitialOutline] = useState("");
-  const outlineRef = useRef<HTMLTextAreaElement>(null);
+  
+  const [currentStep, setCurrentStep] = useState(1);
+  const [blogTitle, setBlogTitle] = useState("");
 
 
   useEffect(() => {
@@ -233,7 +235,12 @@ export default function OneClickWriterSerpForm() {
 
       if (result.success && result.data) {
         setSerpData(result.data);
-        generateInitialOutline(result.data);
+        if (result.data.serpResults.length > 0) {
+            setBlogTitle(result.data.serpResults[0].title);
+        } else {
+            setBlogTitle(`A Creative Blog Post about ${primaryKeyword}`);
+        }
+        setCurrentStep(2);
       } else {
         setIssues(result.issues || ["An unknown error occurred."]);
         toast({
@@ -243,6 +250,11 @@ export default function OneClickWriterSerpForm() {
         });
       }
       setIsAnalyzing(false);
+  }
+
+  const handleCreateOutline = () => {
+      // Logic for creating outline will go here
+      setCurrentStep(3);
   }
 
   const handleGeneration = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -278,26 +290,6 @@ export default function OneClickWriterSerpForm() {
        setIsGenerating(false);
   }
 
-  const generateInitialOutline = (data: SerpAnalysisResult) => {
-    let outline = `Introduction: Briefly introduce ${primaryKeyword}.\n\n`;
-
-    data.serpResults.slice(0, 3).forEach((result, index) => {
-        outline += `H2: ${result.title}\n`;
-        outline += ` - Key point from: ${result.snippet.substring(0, 50)}...\n\n`;
-    });
-
-    if (data.relatedQuestions.length > 0) {
-        outline += `H2: Frequently Asked Questions\n`;
-        data.relatedQuestions.slice(0, 3).forEach(q => {
-            outline += ` - H3: ${q.question}\n`;
-        });
-        outline += `\n`;
-    }
-
-    outline += `Conclusion: Summarize the key points about ${primaryKeyword}.`;
-    setInitialOutline(outline);
-  }
-
   const handleCopy = (textToCopy: string) => {
     navigator.clipboard.writeText(textToCopy);
     toast({
@@ -314,13 +306,6 @@ export default function OneClickWriterSerpForm() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
-
-  const handleUseQuestion = (question: string) => {
-      if(outlineRef.current) {
-          outlineRef.current.value += `\n\nH2: ${question}\n - Write a detailed answer for this question.`;
-          toast({ title: "Question added to outline!" });
-      }
   }
 
   const AnalysisProgressRow = () => (
@@ -417,29 +402,78 @@ export default function OneClickWriterSerpForm() {
     )
   }
 
-  // Content Brief/Outline View
+  // Wrapper for steps 2 and beyond
   if (serpData) {
     return (
         <div className="bg-background rounded-lg shadow-lg border">
             <CardHeader className="flex flex-row justify-between items-center p-4 border-b">
                 <div className="flex items-center gap-4">
-                    <Button variant="outline" size="icon" onClick={() => setSerpData(null)}><ArrowLeft/></Button>
+                    <Button variant="outline" size="icon" onClick={() => {
+                        if (currentStep > 1) setCurrentStep(currentStep - 1);
+                        else setSerpData(null);
+                    }}><ArrowLeft/></Button>
                     <div>
                         <p className="text-sm text-muted-foreground">All Articles / <span className="font-semibold text-foreground">{primaryKeyword}</span></p>
-                        <div className="flex items-center gap-2 mt-1">
-                           <Button variant="secondary" size="sm" className="h-7"><PlayCircle className="w-4 h-4 mr-2"/>Cruise Mode</Button>
-                        </div>
                     </div>
                 </div>
                  <div className="flex items-center gap-4">
-                    <Stepper currentStep={1} />
+                    <Stepper currentStep={currentStep} />
                     <Button variant="ghost" size="sm">Skip to Editor <ChevronRight className="w-4 h-4 ml-1"/></Button>
                 </div>
             </CardHeader>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
-                <div className="lg:col-span-2 space-y-6">
-                    <form onSubmit={handleGeneration} className="space-y-6">
-                        <Card>
+            
+            {currentStep === 2 && (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+                    <div className="lg:col-span-2 space-y-6">
+                        <h2 className="text-2xl font-bold">Enter the Blog Title (H1) <span className="text-destructive">*</span></h2>
+                        <Textarea 
+                            value={blogTitle}
+                            onChange={(e) => setBlogTitle(e.target.value)}
+                            rows={3}
+                            placeholder="Enter your blog title..."
+                            className="text-lg"
+                        />
+                        <p className="text-sm text-muted-foreground">To proceed, click on Create Outline from the bottom bar</p>
+                    </div>
+                    <div className="lg:border-l lg:pl-6">
+                        <Tabs defaultValue="top-ranked">
+                            <TabsList className="grid w-full grid-cols-2">
+                                <TabsTrigger value="ai-generated">AI Generated Titles</TabsTrigger>
+                                <TabsTrigger value="top-ranked">Top Ranked Titles</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="ai-generated">
+                                <p className="p-4 text-center text-muted-foreground">AI title generation coming soon.</p>
+                            </TabsContent>
+                            <TabsContent value="top-ranked">
+                                <div className="space-y-2 mt-4">
+                                {serpData.serpResults.slice(0, 10).map((result, i) => (
+                                    <button 
+                                        key={i} 
+                                        className="w-full text-left p-3 rounded-md hover:bg-muted"
+                                        onClick={() => setBlogTitle(result.title)}
+                                    >
+                                        <p className="font-semibold text-sm text-primary">#{i + 1}</p>
+                                        <p className="text-sm">{result.title}</p>
+                                    </button>
+                                ))}
+                                </div>
+                            </TabsContent>
+                        </Tabs>
+                    </div>
+                     <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t">
+                        <Button variant="outline" onClick={() => setCurrentStep(1)}>
+                            <ArrowLeft className="mr-2"/> Previous
+                        </Button>
+                         <Button onClick={handleCreateOutline}>
+                            Create Outline <ChevronRight className="ml-2"/>
+                        </Button>
+                    </div>
+                </div>
+            )}
+             {currentStep === 1 && (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+                    <div className="lg:col-span-2 space-y-6">
+                         <Card>
                             <CardHeader><CardTitle>General Guidelines</CardTitle></CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="space-y-2">
@@ -462,10 +496,10 @@ export default function OneClickWriterSerpForm() {
                         <Card>
                             <CardHeader><CardTitle>GEO Guidelines</CardTitle></CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="space-y-2">
+                                 <div className="space-y-2">
                                     <Label>Reference Articles (AI + SERP)</Label>
                                     <div className="p-3 border rounded-md flex justify-between items-center">
-                                        <p className="text-sm text-muted-foreground">2 Selected - Up to 5</p>
+                                        <p className="text-sm text-muted-foreground">3 Selected - Up to 5</p>
                                         <Button size="icon" variant="ghost"><Settings className="w-4 h-4"/></Button>
                                     </div>
                                 </div>
@@ -491,48 +525,16 @@ export default function OneClickWriterSerpForm() {
                             <Button variant="outline" onClick={() => setSerpData(null)}>
                                 <ArrowLeft className="mr-2"/> Previous
                             </Button>
-                             <Button type="submit">
+                             <Button onClick={() => setCurrentStep(2)}>
                                 Create Title <ChevronRight className="ml-2"/>
                             </Button>
                         </CardFooter>
-                    </form>
+                    </div>
+                     <div className="space-y-6 lg:border-l lg:pl-6">
+                        {/* Placeholder for future side content */}
+                     </div>
                 </div>
-                <div className="space-y-6 lg:border-l lg:pl-6">
-                     <Card>
-                        <CardHeader>
-                            <CardTitle className="text-base flex items-center gap-2"><BarChart className="w-4 h-4"/> Top 10 SERP Results</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                                <ScrollArea className="h-64">
-                                <div className="space-y-3">
-                                {serpData.serpResults.map((result, i) => (
-                                    <div key={i}>
-                                        <a href={result.link} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary hover:underline">{result.title}</a>
-                                        <p className="text-xs text-muted-foreground">{result.snippet}</p>
-                                    </div>
-                                ))}
-                                </div>
-                            </ScrollArea>
-                        </CardContent>
-                    </Card>
-                        <Card>
-                        <CardHeader>
-                            <CardTitle className="text-base flex items-center gap-2"><HelpCircle className="w-4 h-4"/> Related Questions</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <ScrollArea className="h-48">
-                                <div className="space-y-3">
-                                {serpData.relatedQuestions.map((q, i) => (
-                                    <div key={i} className="flex items-start gap-2">
-                                        <p className="text-sm text-muted-foreground">{q.question}</p>
-                                    </div>
-                                ))}
-                                </div>
-                            </ScrollArea>
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
+            )}
         </div>
     )
   }
@@ -690,4 +692,3 @@ export default function OneClickWriterSerpForm() {
         </Card>
     );
 }
-
