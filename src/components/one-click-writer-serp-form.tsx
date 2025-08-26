@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown, ChevronRight, PlayCircle, Settings, File, Wand, ListChecks, RefreshCw, Trash2, GripVertical } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown, ChevronRight, PlayCircle, Settings, File, Wand, ListChecks, RefreshCw, Trash2, GripVertical, FileQuestion, MessageSquare as MessageSquareIcon, ThumbsUp, BrainCircuit, BarChartHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
