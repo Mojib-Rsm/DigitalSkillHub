@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -157,8 +158,8 @@ const oneClickWriterFlow = ai.defineFlow(
     const writerResponse = await writerPrompt(input);
     const { article: rawArticle, seoTitle, seoDescription, imagePrompt, inArticleImagePrompt, altText, internalLinks, externalLinks, readability, seoAnalysis, targetKeyword, suggestedTags, suggestedCategories } = writerResponse.output!;
 
-    // Generate both images in parallel
-    const [featuredImageResponse, inArticleImageResponse] = await Promise.all([
+    // Generate both images in parallel, but handle failures gracefully
+    const [featuredImageResult, inArticleImageResult] = await Promise.allSettled([
         ai.generate({
             model: 'googleai/gemini-2.0-flash-preview-image-generation',
             prompt: imagePrompt,
@@ -171,21 +172,27 @@ const oneClickWriterFlow = ai.defineFlow(
         })
     ]);
 
-
-    const featuredImageUrl = featuredImageResponse.media?.url;
-    if (!featuredImageUrl) {
-        throw new Error("Failed to generate a featured image for the article.");
+    let featuredImageUrl = "https://placehold.co/1024x576.png"; // Default placeholder
+    if (featuredImageResult.status === 'fulfilled' && featuredImageResult.value.media?.url) {
+        featuredImageUrl = featuredImageResult.value.media.url;
+    } else if (featuredImageResult.status === 'rejected') {
+        console.warn("Featured image generation failed:", featuredImageResult.reason.message);
     }
     
-    const inArticleImageUrl = inArticleImageResponse.media?.url;
+    let inArticleImageUrl;
+    if (inArticleImageResult.status === 'fulfilled' && inArticleImageResult.value.media?.url) {
+        inArticleImageUrl = inArticleImageResult.value.media.url;
+    } else if (inArticleImageResult.status === 'rejected') {
+        console.warn("In-article image generation failed:", inArticleImageResult.reason.message);
+    }
     
-    // Replace the placeholder in the article with the second image's URL
+    // Replace the placeholder in the article with the second image's URL if available
     let finalArticle = rawArticle;
     if (inArticleImageUrl) {
         const inArticleImageMarkdown = `![${inArticleImagePrompt}](${inArticleImageUrl})`;
         finalArticle = rawArticle.replace('[IN_ARTICLE_IMAGE_PLACEHOLDER]', inArticleImageMarkdown);
     } else {
-        // If the in-article image fails, just remove the placeholder
+        // If the in-article image fails or is not generated, just remove the placeholder
         finalArticle = rawArticle.replace('[IN_ARTICLE_IMAGE_PLACEHOLDER]', '');
     }
     

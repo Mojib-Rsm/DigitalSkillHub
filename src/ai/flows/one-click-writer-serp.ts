@@ -23,12 +23,20 @@ const oneClickWriterSerpFlow = ai.defineFlow(
     outputSchema: z.custom<OneClickWriterOutput>(),
   },
   async (input) => {
-    // 1. Fetch data from all APIs in parallel.
-    // This will now gracefully handle errors (like quota exceeded) and return empty arrays.
+    // 1. Fetch data from all APIs in parallel, gracefully handling errors (like quota exceeded).
     const [serpResults, keywordData, relatedQuestions] = await Promise.all([
-      getSerpResults(input.primaryKeyword).catch(() => []),
-      getKeywordData(input.primaryKeyword, input.targetCountry).catch(() => ({ search_volume: null, cpc: null })),
-      getRelatedQuestions(input.primaryKeyword).catch(() => [])
+      getSerpResults(input.primaryKeyword).catch((e) => {
+        console.warn("getSerpResults failed:", e.message);
+        return [];
+      }),
+      getKeywordData(input.primaryKeyword, input.targetCountry).catch((e) => {
+        console.warn("getKeywordData failed:", e.message);
+        return { search_volume: null, cpc: null };
+      }),
+      getRelatedQuestions(input.primaryKeyword).catch((e) => {
+        console.warn("getRelatedQuestions failed:", e.message);
+        return [];
+      })
     ]);
 
     // 2. Determine if we have enough SERP data to proceed with a SERP-informed article.
@@ -49,12 +57,9 @@ const oneClickWriterSerpFlow = ai.defineFlow(
         disableConclusion: false,
         enableSkinnyParagraph: true,
         passAiDetection: true,
-        // We can pass the context to a more advanced prompt in the future.
-        // For now, the logic above determines the generation strategy.
-        // context: { ...serpContext } 
     };
     
-    // Call the reliable oneClickWriter which does not depend on external real-time APIs.
+    // Call the reliable oneClickWriter which does not depend on external real-time APIs for its core function.
     const writerResponse = await oneClickWriter(writerInput);
 
     return writerResponse;
