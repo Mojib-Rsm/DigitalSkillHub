@@ -16,6 +16,8 @@ export type Course = {
 };
 
 let coursesCache: Course[] | null = null;
+let cacheTimestamp: number | null = null;
+const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 
 // A simple slugify function
 const slugify = (text: string) => {
@@ -30,7 +32,8 @@ const slugify = (text: string) => {
 };
 
 export async function getCourses(): Promise<Course[]> {
-    if (coursesCache) {
+    const now = Date.now();
+    if (coursesCache && cacheTimestamp && (now - cacheTimestamp < CACHE_DURATION_MS)) {
         return coursesCache;
     }
 
@@ -40,6 +43,7 @@ export async function getCourses(): Promise<Course[]> {
         const courseSnapshot = await getDocs(coursesCol);
         const coursesList = courseSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Course));
         coursesCache = coursesList;
+        cacheTimestamp = now;
         return coursesList;
     } catch (error) {
         console.error("Error fetching courses from Firestore:", error);

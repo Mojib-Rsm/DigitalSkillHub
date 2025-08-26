@@ -11,12 +11,14 @@ import type { Tool } from '@/lib/demo-data';
 
 
 let toolsCache: Tool[] | null = null;
+let cacheTimestamp: number | null = null;
+const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 
 export async function getTools(limit?: number): Promise<Tool[]> {
-    // This function is called on public pages, so we can cache the result
-    // to improve performance and reduce Firestore reads.
-    // If a limit is applied, we don't cache as it's a specific subset.
-    if (toolsCache && !limit) {
+    const now = Date.now();
+
+    // Use cache if it's not expired and no limit is applied
+    if (toolsCache && cacheTimestamp && (now - cacheTimestamp < CACHE_DURATION_MS) && !limit) {
         return toolsCache;
     }
 
@@ -39,8 +41,10 @@ export async function getTools(limit?: number): Promise<Tool[]> {
 
         const toolList = toolSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Tool));
         
+        // Only cache the full list
         if (!limit) {
-             toolsCache = toolList; // Cache the fetched tools only if no limit
+             toolsCache = toolList;
+             cacheTimestamp = now;
         }
 
         return toolList;
@@ -50,12 +54,22 @@ export async function getTools(limit?: number): Promise<Tool[]> {
     }
 }
 
+function invalidateCache() {
+    toolsCache = null;
+    cacheTimestamp = null;
+}
+
 export async function getToolByHref(href: string): Promise<Tool | null> {
     const allTools = await getTools();
     return allTools.find(tool => tool.href === href) || null;
 }
 
 export async function getToolById(id: string): Promise<Tool | null> {
+    const allTools = await getTools(); // Leverage caching
+    const tool = allTools.find(tool => tool.id === id);
+    if (tool) return tool;
+
+    // If not in cache (less likely), fetch directly
     try {
         const db = getFirestore(app);
         const toolRef = doc(db, 'tools', id);
@@ -156,7 +170,7 @@ export async function addTool(toolData: Omit<Tool, 'id'>) {
         const db = getFirestore(app);
         const toolsCol = collection(db, 'tools');
         const docRef = await addDoc(toolsCol, toolData);
-        toolsCache = null; // Invalidate cache
+        invalidateCache();
         revalidatePath('/ai-tools');
         revalidatePath('/dashboard/admin/tools');
         return { success: true, id: docRef.id };
@@ -171,7 +185,7 @@ export async function updateTool(toolId: string, toolData: Partial<Omit<Tool, 'i
         const db = getFirestore(app);
         const toolRef = doc(db, 'tools', toolId);
         await updateDoc(toolRef, toolData);
-        toolsCache = null; // Invalidate cache
+        invalidateCache();
         revalidatePath('/ai-tools');
         revalidatePath('/dashboard/admin/tools');
         return { success: true };
@@ -186,7 +200,7 @@ export async function deleteTool(toolId: string) {
         const db = getFirestore(app);
         const toolRef = doc(db, 'tools', toolId);
         await deleteDoc(toolRef);
-        toolsCache = null; // Invalidate cache
+        invalidateCache();
         revalidatePath('/ai-tools');
         revalidatePath('/dashboard/admin/tools');
         return { success: true };

@@ -14,9 +14,12 @@ export type Testimonial = {
 };
 
 let testimonialsCache: Testimonial[] | null = null;
+let cacheTimestamp: number | null = null;
+const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 
 export async function getTestimonials(): Promise<Testimonial[]> {
-    if (testimonialsCache) {
+    const now = Date.now();
+    if (testimonialsCache && cacheTimestamp && (now - cacheTimestamp < CACHE_DURATION_MS)) {
         return testimonialsCache;
     }
 
@@ -32,6 +35,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
 
         const testimonialList = testimonialSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Testimonial));
         testimonialsCache = testimonialList;
+        cacheTimestamp = now;
         return testimonialList;
     } catch (error) {
         console.error("Error fetching testimonials from Firestore:", error);

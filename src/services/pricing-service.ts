@@ -19,9 +19,17 @@ export type PricingPlan = {
 };
 
 let pricingPlansCache: PricingPlan[] | null = null;
+let cacheTimestamp: number | null = null;
+const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+
+function invalidateCache() {
+    pricingPlansCache = null;
+    cacheTimestamp = null;
+}
 
 export async function getPricingPlans(): Promise<PricingPlan[]> {
-    if (pricingPlansCache) {
+    const now = Date.now();
+    if (pricingPlansCache && cacheTimestamp && (now - cacheTimestamp < CACHE_DURATION_MS)) {
         return pricingPlansCache;
     }
 
@@ -38,6 +46,7 @@ export async function getPricingPlans(): Promise<PricingPlan[]> {
 
         const pricingList = pricingSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PricingPlan));
         pricingPlansCache = pricingList;
+        cacheTimestamp = now;
         return pricingList;
     } catch (error) {
         console.error("Error fetching pricing plans from Firestore:", error);
@@ -50,7 +59,7 @@ export async function addPricingPlan(planData: Omit<PricingPlan, 'id'>) {
         const db = getFirestore(app);
         const pricingCol = collection(db, 'pricing');
         const docRef = await addDoc(pricingCol, planData);
-        pricingPlansCache = null; // Invalidate cache
+        invalidateCache();
         revalidatePath('/#pricing');
         revalidatePath('/dashboard/admin/pricing');
         return { success: true, id: docRef.id };
@@ -64,7 +73,7 @@ export async function updatePricingPlan(planId: string, planData: Partial<Omit<P
         const db = getFirestore(app);
         const planRef = doc(db, 'pricing', planId);
         await updateDoc(planRef, planData);
-        pricingPlansCache = null; // Invalidate cache
+        invalidateCache();
         revalidatePath('/#pricing');
         revalidatePath('/dashboard/admin/pricing');
         return { success: true };
@@ -78,7 +87,7 @@ export async function deletePricingPlan(planId: string) {
         const db = getFirestore(app);
         const planRef = doc(db, 'pricing', planId);
         await deleteDoc(planRef);
-        pricingPlansCache = null; // Invalidate cache
+        invalidateCache();
         revalidatePath('/#pricing');
         revalidatePath('/dashboard/admin/pricing');
         return { success: true };
