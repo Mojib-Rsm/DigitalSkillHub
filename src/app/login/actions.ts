@@ -1,6 +1,7 @@
 
 'use server';
 
+import 'dotenv/config';
 import { z } from 'zod';
 import { cookies } from 'next/headers';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore/lite';
