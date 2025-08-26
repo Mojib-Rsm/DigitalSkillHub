@@ -1,6 +1,7 @@
 
 "use server";
 
+import 'dotenv/config';
 import { oneClickWriterSerp } from "@/ai/flows/one-click-writer-serp";
 import { saveHistoryAction } from "@/app/actions/save-history";
 import { getSerpResults, getKeywordData, getRelatedQuestions, type SerpResult, type KeywordData, type RelatedQuestion, getKeywordSuggestions } from '@/services/serp-service';
