@@ -20,11 +20,19 @@ const firebaseConfig = {
 // Initialize Firebase
 let app: FirebaseApp;
 
-if (getApps().length === 0) {
-    app = initializeApp(firebaseConfig);
-} else {
-    app = getApp();
+try {
+    if (getApps().length === 0) {
+        app = initializeApp(firebaseConfig);
+    } else {
+        app = getApp();
+    }
+} catch (error) {
+    console.error("Firebase initialization error:", error);
+    // You might want to throw the error or handle it gracefully
+    // depending on your application's needs.
+    throw new Error("Failed to initialize Firebase. Please check your configuration.");
 }
+
 
 const auth = getAuth(app);
 const db = getFirestore(app);
