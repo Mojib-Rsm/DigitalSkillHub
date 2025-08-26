@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown, ChevronRight, PlayCircle, Settings, File, Wand, ListChecks, RefreshCw, Trash2, GripVertical, FileQuestion, MessageSquare as MessageSquareIcon, ThumbsUp, BrainCircuit, BarChartHorizontal } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown, ChevronRight, PlayCircle, Settings, File, Wand, ListChecks, RefreshCw, Trash2, GripVertical, FileQuestion, MessageSquare as MessageSquareIcon, ThumbsUp, BrainCircuit, BarChartHorizontal, PlusCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -36,6 +36,12 @@ import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
+
+type OutlineItem = {
+  id: number;
+  level: 'H2' | 'H3';
+  text: string;
+};
 
 
 function AnalyzeButton() {
@@ -154,18 +160,7 @@ export default function OneClickWriterSerpForm() {
   const [blogTitle, setBlogTitle] = useState("");
   const [generationProgress, setGenerationProgress] = useState(0);
 
-  const [outlineItems, setOutlineItems] = useState([
-      { id: 1, level: 'H2', text: 'Key Highlights' },
-      { id: 2, level: 'H2', text: 'Introduction' },
-      { id: 3, level: 'H2', text: "Exploring Mojib Rsm's Digital Presence" },
-      { id: 4, level: 'H3', text: "Overview of Mojib Rsm's Background and Creative Work" },
-      { id: 5, level: 'H3', text: "Mojib Rsm's Major Social Media Channels and Online Profiles" },
-      { id: 6, level: 'H2', text: 'The Creative Content of Mojib Rsm on Instagram' },
-      { id: 7, level: 'H3', text: 'Types of Posts and Artistic Themes Featured' },
-      { id: 8, level: 'H3', text: 'Audience Engagement, Collaborations, and Visual Storytelling' },
-      { id: 9, level: 'H2', text: 'Conclusion' },
-      { id: 10, level: 'H2', text: 'Frequently Asked Questions' },
-  ]);
+  const [outlineItems, setOutlineItems] = useState<OutlineItem[]>([]);
 
   useEffect(() => {
     if (article?.article) {
@@ -195,15 +190,12 @@ export default function OneClickWriterSerpForm() {
             setGenerationProgress(prev => {
                 if (prev >= 100) {
                     clearInterval(interval);
-                    // handle completion
-                    setIsGenerating(false); // Stop the progress bar
-                    // The actual article display will be handled by the handleSubmit logic
+                    setIsGenerating(false);
                     return 100;
                 }
-                // Simulate random progress jumps
                 return Math.min(100, prev + Math.random() * 10);
             });
-        }, 300); // update every 300ms
+        }, 300);
     }
     return () => clearInterval(interval);
   }, [isGenerating]);
@@ -240,7 +232,7 @@ export default function OneClickWriterSerpForm() {
       setIssues([]);
 
       const formData = new FormData(event.currentTarget);
-      formData.delete('primaryKeyword'); // remove default from form
+      formData.delete('primaryKeyword');
       formData.append('primaryKeyword', primaryKeyword);
       secondaryKeywords.forEach(kw => formData.append('secondaryKeywords[]', kw));
 
@@ -266,9 +258,35 @@ export default function OneClickWriterSerpForm() {
   }
 
   const handleCreateOutline = () => {
-      // Logic for creating outline will go here
+      // Create a mock outline based on the title
+      const newOutline: OutlineItem[] = [
+          { id: Date.now() + 1, level: 'H2', text: 'Introduction' },
+          { id: Date.now() + 2, level: 'H2', text: `Understanding ${primaryKeyword}` },
+          { id: Date.now() + 3, level: 'H3', text: 'Key Aspect 1' },
+          { id: Date.now() + 4, level: 'H3', text: 'Key Aspect 2' },
+          { id: Date.now() + 5, level: 'H2', text: 'Conclusion' },
+          { id: Date.now() + 6, level: 'H2', text: 'Frequently Asked Questions' },
+      ];
+      setOutlineItems(newOutline);
       setCurrentStep(3);
   }
+  
+  const addOutlineItem = () => {
+      setOutlineItems([...outlineItems, { id: Date.now(), level: 'H2', text: '' }]);
+  }
+  
+  const removeOutlineItem = (id: number) => {
+      setOutlineItems(outlineItems.filter(item => item.id !== id));
+  }
+
+  const handleOutlineTextChange = (id: number, text: string) => {
+      setOutlineItems(outlineItems.map(item => item.id === id ? { ...item, text } : item));
+  }
+
+  const handleOutlineLevelChange = (id: number, level: 'H2' | 'H3') => {
+      setOutlineItems(outlineItems.map(item => item.id === id ? { ...item, level } : item));
+  }
+
 
   const handleGenerateContent = async () => {
       setIsGenerating(true);
@@ -288,7 +306,7 @@ export default function OneClickWriterSerpForm() {
 
       if (result.success && result.data) {
             setArticle(result.data);
-            setCurrentStep(4); // Move to the editor view
+            setCurrentStep(4);
       } else {
           setIssues(result.issues || ["An unknown error occurred."]);
           toast({
@@ -296,6 +314,7 @@ export default function OneClickWriterSerpForm() {
               title: "Error",
               description: result.issues?.join(", ") || "An unknown error occurred.",
           });
+          setIsGenerating(false);
       }
   };
 
@@ -405,26 +424,37 @@ export default function OneClickWriterSerpForm() {
                                      <Label htmlFor="highlight-terms" className="text-sm font-normal">Highlight Key Terms</Label>
                                      <Button size="icon" variant="ghost"><RefreshCw className="w-4 h-4"/></Button>
                                      <Button size="icon" variant="ghost"><Download className="w-4 h-4"/></Button>
-                                     <Button size="icon" variant="ghost"><Trash2 className="w-4 h-4"/></Button>
+                                     <Button size="icon" variant="ghost" onClick={() => setOutlineItems([])}><Trash2 className="w-4 h-4"/></Button>
                                  </div>
                              </CardHeader>
                             <CardContent className="p-4">
                                 <div className="space-y-2">
-                                    {outlineItems.map((item, index) => (
+                                    {outlineItems.map((item) => (
                                         <div key={item.id} className="flex items-center gap-2 p-1 rounded hover:bg-muted/50">
                                             <GripVertical className="cursor-move text-muted-foreground" />
-                                            <Badge variant={item.level === 'H2' ? 'default' : 'secondary'}>{item.level}</Badge>
+                                             <Select value={item.level} onValueChange={(value: 'H2' | 'H3') => handleOutlineLevelChange(item.id, value)}>
+                                                <SelectTrigger className="w-20 h-7 text-xs">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="H2">H2</SelectItem>
+                                                    <SelectItem value="H3">H3</SelectItem>
+                                                </SelectContent>
+                                            </Select>
                                             <Input 
                                                 value={item.text} 
                                                 className="h-7 text-sm border-none focus-visible:ring-1 focus-visible:ring-ring"
-                                                onChange={(e) => {
-                                                    const newItems = [...outlineItems];
-                                                    newItems[index].text = e.target.value;
-                                                    setOutlineItems(newItems);
-                                                }}
+                                                onChange={(e) => handleOutlineTextChange(item.id, e.target.value)}
                                             />
+                                            <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => removeOutlineItem(item.id)}>
+                                                <X className="w-4 h-4 text-muted-foreground" />
+                                            </Button>
                                         </div>
                                     ))}
+                                     <Button type="button" variant="outline" size="sm" className="w-full mt-2" onClick={addOutlineItem}>
+                                        <PlusCircle className="w-4 h-4 mr-2"/>
+                                        Add Outline Item
+                                    </Button>
                                 </div>
                             </CardContent>
                         </Card>
@@ -439,8 +469,8 @@ export default function OneClickWriterSerpForm() {
                         <Button variant="outline" onClick={() => setCurrentStep(2)}>
                             <ArrowLeft className="mr-2"/> Previous
                         </Button>
-                         <Button onClick={handleGenerateContent}>
-                            Generate Content <ChevronRight className="ml-2"/>
+                         <Button onClick={handleGenerateContent} disabled={isGenerating}>
+                             {isGenerating ? <><Sparkles className="mr-2 h-4 w-4 animate-spin"/> Generating...</> : <>Generate Content <ChevronRight className="ml-2"/></>}
                         </Button>
                     </div>
                 </div>
@@ -463,7 +493,7 @@ export default function OneClickWriterSerpForm() {
                                 <Button variant="outline" className="w-full" onClick={() => setCurrentStep(3)}>
                                     <ArrowLeft className="mr-2"/> Previous
                                 </Button>
-                                <Button variant="secondary" className="w-full">
+                                <Button variant="secondary" className="w-full" disabled>
                                     Export to Editor
                                 </Button>
                             </div>
@@ -474,7 +504,7 @@ export default function OneClickWriterSerpForm() {
                             <p className="text-muted-foreground mt-2 max-w-sm">Your personalized article will be ready in just 3-4 minutes.</p>
                             <p className="text-muted-foreground mt-1">We'll notify you via email once it's completed.</p>
                             <p className="text-muted-foreground mt-4">You may go to the dashboard and continue with your work.</p>
-                            <Button className="mt-6">Go to Dashboard <ArrowRight className="ml-2 w-4 h-4"/></Button>
+                            <Button asChild className="mt-6"><Link href="/dashboard">Go to Dashboard <ArrowRight className="ml-2 w-4 h-4"/></Link></Button>
                              <Alert className="mt-8 text-left max-w-md">
                                 <Info className="h-4 w-4" />
                                 <AlertTitle className="font-semibold">Did you know?</AlertTitle>
@@ -525,7 +555,7 @@ export default function OneClickWriterSerpForm() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="p-4 border rounded-lg min-h-[400px]">
+                            <div className="p-4 border rounded-lg min-h-[400px] max-h-[60vh] overflow-y-auto">
                                 <div
                                     className="prose dark:prose-invert max-w-none"
                                     dangerouslySetInnerHTML={{ __html: renderedHtml }}
@@ -553,7 +583,6 @@ export default function OneClickWriterSerpForm() {
                 );
             case 5: // Full Editor View
                 if (!article) {
-                    // This should not happen, but as a fallback
                     return (
                         <div className="p-8 text-center">
                             <p>An error occurred. Please go back and try generating the article again.</p>
@@ -582,7 +611,7 @@ export default function OneClickWriterSerpForm() {
                 </div>
                  <div className="hidden md:flex items-center gap-4">
                     <Stepper currentStep={currentStep} />
-                    <Button variant="link" size="sm" className="hidden md:flex">Skip to Editor <ChevronRight className="w-4 h-4 ml-1"/></Button>
+                    <Button variant="link" size="sm" className="hidden md:flex" onClick={() => setCurrentStep(5)}>Skip to Editor <ChevronRight className="w-4 h-4 ml-1"/></Button>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" size="sm">Cruise Mode <PlayCircle className="w-4 h-4 ml-2"/></Button>
