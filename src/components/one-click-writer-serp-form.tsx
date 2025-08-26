@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown, ChevronRight, PlayCircle, Settings, File, Wand, ListChecks, RefreshCw, Trash2 } from "lucide-react";
+import { Sparkles, Clipboard, Download, FileText, Bot, Info, ExternalLink, Link as LinkIcon, CheckCircle, Tag, ChevronsUpDown, Check, TrendingUp, ImageIcon, Smile, BookOpen, Fingerprint, Share2, Search, BarChart, Users, HelpCircle, Loader, ArrowLeft, Youtube, Briefcase, Eye, X, Filter, ArrowUpDown, ChevronRight, PlayCircle, Settings, File, Wand, ListChecks, RefreshCw, Trash2, GripVertical } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -178,6 +178,14 @@ export default function OneClickWriterSerpForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [blogTitle, setBlogTitle] = useState("");
 
+  const [outlineItems, setOutlineItems] = useState([
+      { id: 1, level: 'H2', text: 'Key Highlights' },
+      { id: 2, level: 'H2', text: 'Introduction' },
+      { id: 3, level: 'H2', text: "Exploring Mojib Rsm's Digital Presence" },
+      { id: 4, level: 'H3', text: "Overview of Mojib Rsm's Background and Creative Work" },
+      { id: 5, level: 'H3', text: "Mojib Rsm's Major Social Media Channels and Online Profiles" },
+      { id: 6, level: 'H2', text: 'The Creative Content of Mojib Rsm on Instagram' },
+  ]);
 
   useEffect(() => {
     if (article?.article) {
@@ -485,61 +493,23 @@ export default function OneClickWriterSerpForm() {
              {currentStep === 3 && (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
                     <div className="lg:col-span-2 space-y-4">
-                        <div className="flex justify-between items-center">
-                            <h2 className="text-2xl font-bold flex items-center gap-2">Build Outline <Info className="w-4 h-4 text-muted-foreground"/></h2>
-                            <div className="flex items-center gap-2">
-                                <Label htmlFor="highlight-key-terms">Highlight Key Terms</Label>
-                                <Switch id="highlight-key-terms"/>
-                            </div>
-                        </div>
-                        <Card>
-                            <CardHeader className="flex-row justify-between items-center">
-                                <div>
-                                    <CardTitle className="text-lg">Title: {blogTitle}</CardTitle>
-                                    <CardDescription>Headings 13/9 - 10 <Info className="w-3 h-3 inline-block"/></CardDescription>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <Button variant="ghost" size="icon"><RefreshCw className="w-4 h-4"/></Button>
-                                    <Button variant="ghost" size="icon"><Download className="w-4 h-4"/></Button>
-                                    <Button variant="ghost" size="icon"><Trash2 className="w-4 h-4"/></Button>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-2 p-4 border rounded-md h-96 overflow-y-auto">
-                                    <div className="flex items-center gap-2 p-2 rounded hover:bg-muted">
-                                        <Badge variant="secondary">H2</Badge>
-                                        <Input defaultValue="Key Highlights" className="h-8 border-none bg-transparent"/>
-                                    </div>
-                                    <div className="flex items-center gap-2 p-2 rounded hover:bg-muted">
-                                        <Badge variant="secondary">H2</Badge>
-                                        <Input defaultValue="Introduction" className="h-8 border-none bg-transparent"/>
-                                    </div>
-                                    <div className="flex items-center gap-2 p-2 rounded hover:bg-muted">
-                                        <Badge variant="secondary">H2</Badge>
-                                        <Input defaultValue="Exploring Mojib Rsm's Digital Presence" className="h-8 border-none bg-transparent"/>
-                                    </div>
-                                    <div className="pl-8 space-y-2">
-                                         <div className="flex items-center gap-2 p-2 rounded hover:bg-muted">
-                                            <Badge>H3</Badge>
-                                            <Input defaultValue="Overview of Mojib Rsm's Background and Creative Work" className="h-8 border-none bg-transparent"/>
+                         <Card>
+                            <CardContent className="p-4">
+                                <div className="space-y-2">
+                                    {outlineItems.map(item => (
+                                        <div key={item.id} className="flex items-center gap-2 p-1 rounded">
+                                            <Badge variant={item.level === 'H2' ? 'secondary' : 'default'} className="cursor-pointer">{item.level}</Badge>
+                                            <p className="text-sm flex-1">{item.text}</p>
                                         </div>
-                                         <div className="flex items-center gap-2 p-2 rounded hover:bg-muted">
-                                            <Badge>H3</Badge>
-                                            <Input defaultValue="Mojib Rsm's Major Social Media Channels and Online Profiles" className="h-8 border-none bg-transparent"/>
-                                        </div>
-                                    </div>
-                                     <div className="flex items-center gap-2 p-2 rounded hover:bg-muted">
-                                        <Badge variant="secondary">H2</Badge>
-                                        <Input defaultValue="The Creative Content of Mojib Rsm on Instagram" className="h-8 border-none bg-transparent"/>
-                                    </div>
+                                    ))}
                                 </div>
                             </CardContent>
                         </Card>
                     </div>
-                     <div className="space-y-6 lg:border-l lg:pl-6 text-center">
-                        <div className="flex flex-col items-center justify-center h-full">
-                             <p className="text-muted-foreground font-semibold">To Explore the Top Ranking Outlines</p>
-                             <Button variant="outline" className="mt-2"><Search className="w-4 h-4 mr-2"/> Click here</Button>
+                     <div className="space-y-6 lg:border-l lg:pl-6">
+                        <div className="flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-muted/50">
+                            <p className="text-muted-foreground font-semibold">To Explore the Top Ranking Outlines</p>
+                            <Button variant="outline" className="mt-2"><Search className="w-4 h-4 mr-2"/> Click here</Button>
                         </div>
                     </div>
                      <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t mt-auto">
@@ -835,3 +805,5 @@ export default function OneClickWriterSerpForm() {
         </Card>
     );
 }
+
+    
