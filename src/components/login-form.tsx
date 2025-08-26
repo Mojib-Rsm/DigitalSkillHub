@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bot, Chrome } from "lucide-react";
-import { signIn } from "@auth/react";
+import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
 function LoginFormContent() {
@@ -22,16 +22,16 @@ function LoginFormContent() {
                         <span className="text-4xl font-bold font-headline">TotthoAi</span>
                     </Link>
                     <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
-                        Welcome Back
+                        Welcome
                     </h1>
                     <p className="text-lg text-muted-foreground mt-3">
-                        Log in to continue your content creation journey.
+                        Sign in or create an account to continue.
                     </p>
                 </div>
 
                 <Card className="shadow-2xl">
                      <CardHeader>
-                        <CardTitle>Login</CardTitle>
+                        <CardTitle>Sign In</CardTitle>
                         <CardDescription>Use your Google account to sign in securely.</CardDescription>
                     </CardHeader>
                     <CardContent className="p-8">
@@ -41,7 +41,7 @@ function LoginFormContent() {
                             type="button" 
                             onClick={() => signIn('google', { callbackUrl })}
                         >
-                            <Chrome className="mr-2" /> Login with Google
+                            <Chrome className="mr-2" /> Sign In with Google
                         </Button>
                     </CardContent>
                 </Card>
