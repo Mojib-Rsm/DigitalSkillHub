@@ -143,6 +143,9 @@ export default function OneClickWriterSerpForm() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [initialOutline, setInitialOutline] = useState("");
+  const outlineRef = useRef<HTMLTextAreaElement>(null);
+
 
   useEffect(() => {
     if (article?.article) {
@@ -204,6 +207,7 @@ export default function OneClickWriterSerpForm() {
 
       if (result.success && result.data) {
         setSerpData(result.data);
+        generateInitialOutline(result.data);
       } else {
         setIssues(result.issues || ["An unknown error occurred."]);
         toast({
@@ -265,7 +269,7 @@ export default function OneClickWriterSerpForm() {
     }
 
     outline += `Conclusion: Summarize the key points about ${primaryKeyword}.`;
-    return outline;
+    setInitialOutline(outline);
   }
 
   const handleCopy = (textToCopy: string) => {
@@ -284,6 +288,13 @@ export default function OneClickWriterSerpForm() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  const handleUseQuestion = (question: string) => {
+      if(outlineRef.current) {
+          outlineRef.current.value += `\n\nH2: ${question}\n - Write a detailed answer for this question.`;
+          toast({ title: "Question added to outline!" });
+      }
   }
 
   // Final Editor View
@@ -359,47 +370,100 @@ export default function OneClickWriterSerpForm() {
                 </div>
             </CardHeader>
             <CardContent>
-                <form onSubmit={handleGeneration} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                             <Label htmlFor="title">Article Title</Label>
-                             <Input id="title" name="title" defaultValue={primaryKeyword} required />
-                        </div>
-                        <div className="space-y-2">
-                             <Label htmlFor="purpose">Purpose of Article</Label>
-                             <Input id="purpose" name="purpose" placeholder="e.g., Informational, Commercial, Review" required />
-                        </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2 space-y-6">
+                        <form onSubmit={handleGeneration} className="space-y-6">
+                             <Card>
+                                <CardHeader>
+                                    <CardTitle>Content Settings</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="title">Article Title</Label>
+                                            <Input id="title" name="title" defaultValue={primaryKeyword} required />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="purpose">Purpose of Article</Label>
+                                            <Input id="purpose" name="purpose" placeholder="e.g., Informational, Commercial, Review" required />
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="tone">Tone of Voice</Label>
+                                            <Input id="tone" name="tone" placeholder="e.g., Formal, Casual, Humorous" required />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="audience">Target Audience</Label>
+                                            <Input id="audience" name="audience" placeholder="e.g., Beginners, Experts, Students" required />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="customSource">Custom Source / URL (Optional)</Label>
+                                        <Input id="customSource" name="customSource" placeholder="Enter a URL to include as a primary source" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Content Brief / Outline</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                     <Textarea ref={outlineRef} id="outline" name="outline" rows={15} defaultValue={initialOutline} required/>
+                                </CardContent>
+                            </Card>
+                            
+                            {issues.length > 0 && (
+                                <Alert variant="destructive">
+                                    <AlertTitle>Error</AlertTitle>
+                                    <AlertDescription>
+                                        <ul className="list-disc pl-5">
+                                            {issues.map((issue, i) => <li key={i}>{issue}</li>)}
+                                        </ul>
+                                    </AlertDescription>
+                                </Alert>
+                            )}
+                            <GenerateArticleButton/>
+                        </form>
                     </div>
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                             <Label htmlFor="tone">Tone of Voice</Label>
-                             <Input id="tone" name="tone" placeholder="e.g., Formal, Casual, Humorous" required />
-                        </div>
-                        <div className="space-y-2">
-                             <Label htmlFor="audience">Target Audience</Label>
-                             <Input id="audience" name="audience" placeholder="e.g., Beginners, Experts, Students" required />
-                        </div>
-                    </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="outline">Content Brief / Outline</Label>
-                        <Textarea id="outline" name="outline" rows={15} defaultValue={generateInitialOutline(serpData)} required/>
-                    </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="customSource">Custom Source / URL (Optional)</Label>
-                        <Input id="customSource" name="customSource" placeholder="Enter a URL to include as a primary source" />
-                    </div>
-                     {issues.length > 0 && (
-                        <Alert variant="destructive">
-                            <AlertTitle>Error</AlertTitle>
-                            <AlertDescription>
-                                <ul className="list-disc pl-5">
-                                    {issues.map((issue, i) => <li key={i}>{issue}</li>)}
-                                </ul>
-                            </AlertDescription>
-                        </Alert>
-                    )}
-                    <GenerateArticleButton/>
-                </form>
+                     <div className="space-y-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base flex items-center gap-2"><BarChart className="w-4 h-4"/> Top 10 SERP Results</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                 <ScrollArea className="h-64">
+                                    <div className="space-y-3">
+                                    {serpData.serpResults.map((result, i) => (
+                                        <div key={i}>
+                                            <a href={result.link} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary hover:underline">{result.title}</a>
+                                            <p className="text-xs text-muted-foreground">{result.snippet}</p>
+                                        </div>
+                                    ))}
+                                    </div>
+                                </ScrollArea>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base flex items-center gap-2"><HelpCircle className="w-4 h-4"/> Related Questions</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ScrollArea className="h-48">
+                                    <div className="space-y-3">
+                                    {serpData.relatedQuestions.map((q, i) => (
+                                        <div key={i} className="flex items-start gap-2">
+                                            <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => handleUseQuestion(q.question)}><PlusCircle className="w-4 h-4"/></Button>
+                                            <p className="text-sm text-muted-foreground">{q.question}</p>
+                                        </div>
+                                    ))}
+                                    </div>
+                                </ScrollArea>
+                            </CardContent>
+                        </Card>
+                     </div>
+                </div>
             </CardContent>
          </Card>
     )
