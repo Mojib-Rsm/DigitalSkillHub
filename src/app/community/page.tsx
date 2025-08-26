@@ -5,11 +5,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Briefcase, DollarSign, PlusCircle, UserCheck } from "lucide-react";
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
-import { app } from "@/lib/firebase";
+import { jobPostings as staticJobPostings } from "@/lib/demo-data"; // Import static data
 
 type JobPosting = {
-    id: string;
+    id?: string; // ID might not be present
     title: string;
     client: string;
     avatar: string;
@@ -19,16 +18,8 @@ type JobPosting = {
 };
 
 async function getJobPostings(): Promise<JobPosting[]> {
-  try {
-    const db = getFirestore(app);
-    const jobsCol = collection(db, 'jobs');
-    const jobSnapshot = await getDocs(jobsCol);
-    const jobList = jobSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as JobPosting));
-    return jobList;
-  } catch (error) {
-    console.error("Error fetching job postings from Firestore:", error);
-    return [];
-  }
+  // Return static data
+  return staticJobPostings;
 }
 
 export default async function CommunityPage() {
@@ -50,8 +41,8 @@ export default async function CommunityPage() {
       </div>
 
       <div className="space-y-4">
-        {jobPostings.map((job) => (
-          <Card key={job.id} className="hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md">
+        {jobPostings.map((job, index) => (
+          <Card key={job.title + index} className="hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md">
             <CardContent className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4 flex-1">
                 <Avatar className="h-12 w-12">

@@ -6,11 +6,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { getFirestore, collection, getDocs, orderBy, query } from 'firebase/firestore/lite';
-import { app } from "@/lib/firebase";
+import { blogPosts as staticBlogPosts } from "@/lib/demo-data"; // Import static data
 
 type BlogPost = {
-  id: string;
+  id?: string; // ID might not be present for static data
   title: string;
   category: string;
   image: string;
@@ -21,22 +20,14 @@ type BlogPost = {
 };
 
 async function getBlogPosts(): Promise<BlogPost[]> {
-  try {
-    const db = getFirestore(app);
-    const blogCol = collection(db, 'blog');
-    const q = query(blogCol, orderBy('date', 'desc'));
-    const blogSnapshot = await getDocs(q);
-    const blogList = blogSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as BlogPost));
-    return blogList;
-  } catch (error) {
-    console.error("Error fetching blog posts from Firestore:", error);
-    return [];
-  }
+  // Return the static data directly
+  return staticBlogPosts;
 }
 
 
 export default async function BlogPage() {
   const blogPosts = await getBlogPosts();
+  const pageId = "blog";
 
   const blogPostingSchema = {
     "@context": "https://schema.org",
@@ -47,7 +38,7 @@ export default async function BlogPage() {
         "@type": "BlogPosting",
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": `https://totthoai.mojib.me/blog/${post.id}` // Assuming a slug/id structure for blog posts
+            "@id": `https://totthoai.mojib.me/blog/${pageId}` // Use a generic or post-specific ID/slug
         },
         "headline": post.title,
         "image": post.image,
@@ -82,8 +73,8 @@ export default async function BlogPage() {
         </p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {blogPosts.map((post) => (
-          <Card key={post.id} className="flex flex-col overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+        {blogPosts.map((post, index) => (
+          <Card key={post.title + index} className="flex flex-col overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
             <CardHeader className="p-0">
               <Image
                 src={post.image}

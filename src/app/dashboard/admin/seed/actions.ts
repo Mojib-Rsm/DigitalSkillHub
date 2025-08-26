@@ -4,11 +4,10 @@
 import { 
     getFirestore, 
     collection, 
-    addDoc, 
     writeBatch, 
     getDocs,
     query,
-    doc, // Import the 'doc' function
+    doc,
 } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
 import { getCurrentUser } from '@/services/user-service';
@@ -31,6 +30,7 @@ export async function seedDatabaseAction() {
     const db = getFirestore(app);
 
     try {
+        // We now use static data, so we can define the collections directly
         const collectionsToSeed = [
             { name: 'tools', data: tools, uniqueKey: 'href' },
             { name: 'courses', data: allCourses, uniqueKey: 'title' },
@@ -46,29 +46,30 @@ export async function seedDatabaseAction() {
 
         for (const { name, data, uniqueKey } of collectionsToSeed) {
             const collectionRef = collection(db, name);
+            // This is the critical part: we perform a read operation here.
+            // With the new architecture, this should only be done by an admin from the dashboard,
+            // and the daily quota should be sufficient for these occasional operations.
             const snapshot = await getDocs(query(collectionRef));
             
             if (snapshot.empty) {
-                 // Collection is empty, seed all data
+                // Collection is empty, seed all data
                 const batch = writeBatch(db);
                 data.forEach(item => {
-                    const { id, ...itemData } = item as any; // Exclude the id field
                     const docRef = doc(collectionRef); 
-                    batch.set(docRef, itemData);
+                    batch.set(docRef, item); // Store the whole object including ID if it exists
                     documentsWritten++;
                 });
                 await batch.commit();
             } else {
-                 // Collection exists, check for missing items
-                 const existingItems = new Set(snapshot.docs.map(doc => doc.data()[uniqueKey]));
+                 // Collection exists, check for missing items to avoid duplicates
+                 const existingItems = new Set(snapshot.docs.map(doc => (doc.data() as any)[uniqueKey]));
                  const batch = writeBatch(db);
                  let itemsAddedToBatch = 0;
                  
                  data.forEach(item => {
                      if (!existingItems.has((item as any)[uniqueKey])) {
-                         const { id, ...itemData } = item as any; // Exclude the id field
                          const docRef = doc(collectionRef);
-                         batch.set(docRef, itemData);
+                         batch.set(docRef, item);
                          documentsWritten++;
                          itemsAddedToBatch++;
                      }
