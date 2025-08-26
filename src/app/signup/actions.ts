@@ -1,7 +1,6 @@
 
 'use server';
 
-import 'dotenv/config';
 import { z } from 'zod';
 import { getFirestore, collection, addDoc, query, where, getDocs } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
