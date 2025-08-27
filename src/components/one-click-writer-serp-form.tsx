@@ -258,6 +258,30 @@ export default function OneClickWriterSerpForm() {
       }
       setIsAnalyzing(false);
   }
+  
+  const handleResume = async (keyword: string, geo: string) => {
+        // This is a simplified resume. A real app would fetch the saved state.
+        const formData = new FormData();
+        formData.append('primaryKeyword', keyword);
+        formData.append('targetCountry', geo);
+        
+        // Mocking an event object for handleAnalysis
+        const mockEvent = {
+            preventDefault: () => {},
+            currentTarget: {
+                ...document.createElement('form'),
+                ...{
+                    elements: {
+                        primaryKeyword: { value: keyword },
+                        targetCountry: { value: geo }
+                    }
+                }
+            },
+            target: new EventTarget()
+        } as unknown as React.FormEvent<HTMLFormElement>;
+        
+        await handleAnalysis(mockEvent);
+    }
 
   const handleCreateOutline = () => {
       // Create a mock outline based on the title
@@ -777,7 +801,7 @@ export default function OneClickWriterSerpForm() {
                         </TableHeader>
                         <TableBody>
                             {isAnalyzing && <AnalysisProgressRow />}
-                            <TableRow>
+                            <TableRow onClick={() => handleResume("bangladesh politics", "Bangladesh")} className="cursor-pointer">
                                 <TableCell className="font-medium">
                                     <p>bangladesh politics</p>
                                     <Badge variant="secondary">Bangladesh</Badge>
@@ -814,3 +838,4 @@ export default function OneClickWriterSerpForm() {
         </Card>
     );
 }
+
