@@ -141,7 +141,11 @@ const HighlightedText = ({ text, highlight }: { text: string; highlight: string[
     if (!highlight || highlight.length === 0 || !text) {
         return <>{text}</>;
     }
-    const regex = new RegExp(`(${highlight.join('|')})`, 'gi');
+    const safeHighlights = highlight.map(h => h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).filter(Boolean);
+    if (safeHighlights.length === 0) {
+        return <>{text}</>;
+    }
+    const regex = new RegExp(`(${safeHighlights.join('|')})`, 'gi');
     const parts = text.split(regex);
     return (
         <>
@@ -158,14 +162,32 @@ const HighlightedText = ({ text, highlight }: { text: string; highlight: string[
     );
 };
 
-const initialOutline = (keyword: string): OutlineItem[] => [
-    { id: Date.now() + 1, level: 'H2', text: 'Introduction' },
-    { id: Date.now() + 2, level: 'H2', text: `Understanding ${keyword}` },
-    { id: Date.now() + 3, level: 'H3', text: 'Key Aspect 1' },
-    { id: Date.now() + 4, level: 'H3', text: 'Key Aspect 2' },
-    { id: Date.now() + 5, level: 'H2', text: 'Conclusion' },
-    { id: Date.now() + 6, level: 'H2', text: 'Frequently Asked Questions' },
-];
+const initialOutline = (keyword: string, serpData: SerpAnalysisResult | null): OutlineItem[] => {
+    const outline: OutlineItem[] = [{ id: Date.now() + 1, level: 'H2', text: 'Introduction' }];
+    
+    if (serpData && serpData.serpResults.length > 0) {
+        // Add a section based on top results
+        const topTitles = serpData.serpResults.slice(0,3).map(r => r.title);
+        outline.push({ id: Date.now() + 2, level: 'H2', text: `Key Aspects of ${keyword}` });
+        topTitles.forEach((title, index) => {
+             outline.push({ id: Date.now() + 3 + index, level: 'H3', text: title });
+        })
+    } else {
+        outline.push({ id: Date.now() + 2, level: 'H2', text: `Understanding ${keyword}` });
+        outline.push({ id: Date.now() + 3, level: 'H3', text: 'Key Aspect 1' });
+        outline.push({ id: Date.now() + 4, level: 'H3', text: 'Key Aspect 2' });
+    }
+
+    outline.push({ id: Date.now() + 100, level: 'H2', text: 'Conclusion' });
+    if (serpData && serpData.relatedQuestions.length > 0) {
+        outline.push({ id: Date.now() + 101, level: 'H2', text: 'Frequently Asked Questions' });
+        serpData.relatedQuestions.slice(0,3).forEach((q, index) => {
+            outline.push({ id: Date.now() + 102 + index, level: 'H3', text: q.question });
+        })
+    }
+
+    return outline;
+};
 
 export default function OneClickWriterSerpForm() {
   const { toast } = useToast();
@@ -345,7 +367,7 @@ export default function OneClickWriterSerpForm() {
     }
 
   const handleCreateOutline = () => {
-      setOutlineItems(initialOutline(primaryKeyword));
+      setOutlineItems(initialOutline(primaryKeyword, serpData));
       setCurrentStep(3);
   }
   
@@ -366,11 +388,13 @@ export default function OneClickWriterSerpForm() {
   }
   
   const handleRefreshOutline = () => {
-      setOutlineItems(initialOutline(primaryKeyword));
+      setOutlineItems(initialOutline(primaryKeyword, serpData));
+      toast({title: "Outline Refreshed!"});
   }
   
   const handleDeleteOutline = () => {
       setOutlineItems([]);
+      toast({title: "Outline Cleared!"});
   }
 
   const handleDownloadOutline = () => {
@@ -578,13 +602,14 @@ export default function OneClickWriterSerpForm() {
                                                     <SelectItem value="H3">H3</SelectItem>
                                                 </SelectContent>
                                             </Select>
+                                            <div className="flex-1 h-7 text-sm border rounded-md px-3 py-1 bg-background focus-within:ring-1 focus-within:ring-ring">
+                                                <HighlightedText text={item.text} highlight={highlightTerms ? [primaryKeyword, ...secondaryKeywords] : []} />
+                                            </div>
                                             <Input 
                                                 value={item.text} 
-                                                className="h-7 text-sm border-none focus-visible:ring-1 focus-visible:ring-ring"
+                                                className="hidden"
                                                 onChange={(e) => handleOutlineTextChange(item.id, e.target.value)}
-                                            >
-                                                 {highlightTerms ? <HighlightedText text={item.text} highlight={[primaryKeyword, ...secondaryKeywords]}/> : item.text}
-                                            </Input>
+                                            />
                                             <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => removeOutlineItem(item.id)}>
                                                 <X className="w-4 h-4 text-muted-foreground" />
                                             </Button>
@@ -961,4 +986,3 @@ export default function OneClickWriterSerpForm() {
         </Card>
     );
 }
-
