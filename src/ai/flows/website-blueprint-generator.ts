@@ -18,7 +18,6 @@ const WebsiteBlueprintInputSchema = z.object({
   coreFeatures: z.array(z.string()).describe('A list of must-have features.'),
   briefDescription: z.string().describe('A brief one-sentence description of the website idea.'),
   language: z.enum(['Bengali', 'English']).describe('The language for the blueprint output.'),
-  country: z.string().describe('The country for which the website is targeted. This can influence suggestions.'),
 });
 export type WebsiteBlueprintInput = z.infer<typeof WebsiteBlueprintInputSchema>;
 
@@ -51,7 +50,6 @@ User's Idea:
 - Target Audience: {{{targetAudience}}}
 - Core Features: {{#each coreFeatures}}{{{this}}}{{#unless @last}}, {{/unless}}{{/each}}
 - Brief Description: {{{briefDescription}}}
-- Country of Target: {{{country}}}
 - Desired Language for Blueprint: {{{language}}}
 
 Based on this information, generate a comprehensive website blueprint in the requested language ({{{language}}}). Be creative but practical.

@@ -66,8 +66,6 @@ export default function WebsiteBlueprintGeneratorForm() {
 
   const [websiteType, setWebsiteType] = useState(initialState.fields?.websiteType || "");
   const [targetAudience, setTargetAudience] = useState(initialState.fields?.targetAudience || "");
-  const [country, setCountry] = useState(initialState.fields?.country || "");
-  const [countrySelectOpen, setCountrySelectOpen] = useState(false);
 
   useEffect(() => {
     if (state.message && state.message !== "success" && state.message !== "Validation Error") {
@@ -155,67 +153,19 @@ export default function WebsiteBlueprintGeneratorForm() {
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>ভাষা নির্বাচন করুন</Label>
-                <Select name="language" defaultValue="Bengali">
-                    <SelectTrigger>
-                        <SelectValue placeholder="ভাষা নির্বাচন করুন" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="Bengali">বাংলা</SelectItem>
-                        <SelectItem value="English">English</SelectItem>
-                    </SelectContent>
-                </Select>
-                 {state.issues?.filter(i => i.toLowerCase().includes("language")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="country">দেশ নির্বাচন করুন</Label>
-                <input type="hidden" name="country" value={country} />
-                    <Popover open={countrySelectOpen} onOpenChange={setCountrySelectOpen}>
-                        <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={countrySelectOpen}
-                            className="w-full justify-between font-normal"
-                        >
-                            {country
-                            ? countries.find((c) => c.value === country)?.label
-                            : "দেশ নির্বাচন করুন..."}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
-                        <Command>
-                            <CommandInput placeholder="দেশ খুঁজুন..." />
-                            <CommandEmpty>কোনো দেশ পাওয়া যায়নি।</CommandEmpty>
-                            <CommandGroup className="max-h-64 overflow-y-auto">
-                            {countries.map((c) => (
-                                <CommandItem
-                                key={c.value}
-                                value={c.value}
-                                onSelect={(currentValue) => {
-                                    setCountry(currentValue === country ? "" : currentValue)
-                                    setCountrySelectOpen(false)
-                                }}
-                                >
-                                <Check
-                                    className={cn(
-                                    "mr-2 h-4 w-4",
-                                    country === c.value ? "opacity-100" : "opacity-0"
-                                    )}
-                                />
-                                {c.label}
-                                </CommandItem>
-                            ))}
-                            </CommandGroup>
-                        </Command>
-                        </PopoverContent>
-                    </Popover>
-                 {state.issues?.filter(i => i.toLowerCase().includes("country")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
-              </div>
-          </div>
+            <div className="space-y-2">
+            <Label>ভাষা নির্বাচন করুন</Label>
+            <Select name="language" defaultValue="Bengali">
+                <SelectTrigger>
+                    <SelectValue placeholder="ভাষা নির্বাচন করুন" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="Bengali">বাংলা</SelectItem>
+                    <SelectItem value="English">English</SelectItem>
+                </SelectContent>
+            </Select>
+                {state.issues?.filter(i => i.toLowerCase().includes("language")).map((issue) => <p key={issue} className="text-sm font-medium text-destructive">{issue}</p>)}
+            </div>
           <div className="space-y-2">
                 <Label htmlFor="websiteType">ওয়েবসাইটের ধরন</Label>
                 <Select name="websiteType" value={websiteType} onValueChange={setWebsiteType}>

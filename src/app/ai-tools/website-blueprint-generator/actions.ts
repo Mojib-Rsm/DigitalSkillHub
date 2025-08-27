@@ -13,7 +13,6 @@ const WebsiteBlueprintActionSchema = z.object({
   coreFeatures: z.array(z.string()).min(1, { message: "Please select at least one core feature." }),
   briefDescription: z.string().min(10, { message: "Please describe your idea in at least 10 characters." }),
   language: z.enum(['Bengali', 'English']),
-  country: z.string().min(1, { message: "Please select a country." }),
 }).refine(data => {
     if (data.websiteType === 'Other' && (!data.otherWebsiteType || data.otherWebsiteType.length < 3)) {
         return false;
@@ -51,7 +50,6 @@ export async function generateBlueprintAction(
     coreFeatures: formData.getAll("coreFeatures"),
     briefDescription: formData.get("briefDescription"),
     language: formData.get("language"),
-    country: formData.get("country"),
   });
 
   if (!validatedFields.success) {
@@ -67,7 +65,6 @@ export async function generateBlueprintAction(
         coreFeatures: formData.getAll("coreFeatures"),
         briefDescription: formData.get("briefDescription"),
         language: formData.get("language"),
-        country: formData.get("country"),
       }
     };
   }
@@ -76,7 +73,7 @@ export async function generateBlueprintAction(
     const { 
         websiteType, otherWebsiteType, 
         targetAudience, otherTargetAudience, 
-        language, country,
+        language,
         ...rest 
     } = validatedFields.data;
 
@@ -85,7 +82,6 @@ export async function generateBlueprintAction(
         websiteType: websiteType === 'Other' ? otherWebsiteType! : websiteType,
         targetAudience: targetAudience === 'Other' ? otherTargetAudience! : targetAudience,
         language,
-        country
     };
 
     const result = await websiteBlueprintGenerator(finalData);
