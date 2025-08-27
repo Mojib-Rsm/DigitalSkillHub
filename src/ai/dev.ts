@@ -47,3 +47,4 @@ import '@/ai/flows/contact-support.ts';
 import '@/ai/flows/disclaimer-generator.ts';
 import '@/ai/flows/privacy-policy-generator.ts';
 import '@/ai/flows/terms-of-service-generator.ts';
+import '@/ai/flows/ai-title-generator.ts';

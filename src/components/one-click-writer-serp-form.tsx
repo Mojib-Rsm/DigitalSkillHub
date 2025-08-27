@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useFormStatus } from "react-dom";
-import { getSerpAnalysisAction, generateArticleFromSerpAction, getKeywordSuggestionsAction } from "@/app/ai-tools/one-click-writer-serp/actions";
+import { getSerpAnalysisAction, generateArticleFromSerpAction, getKeywordSuggestionsAction, generateTitlesAction } from "@/app/ai-tools/one-click-writer-serp/actions";
 import type { SerpAnalysisResult } from "@/app/ai-tools/one-click-writer-serp/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
@@ -143,6 +143,8 @@ export default function OneClickWriterSerpForm() {
   const [issues, setIssues] = useState<string[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingTitles, setIsGeneratingTitles] = useState(false);
+  const [generatedTitles, setGeneratedTitles] = useState<string[]>([]);
   const [serpData, setSerpData] = useState<SerpAnalysisResult | null>(null);
   const [country, setCountry] = useState("Bangladesh");
   const [countrySelectOpen, setCountrySelectOpen] = useState(false);
@@ -284,6 +286,22 @@ export default function OneClickWriterSerpForm() {
         await handleAnalysis(mockEvent);
     }
 
+    const handleGenerateTitles = async () => {
+        setIsGeneratingTitles(true);
+        setGeneratedTitles([]);
+        const result = await generateTitlesAction({ primaryKeyword, targetCountry: country });
+        if (result.success && result.data) {
+            setGeneratedTitles(result.data.titles);
+        } else {
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: result.issues?.join(", ") || "Failed to generate titles.",
+            });
+        }
+        setIsGeneratingTitles(false);
+    }
+
   const handleCreateOutline = () => {
       // Create a mock outline based on the title
       const newOutline: OutlineItem[] = [
@@ -409,7 +427,28 @@ export default function OneClickWriterSerpForm() {
                                 <TabsTrigger value="top-ranked">Top Ranked</TabsTrigger>
                             </TabsList>
                             <TabsContent value="ai-generated">
-                                <p className="p-4 text-center text-muted-foreground">AI title generation coming soon.</p>
+                                <div className="p-4 space-y-4">
+                                     <Button className="w-full" onClick={handleGenerateTitles} disabled={isGeneratingTitles}>
+                                        {isGeneratingTitles ? <Sparkles className="w-4 h-4 mr-2 animate-spin"/> : <Wand className="w-4 h-4 mr-2"/>}
+                                        Generate Titles
+                                    </Button>
+                                    {isGeneratingTitles && <p className="text-center text-sm text-muted-foreground">Generating...</p>}
+                                    {generatedTitles.length > 0 && (
+                                        <ScrollArea className="h-64">
+                                            <div className="space-y-2">
+                                                {generatedTitles.map((title, i) => (
+                                                     <button 
+                                                        key={i} 
+                                                        className="w-full text-left p-3 rounded-md hover:bg-muted"
+                                                        onClick={() => setBlogTitle(title)}
+                                                    >
+                                                        <p className="text-sm">{title}</p>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </ScrollArea>
+                                    )}
+                                </div>
                             </TabsContent>
                             <TabsContent value="top-ranked">
                                 <ScrollArea className="h-72">

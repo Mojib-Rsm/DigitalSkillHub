@@ -8,6 +8,7 @@ import { getSerpResults, getKeywordData, getRelatedQuestions, type SerpResult, t
 import type { OneClickWriterOutput } from "@/ai/flows/one-click-writer";
 import { OneClickWriterSerpInputSchema, type OneClickWriterSerpInput } from "@/ai/schema/one-click-writer-serp";
 import { z } from "zod";
+import { aiTitleGenerator, AiTitleGeneratorOutput } from '@/ai/flows/ai-title-generator';
 
 
 const SerpAnalysisInputSchema = z.object({
@@ -138,4 +139,16 @@ export async function generateArticleFromSerpAction(
       issues: ["An unexpected error occurred. Please try again."],
     };
   }
+}
+
+export async function generateTitlesAction(input: {primaryKeyword: string, targetCountry: string}): Promise<{ success: boolean, data?: AiTitleGeneratorOutput, issues?: string[]}> {
+    try {
+        const result = await aiTitleGenerator(input);
+        if (result && result.titles) {
+            return { success: true, data: result };
+        }
+        return { success: false, issues: ["Failed to generate titles."] };
+    } catch(e) {
+        return { success: false, issues: [(e as Error).message] };
+    }
 }
