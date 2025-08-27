@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
@@ -137,6 +136,35 @@ const ProgressCircle = ({ progress }: { progress: number }) => {
     );
 };
 
+const HighlightedText = ({ text, highlight }: { text: string; highlight: string[] }) => {
+    if (!highlight || highlight.length === 0 || !text) {
+        return <>{text}</>;
+    }
+    const regex = new RegExp(`(${highlight.join('|')})`, 'gi');
+    const parts = text.split(regex);
+    return (
+        <>
+            {parts.map((part, i) =>
+                regex.test(part) ? (
+                    <mark key={i} className="bg-primary/20 text-primary-foreground rounded px-1">
+                        {part}
+                    </mark>
+                ) : (
+                    <span key={i}>{part}</span>
+                )
+            )}
+        </>
+    );
+};
+
+const initialOutline = (keyword: string): OutlineItem[] => [
+    { id: Date.now() + 1, level: 'H2', text: 'Introduction' },
+    { id: Date.now() + 2, level: 'H2', text: `Understanding ${keyword}` },
+    { id: Date.now() + 3, level: 'H3', text: 'Key Aspect 1' },
+    { id: Date.now() + 4, level: 'H3', text: 'Key Aspect 2' },
+    { id: Date.now() + 5, level: 'H2', text: 'Conclusion' },
+    { id: Date.now() + 6, level: 'H2', text: 'Frequently Asked Questions' },
+];
 
 export default function OneClickWriterSerpForm() {
   const { toast } = useToast();
@@ -164,8 +192,7 @@ export default function OneClickWriterSerpForm() {
   const [generationProgress, setGenerationProgress] = useState(0);
 
   const [outlineItems, setOutlineItems] = useState<OutlineItem[]>([]);
-  const [showRankedOutlines, setShowRankedOutlines] = useState(false);
-
+  const [highlightTerms, setHighlightTerms] = useState(false);
 
   useEffect(() => {
     if (article?.article) {
@@ -220,7 +247,7 @@ export default function OneClickWriterSerpForm() {
       if ((e.key === 'Enter' || e.key === ',') && e.currentTarget.value.trim()) {
           e.preventDefault();
           const newKeywords = e.currentTarget.value.split(',').map(k => k.trim()).filter(Boolean);
-          setSecondaryKeywords([...secondaryKeywords, ...newKeywords]);
+          setSecondaryKeywords([...new Set([...secondaryKeywords, ...newKeywords])]);
           e.currentTarget.value = "";
       }
   }
@@ -262,28 +289,18 @@ export default function OneClickWriterSerpForm() {
       setIsAnalyzing(false);
   }
   
-  const handleResume = async (keyword: string, geo: string) => {
-        // This is a simplified resume. A real app would fetch the saved state.
+    const handleResume = async (keyword: string, geo: string) => {
+        setPrimaryKeyword(keyword);
+        setCountry(geo);
+
         const formData = new FormData();
         formData.append('primaryKeyword', keyword);
         formData.append('targetCountry', geo);
         
-        // Mocking an event object for handleAnalysis
-        const mockEvent = {
+        await handleAnalysis({
             preventDefault: () => {},
-            currentTarget: {
-                ...document.createElement('form'),
-                ...{
-                    elements: {
-                        primaryKeyword: { value: keyword },
-                        targetCountry: { value: geo }
-                    }
-                }
-            },
-            target: new EventTarget()
-        } as unknown as React.FormEvent<HTMLFormElement>;
-        
-        await handleAnalysis(mockEvent);
+            currentTarget: formData,
+        } as unknown as React.FormEvent<HTMLFormElement>);
     }
 
     const handleGenerateTitles = async () => {
@@ -303,21 +320,12 @@ export default function OneClickWriterSerpForm() {
     }
 
   const handleCreateOutline = () => {
-      // Create a mock outline based on the title
-      const newOutline: OutlineItem[] = [
-          { id: Date.now() + 1, level: 'H2', text: 'Introduction' },
-          { id: Date.now() + 2, level: 'H2', text: `Understanding ${primaryKeyword}` },
-          { id: Date.now() + 3, level: 'H3', text: 'Key Aspect 1' },
-          { id: Date.now() + 4, level: 'H3', text: 'Key Aspect 2' },
-          { id: Date.now() + 5, level: 'H2', text: 'Conclusion' },
-          { id: Date.now() + 6, level: 'H2', text: 'Frequently Asked Questions' },
-      ];
-      setOutlineItems(newOutline);
+      setOutlineItems(initialOutline(primaryKeyword));
       setCurrentStep(3);
   }
   
-  const addOutlineItem = () => {
-      setOutlineItems([...outlineItems, { id: Date.now(), level: 'H2', text: '' }]);
+  const addOutlineItem = (level: 'H2' | 'H3', text: string = '') => {
+      setOutlineItems([...outlineItems, { id: Date.now(), level, text }]);
   }
   
   const removeOutlineItem = (id: number) => {
@@ -331,6 +339,30 @@ export default function OneClickWriterSerpForm() {
   const handleOutlineLevelChange = (id: number, level: 'H2' | 'H3') => {
       setOutlineItems(outlineItems.map(item => item.id === id ? { ...item, level } : item));
   }
+  
+  const handleRefreshOutline = () => {
+      setOutlineItems(initialOutline(primaryKeyword));
+  }
+  
+  const handleDeleteOutline = () => {
+      setOutlineItems([]);
+  }
+
+  const handleDownloadOutline = () => {
+      const content = outlineItems.map(item => `${'#'.repeat(parseInt(item.level.substring(1)))} ${item.text}`).join('\n');
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${blogTitle.replace(/\s+/g, '_')}_outline.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  }
+
+  const addQuestionToOutline = (question: string) => {
+      addOutlineItem('H3', question);
+      toast({title: "Question added to outline!"})
+  }
 
 
   const handleGenerateContent = async () => {
@@ -340,11 +372,12 @@ export default function OneClickWriterSerpForm() {
       const input = {
         title: blogTitle,
         primaryKeyword: primaryKeyword,
+        secondaryKeywords: secondaryKeywords,
         targetCountry: country,
         tone: "Friendly",
         audience: "General",
         purpose: "Informational",
-        outline: outlineItems.map(item => `${"#".repeat(parseInt(item.level.substring(1)))} ${item.text}`).join('\n'),
+        outline: outlineItems.map(item => `${'#'.repeat(parseInt(item.level.substring(1)))} ${item.text}`).join('\n'),
       };
       
       const result = await generateArticleFromSerpAction(input);
@@ -366,6 +399,19 @@ export default function OneClickWriterSerpForm() {
   const handleExportToEditor = () => {
       setCurrentStep(5);
   };
+  
+  const serpStats = React.useMemo(() => {
+    if (!serpData || serpData.serpResults.length === 0) {
+        return { avgWordCount: 0, avgHeadings: 0, avgImages: 0 };
+    }
+    const wordCounts = serpData.serpResults.map(r => r.snippet.split(' ').length);
+    // These are just estimations for demo purposes
+    const avgWordCount = Math.round(wordCounts.reduce((a, b) => a + b, 0) / wordCounts.length * 8); 
+    const avgHeadings = Math.round(avgWordCount / 150);
+    const avgImages = Math.round(avgWordCount / 300);
+
+    return { avgWordCount, avgHeadings, avgImages };
+  }, [serpData]);
 
 
   const AnalysisProgressRow = () => (
@@ -486,11 +532,11 @@ export default function OneClickWriterSerpForm() {
                              <CardHeader className="flex flex-row justify-between items-center">
                                  <CardTitle className="text-lg">Outline Editor</CardTitle>
                                  <div className="flex items-center gap-2">
-                                     <Switch id="highlight-terms" />
+                                     <Switch id="highlight-terms" checked={highlightTerms} onCheckedChange={setHighlightTerms}/>
                                      <Label htmlFor="highlight-terms" className="text-sm font-normal">Highlight Key Terms</Label>
-                                     <Button size="icon" variant="ghost"><RefreshCw className="w-4 h-4"/></Button>
-                                     <Button size="icon" variant="ghost"><Download className="w-4 h-4"/></Button>
-                                     <Button size="icon" variant="ghost" onClick={() => setOutlineItems([])}><Trash2 className="w-4 h-4"/></Button>
+                                     <Button size="icon" variant="ghost" onClick={handleRefreshOutline}><RefreshCw className="w-4 h-4"/></Button>
+                                     <Button size="icon" variant="ghost" onClick={handleDownloadOutline}><Download className="w-4 h-4"/></Button>
+                                     <Button size="icon" variant="ghost" onClick={handleDeleteOutline}><Trash2 className="w-4 h-4"/></Button>
                                  </div>
                              </CardHeader>
                             <CardContent className="p-4">
@@ -511,13 +557,15 @@ export default function OneClickWriterSerpForm() {
                                                 value={item.text} 
                                                 className="h-7 text-sm border-none focus-visible:ring-1 focus-visible:ring-ring"
                                                 onChange={(e) => handleOutlineTextChange(item.id, e.target.value)}
-                                            />
+                                            >
+                                                 {highlightTerms ? <HighlightedText text={item.text} highlight={[primaryKeyword, ...secondaryKeywords]}/> : item.text}
+                                            </Input>
                                             <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => removeOutlineItem(item.id)}>
                                                 <X className="w-4 h-4 text-muted-foreground" />
                                             </Button>
                                         </div>
                                     ))}
-                                     <Button type="button" variant="outline" size="sm" className="w-full mt-2" onClick={addOutlineItem}>
+                                     <Button type="button" variant="outline" size="sm" className="w-full mt-2" onClick={() => addOutlineItem('H2')}>
                                         <PlusCircle className="w-4 h-4 mr-2"/>
                                         Add Outline Item
                                     </Button>
@@ -526,44 +574,54 @@ export default function OneClickWriterSerpForm() {
                         </Card>
                     </div>
                      <div className="space-y-6 lg:border-l lg:pl-6">
-                        {showRankedOutlines ? (
-                            <Tabs defaultValue="outlines">
-                                <TabsList className="grid w-full grid-cols-3">
-                                    <TabsTrigger value="outlines">Outlines</TabsTrigger>
-                                    <TabsTrigger value="questions">Questions</TabsTrigger>
-                                    <TabsTrigger value="gaps">Gaps/Gains</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value="outlines">
-                                    <ScrollArea className="h-96">
-                                        <p className="text-muted-foreground text-center p-4">Top ranked outlines will appear here.</p>
-                                    </ScrollArea>
-                                </TabsContent>
-                                <TabsContent value="questions">
-                                     <div className="space-y-2">
-                                        <div className="flex items-center gap-2 border-b pb-2">
-                                            <Search className="w-4 h-4 text-muted-foreground"/>
-                                            <Input placeholder="Search Questions..." className="border-none h-8"/>
-                                            <Button variant="ghost" size="icon"><Youtube className="w-5 h-5 text-red-500"/></Button>
-                                            <Button variant="ghost" size="icon"><MessageSquareIcon className="w-5 h-5 text-blue-500"/></Button>
-                                            <Button variant="ghost" size="icon"><ThumbsUp className="w-5 h-5 text-green-500"/></Button>
+                        <Tabs defaultValue="outlines">
+                            <TabsList className="grid w-full grid-cols-3">
+                                <TabsTrigger value="outlines">Outlines</TabsTrigger>
+                                <TabsTrigger value="questions">Questions</TabsTrigger>
+                                <TabsTrigger value="stats">Stats</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="outlines">
+                                <ScrollArea className="h-96">
+                                     <div className="space-y-2 mt-4">
+                                    {serpData?.serpResults.map((result, i) => (
+                                        <div key={i} className="p-3 rounded-md border">
+                                            <p className="font-semibold text-sm text-primary">#{i + 1} - {new URL(result.link).hostname}</p>
+                                            <p className="text-sm">{result.title}</p>
                                         </div>
-                                        <ScrollArea className="h-80">
-                                            <p className="text-muted-foreground text-center p-4">Related questions will appear here.</p>
-                                        </ScrollArea>
-                                     </div>
-                                </TabsContent>
-                                <TabsContent value="gaps">
-                                    <p className="text-muted-foreground text-center p-4">Content gaps will appear here.</p>
-                                </TabsContent>
-                            </Tabs>
-                        ) : (
-                             <div className="flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-muted/50 mt-4">
-                               <p className="text-muted-foreground font-semibold">To Explore the Top Ranking Outlines</p>
-                               <Button variant="outline" className="mt-2" onClick={() => setShowRankedOutlines(true)}>
-                                   <Search className="w-4 h-4 mr-2"/> Click here
-                               </Button>
-                            </div>
-                        )}
+                                    ))}
+                                    </div>
+                                </ScrollArea>
+                            </TabsContent>
+                            <TabsContent value="questions">
+                                    <ScrollArea className="h-96">
+                                     <div className="space-y-2 mt-4">
+                                        {(serpData?.relatedQuestions || []).map((q, i) => (
+                                            <div key={i} className="flex items-start gap-2 p-2 border rounded-md">
+                                                <FileQuestion className="w-5 h-5 text-muted-foreground mt-1"/>
+                                                <p className="text-sm flex-1">{q.question}</p>
+                                                 <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => addOutlineItem('H3', q.question)}><PlusCircle className="w-4 h-4 text-primary"/></Button>
+                                            </div>
+                                        ))}
+                                        </div>
+                                    </ScrollArea>
+                            </TabsContent>
+                            <TabsContent value="stats">
+                                <div className="p-4 space-y-4">
+                                    <div className="flex items-center justify-between p-3 border rounded-md">
+                                        <Label>Avg. Word Count</Label>
+                                        <p className="font-bold">{serpStats.avgWordCount}</p>
+                                    </div>
+                                    <div className="flex items-center justify-between p-3 border rounded-md">
+                                        <Label>Avg. Headings</Label>
+                                        <p className="font-bold">{serpStats.avgHeadings}</p>
+                                    </div>
+                                    <div className="flex items-center justify-between p-3 border rounded-md">
+                                        <Label>Avg. Images</Label>
+                                        <p className="font-bold">{serpStats.avgImages}</p>
+                                    </div>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
                     </div>
                      <div className="lg:col-span-3 flex justify-between p-0 pt-6 border-t mt-auto">
                         <Button variant="outline" onClick={() => setCurrentStep(2)}>
@@ -841,7 +899,7 @@ export default function OneClickWriterSerpForm() {
                         </TableHeader>
                         <TableBody>
                             {isAnalyzing && <AnalysisProgressRow />}
-                            <TableRow onClick={() => handleResume("bangladesh politics", "Bangladesh")} className="cursor-pointer">
+                            <TableRow onClick={() => handleResume("bangladesh politics", "Bangladesh")} className="cursor-pointer hover:bg-muted">
                                 <TableCell className="font-medium">
                                     <p>bangladesh politics</p>
                                     <Badge variant="secondary">Bangladesh</Badge>
