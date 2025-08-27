@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
@@ -297,10 +298,34 @@ export default function OneClickWriterSerpForm() {
         formData.append('primaryKeyword', keyword);
         formData.append('targetCountry', geo);
         
-        await handleAnalysis({
+        const event = {
             preventDefault: () => {},
             currentTarget: formData,
-        } as unknown as React.FormEvent<HTMLFormElement>);
+        } as unknown as React.FormEvent<HTMLFormElement>;
+
+        setIsAnalyzing(true);
+        setSerpData(null);
+        setIssues([]);
+
+        const result = await getSerpAnalysisAction(formData);
+
+        if (result.success && result.data) {
+            setSerpData(result.data);
+            if (result.data.serpResults.length > 0) {
+                setBlogTitle(result.data.serpResults[0].title);
+            } else {
+                setBlogTitle(`A Creative Blog Post about ${primaryKeyword}`);
+            }
+            setCurrentStep(2);
+        } else {
+            setIssues(result.issues || ["An unknown error occurred."]);
+            toast({
+                variant: "destructive",
+                title: "Error",
+                description: result.issues?.join(", ") || "An unknown error occurred.",
+            });
+        }
+        setIsAnalyzing(false);
     }
 
     const handleGenerateTitles = async () => {
@@ -599,7 +624,7 @@ export default function OneClickWriterSerpForm() {
                                             <div key={i} className="flex items-start gap-2 p-2 border rounded-md">
                                                 <FileQuestion className="w-5 h-5 text-muted-foreground mt-1"/>
                                                 <p className="text-sm flex-1">{q.question}</p>
-                                                 <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => addOutlineItem('H3', q.question)}><PlusCircle className="w-4 h-4 text-primary"/></Button>
+                                                 <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => addQuestionToOutline(q.question)}><PlusCircle className="w-4 h-4 text-primary"/></Button>
                                             </div>
                                         ))}
                                         </div>
@@ -936,3 +961,4 @@ export default function OneClickWriterSerpForm() {
         </Card>
     );
 }
+
