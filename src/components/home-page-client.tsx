@@ -1,10 +1,11 @@
 
 
+
 "use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle as UserCircleIcon, Edit, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard, Search, Clapperboard, Receipt, BarChart2, List, PanelTopOpen, CalendarDays, GitBranchPlus, LayoutTemplate, Megaphone, TrendingUp, Award, Clock, CheckCircle, Youtube, BarChart, Quote } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle as UserCircleIcon, Edit, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard, Search, Clapperboard, Receipt, BarChart2, List, PanelTopOpen, CalendarDays, GitBranchPlus, LayoutTemplate, Megaphone, TrendingUp, Award, Clock, CheckCircle, Youtube, BarChart, Quote, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +16,9 @@ import { Testimonial } from '@/services/testimonial-service';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Tool } from '@/services/tool-service';
 import type { Coupon } from "@/services/coupon-service";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { Dialog, DialogContent } from "./ui/dialog";
 
 const faqItems = [
     {
@@ -87,6 +90,33 @@ const iconMap: { [key: string]: React.ElementType } = {
     PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircleIcon, Edit, Layers, RefreshCcw, Sparkles: SparklesIcon, TowerControl, Clapperboard, Youtube, Link: LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, BarChart, Search, Receipt, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Bot, Quote
 };
 
+const featuredTools = [
+  {
+    title: "One-Click Article Writer",
+    description: "Generate a full blog post from a single title. SEO-optimized and ready to publish.",
+    href: "/ai-tools/one-click-writer",
+    icon: SparklesIcon,
+  },
+  {
+    title: "Facebook Comment Generator",
+    description: "Instantly create relevant comments and replies for any Facebook post or image.",
+    href: "/ai-tools/facebook-comment-generator",
+    icon: MessageSquare,
+  },
+  {
+    title: "AI Image Generator",
+    description: "Turn your text descriptions into stunning, high-quality images for any purpose.",
+    href: "/ai-tools/image-generator",
+    icon: ImageIcon,
+  },
+   {
+    title: "AI Image Editor",
+    description: "Edit any image with a simple text prompt using our new Nano Banana model.",
+    href: "/ai-tools/image-editor",
+    icon: Palette,
+  },
+];
+
 
 interface HomePageClientProps {
     pricingPlans: PricingPlan[];
@@ -97,16 +127,50 @@ interface HomePageClientProps {
 
 export default function HomePageClient({ pricingPlans, testimonials, trendingTools, activeCoupons }: HomePageClientProps) {
   const [isMounted, setIsMounted] = React.useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   const loading = !pricingPlans || !testimonials || !trendingTools;
   const primaryCoupon = activeCoupons && activeCoupons.length > 0 ? activeCoupons[0] : null;
 
   React.useEffect(() => {
     setIsMounted(true);
+    const popupShown = Cookies.get('promoPopupShown');
+    if (!popupShown) {
+        // Show the popup after a short delay
+        const timer = setTimeout(() => {
+            setShowPopup(true);
+            // Set a cookie that expires in 1 day
+            Cookies.set('promoPopupShown', 'true', { expires: 1 });
+        }, 3000);
+        return () => clearTimeout(timer);
+    }
   }, []);
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
 
 
   return (
       <div className="flex flex-col bg-background">
+        <Dialog open={showPopup} onOpenChange={setShowPopup}>
+            <DialogContent className="p-0 max-w-2xl overflow-hidden">
+                <div className="grid grid-cols-1 md:grid-cols-2">
+                    <div className="p-6 flex flex-col justify-center">
+                         <Badge variant="destructive" className="w-fit">New Tool!</Badge>
+                         <h2 className="text-2xl font-bold font-headline mt-2">AI Image Editor</h2>
+                         <p className="text-muted-foreground mt-2">Edit images with simple text prompts. Change backgrounds, add objects, or transform styles instantly!</p>
+                         <Button className="mt-4" asChild>
+                             <Link href="/ai-tools/image-editor">Try it Now</Link>
+                         </Button>
+                    </div>
+                    <div className="hidden md:block">
+                        <Image src="https://placehold.co/600x400.png" data-ai-hint="digital art abstract" alt="AI Image Editor" width={300} height={300} className="w-full h-full object-cover"/>
+                    </div>
+                </div>
+            </DialogContent>
+        </Dialog>
+
+
         {/* Hero Section */}
         <section className="pt-12 md:pt-16 pb-8 md:pb-12 overflow-hidden">
           <div className="container mx-auto px-4 text-center">
@@ -150,27 +214,30 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
           </div>
         </section>
 
-        {/* Trending Categories Section */}
+        {/* Featured Tools Section */}
         <section className="py-12 md:py-20">
             <div className="container mx-auto px-4">
                  <div className="text-center max-w-3xl mx-auto">
-                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">জনপ্রিয় ক্যাটাগরি</h2>
+                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">প্রয়োজনীয় টুলস</h2>
                     <p className="text-lg text-muted-foreground mt-4">
-                        আমাদের সবচেয়ে জনপ্রিয় টুল বিভাগগুলো অন্বেষণ করুন এবং আপনার প্রয়োজনীয় সমাধানটি খুঁজে নিন।
+                        আমাদের সবচেয়ে জনপ্রিয় এবং শক্তিশালী টুলগুলো যা আপনার কাজকে সহজ করে তুলবে।
                     </p>
                 </div>
                 <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {trendingCategories.map((category) => {
-                        const Icon = category.icon;
+                    {featuredTools.map((tool) => {
+                        const Icon = tool.icon;
                         return (
-                            <Link href={category.href} key={category.title}>
-                                <Card className="text-center p-6 shadow-md hover:shadow-xl hover:border-primary transition-all duration-300 transform hover:-translate-y-1 h-full">
+                            <Link href={tool.href} key={tool.title}>
+                                <Card className="text-center p-6 shadow-md hover:shadow-xl hover:border-primary transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
                                     <CardHeader className="p-0 items-center">
                                         <div className="bg-primary/10 p-4 rounded-full mb-4">
                                             <Icon className="w-8 h-8 text-primary"/>
                                         </div>
-                                        <CardTitle>{category.title}</CardTitle>
+                                        <CardTitle>{tool.title}</CardTitle>
                                     </CardHeader>
+                                    <CardContent className="flex-grow">
+                                      <p className="text-sm text-muted-foreground mt-2">{tool.description}</p>
+                                    </CardContent>
                                 </Card>
                             </Link>
                         );

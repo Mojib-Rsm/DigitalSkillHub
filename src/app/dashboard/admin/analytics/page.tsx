@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -19,7 +20,7 @@ import {
 } from "@/components/ui/chart"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Line, LineChart, Area, AreaChart } from "recharts"
 import { Button } from "@/components/ui/button"
-import { Download } from "lucide-react"
+import { Download, Palette } from "lucide-react"
 
 // Sample Data
 const toolUsageData = [
@@ -163,6 +164,17 @@ export default function AnalyticsPage() {
                 <CardFooter>
                     <Button><Download className="mr-2"/> Export as CSV</Button>
                 </CardFooter>
+            </Card>
+            
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Image Editor Usage</CardTitle>
+                    <Palette className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">784</div>
+                    <p className="text-xs text-muted-foreground">+32 since last day</p>
+                </CardContent>
             </Card>
 
         </div>

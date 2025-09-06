@@ -4,6 +4,13 @@ import ToolPageLayout from "@/components/tool-page-layout";
 import { getRelatedTools, getToolByHref } from "@/services/tool-service";
 import { Palette } from "lucide-react";
 import { notFound } from "next/navigation";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: "AI Image Editor",
+  description: "Edit images using text prompts with our advanced AI image editor. Change backgrounds, add objects, and modify styles effortlessly.",
+};
+
 
 export default async function ImageEditorPage() {
   const tool = await getToolByHref('/ai-tools/image-editor');
