@@ -151,23 +151,18 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
   return (
       <div className="flex flex-col bg-background">
         <Dialog open={showPopup} onOpenChange={setShowPopup}>
-            <DialogContent className="p-0 max-w-2xl overflow-hidden">
-                 <DialogHeader className="sr-only">
-                    <DialogTitle>New Tool Announcement: AI Image Editor</DialogTitle>
-                    <DialogDescription>A new tool has been added. Edit images with simple text prompts. Change backgrounds, add objects, or transform styles instantly!</DialogDescription>
+            <DialogContent className="p-6 max-w-lg overflow-hidden">
+                 <DialogHeader>
+                    <Badge variant="destructive" className="w-fit">New Tool!</Badge>
+                    <DialogTitle className="text-2xl font-bold font-headline mt-2">AI Image Editor</DialogTitle>
+                    <DialogDescription className="text-muted-foreground mt-2">
+                         Edit images with simple text prompts. Change backgrounds, add objects, or transform styles instantly!
+                    </DialogDescription>
                 </DialogHeader>
-                <div className="grid grid-cols-1 md:grid-cols-2">
-                    <div className="p-6 flex flex-col justify-center">
-                         <Badge variant="destructive" className="w-fit">New Tool!</Badge>
-                         <h2 className="text-2xl font-bold font-headline mt-2">AI Image Editor</h2>
-                         <p className="text-muted-foreground mt-2">Edit images with simple text prompts. Change backgrounds, add objects, or transform styles instantly!</p>
-                         <Button className="mt-4" asChild>
-                             <Link href="/ai-tools/image-editor">Try it Now</Link>
-                         </Button>
-                    </div>
-                    <div className="hidden md:block">
-                        <Image src="https://ik.imagekit.io/uekohag7w/totthoai/Mojib%20Rsm%20(7).png" data-ai-hint="digital art abstract" alt="AI Image Editor" width={300} height={300} className="w-full h-full object-cover"/>
-                    </div>
+                <div className="mt-4">
+                     <Button className="w-full" asChild>
+                        <Link href="/ai-tools/image-editor">Try it Now</Link>
+                     </Button>
                 </div>
             </DialogContent>
         </Dialog>
