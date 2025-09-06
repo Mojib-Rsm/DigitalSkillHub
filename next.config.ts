@@ -17,27 +17,21 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'ik.imagekit.io',
+        port: '',
+        pathname: '**',
       },
       {
         protocol: 'https',
-        hostname: 'placehold.co',
-      },
-      {
-        protocol: 'https',
-        hostname: '**.google.com',
-      },
-      {
-        protocol: 'https',
-        hostname: '**.fbcdn.net',
+        hostname: 'picsum.photos',
+        port: '',
+        pathname: '**',
       },
        {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'placehold.co',
+        port: '',
+        pathname: '**',
       },
-      {
-        protocol: 'http',
-        hostname: '**',
-      }
     ],
   },
   webpack: (config, { isServer }) => {

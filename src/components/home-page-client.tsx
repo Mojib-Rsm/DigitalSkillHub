@@ -17,6 +17,9 @@ import type { Coupon } from "@/services/coupon-service";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+
 
 const faqItems = [
     {
@@ -146,21 +149,47 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
   const closePopup = () => {
     setShowPopup(false);
   };
+  
+  const sliderItems = [
+    {
+      title: "আপনার সৃজনশীলতা প্রকাশ করুন",
+      description: "TotthoAi-এর সাহায্যে যেকোনো ধরনের কনটেন্ট তৈরি করুন, ছবি বানান এবং আপনার ব্যবসাকে নতুন উচ্চতায় নিয়ে যান।",
+      image: "https://ik.imagekit.io/uekohag7w/totthoai/Mojib%20Rsm%20(7).png",
+      dataAiHint: "man professional",
+      href: "/ai-tools"
+    },
+    {
+      title: "শক্তিশালী AI টুলস ব্যবহার করুন",
+      description: "আমাদের প্ল্যাটফর্মে রয়েছে ১৫০টিরও বেশি ভাষায় কনটেন্ট তৈরির সুবিধা, যা আপনার কাজকে আরও সহজ করে তুলবে।",
+      image: "https://picsum.photos/1200/600",
+      dataAiHint: "technology abstract",
+      href: "/ai-tools"
+    },
+    {
+      title: "আমাদের কমিউনিটিতে যোগ দিন",
+      description: "হাজারো কনটেন্ট ক্রিয়েটর এবং ফ্রিল্যান্সারদের সাথে যুক্ত হয়ে নতুন কিছু শিখুন এবং আপনার অভিজ্ঞতা শেয়ার করুন।",
+      image: "https://picsum.photos/1200/600",
+      dataAiHint: "community working",
+      href: "/community"
+    },
+  ]
 
 
   return (
       <div className="flex flex-col bg-background">
         <Dialog open={showPopup} onOpenChange={setShowPopup}>
-            <DialogContent className="p-6 max-w-lg overflow-hidden">
-                 <DialogHeader>
-                    <Badge variant="destructive" className="w-fit">New Tool!</Badge>
+            <DialogContent className="p-0 max-w-lg overflow-hidden border-0">
+                <div className="relative aspect-video">
+                    <Image src="https://picsum.photos/600/400" alt="AI Image Editor" fill className="object-cover"/>
+                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"/>
+                </div>
+                 <div className="p-6 absolute bottom-0 text-white">
+                    <Badge variant="destructive" className="mb-2">New Tool!</Badge>
                     <DialogTitle className="text-2xl font-bold font-headline mt-2">AI Image Editor</DialogTitle>
-                    <DialogDescription className="text-muted-foreground mt-2">
+                    <DialogDescription className="text-white/80 mt-2">
                          Edit images with simple text prompts. Change backgrounds, add objects, or transform styles instantly!
                     </DialogDescription>
-                </DialogHeader>
-                <div className="mt-4">
-                     <Button className="w-full" asChild>
+                    <Button className="mt-4" asChild>
                         <Link href="/ai-tools/image-editor">Try it Now</Link>
                      </Button>
                 </div>
@@ -169,45 +198,54 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
 
 
         {/* Hero Section */}
-        <section className="pt-12 md:pt-16 pb-8 md:pb-12 overflow-hidden">
-          <div className="container mx-auto px-4 text-center">
-              {primaryCoupon && (
-                <Badge variant="secondary" className="text-sm py-1.5 px-4 border-2 border-primary/50 text-primary animate-pulse">
-                    <SparklesIcon className="w-4 h-4 mr-2"/>
-                    LIMITED TIME! • Get {primaryCoupon.discountPercentage}% OFF with code {primaryCoupon.code}
-                </Badge>
-              )}
-              <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tight max-w-4xl mx-auto mt-4 animate-fade-in-up">
-                Create Professional Content 10x Faster with AI 2.0
-              </h1>
-              <p className="text-lg text-muted-foreground mt-6 max-w-2xl mx-auto animate-fade-in-up [animation-delay:200ms]">
-               Generate 10x faster with TotthoAi 2.0. Save 90% time, boost SEO rankings, and reach a global audience in 150+ languages.
-              </p>
-              
-               <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-muted-foreground font-semibold animate-fade-in-up [animation-delay:400ms]">
-                  <span><CheckCircle className="w-4 h-4 inline-block mr-1 text-primary"/>SEO-optimized content</span>
-                  <span><CheckCircle className="w-4 h-4 inline-block mr-1 text-primary"/>AI-generated images included</span>
-                  <span><CheckCircle className="w-4 h-4 inline-block mr-1 text-primary"/>Bulk generation ready</span>
-              </div>
-
-              <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up [animation-delay:600ms]">
-                  <Button size="lg" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base shadow-lg" asChild>
-                      <Link href="/ai-tools">
-                          <Zap className="mr-2 h-5 w-5"/>
-                          Start Using Free Tools
-                      </Link>
-                  </Button>
-                  <Button size="lg" variant="outline" className="transition-transform transform hover:scale-105 w-full sm:w-auto text-base" asChild>
-                      <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">
-                          <PlayCircle className="mr-2 h-5 w-5"/>
-                          Watch Demo
-                      </Link>
-                  </Button>
-              </div>
-               
-               <div className="mt-8 text-center text-sm text-muted-foreground space-y-2 animate-fade-in-up [animation-delay:800ms]">
-                  <p>⭐ Trusted by 3,000+ content creators • 600,000+ articles generated</p>
-               </div>
+        <section className="pt-8 pb-8 overflow-hidden bg-muted/30">
+          <div className="container mx-auto px-4">
+             <Carousel 
+                opts={{ loop: true }} 
+                plugins={[Autoplay({delay: 5000})]}
+                className="w-full"
+            >
+                <CarouselContent>
+                    {sliderItems.map((item, index) => (
+                    <CarouselItem key={index}>
+                        <Card className="border-none shadow-none bg-transparent">
+                        <CardContent className="p-0">
+                            <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8">
+                                <div className="text-center md:text-left animate-fade-in-up">
+                                    <h1 className="font-headline text-4xl md:text-6xl font-bold tracking-tight">
+                                        {item.title}
+                                    </h1>
+                                    <p className="text-lg text-muted-foreground mt-6">
+                                        {item.description}
+                                    </p>
+                                    <div className="mt-8">
+                                         <Button size="lg" className="transition-transform transform hover:scale-105 text-base shadow-lg" asChild>
+                                            <Link href={item.href}>
+                                                <Zap className="mr-2 h-5 w-5"/>
+                                                আরও জানুন
+                                            </Link>
+                                        </Button>
+                                    </div>
+                                </div>
+                                <div className="relative w-full h-64 md:h-96 animate-fade-in-up [animation-delay:200ms]">
+                                    <Image 
+                                        src={item.image} 
+                                        alt={item.title} 
+                                        fill 
+                                        className="object-cover rounded-lg shadow-xl"
+                                        data-ai-hint={item.dataAiHint}
+                                        priority={index === 0}
+                                    />
+                                </div>
+                            </div>
+                        </CardContent>
+                        </Card>
+                    </CarouselItem>
+                    ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-4" />
+                <CarouselNext className="right-4" />
+            </Carousel>
           </div>
         </section>
 
@@ -427,7 +465,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                ) : (
                   <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                       {testimonials.map((testimonial, index) => (
-                      <Card key={testimonial.id} className="shadow-lg animate-fade-in-up" style={{animationDelay: `${600 + index*100}ms`}}>
+                      <Card key={testimonial.id} className="shadow-lg animate-fade-in-up" style={{animationDelay: `\'\'\'${600 + index*100}\'\'\'ms`}}>
                           <CardHeader>
                               <CardTitle className="text-xl">{testimonial.feature}</CardTitle>
                           </CardHeader>
