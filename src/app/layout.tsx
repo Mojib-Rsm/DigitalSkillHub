@@ -57,6 +57,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Tiro+Bangla:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
+        <script src="https://fpyf8.com/88/tag.min.js" data-zone="169016" async data-cfasync="false"></script>
         <ThemeProvider
             attribute="class"
             defaultTheme="system"
