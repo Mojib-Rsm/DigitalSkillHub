@@ -1,0 +1,4 @@
+# Please copy and paste the ads.txt lines from your Ezoic dashboard here.
+# This is a placeholder and will not work without your specific publisher ID.
+# Example format:
+# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
