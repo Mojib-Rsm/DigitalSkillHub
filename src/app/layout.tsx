@@ -55,8 +55,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Tiro+Bangla:wght@400;700&display=swap" rel="stylesheet" />
+        <script async={true} data-cfasync="false" src="//pl23871511.highcpmgate.com/e55933a27a51c515de6f6285514088a5/invoke.js"></script>
       </head>
       <body className="font-body antialiased">
+        <div id="container-e55933a27a51c515de6f6285514088a5"></div>
         <script src="https://fpyf8.com/88/tag.min.js" data-zone="169016" async data-cfasync="false"></script>
         <ThemeProvider
             attribute="class"
