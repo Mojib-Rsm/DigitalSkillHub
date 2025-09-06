@@ -1,6 +1,5 @@
 
 
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -18,7 +17,7 @@ import type { Tool } from '@/services/tool-service';
 import type { Coupon } from "@/services/coupon-service";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { Dialog, DialogContent } from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 
 const faqItems = [
     {
@@ -154,6 +153,10 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
       <div className="flex flex-col bg-background">
         <Dialog open={showPopup} onOpenChange={setShowPopup}>
             <DialogContent className="p-0 max-w-2xl overflow-hidden">
+                 <DialogHeader className="sr-only">
+                    <DialogTitle>New Tool Announcement: AI Image Editor</DialogTitle>
+                    <DialogDescription>A new tool has been added. Edit images with simple text prompts. Change backgrounds, add objects, or transform styles instantly!</DialogDescription>
+                </DialogHeader>
                 <div className="grid grid-cols-1 md:grid-cols-2">
                     <div className="p-6 flex flex-col justify-center">
                          <Badge variant="destructive" className="w-fit">New Tool!</Badge>
