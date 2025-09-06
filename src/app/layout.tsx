@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://totthoai.mojib.me'),
@@ -53,6 +54,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Tiro+Bangla:wght@400;700&display=swap" rel="stylesheet" />
+        <Script async src="https://service.ezoic.net/ezoic/ezoic.js"></Script>
       </head>
       <body className="font-body antialiased">
         <ThemeProvider
