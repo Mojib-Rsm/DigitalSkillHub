@@ -49,6 +49,7 @@ const passportPhotoMakerFlow = ai.defineFlow(
         3.  **Background:** Replace the existing background with a plain, uniform {{{backgroundColor}}} background. There should be no shadows or patterns.
         4.  **No Accessories:** Remove any hats, sunglasses, or non-religious head coverings. Prescription glasses are acceptable but should not have glare.
         5.  **Format:** The final image should be a high-quality portrait suitable for official documents.
+        6.  **Watermark:** Add a small, subtle 'TotthoAi' watermark in the bottom-right corner.
 
         User's photo to process:
         {{media url=photoDataUri}}`,

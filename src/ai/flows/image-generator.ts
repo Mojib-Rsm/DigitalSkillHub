@@ -36,7 +36,7 @@ const imageGeneratorFlow = ai.defineFlow(
     try {
       const {media} = await ai.generate({
         model: 'googleai/gemini-2.0-flash-preview-image-generation',
-        prompt: `${input.prompt}. Do not include any text, letters, or numbers in the image.`,
+        prompt: `${input.prompt}. In a corner of the image, add a small, subtle watermark with the text 'TotthoAi'. Do not include any other text, letters, or numbers in the image.`,
         config: {
           responseModalities: ['TEXT', 'IMAGE'],
            safetySettings: [

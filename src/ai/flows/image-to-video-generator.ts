@@ -77,8 +77,8 @@ const imageToVideoGeneratorFlow = ai.defineFlow(
         }
         const [, mimeType, base64Data] = match;
 
-        // Use a default prompt if none is provided
-        const finalPrompt = prompt || 'animate this image';
+        // Use a default prompt if none is provided, and add the watermark instruction
+        const finalPrompt = `${prompt || 'animate this image'}. Also, add a small, subtle 'TotthoAi' watermark in a corner of the video.`;
 
         let { operation } = await ai.generate({
           model: googleAI.model('veo-3.0-generate-preview'),

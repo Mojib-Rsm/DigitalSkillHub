@@ -65,7 +65,7 @@ const videoGeneratorFlow = ai.defineFlow(
     try {
         let { operation } = await ai.generate({
           model: googleAI.model('veo-3.0-generate-preview'),
-          prompt: input.prompt,
+          prompt: `${input.prompt}. Also, add a small, subtle 'TotthoAi' watermark in a corner of the video.`,
         });
 
         if (!operation) {

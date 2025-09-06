@@ -43,7 +43,7 @@ const imageEditorFlow = ai.defineFlow(
         model: 'googleai/gemini-2.5-flash-image-preview',
         prompt: [
             {media: {url: input.photoDataUri}},
-            {text: input.prompt},
+            {text: `${input.prompt}. Finally, add a small, subtle 'TotthoAi' watermark in a corner.`},
         ],
         config: {
           responseModalities: ['TEXT', 'IMAGE'],
