@@ -6,6 +6,21 @@ import { ThemeProvider } from '@/components/theme-provider';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import Script from 'next/script';
+import { Hind_Siliguri, Tiro_Bangla } from 'next/font/google';
+import { cn } from '@/lib/utils';
+
+const hindSiliguri = Hind_Siliguri({
+  subsets: ['bengali'],
+  weight: ['400', '700'],
+  variable: '--font-body',
+});
+
+const tiroBangla = Tiro_Bangla({
+  subsets: ['bengali'],
+  weight: ['400'],
+  variable: '--font-headline',
+});
+
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://totthoai.mojib.me'),
@@ -52,13 +67,10 @@ export default function RootLayout({
     <html lang="bn" suppressHydrationWarning>
       <head>
         <meta name="monetag" content="4e8e52ac727f61d3b11c3ede76f74dc0" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Tiro+Bangla:wght@400;700&display=swap" rel="stylesheet" />
         <script async={true} data-cfasync="false" src="//pl23871511.highcpmgate.com/e55933a27a51c515de6f6285514088a5/invoke.js"></script>
         <script async={true} data-cfasync="false" src="//pl27589276.revenuecpmgate.com/45a0df8439f17e474697c7a218110362/invoke.js"></script>
       </head>
-      <body className="font-body antialiased">
+      <body className={cn("font-body antialiased", hindSiliguri.variable, tiroBangla.variable)}>
         <div id="container-e55933a27a51c515de6f6285514088a5"></div>
         <div id="container-45a0df8439f17e474697c7a218110362"></div>
         <script src="https://fpyf8.com/88/tag.min.js" data-zone="169016" async data-cfasync="false"></script>
