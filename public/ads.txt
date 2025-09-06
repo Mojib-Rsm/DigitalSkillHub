@@ -1,8 +1,0 @@
-# IMPORTANT: Please replace the content of this file with the ads.txt lines from your Ezoic dashboard.
-# You can find this under the 'Monetization' or 'Ads.txt' tab in your Ezoic account.
-# It is crucial for your ad revenue that this file is correct.
-
-# Example line (DO NOT USE THIS, GET YOURS FROM EZOIC):
-# google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
-
-ezoic.com, 219194, DIRECT, e574a6f7b8b449a5
