@@ -167,7 +167,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                          </Button>
                     </div>
                     <div className="hidden md:block">
-                        <Image src="https://placehold.co/600x400.png" data-ai-hint="digital art abstract" alt="AI Image Editor" width={300} height={300} className="w-full h-full object-cover"/>
+                        <Image src="https://ik.imagekit.io/uekohag7w/totthoai/Mojib%20Rsm%20(7).png" data-ai-hint="digital art abstract" alt="AI Image Editor" width={300} height={300} className="w-full h-full object-cover"/>
                     </div>
                 </div>
             </DialogContent>
