@@ -54,7 +54,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&family=Tiro+Bangla:wght@400;700&display=swap" rel="stylesheet" />
-        <Script async src="https://service.ezoic.net/ezoic/ezoic.js"></Script>
+        <Script async src="//go.ezoic.net/ezoic/ezoic.js"></Script>
       </head>
       <body className="font-body antialiased">
         <ThemeProvider
