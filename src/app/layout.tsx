@@ -66,14 +66,8 @@ export default function RootLayout({
   return (
     <html lang="bn" suppressHydrationWarning>
       <head>
-        <meta name="monetag" content="4e8e52ac727f61d3b11c3ede76f74dc0" />
-        <script async={true} data-cfasync="false" src="//pl23871511.highcpmgate.com/e55933a27a51c515de6f6285514088a5/invoke.js"></script>
-        <script async={true} data-cfasync="false" src="//pl27589276.revenuecpmgate.com/45a0df8439f17e474697c7a218110362/invoke.js"></script>
       </head>
       <body className={cn("font-body antialiased", hindSiliguri.variable, tiroBangla.variable)}>
-        <div id="container-e55933a27a51c515de6f6285514088a5"></div>
-        <div id="container-45a0df8439f17e474697c7a218110362"></div>
-        <script src="https://fpyf8.com/88/tag.min.js" data-zone="169016" async data-cfasync="false"></script>
         <ThemeProvider
             attribute="class"
             defaultTheme="system"
