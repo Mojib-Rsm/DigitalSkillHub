@@ -1,8 +1,7 @@
-
 'use server';
 
 /**
- * @fileOverview AI tool to generate detailed prompts for various media types.
+ * @fileOverview AI tool to generate detailed prompts for various media types from a text topic or an image.
  *
  * - promptGenerator - A function that generates a detailed prompt.
  * - PromptGeneratorInput - The input type for the promptGenerator function.
@@ -13,7 +12,13 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const PromptGeneratorInputSchema = z.object({
-  topic: z.string().describe('The user\'s core idea or topic for the prompt.'),
+  topic: z.string().optional().describe('The user\'s core idea or topic for the prompt.'),
+  photoDataUri: z
+    .string()
+    .optional()
+    .describe(
+      "An optional photo to generate prompts from, as a data URI. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+    ),
   mediaType: z.enum(['Image', 'Video', 'Audio']).describe('The type of media the prompt is for.'),
   language: z.enum(['Bengali', 'English']).describe('The desired language for the generated prompt.'),
 });
@@ -33,13 +38,22 @@ const prompt = ai.definePrompt({
   name: 'promptGeneratorPrompt',
   input: {schema: PromptGeneratorInputSchema},
   output: {schema: PromptGeneratorOutputSchema},
-  prompt: `You are an expert prompt engineer. Your task is to expand a user's simple idea into multiple, effective, and well-structured prompts for an AI generation model.
+  prompt: `You are an expert prompt engineer. Your task is to expand a user's simple idea or an uploaded image into multiple, effective, and well-structured prompts for an AI generation model.
 
+{{#if topic}}
 User's Idea/Topic: {{{topic}}}
+{{/if}}
+
+{{#if photoDataUri}}
+Analyze the following image to generate prompts. The prompts should describe the image in detail or suggest creative variations and scenarios based on its content.
+Image to analyze:
+{{media url=photoDataUri}}
+{{/if}}
+
 Desired Media Type: {{{mediaType}}}
 Desired Language for the Prompt: {{{language}}}
 
-Based on this, generate a mix of short and long prompts in the specified language.
+Based on the provided information (topic and/or image), generate a mix of short and long prompts in the specified language.
 
 1.  **Short Prompts (2-3 variations):** Create concise, direct prompts that capture the core idea. These should be quick and to the point.
 2.  **Long Prompts (2-3 variations):** Create highly descriptive prompts.
