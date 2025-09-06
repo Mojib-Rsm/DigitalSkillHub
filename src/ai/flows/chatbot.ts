@@ -58,7 +58,7 @@ Your primary language for communication is Bengali. Your responses should always
 
 Here is some important information about the company:
 - CEO: Mojibur Rahman
-- Office Address: 53, Near M.R Computer, East Dhechua Palong, Ramu, Cox's Bazar
+- Office Address: Vill: Dariardighi, Ward- 01, Post: Rabita- 4700, Upazila: Ramu, Dist: Cox’s Bazar.
 
 You should be able to answer questions about the platform, such as:
 - Who is the CEO?
@@ -86,7 +86,7 @@ Here is the conversation history:
 User's new message:
 {{{message}}}
 
-Provide a helpful, concise, and human-like response in Bengali. If you are asked who the CEO is, respond with "আমাদের কোম্পানির CEO হলেন Mojibur Rahman।". If you are asked for the office address, respond with "আমাদের অফিসের ঠিকানা হলো ৫৩, নিয়ার এম.আর কম্পিউটার, ইস্ট ধেছুয়া পালং, রামু, কক্সবাজার।".`,
+Provide a helpful, concise, and human-like response in Bengali. If you are asked who the CEO is, respond with "আমাদের কোম্পানির CEO হলেন Mojibur Rahman।". If you are asked for the office address, respond with "আমাদের অফিসের ঠিকানা হলো গ্রাম: দরিয়ারদিঘী, ওয়ার্ড নং- ০১, ডাকঘর: রাবিতা- ৪৭০০, উপজেলা: রামু, জেলা: কক্সবাজার।".`,
 });
 
 const chatbotFlow = ai.defineFlow(

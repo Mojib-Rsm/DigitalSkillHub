@@ -34,7 +34,7 @@ export default function AboutUsPage() {
             <section className="py-16 md:py-24">
                 <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <Image src="https://ik.imagekit.io/uekohag7w/totthoai/Mojib%20Rsm%20(7).png" data-ai-hint="team collaboration office" alt="Our team working" width={600} height={400} className="rounded-lg shadow-lg" />
+                        <Image src="https://placehold.co/600x400.png" data-ai-hint="team collaboration office" alt="Our team working" width={600} height={400} className="rounded-lg shadow-lg" />
                     </div>
                     <div className="space-y-8">
                         <div>
