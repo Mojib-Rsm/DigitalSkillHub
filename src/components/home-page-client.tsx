@@ -228,13 +228,11 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                                     </div>
                                 </div>
                                 <div className="relative w-full h-64 md:h-96 animate-fade-in-up [animation-delay:200ms]">
-                                    <Image 
+                                    <img 
                                         src={item.image} 
                                         alt={item.title} 
-                                        fill 
-                                        className="object-cover rounded-lg shadow-xl"
+                                        className="object-cover rounded-lg shadow-xl w-full h-full"
                                         data-ai-hint={item.dataAiHint}
-                                        priority={index === 0}
                                     />
                                 </div>
                             </div>
@@ -610,3 +608,5 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
   );
 
 }
+
+    
