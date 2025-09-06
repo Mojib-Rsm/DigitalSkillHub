@@ -154,7 +154,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
     {
       title: "আপনার সৃজনশীলতা প্রকাশ করুন",
       description: "TotthoAi-এর সাহায্যে যেকোনো ধরনের কনটেন্ট তৈরি করুন, ছবি বানান এবং আপনার ব্যবসাকে নতুন উচ্চতায় নিয়ে যান।",
-      image: "https://ik.imagekit.io/uekohag7w/totthoai/Mojib%20Rsm%20(7).png",
+      image: "https://picsum.photos/1200/800",
       dataAiHint: "man professional",
       href: "/ai-tools"
     },
@@ -349,7 +349,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                           <CardTitle className="text-xl font-bold">90% Time Savings</CardTitle>
                       </CardHeader>
                       <CardContent>
-                          <p className="text-muted-foreground text-sm">Automate tedious tasks and generate high-quality content in seconds, not hours.</p>
+                          <p className="text-sm text-muted-foreground">Automate tedious tasks and generate high-quality content in seconds, not hours.</p>
                       </CardContent>
                   </Card>
                   <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:600ms]">
@@ -360,7 +360,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                           <CardTitle className="text-xl font-bold">Better SEO Results</CardTitle>
                       </CardHeader>
                       <CardContent>
-                          <p className="text-muted-foreground text-sm">Create content that is optimized for search engines to rank higher and drive more traffic.</p>
+                          <p className="text-sm text-muted-foreground">Create content that is optimized for search engines to rank higher and drive more traffic.</p>
                       </CardContent>
                   </Card>
                   <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:800ms]">
@@ -371,7 +371,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                           <CardTitle className="text-xl font-bold">Professional Quality</CardTitle>
                       </CardHeader>
                       <CardContent>
-                          <p className="text-muted-foreground text-sm">Generate well-structured, coherent, and engaging articles that rival human writers.</p>
+                          <p className="text-sm text-muted-foreground">Generate well-structured, coherent, and engaging articles that rival human writers.</p>
                       </CardContent>
                   </Card>
               </div>
