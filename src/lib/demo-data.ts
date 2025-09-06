@@ -1,5 +1,5 @@
 
-import { Layers, RefreshCcw, Sparkles, TowerControl, Users, Youtube, Clock, TrendingUp, Award, CheckCircle, FileText, ImageIcon, Link as LinkIcon, PenSquare, ShoppingCart, Languages, Hash, Mail, Lightbulb, BarChart, GraduationCap, HelpCircle, BookCheck, DollarSign, Wand, FileSignature, Globe, Film, MessageSquare, UserCircle as UserCircleIcon, Edit, Clapperboard, Receipt, Briefcase, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Quote, Search, Bot } from 'lucide-react';
+import { Layers, RefreshCcw, Sparkles, TowerControl, Users, Youtube, Clock, TrendingUp, Award, CheckCircle, FileText, ImageIcon, Link as LinkIcon, PenSquare, ShoppingCart, Languages, Hash, Mail, Lightbulb, BarChart, GraduationCap, HelpCircle, BookCheck, DollarSign, Wand, FileSignature, Globe, Film, MessageSquare, UserCircle as UserCircleIcon, Edit, Clapperboard, Receipt, Briefcase, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Quote, Search, Bot, Palette } from 'lucide-react';
 
 export type Tool = {
     id: string;
@@ -523,6 +523,17 @@ export const tools: Tool[] = [
         enabled: true,
         isFree: false,
         credits: 5,
+    },
+    {
+        id: "image-editor",
+        title: "এআই ইমেজ এডিটর",
+        description: "প্রম্পট ব্যবহার করে আপনার ছবি সম্পাদনা করুন।",
+        href: "/ai-tools/image-editor",
+        icon: "Palette",
+        category: "Image Generation",
+        enabled: true,
+        isFree: false,
+        credits: 3,
     },
     {
         id: "passport-photo-maker",
