@@ -228,10 +228,11 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                                     </div>
                                 </div>
                                 <div className="relative w-full h-64 md:h-96 animate-fade-in-up [animation-delay:200ms]">
-                                    <img 
+                                    <Image 
                                         src={item.image} 
                                         alt={item.title} 
-                                        className="object-cover rounded-lg shadow-xl w-full h-full"
+                                        fill
+                                        className="object-cover rounded-lg shadow-xl"
                                         data-ai-hint={item.dataAiHint}
                                     />
                                 </div>
