@@ -3,6 +3,7 @@ import type { NextAuthConfig } from 'next-auth';
 import Google from 'next-auth/providers/google';
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
+import { UserModel } from '@/models/userModel';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
@@ -20,29 +21,21 @@ export const authConfig = {
   },
   callbacks: {
      async signIn({ user, account, profile }) {
-        if (account?.provider === 'google') {
-            const db = getFirestore(app);
-            const userRef = doc(db, 'users', user.id);
+        if (account?.provider === 'google' && user.email) {
             try {
-                const userDoc = await getDoc(userRef);
-                if (!userDoc.exists()) {
-                    // New user, create a profile
-                    await setDoc(userRef, {
-                        name: user.name,
+                const existingUser = await UserModel.findByEmail(user.email);
+                
+                if (!existingUser) {
+                    // New user, create a profile in MySQL
+                    await UserModel.create({
+                        name: user.name || 'New User',
                         email: user.email,
-                        profile_image: user.image,
-                        role: 'user',
-                        credits: 100, // Initial credits
-                        plan_id: 'free',
-                        status: 'active',
-                        bookmarks: [],
-                        created_at: serverTimestamp(),
-                        updated_at: serverTimestamp(),
+                        // MySQL user id will be auto-incremented
                     });
                 }
                 return true; // Allow sign in
             } catch (error) {
-                console.error("Error during signIn callback in auth.config.ts:", error);
+                console.error("Error during MySQL user check/creation in signIn callback:", error);
                 return false; // Prevent sign in on database error
             }
         }
