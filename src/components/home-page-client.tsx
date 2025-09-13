@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -573,3 +574,5 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
   );
 
 }
+
+    
