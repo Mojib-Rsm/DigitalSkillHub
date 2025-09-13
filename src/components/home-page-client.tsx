@@ -574,3 +574,5 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
   );
 
 }
+
+    
