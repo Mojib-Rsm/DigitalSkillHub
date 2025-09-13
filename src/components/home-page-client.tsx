@@ -90,6 +90,7 @@ const iconMap: { [key: string]: React.ElementType } = {
 
 const packages = [
   {
+    slug: 'business-dukandar-package',
     title: "Business / Dukandar Package",
     icon: ShoppingCart,
     description: "আপনার দোকানের日常প্রয়োজনীয় কনটেন্ট ও মার্কেটিং ম্যাটেরিয়াল তৈরি করুন দ্রুত এবং সহজে।",
@@ -103,6 +104,7 @@ const packages = [
     useCase: "দোকানদাররা দ্রুত প্রফেশনাল কনটেন্ট বানাতে পারবে, অফার/ডিসকাউন্ট দিতে পারবে, পোস্টার/ক্যাপশন বানাতে পারবে।"
   },
   {
+    slug: 'content-creator-blogger-package',
     title: "Content Creator / Blogger Package",
     icon: PenSquare,
     description: "আপনার ব্লগ, ইউটিউব চ্যানেল বা সোশ্যাল মিডিয়ার জন্য SEO-অপ্টিমাইজড কনটেন্ট তৈরি করুন ১০ গুণ দ্রুত।",
@@ -116,6 +118,7 @@ const packages = [
     useCase: "ব্লগার, ইউটিউবার, ইনফ্লুয়েন্সাররা ১০গুন দ্রুত কনটেন্ট তৈরি করতে পারবে।"
   },
   {
+    slug: 'digital-marketer-package',
     title: "Digital Marketer Package",
     icon: Megaphone,
     description: "আপনার বিজ্ঞাপন, ইমেল এবং ল্যান্ডিং পেজের জন্য হাই-কনভার্টিং কপি তৈরি করে সেলস বাড়ান।",
@@ -129,6 +132,7 @@ const packages = [
     useCase: "যারা ব্যবসা বা ব্র্যান্ড প্রোমোট করে তাদের জন্য।"
   },
   {
+    slug: 'student-academic-package',
     title: "Student & Academic Package",
     icon: GraduationCap,
     description: "আপনার অ্যাসাইনমেন্ট, প্রেজেন্টেশন এবং গ্রামার সংক্রান্ত সমস্যা সমাধান করুন এক নিমিষে।",
@@ -141,35 +145,37 @@ const packages = [
     ],
     useCase: "যারা পড়াশোনায় সাহায্য চাইবে তাদের জন্য।"
   },
-  {
-      title: "News & Media Package",
-      icon: Newspaper,
-      description: "সংবাদ শিরোনাম, প্রেস রিলিজ এবং ব্রেকিং নিউজ দ্রুত তৈরি করুন।",
-      tools: [
-          "News Headline Generator",
-          "Press Release Drafting Tool",
-          "Fact-to-Article Expander",
-          "Social Media Caption for News",
-          "Breaking News Quick Template",
-      ],
-      useCase: "সংবাদ মাধ্যম এবং সাংবাদিকদের জন্য দ্রুত ও নির্ভুল কনটেন্ট তৈরি করা।"
+   {
+    slug: 'news-media-package',
+    title: "News & Media Package",
+    icon: Newspaper,
+    description: "সংবাদ শিরোনাম, প্রেস রিলিজ এবং ব্রেকিং নিউজ দ্রুত তৈরি করুন।",
+    tools: [
+        "News Headline Generator",
+        "Press Release Drafting Tool",
+        "Fact-to-Article Expander",
+        "Social Media News Caption Writer",
+        "Breaking News Quick Template",
+    ],
+    useCase: "সংবাদ মাধ্যম এবং সাংবাদিকদের জন্য দ্রুত ও নির্ভুল কনটেন্ট তৈরি করা।"
   },
   {
+    slug: 'computer-shop-package',
     title: "Computer Shop / Printing Shop Package",
     icon: Briefcase,
     description: "আপনার দোকানের গ্রাহকদের জন্য আবেদনপত্র, সিভি, স্ট্যাম্প এবং অন্যান্য ডকুমেন্ট দ্রুত তৈরি করুন।",
     tools: [
-      "Application & Letter Generator",
-      "Resume & CV Builder (বাংলা + ইংরেজি)",
-      "Stamp & Certificate Maker",
-      "Contract/Agreement Writer",
+      "Application & Letter Generator (Job Application, Leave Letter, School/College Forms)",
+      "Resume & CV Builder (বাংলা + ইংরেজি টেমপ্লেট)",
+      "Stamp & Certificate Maker (Affidavit, Character Certificate, Agreement)",
+      "Contract/Agreement Writer (ভাড়ার কাগজ, চুক্তিপত্র, Power of Attorney)",
       "OCR Typing Helper (Handwritten → Typed)",
-      "Passport Size Photo Maker",
-      "ID Card / Visiting Card Text Layout",
+      "Passport Size Photo Maker (Auto Background Remove + Standard Size Export)",
+      "ID Card / Visiting Card Text Layout Generator",
       "Notice & Office Memo Generator",
-      "General Templates Library"
+      "General Templates Library (বায়োডাটা, আবেদন ফরম, ইত্যাদি)"
     ],
-    useCase: "যারা কম্পিউটার দোকান, টাইপিং ও প্রিন্টিং শপ চালায় তারা ৯০% কাজ দ্রুত করতে পারবে।"
+    useCase: "যারা কম্পিউটার দোকান, টাইপিং শপ, প্রিন্টিং শপ চালায় তারা ৯০% কাজ তাড়াতাড়ি করতে পারবে। যেমন: কাস্টমারের সিভি, চাকরির আবেদন, ছবি প্রিন্ট, স্ট্যাম্প, সনদ, অফিস পেপার, সবকিছুই এক ক্লিকে তৈরি করা যাবে।"
   },
 ];
 
@@ -314,16 +320,19 @@ export default function HomePageClient({ testimonials, trendingTools, activeCoup
                                 <CardContent className="flex-grow px-6">
                                   <h4 className="font-semibold text-sm mb-2">Included Tools:</h4>
                                    <ul className="space-y-1.5 text-xs text-muted-foreground">
-                                        {pkg.tools.map(tool => (
+                                        {pkg.tools.slice(0, 5).map(tool => (
                                             <li key={tool} className="flex items-center gap-2">
                                                 <CheckCircle className="w-3.5 h-3.5 text-green-500" /> {tool}
                                             </li>
                                         ))}
+                                        {pkg.tools.length > 5 && <li className="font-semibold">and {pkg.tools.length - 5} more...</li>}
                                     </ul>
                                 </CardContent>
                                 <CardFooter className="p-6 pt-4">
-                                     <Button variant="link" className="p-0">
-                                        Explore Package <ArrowRight className="ml-2 w-4 h-4"/>
+                                     <Button variant="link" className="p-0" asChild>
+                                        <Link href={`/packages/${pkg.slug}`}>
+                                            Explore Package <ArrowRight className="ml-2 w-4 h-4"/>
+                                        </Link>
                                      </Button>
                                 </CardFooter>
                             </Card>
@@ -514,5 +523,3 @@ export default function HomePageClient({ testimonials, trendingTools, activeCoup
   );
 
 }
-
-    
