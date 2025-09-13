@@ -172,44 +172,27 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
         {/* Hero Section */}
         <section className="py-16 md:py-24 bg-muted/30">
           <div className="container mx-auto px-4 text-center">
-            <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight animate-fade-in-up">
-              Create Professional Content 10x Faster with AI
-            </h1>
-            <p className="text-lg text-muted-foreground mt-6 max-w-3xl mx-auto animate-fade-in-up [animation-delay:200ms]">
-              Generate 10x faster with TotthoAi. Save 90% time, boost SEO rankings, and reach a global audience in 150+ languages.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-muted-foreground animate-fade-in-up [animation-delay:400ms]">
-                <div className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span>SEO-optimized content</span>
+             <div className="max-w-4xl mx-auto">
+                <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight animate-fade-in-up">
+                আপনার কনটেন্ট তৈরি করুন ১০ গুণ দ্রুত, সম্পূর্ণ বাংলায়
+                </h1>
+                <p className="text-lg text-muted-foreground mt-6 max-w-3xl mx-auto animate-fade-in-up [animation-delay:200ms]">
+                TotthoAi ব্যবহার করে সময় ও অর্থ বাঁচান। SEO-অপ্টিমাইজড আর্টিকেল, সোশ্যাল মিডিয়া পোস্ট, এবং আকর্ষণীয় ছবি তৈরি করুন এক ক্লিকে।
+                </p>
+                <div className="mt-8 flex justify-center gap-4 animate-fade-in-up [animation-delay:400ms]">
+                    <Button size="lg" className="text-base" asChild>
+                        <Link href="/login">
+                            <Zap className="mr-2 h-5 w-5"/>
+                            বিনামূল্যে শুরু করুন
+                        </Link>
+                    </Button>
+                    <Button size="lg" variant="outline" className="text-base" asChild>
+                        <Link href="/ai-tools">
+                           সকল টুলস দেখুন
+                        </Link>
+                    </Button>
                 </div>
-                 <div className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span>AI-generated images included</span>
-                </div>
-                 <div className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span>Bulk generation ready</span>
-                </div>
-            </div>
-            <div className="mt-8 flex justify-center gap-4 animate-fade-in-up [animation-delay:600ms]">
-                 <Button size="lg" className="text-base" asChild>
-                    <Link href="/free-tools">
-                        <Zap className="mr-2 h-5 w-5"/>
-                        Start Using Free Tools
-                    </Link>
-                </Button>
-                <Button size="lg" variant="outline" className="text-base" asChild>
-                    <Link href="#features">
-                        <PlayCircle className="mr-2 h-5 w-5" />
-                        Watch Demo
-                    </Link>
-                </Button>
-            </div>
-             <p className="mt-8 text-sm text-muted-foreground animate-fade-in-up [animation-delay:800ms]">
-                <Star className="w-4 h-4 inline-block mr-1 text-yellow-400" />
-                Trusted by <strong>3,000+</strong> content creators • <strong>600,000+</strong> articles generated
-            </p>
+             </div>
           </div>
         </section>
 
@@ -574,5 +557,3 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
   );
 
 }
-
-    
