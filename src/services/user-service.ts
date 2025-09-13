@@ -30,6 +30,8 @@ export async function loginUser(email: string, password: string): Promise<any> {
     const user = await UserModel.findByEmail(email);
     if (!user) throw new Error("User not found");
 
+    if (!user.password) throw new Error("Password not set for this user.");
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new Error("Invalid credentials");
 
