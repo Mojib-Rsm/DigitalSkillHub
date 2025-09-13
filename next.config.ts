@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   images: {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -20,7 +21,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     allowedDevOrigins: [
-      'https://firebase-studio-1755339718682.cluster-b6gwurscprhn6qxr wtrhvkf6.cloudworkstations.dev',
+      'https://firebase-studio-1755339718682.cluster-b6gwurscprhn6qxr-wtrhvkf6.cloudworkstations.dev',
     ],
   },
   webpack: (config, { isServer }) => {

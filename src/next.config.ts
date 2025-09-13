@@ -1,10 +1,8 @@
-
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true, 
   },
   eslint: {
     ignoreDuringBuilds: true,
@@ -15,16 +13,31 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'picsum.photos',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
+       {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+       {
+        protocol: 'https',
+        hostname: 'ik.imagekit.io',
       },
     ],
   },
+  experimental: {
+    allowedDevOrigins: [
+      'https://firebase-studio-1755339718682.cluster-b6gwurscprhn6qxr-wtrhvkf6.cloudworkstations.dev',
+    ],
+  },
   webpack: (config, { isServer }) => {
-    // This is to fix a bug with handlebars and webpack
     config.resolve.alias.handlebars = 'handlebars/dist/handlebars.min.js';
-    
     return config;
-  }
+  },
 };
 
 export default nextConfig;
