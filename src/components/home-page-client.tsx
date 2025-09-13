@@ -180,7 +180,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
         <Dialog open={showPopup} onOpenChange={setShowPopup}>
             <DialogContent className="p-0 max-w-lg overflow-hidden border-0">
                 <div className="relative aspect-video">
-                    <Image src="https://picsum.photos/600/400" alt="AI Image Editor" fill className="object-cover"/>
+                    <img src="https://picsum.photos/600/400" alt="AI Image Editor" className="object-cover w-full h-full"/>
                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"/>
                 </div>
                  <div className="p-6 absolute bottom-0 text-white">
@@ -463,7 +463,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                ) : (
                   <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                       {testimonials.map((testimonial, index) => (
-                      <Card key={testimonial.id} className="shadow-lg animate-fade-in-up" style={{animationDelay: `\'\'\'${600 + index*100}\'\'\'ms`}}>
+                      <Card key={testimonial.id} className="shadow-lg animate-fade-in-up" style={{animationDelay: `${600 + index*100}ms`}}>
                           <CardHeader>
                               <CardTitle className="text-xl">{testimonial.feature}</CardTitle>
                           </CardHeader>
@@ -609,6 +609,3 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
 
 }
 
-    
-
-    
