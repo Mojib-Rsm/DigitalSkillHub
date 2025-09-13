@@ -5,6 +5,8 @@
 import { auth } from '@/auth';
 import { getFirestore, doc, getDoc, collection, getDocs, query, where, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore/lite';
 import { app } from '@/lib/firebase';
+import { UserModel } from '@/models/userModel';
+import bcrypt from 'bcrypt';
 
 export type UserProfile = {
   id: string;
@@ -18,6 +20,22 @@ export type UserProfile = {
   plan_id: string;
   bookmarks?: string[];
 };
+
+export async function registerUser(userData: any) {
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    return await UserModel.create({ ...userData, password: hashedPassword });
+}
+
+export async function loginUser(email: string, password: string): Promise<any> {
+    const user = await UserModel.findByEmail(email);
+    if (!user) throw new Error("User not found");
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new Error("Invalid credentials");
+
+    return user;
+}
+
 
 export async function getCurrentUser(): Promise<UserProfile | null> {
   const session = await auth();
