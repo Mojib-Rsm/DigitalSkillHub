@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
     ],
   },
   serverActions: {
-    bodySizeLimit: '10mb',
+    bodySizeLimit: '50mb',
   },
   webpack: (config, { isServer }) => {
     config.resolve.alias.handlebars = 'handlebars/dist/handlebars.min.js';
