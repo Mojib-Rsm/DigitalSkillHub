@@ -24,6 +24,11 @@ export async function getToolByHref(href: string): Promise<Tool | null> {
     return allTools.find(tool => tool.href === href) || null;
 }
 
+export async function getToolByTitle(title: string): Promise<Tool | null> {
+    const allTools = await getTools();
+    return allTools.find(tool => tool.title === title) || null;
+}
+
 export async function getToolById(id: string): Promise<Tool | null> {
     const allTools = await getTools();
     return allTools.find(tool => tool.id === id) || null;
