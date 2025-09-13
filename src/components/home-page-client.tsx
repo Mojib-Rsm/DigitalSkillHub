@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle as UserCircleIcon, Edit, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard, Search, Clapperboard, Receipt, BarChart2, List, PanelTopOpen, CalendarDays, GitBranchPlus, LayoutTemplate, Megaphone, TrendingUp, Award, Clock, CheckCircle, Youtube, BarChart, Quote, X, Star } from "lucide-react";
+import { ArrowRight, Bot, PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, Image as ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircle as UserCircleIcon, Edit, Layers, RefreshCcw, TowerControl, Sparkles as SparklesIcon, Zap, PlayCircle, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, Link as LinkIcon, Activity, ArrowUpRight, CreditCard, Search, Clapperboard, Receipt, BarChart2, List, PanelTopOpen, CalendarDays, GitBranchPlus, LayoutTemplate, Megaphone, TrendingUp, Award, Clock, CheckCircle, Youtube, BarChart, Quote, X, Star, Newspaper } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -85,74 +85,91 @@ const trendingCategories = [
 ];
 
 const iconMap: { [key: string]: React.ElementType } = {
-    PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircleIcon, Edit, Layers, RefreshCcw, Sparkles: SparklesIcon, TowerControl, Clapperboard, Youtube, Link: LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, BarChart, Search, Receipt, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Bot, Quote, Star
+    PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircleIcon, Edit, Layers, RefreshCcw, Sparkles: SparklesIcon, TowerControl, Clapperboard, Youtube, Link: LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, BarChart, Search, Receipt, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Bot, Quote, Star, Newspaper
 };
 
 const packages = [
   {
-    title: "দোকানদার প্যাকেজ",
+    title: "Business / Dukandar Package",
     icon: ShoppingCart,
     description: "আপনার দোকানের日常প্রয়োজনীয় কনটেন্ট ও মার্কেটিং ম্যাটেরিয়াল তৈরি করুন দ্রুত এবং সহজে।",
     tools: [
-      "AI Product Description Generator",
-      "AI Poster & Banner Generator",
+      "Product Description Generator",
+      "Poster & Banner Generator",
       "Social Media Caption Maker",
-      "WhatsApp/FB Messenger Auto Reply Script",
+      "WhatsApp/FB Auto Reply Template",
       "Invoice & Bill Content Generator",
     ],
     useCase: "দোকানদাররা দ্রুত প্রফেশনাল কনটেন্ট বানাতে পারবে, অফার/ডিসকাউন্ট দিতে পারবে, পোস্টার/ক্যাপশন বানাতে পারবে।"
   },
   {
-    title: "কনটেন্ট ক্রিয়েটর / ব্লগার প্যাকেজ",
+    title: "Content Creator / Blogger Package",
     icon: PenSquare,
     description: "আপনার ব্লগ, ইউটিউব চ্যানেল বা সোশ্যাল মিডিয়ার জন্য SEO-অপ্টিমাইজড কনটেন্ট তৈরি করুন ১০ গুণ দ্রুত।",
     tools: [
-      "AI Blog Writer (SEO Optimized)",
-      "AI YouTube Script Generator",
-      "Thumbnail Text + Image Ideas",
+      "SEO Blog Writer",
+      "YouTube Script Generator",
+      "Thumbnail Text & Idea Generator",
       "Keyword Research Helper",
-      "Bengali/English Translator"
+      "Bengali ↔ English Translator"
     ],
     useCase: "ব্লগার, ইউটিউবার, ইনফ্লুয়েন্সাররা ১০গুন দ্রুত কনটেন্ট তৈরি করতে পারবে।"
   },
   {
-    title: "ডিজিটাল মার্কেটার প্যাকেজ",
+    title: "Digital Marketer Package",
     icon: Megaphone,
     description: "আপনার বিজ্ঞাপন, ইমেল এবং ল্যান্ডিং পেজের জন্য হাই-কনভার্টিং কপি তৈরি করে সেলস বাড়ান।",
     tools: [
       "FB/Instagram Ads Copy Generator",
       "Email Marketing Copy",
-      "Landing Page Headline Generator",
-      "A/B Testing Text Suggestions",
+      "Landing Page Headline Maker",
+      "A/B Testing Content Generator",
       "Hashtag Generator",
     ],
     useCase: "যারা ব্যবসা বা ব্র্যান্ড প্রোমোট করে তাদের জন্য।"
   },
   {
-    title: "স্টুডেন্ট ও অ্যাকাডেমিক প্যাকেজ",
+    title: "Student & Academic Package",
     icon: GraduationCap,
     description: "আপনার অ্যাসাইনমেন্ট, প্রেজেন্টেশন এবং গ্রামার সংক্রান্ত সমস্যা সমাধান করুন এক নিমিষে।",
     tools: [
       "Essay & Assignment Writer",
-      "Bengali/English Summary Maker",
+      "বাংলা → ইংরেজি Summary Maker",
       "Grammar & Spelling Fixer",
       "Question → Answer Explainer",
       "Presentation Slide Content Generator"
     ],
     useCase: "যারা পড়াশোনায় সাহায্য চাইবে তাদের জন্য।"
   },
-   {
-    title: "কম্পিউটার ও টাইপিং শপ প্যাকেজ",
+  {
+      title: "News & Media Package",
+      icon: Newspaper,
+      description: "সংবাদ শিরোনাম, প্রেস রিলিজ এবং ব্রেকিং নিউজ দ্রুত তৈরি করুন।",
+      tools: [
+          "News Headline Generator",
+          "Press Release Drafting Tool",
+          "Fact-to-Article Expander",
+          "Social Media Caption for News",
+          "Breaking News Quick Template",
+      ],
+      useCase: "সংবাদ মাধ্যম এবং সাংবাদিকদের জন্য দ্রুত ও নির্ভুল কনটেন্ট তৈরি করা।"
+  },
+  {
+    title: "Computer Shop / Printing Shop Package",
     icon: Briefcase,
     description: "আপনার দোকানের গ্রাহকদের জন্য আবেদনপত্র, সিভি, স্ট্যাম্প এবং অন্যান্য ডকুমেন্ট দ্রুত তৈরি করুন।",
     tools: [
       "Application & Letter Generator",
-      "Resume & CV Builder",
-      "Stamp & Certificate Text Generator",
-      "Handwritten Text → Typed Text (OCR)",
-      "Quick Typing Helper",
+      "Resume & CV Builder (বাংলা + ইংরেজি)",
+      "Stamp & Certificate Maker",
+      "Contract/Agreement Writer",
+      "OCR Typing Helper (Handwritten → Typed)",
+      "Passport Size Photo Maker",
+      "ID Card / Visiting Card Text Layout",
+      "Notice & Office Memo Generator",
+      "General Templates Library"
     ],
-    useCase: "যারা কম্পিউটার দোকান চালায়, typing + print service দেয়, stamp/affidavit বানায় — তারা দ্রুত কাস্টমারদের জন্য কনটেন্ট বানাতে পারবে।"
+    useCase: "যারা কম্পিউটার দোকান, টাইপিং ও প্রিন্টিং শপ চালায় তারা ৯০% কাজ দ্রুত করতে পারবে।"
   },
 ];
 
@@ -227,7 +244,7 @@ export default function HomePageClient({ testimonials, trendingTools, activeCoup
         <Dialog open={showPopup} onOpenChange={setShowPopup}>
             <DialogContent className="p-0 max-w-lg overflow-hidden border-0">
                 <div className="relative aspect-video">
-                    <Image src="https://picsum.photos/600/400" alt="AI Image Editor" className="object-cover w-full h-full" width={600} height={400} data-ai-hint="abstract technology" />
+                    <img src="https://picsum.photos/600/400" alt="AI Image Editor" className="object-cover w-full h-full" data-ai-hint="abstract technology" />
                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"/>
                 </div>
                  <div className="p-6 absolute bottom-0 text-white">
