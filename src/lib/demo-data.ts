@@ -296,8 +296,8 @@ export const pricingPlans = [
 export const testimonials = [
      {
         id: "1",
-        feature: "Bulk Generation 2.0",
-        quote: "TotthoAi 2.0's bulk generation feature is incredible! I created 50 blog posts in one afternoon using the new CSV upload. The AI images are so contextual that my engagement increased by 300%. This is the future of content creation.",
+        feature: "Bulk Generation",
+        quote: "TotthoAi's bulk generation feature is incredible! I created 50 blog posts in one afternoon using the new CSV upload. The AI images are so contextual that my engagement increased by 300%. This is the future of content creation.",
         metric: "300% engagement boost",
         authorName: "Tanvir Ahmed",
         authorRole: "Content Creator & Blogger",
@@ -307,7 +307,7 @@ export const testimonials = [
     {
         id: "2",
         feature: "Content Refresh Tool",
-        quote: "The Content Refresh tool saved my business! I had 200+ old articles that needed updating. TotthoAi 2.0 refreshed them all with current information and better SEO in just 2 hours. My organic traffic doubled in 3 weeks.",
+        quote: "The Content Refresh tool saved my business! I had 200+ old articles that needed updating. TotthoAi refreshed them all with current information and better SEO in just 2 hours. My organic traffic doubled in 3 weeks.",
         metric: "2x organic traffic",
         authorName: "Sharmin Akter",
         authorRole: "Education Platform Owner",
@@ -326,8 +326,8 @@ export const testimonials = [
     },
     {
         id: "4",
-        feature: "One-Click Writer 2.0",
-        quote: "One-Click Writer 2.0 is pure magic! My team generates client content 10x faster now. The custom prompts feature ensures every piece matches our clients' brand voice perfectly. We've scaled from 5 to 50 clients without hiring more writers.",
+        feature: "One-Click Writer",
+        quote: "One-Click Writer is pure magic! My team generates client content 10x faster now. The custom prompts feature ensures every piece matches our clients' brand voice perfectly. We've scaled from 5 to 50 clients without hiring more writers.",
         metric: "10x faster content",
         authorName: "Nusrat Jahan",
         authorRole: "Digital Marketing Agency",

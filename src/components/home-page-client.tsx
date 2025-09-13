@@ -57,7 +57,7 @@ const faqItems = [
     },
     {
         question: "What image generation capabilities does TotthoAi offer?",
-        answer: "Our Enhanced AI Images 2.0 can generate contextual, high-resolution images that are perfectly suited to your content, helping to increase reader engagement and visual appeal."
+        answer: "Our Enhanced AI Images can generate contextual, high-resolution images that are perfectly suited to your content, helping to increase reader engagement and visual appeal."
     },
     {
         question: "Can I customize the AI's writing style?",
@@ -85,7 +85,7 @@ const trendingCategories = [
 ];
 
 const iconMap: { [key: string]: React.ElementType } = {
-    PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircleIcon, Edit, Layers, RefreshCcw, Sparkles: SparklesIcon, TowerControl, Clapperboard, Youtube, Link: LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, BarChart, Search, Receipt, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Bot, Quote
+    PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircleIcon, Edit, Layers, RefreshCcw, Sparkles: SparklesIcon, TowerControl, Clapperboard, Youtube, Link: LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, BarChart, Search, Receipt, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Bot, Quote, Star
 };
 
 const featuredTools = [
@@ -152,7 +152,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
         <Dialog open={showPopup} onOpenChange={setShowPopup}>
             <DialogContent className="p-0 max-w-lg overflow-hidden border-0">
                 <div className="relative aspect-video">
-                    <img src="https://picsum.photos/600/400" alt="AI Image Editor" className="object-cover w-full h-full" width={600} height={400} data-ai-hint="abstract technology" />
+                    <Image src="https://picsum.photos/600/400" alt="AI Image Editor" className="object-cover w-full h-full" width={600} height={400} data-ai-hint="abstract technology" />
                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"/>
                 </div>
                  <div className="p-6 absolute bottom-0 text-white">
@@ -173,10 +173,10 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
         <section className="py-16 md:py-24 bg-muted/30">
           <div className="container mx-auto px-4 text-center">
             <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight animate-fade-in-up">
-              Create Professional Content 10x Faster with AI 2.0
+              Create Professional Content 10x Faster with AI
             </h1>
             <p className="text-lg text-muted-foreground mt-6 max-w-3xl mx-auto animate-fade-in-up [animation-delay:200ms]">
-              Generate 10x faster with TotthoAi 2.0. Save 90% time, boost SEO rankings, and reach a global audience in 150+ languages.
+              Generate 10x faster with TotthoAi. Save 90% time, boost SEO rankings, and reach a global audience in 150+ languages.
             </p>
             <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-muted-foreground animate-fade-in-up [animation-delay:400ms]">
                 <div className="flex items-center gap-2">
@@ -299,7 +299,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
         <section id="whats-new" className="py-12 md:py-20">
           <div className="container mx-auto px-4">
               <div className="text-center max-w-3xl mx-auto">
-                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">What's New in TotthoAi 2.0</h2>
+                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">What's New in TotthoAi</h2>
                   <p className="text-lg text-muted-foreground mt-4 animate-fade-in-up [animation-delay:200ms]">
                       Experience the next generation of AI-powered content creation with features designed to save time, boost quality, and scale your content strategy like never before.
                   </p>
@@ -353,7 +353,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                    <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-8">
                       <div className="space-y-2 animate-fade-in-up [animation-delay:200ms]">
                           <ImageIcon className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">Enhanced AI Images 2.0</h4>
+                          <h4 className="font-semibold">Enhanced AI Images</h4>
                           <p className="text-sm text-muted-foreground">Generate stunning, contextual images that boost engagement by 300%.</p>
                       </div>
                        <div className="space-y-2 animate-fade-in-up [animation-delay:300ms]">
@@ -373,7 +373,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                       </div>
                        <div className="space-y-2 animate-fade-in-up [animation-delay:600ms]">
                           <Layers className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">Bulk Generation 2.0</h4>
+                          <h4 className="font-semibold">Bulk Generation</h4>
                           <p className="text-sm text-muted-foreground">Create hundreds of articles simultaneously with our advanced engine.</p>
                       </div>
                        <div className="space-y-2 animate-fade-in-up [animation-delay:700ms]">
@@ -388,12 +388,12 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                       </div>
                         <div className="space-y-2 animate-fade-in-up [animation-delay:900ms]">
                           <PenSquare className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">One-Click Writer 2.0</h4>
+                          <h4 className="font-semibold">One-Click Writer</h4>
                           <p className="text-sm text-muted-foreground">Generate publication-ready articles with just one click.</p>
                       </div>
                         <div className="space-y-2 animate-fade-in-up [animation-delay:1000ms]">
                           <FileText className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">News Writer 2.0</h4>
+                          <h4 className="font-semibold">News Writer</h4>
                           <p className="text-sm text-muted-foreground">Create timely, accurate news articles with real-time data integration.</p>
                       </div>
                    </div>
@@ -412,9 +412,9 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
           <section className="py-12 md:py-20">
               <div className="container mx-auto px-4">
               <div className="text-center max-w-3xl mx-auto">
-                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Success Stories with TotthoAi 2.0</h2>
+                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Success Stories with TotthoAi</h2>
                   <p className="text-lg text-muted-foreground mt-4 animate-fade-in-up [animation-delay:200ms]">
-                  Real Results from Real Users. See how content creators, marketers, and businesses are achieving extraordinary results with our new 2.0 features.
+                  Real Results from Real Users. See how content creators, marketers, and businesses are achieving extraordinary results with our features.
                   </p>
                   <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center animate-fade-in-up [animation-delay:400ms]">
                       <p className="font-semibold text-lg">Avg. 90% time savings</p>
@@ -574,5 +574,3 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
   );
 
 }
-
-    

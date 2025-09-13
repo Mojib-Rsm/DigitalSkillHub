@@ -60,7 +60,7 @@ const writerPrompt = ai.definePrompt({
         seoTitle: z.string().describe('An SEO-optimized title for the article (around 60 characters).'),
         seoDescription: z.string().describe('A compelling meta description (around 155 characters) for SEO.'),
         imagePrompt: z.string().describe('A descriptive prompt for an AI image generator to create a relevant featured image.'),
-        inArticleImagePrompt: z.string().describe('A descriptive prompt for an AI image generator to create a relevant image to be placed within the article body.'),
+        inArticleImagePrompt: z.string().describe('A descriptive prompt for an AI image generator to create a relevant image to be placed within the article.'),
         altText: z.string().describe('SEO-friendly alt text for the featured image, containing the primary keyword.'),
         internalLinks: z.array(z.string()).describe('A list of 3-5 relevant topics for internal links within the article, based on the content.'),
         externalLinks: z.array(z.string()).describe('A list of 2-3 relevant topics for external (reputable, non-competing) sources.'),
@@ -161,12 +161,12 @@ const oneClickWriterFlow = ai.defineFlow(
     // Generate both images in parallel, but handle failures gracefully
     const [featuredImageResult, inArticleImageResult] = await Promise.allSettled([
         ai.generate({
-            model: 'googleai/gemini-2.0-flash-preview-image-generation',
+            model: 'googleai/gemini-pro-image-generation-preview',
             prompt: imagePrompt,
             config: { responseModalities: ['TEXT', 'IMAGE'] },
         }),
         ai.generate({
-            model: 'googleai/gemini-2.0-flash-preview-image-generation',
+            model: 'googleai/gemini-pro-image-generation-preview',
             prompt: inArticleImagePrompt,
             config: { responseModalities: ['TEXT', 'IMAGE'] },
         })
