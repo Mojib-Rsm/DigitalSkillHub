@@ -1,4 +1,4 @@
-import mysql from 'mysql';
+import mysql from 'mysql2';
 
 // Create a connection to the database
 const connection = mysql.createConnection({
