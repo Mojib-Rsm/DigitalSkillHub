@@ -1,10 +1,8 @@
 
 'use server';
 
-import { getFirestore, collection, getDocs, orderBy, query, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore/lite';
-import { app } from '@/lib/firebase';
-import { revalidatePath } from 'next/cache';
-import { pricingPlans as staticPricingPlans } from '@/lib/demo-data'; // Import static data
+import pool from '@/lib/mysql';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
 export type PricingPlan = {
     id: string;
@@ -19,19 +17,31 @@ export type PricingPlan = {
     features: Record<string, string[]>;
 };
 
-export async function getPricingPlans(): Promise<PricingPlan[]> {
-    // Return static data to avoid Firestore reads on public pages
-    return staticPricingPlans;
+function mapRowsToPlans(rows: RowDataPacket[]): PricingPlan[] {
+    return rows.map(row => ({
+        ...row,
+        id: row.id.toString(),
+        isPopular: !!row.isPopular,
+        features: JSON.parse(row.features),
+    })) as PricingPlan[];
 }
 
-// Admin functions still interact with Firestore
+export async function getPricingPlans(): Promise<PricingPlan[]> {
+    try {
+        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM pricing_plans ORDER BY price');
+        return mapRowsToPlans(rows);
+    } catch (error) {
+        console.error("Error fetching pricing plans from MySQL:", error);
+        return [];
+    }
+}
+
+// Admin functions still interact with MySQL
 export async function addPricingPlan(planData: Omit<PricingPlan, 'id'>) {
     try {
-        const db = getFirestore(app);
-        const pricingCol = collection(db, 'pricing');
-        const docRef = await addDoc(pricingCol, planData);
-        revalidatePath('/dashboard/admin/pricing');
-        return { success: true, id: docRef.id };
+        const dataToInsert = { ...planData, features: JSON.stringify(planData.features) };
+        const [result] = await pool.query<ResultSetHeader>('INSERT INTO pricing_plans SET ?', [dataToInsert]);
+        return { success: true, id: result.insertId.toString() };
     } catch (error) {
         return { success: false, message: (error as Error).message };
     }
@@ -39,10 +49,10 @@ export async function addPricingPlan(planData: Omit<PricingPlan, 'id'>) {
 
 export async function updatePricingPlan(planId: string, planData: Partial<Omit<PricingPlan, 'id'>>) {
     try {
-        const db = getFirestore(app);
-        const planRef = doc(db, 'pricing', planId);
-        await updateDoc(planRef, planData);
-        revalidatePath('/dashboard/admin/pricing');
+        const dataToUpdate = planData.features 
+            ? { ...planData, features: JSON.stringify(planData.features) }
+            : planData;
+        await pool.query('UPDATE pricing_plans SET ? WHERE id = ?', [dataToUpdate, planId]);
         return { success: true };
     } catch (error) {
         return { success: false, message: (error as Error).message };
@@ -51,10 +61,7 @@ export async function updatePricingPlan(planId: string, planData: Partial<Omit<P
 
 export async function deletePricingPlan(planId: string) {
     try {
-        const db = getFirestore(app);
-        const planRef = doc(db, 'pricing', planId);
-        await deleteDoc(planRef);
-        revalidatePath('/dashboard/admin/pricing');
+        await pool.query('DELETE FROM pricing_plans WHERE id = ?', [planId]);
         return { success: true };
     } catch (error) {
         return { success: false, message: (error as Error).message };

@@ -3,10 +3,9 @@
 'use server';
 
 import { z } from 'zod';
-import { getFirestore, doc, updateDoc } from 'firebase/firestore/lite';
-import { app } from '@/lib/firebase';
 import { getCurrentUser } from '@/services/user-service';
 import { revalidatePath } from 'next/cache';
+import pool from '@/lib/mysql';
 
 const UpdateRoleSchema = z.object({
   userId: z.string(),
@@ -16,12 +15,11 @@ const UpdateRoleSchema = z.object({
 export async function updateUserRole(userId: string, role: 'user' | 'admin') {
   const currentUser = await getCurrentUser();
 
-  // This check is a safeguard. The actual security is enforced by Firestore Security Rules.
   if (currentUser?.role !== 'admin') {
     return { success: false, message: 'Permission denied. You must be an admin to change roles.' };
   }
   
-  if (currentUser?.id === userId) {
+  if (currentUser?.id === parseInt(userId)) {
     return { success: false, message: 'Admins cannot change their own role.' };
   }
 
@@ -32,11 +30,7 @@ export async function updateUserRole(userId: string, role: 'user' | 'admin') {
   }
 
   try {
-    const db = getFirestore(app);
-    const userRef = doc(db, 'users', userId);
-    await updateDoc(userRef, {
-      role: role,
-    });
+    await pool.query('UPDATE users SET role = ? WHERE id = ?', [role, userId]);
     
     revalidatePath('/dashboard/admin/users');
 
@@ -44,7 +38,6 @@ export async function updateUserRole(userId: string, role: 'user' | 'admin') {
   } catch (error) {
     console.error('Error updating user role:', error);
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-    // Provide a more generic error to the client for security.
-    return { success: false, message: `Failed to update role. Please check your permissions and Firestore rules.` };
+    return { success: false, message: `Failed to update role. Please check your permissions and MySQL setup.` };
   }
 }

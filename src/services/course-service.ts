@@ -1,13 +1,11 @@
 
 'use server';
 
-import { getFirestore, collection, getDocs, query, where, addDoc, updateDoc, doc } from 'firebase/firestore/lite';
-import { app } from '@/lib/firebase';
-import { revalidatePath } from 'next/cache';
-import { allCourses as staticCourses } from '@/lib/demo-data'; // Import static data
+import pool from '@/lib/mysql';
+import { RowDataPacket } from 'mysql2';
 
 export type Course = {
-    id?: string; // ID might be from Firestore or absent for static data
+    id?: string;
     title: string;
     category: string;
     instructor: string;
@@ -30,13 +28,33 @@ const slugify = (text: string) => {
     .replace(/-+$/, '');         // Trim - from end of text
 };
 
+async function mapRowsToCourses(rows: RowDataPacket[]): Promise<Course[]> {
+    return rows.map(row => ({
+        id: row.id.toString(),
+        title: row.title,
+        category: row.category,
+        instructor: row.instructor,
+        price: row.price,
+        level: row.level,
+        duration: row.duration,
+        image: row.image,
+        dataAiHint: row.dataAiHint,
+    }));
+}
+
 export async function getCourses(): Promise<Course[]> {
-    // Directly return the static data from demo-data.ts
-    // This avoids any Firestore read operations for public-facing pages.
-    return staticCourses;
+    try {
+        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM courses');
+        return mapRowsToCourses(rows);
+    } catch (error) {
+        console.error("Error fetching courses from MySQL:", error);
+        return [];
+    }
 }
 
 export async function getCourseBySlug(slug: string): Promise<Course | null> {
+    // Since slug is derived, we find by title and then check slug.
+    // In a real DB, you'd store the slug.
     const courses = await getCourses();
     const course = courses.find(c => slugify(c.title) === slug);
     return course || null;

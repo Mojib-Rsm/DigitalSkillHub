@@ -1,13 +1,20 @@
-import pool from "@/lib/db";
+import pool from "@/lib/mysql";
 import type { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 // Define the User type based on your DB schema
-type User = {
+export type User = {
     id?: number;
     name: string;
     email: string;
     password?: string; // Password might be sensitive and not always fetched
+    role?: 'admin' | 'user';
+    credits?: number;
+    profile_image?: string;
+    status?: 'active' | 'banned';
+    plan_id?: string;
+    bookmarks?: string;
     created_at?: Date;
+    phone?: string;
 };
 
 export const UserModel = {

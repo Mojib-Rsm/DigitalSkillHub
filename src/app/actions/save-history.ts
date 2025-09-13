@@ -1,10 +1,9 @@
 
 'use server';
 
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore/lite';
-import { app } from '@/lib/firebase';
 import { z } from 'zod';
 import { getCurrentUser } from '@/services/user-service';
+import { HistoryModel } from '@/models/historyModel';
 
 const HistoryItemSchema = z.object({
   tool: z.string(),
@@ -31,14 +30,14 @@ export async function saveHistoryAction(item: HistoryItem) {
   }
 
   try {
-    const db = getFirestore(app);
-    await addDoc(collection(db, 'history'), {
-      uid: user.id,
-      ...validatedItem.data,
-      createdAt: serverTimestamp(),
+    await HistoryModel.create({
+      user_id: user.id,
+      tool: validatedItem.data.tool,
+      input: JSON.stringify(validatedItem.data.input),
+      output: JSON.stringify(validatedItem.data.output),
     });
   } catch (error) {
-    console.error('Failed to save history to Firestore:', error);
+    console.error('Failed to save history to MySQL:', error);
     // Don't throw error to the client, just log it.
   }
 }

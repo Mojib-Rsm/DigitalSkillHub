@@ -1,8 +1,7 @@
 
 'use server';
 
-import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/firestore/lite';
-import { app } from '@/lib/firebase';
+import pool from '@/lib/mysql';
 import { getCurrentUser } from '@/services/user-service';
 
 type Notification = {
@@ -18,12 +17,9 @@ export async function sendNotification(notification: Notification) {
   }
 
   try {
-    const db = getFirestore(app);
-    await addDoc(collection(db, 'notifications'), {
+    await pool.query('INSERT INTO notifications SET ?', {
       ...notification,
       sender: currentUser.name,
-      createdAt: serverTimestamp(),
-      readBy: [], // Array to track which users have read it
     });
     return { success: true, message: 'Notification sent successfully.' };
   } catch (error) {

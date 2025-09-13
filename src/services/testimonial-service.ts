@@ -1,9 +1,8 @@
 
 'use server';
 
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
-import { app } from '@/lib/firebase';
-import { testimonials as staticTestimonials } from '@/lib/demo-data'; // Import static data
+import pool from '@/lib/mysql';
+import { RowDataPacket } from 'mysql2';
 
 export type Testimonial = {
     id: string;
@@ -17,6 +16,11 @@ export type Testimonial = {
 };
 
 export async function getTestimonials(): Promise<Testimonial[]> {
-    // Return static data to avoid Firestore reads on public pages
-    return staticTestimonials;
+    try {
+        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM testimonials');
+        return rows.map(row => ({...row, id: row.id.toString()})) as Testimonial[];
+    } catch (error) {
+        console.error("Error fetching testimonials from MySQL:", error);
+        return [];
+    }
 }

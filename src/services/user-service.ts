@@ -5,9 +5,11 @@
 import { auth } from '@/auth';
 import { UserModel } from '@/models/userModel';
 import bcrypt from 'bcrypt';
+import type { User } from '@/models/userModel';
+import pool from '@/lib/mysql';
 
 export type UserProfile = {
-  id: number; // Changed to number for MySQL INT
+  id: number;
   name: string;
   email: string;
   phone?: string;
@@ -19,12 +21,12 @@ export type UserProfile = {
   bookmarks?: string[];
 };
 
-export async function registerUser(userData: any) {
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
+export async function registerUser(userData: User) {
+    const hashedPassword = await bcrypt.hash(userData.password!, 10);
     return await UserModel.create({ ...userData, password: hashedPassword });
 }
 
-export async function loginUser(email: string, password: string): Promise<any> {
+export async function loginUser(email: string, password: string): Promise<User> {
     const user = await UserModel.findByEmail(email);
     if (!user) throw new Error("User not found");
 
@@ -50,14 +52,12 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
     const user = await UserModel.findByEmail(session.user.email);
     
     if (user && user.id) {
-       // This is a partial mapping. We assume the MySQL user table has these columns.
-       // In a real scenario, you'd ensure the DB schema matches this structure.
        const userProfile: UserProfile = {
             id: user.id,
             name: user.name,
             email: user.email,
             phone: user.phone || '',
-            role: user.role === 'admin' ? 'admin' : 'user', // Ensure role is correctly typed
+            role: user.role === 'admin' ? 'admin' : 'user',
             credits: user.credits || 100,
             profile_image: user.profile_image || session.user.image || '/default-avatar.png',
             status: user.status === 'active' || user.status === 'banned' ? user.status : 'active',
@@ -76,15 +76,14 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
   }
 }
 
-export async function updateUserProfile(userId: string, data: Partial<UserProfile>) {
-    // This function needs to be rewritten to use UserModel and update MySQL.
-    // For now, it's a placeholder.
-    console.log(`Updating user ${userId} in MySQL with:`, data);
+export async function updateUserProfile(userId: number, data: Partial<UserProfile>) {
+    const [result] = await pool.query('UPDATE users SET ? WHERE id = ?', [data, userId]);
     return { success: true };
 }
 
 
 export async function getAllUsers(): Promise<UserProfile[]> {
-    // This function needs to be implemented using UserModel.
-    return [];
+    const [rows] = await pool.query('SELECT * FROM users');
+    return rows as UserProfile[];
 }
+

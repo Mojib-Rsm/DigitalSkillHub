@@ -1,11 +1,11 @@
 
-
 'use server';
 
 import { z } from 'zod';
-import { addTool, updateTool, type Tool } from '@/services/tool-service';
+import { addTool, updateTool } from '@/services/tool-service';
 import { getCurrentUser } from '@/services/user-service';
 import { revalidatePath } from 'next/cache';
+import type { Tool } from '@/lib/demo-data';
 
 const toolSchema = z.object({
   title: z.string().min(3),
@@ -52,7 +52,7 @@ export async function saveToolAction(
       result = await addTool(validatedData.data);
        if (result.success && result.id) {
          revalidatePath('/dashboard/admin/tools');
-         const newTool = { id: result.id, ...validatedData.data}; 
+         const newTool: Tool = { id: result.id, ...validatedData.data}; 
          return { success: true, message: 'Tool created.', tool: newTool };
       }
     }

@@ -1,91 +1,138 @@
 
 'use server';
 
-import { getFirestore, collection, getDocs, orderBy, query, doc, updateDoc, addDoc, deleteDoc, limit as firestoreLimit, where, getDoc } from 'firebase/firestore/lite';
-import { app } from '@/lib/firebase';
-import { revalidatePath } from 'next/cache';
-import { tools as staticTools } from '@/lib/demo-data'; // Import static data
 import type { Tool } from '@/lib/demo-data';
+import pool from '@/lib/mysql';
+import { RowDataPacket } from 'mysql2';
 
-// --- Public-facing functions use static data ---
+// --- Public-facing functions use MySQL ---
+
+async function mapRowsToTools(rows: RowDataPacket[]): Promise<Tool[]> {
+    return rows.map(row => ({
+        id: row.id.toString(),
+        title: row.title,
+        description: row.description,
+        href: row.href,
+        icon: row.icon,
+        category: row.category,
+        enabled: !!row.enabled,
+        isFree: !!row.isFree,
+        credits: row.credits,
+    }));
+}
 
 export async function getTools(limit?: number): Promise<Tool[]> {
-    // Directly return the static data from demo-data.ts
-    // This avoids any Firestore read operations for public-facing pages.
-    const tools = staticTools;
-    if (limit) {
-        return tools.slice(0, limit);
+    try {
+        let queryString = 'SELECT * FROM tools ORDER BY title';
+        if (limit) {
+            queryString += ` LIMIT ${limit}`;
+        }
+        const [rows] = await pool.query<RowDataPacket[]>(queryString);
+        return mapRowsToTools(rows);
+    } catch (error) {
+        console.error("Error fetching tools from MySQL:", error);
+        return [];
     }
-    return tools;
 }
 
 export async function getToolByHref(href: string): Promise<Tool | null> {
-    const allTools = await getTools();
-    return allTools.find(tool => tool.href === href) || null;
+    try {
+        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM tools WHERE href = ?', [href]);
+        if (rows.length > 0) {
+            const tools = await mapRowsToTools(rows);
+            return tools[0];
+        }
+        return null;
+    } catch (error) {
+        console.error(`Error fetching tool with href ${href} from MySQL:`, error);
+        return null;
+    }
 }
 
 export async function getToolByTitle(title: string): Promise<Tool | null> {
-    const allTools = await getTools();
-    return allTools.find(tool => tool.title === title) || null;
+    try {
+        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM tools WHERE title = ?', [title]);
+        if (rows.length > 0) {
+            const tools = await mapRowsToTools(rows);
+            return tools[0];
+        }
+        return null;
+    } catch (error) {
+        console.error(`Error fetching tool with title ${title} from MySQL:`, error);
+        return null;
+    }
 }
 
 export async function getToolById(id: string): Promise<Tool | null> {
-    const allTools = await getTools();
-    return allTools.find(tool => tool.id === id) || null;
+    try {
+        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM tools WHERE id = ?', [id]);
+        if (rows.length > 0) {
+            const tools = await mapRowsToTools(rows);
+            return tools[0];
+        }
+        return null;
+    } catch (error) {
+        console.error(`Error fetching tool with id ${id} from MySQL:`, error);
+        return null;
+    }
 }
 
 export async function getRelatedTools(category: string, currentToolId: string): Promise<Tool[]> {
-    const allTools = await getTools();
-    return allTools
-        .filter(tool => tool.category === category && tool.id !== currentToolId && tool.enabled)
-        .slice(0, 3);
+    try {
+        const [rows] = await pool.query<RowDataPacket[]>(
+            'SELECT * FROM tools WHERE category = ? AND id != ? AND enabled = 1 LIMIT 3',
+            [category, currentToolId]
+        );
+        return mapRowsToTools(rows);
+    } catch (error) {
+        console.error(`Error fetching related tools for category ${category} from MySQL:`, error);
+        return [];
+    }
 }
 
 export async function getTrendingTools(limit: number = 4): Promise<Tool[]> {
-    const allTools = await getTools();
-    // For now, we'll return a slice of the static tools as "trending"
-    // A more complex logic could be implemented here if needed, without db access.
-    return allTools.filter(t => t.enabled).slice(0, limit);
+    // A more complex logic could be implemented here (e.g., using a usage_count column)
+    try {
+        const [rows] = await pool.query<RowDataPacket[]>(
+            'SELECT * FROM tools WHERE enabled = 1 ORDER BY id DESC LIMIT ?',
+            [limit]
+        );
+        return mapRowsToTools(rows);
+    } catch (error) {
+        console.error("Error fetching trending tools from MySQL:", error);
+        return [];
+    }
 }
 
 
-// --- Admin functions still interact with Firestore to allow management ---
+// --- Admin functions still interact with MySQL to allow management ---
 
 export async function addTool(toolData: Omit<Tool, 'id'>) {
     try {
-        const db = getFirestore(app);
-        const toolsCol = collection(db, 'tools');
-        const docRef = await addDoc(toolsCol, toolData);
-        revalidatePath('/dashboard/admin/tools');
-        return { success: true, id: docRef.id };
+        const [result] = await pool.query('INSERT INTO tools SET ?', [toolData]);
+        return { success: true, id: (result as any).insertId.toString() };
     } catch (error) {
-        console.error("Error adding tool:", error);
+        console.error("Error adding tool to MySQL:", error);
         return { success: false, message: (error as Error).message };
     }
 }
 
 export async function updateTool(toolId: string, toolData: Partial<Omit<Tool, 'id'>>) {
     try {
-        const db = getFirestore(app);
-        const toolRef = doc(db, 'tools', toolId);
-        await updateDoc(toolRef, toolData);
-        revalidatePath('/dashboard/admin/tools');
+        await pool.query('UPDATE tools SET ? WHERE id = ?', [toolData, toolId]);
         return { success: true };
     } catch (error) {
-        console.error("Error updating tool:", error);
+        console.error("Error updating tool in MySQL:", error);
         return { success: false, message: (error as Error).message };
     }
 }
 
 export async function deleteTool(toolId: string) {
     try {
-        const db = getFirestore(app);
-        const toolRef = doc(db, 'tools', toolId);
-        await deleteDoc(toolRef);
-        revalidatePath('/dashboard/admin/tools');
+        await pool.query('DELETE FROM tools WHERE id = ?', [toolId]);
         return { success: true };
     } catch (error) {
-        console.error("Error deleting tool:", error);
+        console.error("Error deleting tool from MySQL:", error);
         return { success: false, message: (error as Error).message };
     }
 }

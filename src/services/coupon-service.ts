@@ -1,9 +1,8 @@
 
 'use server';
 
-import { getFirestore, collection, getDocs, query, where, orderBy, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore/lite';
-import { app } from '@/lib/firebase';
-import { revalidatePath } from 'next/cache';
+import pool from '@/lib/mysql';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
 import { getCurrentUser } from './user-service';
 
 export type Coupon = {
@@ -16,7 +15,14 @@ export type Coupon = {
     applicableTo: 'all' | string[]; // 'all' or array of tool IDs
 };
 
-let couponsCache: Coupon[] | null = null;
+function mapRowsToCoupons(rows: RowDataPacket[]): Coupon[] {
+    return rows.map(row => ({
+        ...row,
+        id: row.id.toString(),
+        isActive: !!row.isActive,
+        applicableTo: row.applicableTo === 'all' ? 'all' : JSON.parse(row.applicableTo)
+    })) as Coupon[];
+}
 
 export async function getCoupons(): Promise<Coupon[]> {
     const currentUser = await getCurrentUser();
@@ -25,57 +31,23 @@ export async function getCoupons(): Promise<Coupon[]> {
         return [];
     }
 
-    if (couponsCache) {
-        return couponsCache;
-    }
-
     try {
-        const db = getFirestore(app);
-        const couponsCol = collection(db, 'coupons');
-        const q = query(couponsCol, orderBy('code'));
-        const couponSnapshot = await getDocs(q);
-
-        const couponList = couponSnapshot.docs.map(doc => {
-            const data = doc.data();
-            return {
-                id: doc.id,
-                ...data,
-                validUntil: data.validUntil?.toDate(),
-            } as Coupon;
-        });
-
-        couponsCache = couponList;
-        return couponList;
+        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM coupons ORDER BY code');
+        return mapRowsToCoupons(rows);
     } catch (error) {
-        console.error("Error fetching coupons from Firestore:", error);
+        console.error("Error fetching coupons from MySQL:", error);
         return [];
     }
 }
 
 export async function getActiveCoupons(): Promise<Coupon[]> {
      try {
-        const db = getFirestore(app);
-        const couponsCol = collection(db, 'coupons');
-        const q = query(couponsCol, where('isActive', '==', true));
-        const couponSnapshot = await getDocs(q);
-
-        const couponList = couponSnapshot.docs
-            .map(doc => {
-                const data = doc.data();
-                return {
-                    id: doc.id,
-                    ...data,
-                    validUntil: data.validUntil?.toDate(),
-                } as Coupon;
-            })
-            .filter(coupon => {
-                // Also filter by date if validUntil is set
-                return !coupon.validUntil || coupon.validUntil > new Date();
-            });
-
-        return couponList;
+        const [rows] = await pool.query<RowDataPacket[]>(
+            'SELECT * FROM coupons WHERE isActive = 1 AND (validUntil IS NULL OR validUntil > NOW())'
+        );
+        return mapRowsToCoupons(rows);
     } catch (error) {
-        console.error("Error fetching active coupons from Firestore:", error);
+        console.error("Error fetching active coupons from MySQL:", error);
         return [];
     }
 }
@@ -83,12 +55,12 @@ export async function getActiveCoupons(): Promise<Coupon[]> {
 
 export async function addCoupon(couponData: Omit<Coupon, 'id'>) {
     try {
-        const db = getFirestore(app);
-        const couponsCol = collection(db, 'coupons');
-        const docRef = await addDoc(couponsCol, couponData);
-        couponsCache = null; // Invalidate cache
-        revalidatePath('/dashboard/admin/coupons');
-        return { success: true, id: docRef.id };
+        const dataToInsert = {
+            ...couponData,
+            applicableTo: Array.isArray(couponData.applicableTo) ? JSON.stringify(couponData.applicableTo) : couponData.applicableTo
+        };
+        const [result] = await pool.query<ResultSetHeader>('INSERT INTO coupons SET ?', [dataToInsert]);
+        return { success: true, id: result.insertId.toString() };
     } catch (error) {
         return { success: false, message: (error as Error).message };
     }
@@ -96,11 +68,11 @@ export async function addCoupon(couponData: Omit<Coupon, 'id'>) {
 
 export async function updateCoupon(couponId: string, couponData: Partial<Omit<Coupon, 'id'>>) {
     try {
-        const db = getFirestore(app);
-        const couponRef = doc(db, 'coupons', couponId);
-        await updateDoc(couponRef, couponData);
-        couponsCache = null; // Invalidate cache
-        revalidatePath('/dashboard/admin/coupons');
+        const dataToUpdate = {
+            ...couponData,
+            applicableTo: Array.isArray(couponData.applicableTo) ? JSON.stringify(couponData.applicableTo) : couponData.applicableTo
+        };
+        await pool.query('UPDATE coupons SET ? WHERE id = ?', [dataToUpdate, couponId]);
         return { success: true };
     } catch (error) {
         return { success: false, message: (error as Error).message };
@@ -109,11 +81,7 @@ export async function updateCoupon(couponId: string, couponData: Partial<Omit<Co
 
 export async function deleteCoupon(couponId: string) {
     try {
-        const db = getFirestore(app);
-        const couponRef = doc(db, 'coupons', couponId);
-        await deleteDoc(couponRef);
-        couponsCache = null; // Invalidate cache
-        revalidatePath('/dashboard/admin/coupons');
+        await pool.query('DELETE FROM coupons WHERE id = ?', [couponId]);
         return { success: true };
     } catch (error) {
         return { success: false, message: (error as Error).message };
