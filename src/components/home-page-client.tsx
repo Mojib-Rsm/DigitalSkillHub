@@ -88,45 +88,120 @@ const iconMap: { [key: string]: React.ElementType } = {
     PenSquare, ShoppingCart, Languages, Hash, Briefcase, Mail, Lightbulb, FileText, GraduationCap, HelpCircle, BookCheck, ImageIcon, DollarSign, Wand, FileSignature, Globe, Film, Mic, Code, Presentation, Palette, Gamepad, MessageSquare, UserCircleIcon, Edit, Layers, RefreshCcw, Sparkles: SparklesIcon, TowerControl, Clapperboard, Youtube, Link: LinkIcon, Activity, ArrowUpRight, CreditCard, Award, CheckCircle, Clock, TrendingUp, Users, ThumbsUp, ShieldCheck, GanttChartSquare, ChevronDown, BarChart, Search, Receipt, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Bot, Quote, Star
 };
 
-const featuredTools = [
+const packages = [
   {
-    title: "One-Click Article Writer",
-    description: "Generate a full blog post from a single title. SEO-optimized and ready to publish.",
-    href: "/ai-tools/one-click-writer",
-    icon: SparklesIcon,
+    title: "দোকানদার প্যাকেজ",
+    icon: ShoppingCart,
+    description: "আপনার দোকানের日常প্রয়োজনীয় কনটেন্ট ও মার্কেটিং ম্যাটেরিয়াল তৈরি করুন দ্রুত এবং সহজে।",
+    tools: [
+      "AI Product Description Generator",
+      "AI Poster & Banner Generator",
+      "Social Media Caption Maker",
+      "WhatsApp/FB Messenger Auto Reply Script",
+      "Invoice & Bill Content Generator",
+    ],
+    useCase: "দোকানদাররা দ্রুত প্রফেশনাল কনটেন্ট বানাতে পারবে, অফার/ডিসকাউন্ট দিতে পারবে, পোস্টার/ক্যাপশন বানাতে পারবে।"
   },
   {
-    title: "Facebook Comment Generator",
-    description: "Instantly create relevant comments and replies for any Facebook post or image.",
-    href: "/ai-tools/facebook-comment-generator",
-    icon: MessageSquare,
+    title: "কনটেন্ট ক্রিয়েটর / ব্লগার প্যাকেজ",
+    icon: PenSquare,
+    description: "আপনার ব্লগ, ইউটিউব চ্যানেল বা সোশ্যাল মিডিয়ার জন্য SEO-অপ্টিমাইজড কনটেন্ট তৈরি করুন ১০ গুণ দ্রুত।",
+    tools: [
+      "AI Blog Writer (SEO Optimized)",
+      "AI YouTube Script Generator",
+      "Thumbnail Text + Image Ideas",
+      "Keyword Research Helper",
+      "Bengali/English Translator"
+    ],
+    useCase: "ব্লগার, ইউটিউবার, ইনফ্লুয়েন্সাররা ১০গুন দ্রুত কনটেন্ট তৈরি করতে পারবে।"
   },
   {
-    title: "AI Image Generator",
-    description: "Turn your text descriptions into stunning, high-quality images for any purpose.",
-    href: "/ai-tools/image-generator",
-    icon: ImageIcon,
+    title: "ডিজিটাল মার্কেটার প্যাকেজ",
+    icon: Megaphone,
+    description: "আপনার বিজ্ঞাপন, ইমেল এবং ল্যান্ডিং পেজের জন্য হাই-কনভার্টিং কপি তৈরি করে সেলস বাড়ান।",
+    tools: [
+      "FB/Instagram Ads Copy Generator",
+      "Email Marketing Copy",
+      "Landing Page Headline Generator",
+      "A/B Testing Text Suggestions",
+      "Hashtag Generator",
+    ],
+    useCase: "যারা ব্যবসা বা ব্র্যান্ড প্রোমোট করে তাদের জন্য।"
+  },
+  {
+    title: "স্টুডেন্ট ও অ্যাকাডেমিক প্যাকেজ",
+    icon: GraduationCap,
+    description: "আপনার অ্যাসাইনমেন্ট, প্রেজেন্টেশন এবং গ্রামার সংক্রান্ত সমস্যা সমাধান করুন এক নিমিষে।",
+    tools: [
+      "Essay & Assignment Writer",
+      "Bengali/English Summary Maker",
+      "Grammar & Spelling Fixer",
+      "Question → Answer Explainer",
+      "Presentation Slide Content Generator"
+    ],
+    useCase: "যারা পড়াশোনায় সাহায্য চাইবে তাদের জন্য।"
   },
    {
-    title: "AI Image Editor",
-    description: "Edit any image with a simple text prompt using our new Nano Banana model.",
-    href: "/ai-tools/image-editor",
-    icon: Palette,
+    title: "কম্পিউটার ও টাইপিং শপ প্যাকেজ",
+    icon: Briefcase,
+    description: "আপনার দোকানের গ্রাহকদের জন্য আবেদনপত্র, সিভি, স্ট্যাম্প এবং অন্যান্য ডকুমেন্ট দ্রুত তৈরি করুন।",
+    tools: [
+      "Application & Letter Generator",
+      "Resume & CV Builder",
+      "Stamp & Certificate Text Generator",
+      "Handwritten Text → Typed Text (OCR)",
+      "Quick Typing Helper",
+    ],
+    useCase: "যারা কম্পিউটার দোকান চালায়, typing + print service দেয়, stamp/affidavit বানায় — তারা দ্রুত কাস্টমারদের জন্য কনটেন্ট বানাতে পারবে।"
   },
 ];
 
+const newPricingPlans = [
+    {
+        id: "free",
+        name: "Free Plan",
+        price: 0,
+        description: "দোকানদার ও ছোট ইউজারদের আকৃষ্ট করার জন্য।",
+        features: ["Limited use of some tools", "5 Generations per month"],
+        isPopular: false,
+    },
+    {
+        id: "starter",
+        name: "Starter",
+        price: 499,
+        description: "For individuals and small teams starting out.",
+        features: ["Access to 5 tools", "200 Generations per month", "Standard Support"],
+        isPopular: false,
+    },
+    {
+        id: "pro",
+        name: "Pro",
+        price: 999,
+        description: "For professionals who need more power.",
+        features: ["Access to 15 tools", "1000 Generations per month", "Priority Support", "Early access to new features"],
+        isPopular: true,
+    },
+    {
+        id: "business",
+        name: "Business",
+        price: 1999,
+        description: "For businesses and agencies with high demand.",
+        features: ["Access to all tools", "Unlimited Generations (basic)", "Priority Access & Support"],
+        isPopular: false,
+    }
+]
+
 
 interface HomePageClientProps {
-    pricingPlans: PricingPlan[];
     testimonials: Testimonial[];
     trendingTools: Tool[];
     activeCoupons: Coupon[];
 }
 
-export default function HomePageClient({ pricingPlans, testimonials, trendingTools, activeCoupons }: HomePageClientProps) {
+export default function HomePageClient({ testimonials, trendingTools, activeCoupons }: HomePageClientProps) {
   const [isMounted, setIsMounted] = React.useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const loading = !pricingPlans || !testimonials || !trendingTools;
+  const loading = !testimonials || !trendingTools;
   const primaryCoupon = activeCoupons && activeCoupons.length > 0 ? activeCoupons[0] : null;
 
   React.useEffect(() => {
@@ -196,32 +271,45 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
           </div>
         </section>
 
-        {/* Featured Tools Section */}
+        {/* Packages Section */}
         <section className="py-12 md:py-20">
             <div className="container mx-auto px-4">
                  <div className="text-center max-w-3xl mx-auto">
-                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">প্রয়োজনীয় টুলস</h2>
+                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">আপনার প্রয়োজন অনুযায়ী প্যাকেজ</h2>
                     <p className="text-lg text-muted-foreground mt-4">
-                        আমাদের সবচেয়ে জনপ্রিয় এবং শক্তিশালী টুলগুলো যা আপনার কাজকে সহজ করে তুলবে।
+                        আপনার পেশা যাই হোক না কেন, আমাদের কাছে আপনার জন্য সঠিক টুলস এবং প্যাকেজ রয়েছে।
                     </p>
                 </div>
-                <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {featuredTools.map((tool) => {
-                        const Icon = tool.icon;
+                <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {packages.map((pkg) => {
+                        const Icon = pkg.icon;
                         return (
-                            <Link href={tool.href} key={tool.title}>
-                                <Card className="text-center p-6 shadow-md hover:shadow-xl hover:border-primary transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
-                                    <CardHeader className="p-0 items-center">
-                                        <div className="bg-primary/10 p-4 rounded-full mb-4">
+                            <Card key={pkg.title} className="shadow-md hover:shadow-xl hover:border-primary transition-all duration-300 transform hover:-translate-y-1 h-full flex flex-col">
+                                <CardHeader className="p-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="bg-primary/10 p-3 rounded-lg">
                                             <Icon className="w-8 h-8 text-primary"/>
                                         </div>
-                                        <CardTitle>{tool.title}</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="flex-grow">
-                                      <p className="text-sm text-muted-foreground mt-2">{tool.description}</p>
-                                    </CardContent>
-                                </Card>
-                            </Link>
+                                        <CardTitle className="text-xl">{pkg.title}</CardTitle>
+                                    </div>
+                                    <p className="text-sm text-muted-foreground pt-2">{pkg.description}</p>
+                                </CardHeader>
+                                <CardContent className="flex-grow px-6">
+                                  <h4 className="font-semibold text-sm mb-2">Included Tools:</h4>
+                                   <ul className="space-y-1.5 text-xs text-muted-foreground">
+                                        {pkg.tools.map(tool => (
+                                            <li key={tool} className="flex items-center gap-2">
+                                                <CheckCircle className="w-3.5 h-3.5 text-green-500" /> {tool}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </CardContent>
+                                <CardFooter className="p-6 pt-4">
+                                     <Button variant="link" className="p-0">
+                                        Explore Package <ArrowRight className="ml-2 w-4 h-4"/>
+                                     </Button>
+                                </CardFooter>
+                            </Card>
                         );
                     })}
                 </div>
@@ -278,121 +366,50 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
           </div>
         </section>
 
-        {/* What's New Section */}
-        <section id="whats-new" className="py-12 md:py-20">
-          <div className="container mx-auto px-4">
-              <div className="text-center max-w-3xl mx-auto">
-                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">What's New in TotthoAi</h2>
-                  <p className="text-lg text-muted-foreground mt-4 animate-fade-in-up [animation-delay:200ms]">
-                      Experience the next generation of AI-powered content creation with features designed to save time, boost quality, and scale your content strategy like never before.
-                  </p>
-              </div>
-              <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                   <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:400ms]">
-                      <CardHeader>
-                          <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
-                              <Clock className="w-8 h-8 text-primary" />
-                          </div>
-                          <CardTitle className="text-xl font-bold">90% Time Savings</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                          <p className="text-sm text-muted-foreground">Automate tedious tasks and generate high-quality content in seconds, not hours.</p>
-                      </CardContent>
-                  </Card>
-                  <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:600ms]">
-                      <CardHeader>
-                          <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
-                              <TrendingUp className="w-8 h-8 text-primary" />
-                          </div>
-                          <CardTitle className="text-xl font-bold">Better SEO Results</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                          <p className="text-sm text-muted-foreground">Create content that is optimized for search engines to rank higher and drive more traffic.</p>
-                      </CardContent>
-                  </Card>
-                  <Card className="text-center shadow-lg p-4 animate-fade-in-up [animation-delay:800ms]">
-                      <CardHeader>
-                          <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-2">
-                              <Award className="w-8 h-8 text-primary" />
-                          </div>
-                          <CardTitle className="text-xl font-bold">Professional Quality</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                          <p className="text-sm text-muted-foreground">Generate well-structured, coherent, and engaging articles that rival human writers.</p>
-                      </CardContent>
-                  </Card>
-              </div>
-          </div>
-        </section>
+         {/* Pricing Section */}
+          <section id="pricing" className="py-12 md:py-20">
+              <div className="container mx-auto px-4">
+                  <div className="text-center max-w-3xl mx-auto">
+                      <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
+                          Choose Your AI Content Creation Plan
+                      </h2>
+                      <p className="text-lg text-muted-foreground mt-4">
+                          All tools on this site are free. However, if you need more power and features, consider our premium plans.
+                      </p>
+                  </div>
 
-         {/* Detailed Features */}
-         <section id="features" className="py-12 md:pt-20 bg-muted/50">
-              <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                   <div className="md:col-span-2 lg:col-span-1 lg:pr-8 animate-fade-in-up">
-                      <Badge variant="destructive">🔥 HOT NEW FEATURE</Badge>
-                      <h3 className="text-3xl font-bold mt-2">Video to Blog Post</h3>
-                      <p className="text-muted-foreground mt-4">Transform any YouTube video into a comprehensive, SEO-optimized blog post in minutes. Extract insights, create outlines, and generate complete articles from video content.</p>
-                   </div>
-                   <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-8">
-                      <div className="space-y-2 animate-fade-in-up [animation-delay:200ms]">
-                          <ImageIcon className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">Enhanced AI Images</h4>
-                          <p className="text-sm text-muted-foreground">Generate stunning, contextual images that boost engagement by 300%.</p>
-                      </div>
-                       <div className="space-y-2 animate-fade-in-up [animation-delay:300ms]">
-                          <LinkIcon className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">Smart Internal Linking</h4>
-                          <p className="text-sm text-muted-foreground">Automatically create SEO-friendly internal links to improve site authority.</p>
-                      </div>
-                       <div className="space-y-2 animate-fade-in-up [animation-delay:400ms]">
-                          <SparklesIcon className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">Custom AI Prompts</h4>
-                          <p className="text-sm text-muted-foreground">Train the AI with your unique voice and style for brand consistency.</p>
-                      </div>
-                       <div className="space-y-2 animate-fade-in-up [animation-delay:500ms]">
-                          <Languages className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">150+ Languages Support</h4>
-                          <p className="text-sm text-muted-foreground">Create content in Bengali, English, Hindi, Arabic, and more.</p>
-                      </div>
-                       <div className="space-y-2 animate-fade-in-up [animation-delay:600ms]">
-                          <Layers className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">Bulk Generation</h4>
-                          <p className="text-sm text-muted-foreground">Create hundreds of articles simultaneously with our advanced engine.</p>
-                      </div>
-                       <div className="space-y-2 animate-fade-in-up [animation-delay:700ms]">
-                          <RefreshCcw className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">Content Refresh Tool</h4>
-                          <p className="text-sm text-muted-foreground">Instantly update old content with fresh information and improved SEO.</p>
-                      </div>
-                        <div className="space-y-2 animate-fade-in-up [animation-delay:800ms]">
-                          <TowerControl className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">Topical Authority Builder</h4>
-                          <p className="text-sm text-muted-foreground">Build topic clusters to establish your site as a niche authority.</p>
-                      </div>
-                        <div className="space-y-2 animate-fade-in-up [animation-delay:900ms]">
-                          <PenSquare className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">One-Click Writer</h4>
-                          <p className="text-sm text-muted-foreground">Generate publication-ready articles with just one click.</p>
-                      </div>
-                        <div className="space-y-2 animate-fade-in-up [animation-delay:1000ms]">
-                          <FileText className="w-8 h-8 text-primary"/>
-                          <h4 className="font-semibold">News Writer</h4>
-                          <p className="text-sm text-muted-foreground">Create timely, accurate news articles with real-time data integration.</p>
-                      </div>
-                   </div>
+                  <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-start">
+                      {newPricingPlans.map((plan, index) => (
+                      <Card key={plan.id} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
+                          {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR</Badge>}
+                          <CardHeader>
+                              <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+                              <p className="text-muted-foreground pt-2 h-12">{plan.description}</p>
+                              <div className="flex items-baseline gap-2 pt-4">
+                                  <p className="text-4xl font-bold text-primary">৳{plan.price}</p>
+                                  {plan.id !== 'free' && <span className="text-sm text-muted-foreground">/ মাস</span>}
+                              </div>
+                          </CardHeader>
+                          <CardContent className="flex-grow space-y-4">
+                              <ul className="space-y-3 text-sm">
+                                  {plan.features.map(feature => (
+                                      <li key={feature} className="flex items-center gap-2 text-muted-foreground"><CheckCircle className="w-4 h-4 text-green-500" /> {feature}</li>
+                                  ))}
+                              </ul>
+                          </CardContent>
+                          <CardFooter>
+                              <Button size="lg" className="w-full" asChild>
+                                  <Link href="/dashboard/pricing">{plan.id === 'free' ? 'Get Started' : 'Choose Plan'}</Link>
+                              </Button>
+                          </CardFooter>
+                      </Card>
+                      ))}
+                  </div>
               </div>
-               <div className="text-center mt-12 animate-fade-in-up [animation-delay:1100ms]">
-                   <Button size="lg" asChild>
-                      <Link href="/ai-tools">
-                          <Zap className="mr-2 h-5 w-5"/>
-                          Explore All Tools
-                      </Link>
-                  </Button>
-              </div>
-         </section>
+          </section>
         
         {/* Success Stories Section */}
-          <section className="py-12 md:py-20">
+          <section className="py-12 md:py-20 bg-muted/50">
               <div className="container mx-auto px-4">
               <div className="text-center max-w-3xl mx-auto">
                   <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Success Stories with TotthoAi</h2>
@@ -444,83 +461,6 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
               </div>
           </section>
 
-         {/* Pricing Section */}
-          <section id="pricing" className="py-12 md:py-20 bg-muted/50">
-              <div className="container mx-auto px-4">
-                  <div className="text-center max-w-3xl mx-auto">
-                      {primaryCoupon && (
-                        <Badge variant="secondary" className="text-sm py-1.5 px-4 border-2 border-primary/50 text-primary mb-4">
-                            🔥 {primaryCoupon.description || `Limited Time Offer - Use code ${primaryCoupon.code}`}
-                        </Badge>
-                      )}
-                      <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
-                          Choose Your AI Content Creation Plan
-                      </h2>
-                      <p className="text-lg text-muted-foreground mt-4">
-                          All tools on this site are free. However, if you need more power and features, consider our premium plans.
-                      </p>
-                  </div>
-
-                  {loading ? (
-                      <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-                          {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-[500px] w-full" />)}
-                      </div>
-                  ) : (
-                  <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
-                      {pricingPlans.map((plan, index) => (
-                      <Card key={`pricing-${plan.id}-${index}`} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
-                          {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR</Badge>}
-                          <CardHeader>
-                              <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-                              <div className="flex items-baseline gap-2">
-                                  <p className="text-4xl font-bold text-primary">৳{plan.price}</p>
-                                  <p className="text-xl font-medium text-muted-foreground line-through">৳{plan.originalPrice}</p>
-                                  {plan.discount && <Badge variant="destructive">{plan.discount}</Badge>}
-                              </div>
-                              <p className="text-muted-foreground pt-2">{plan.description}</p>
-                              {primaryCoupon && (
-                                <p className="text-sm text-accent font-semibold">Use code: {primaryCoupon.code} at checkout for {primaryCoupon.discountPercentage}% off!</p>
-                              )}
-                          </CardHeader>
-                          <CardContent className="flex-grow space-y-4">
-                              <div className={`p-3 rounded-lg text-center ${plan.isPopular ? 'bg-primary/10' : 'bg-muted'}`}>
-                                  <p className={`text-lg font-bold ${plan.isPopular ? 'text-primary' : ''}`}>{plan.credits} Credits</p>
-                                  <p className="text-sm text-muted-foreground">Valid for {plan.validity}</p>
-                              </div>
-                              <div className="space-y-3 text-sm">
-                                  {Object.entries(plan.features).map(([category, features]) => (
-                                      <div key={category}>
-                                          <h4 className="font-semibold text-base pt-2">{category}</h4>
-                                          <ul className="space-y-2">
-                                              {(features as string[]).map(feature => (
-                                                  <li key={feature} className="flex items-center gap-2 text-muted-foreground"><CheckCircle className="w-4 h-4 text-green-500" /> {feature}</li>
-                                              ))}
-                                          </ul>
-                                      </div>
-                                  ))}
-                              </div>
-                          </CardContent>
-                          <CardFooter>
-                              <Button size="lg" className="w-full" asChild>
-                                  <Link href="/dashboard/pricing">GET STARTED</Link>
-                              </Button>
-                          </CardFooter>
-                      </Card>
-                      ))}
-                  </div>
-                  )}
-                  
-                  {/* bKash Payment */}
-                  <div className="mt-8 text-center">
-                      <p className="text-sm text-muted-foreground">Pay with</p>
-                      <div className="flex justify-center items-center gap-2 mt-2">
-                          <svg className="h-8" viewBox="0 0 1024 372.48" xmlns="http://www.w3.org/2000/svg"><path d="M789.28 206.01c-6.22-9.45-14.28-17.51-24.16-24.16-29.4-19.8-67.65-27.42-105.1-27.42-83.82 0-155.22 55.45-180.12 131.25H259.9a185.53 185.53 0 0 1 185.16-184.81c50.78 0 96.84 19.89 130.82 51.69a183.88 183.88 0 0 1 51.51 130.64h-74.01a113.88 113.88 0 0 0-50.1-107.19z" fill="#D82A7D"/><path d="M575.83 293.36a110.87 110.87 0 0 0-21.57 2.37A111.43 111.43 0 0 0 445.89 404H244.66a185.53 185.53 0 0 1 327-133.4 114.1 114.1 0 0 0-38.33-22.95 183.85 183.85 0 0 1-57.5 145.71z" fill="#D82A7D"/><path d="M837.74 34.33h-134.3v271.85a33.15 33.15 0 0 0 33.15 33.15h101.15V34.33z" fill="#D82A7D"/><path d="M1024 34.33H889.67v305h101.18a33.15 33.15 0 0 0 33.15-33.15V34.33z" fill="#D82A7D"/><path d="M0 34.33h201.23v305H0z" fill="#D82A7D"/><path d="M371.84 34.33H237.5v305h134.34a33.15 33.15 0 0 0 33.15-33.15V67.48a33.15 33.15 0 0 0-33.15-33.15z" fill="#D82A7D"/></svg>
-                          <p className="text-muted-foreground font-semibold">Easy mobile payments available for Bangladeshi users</p>
-                      </div>
-                  </div>
-              </div>
-          </section>
-
           {/* FAQ Section */}
           <section className="py-12 md:py-20">
               <div className="container mx-auto px-4">
@@ -557,3 +497,5 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
   );
 
 }
+
+    
