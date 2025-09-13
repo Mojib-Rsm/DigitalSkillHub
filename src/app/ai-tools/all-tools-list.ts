@@ -36,4 +36,6 @@ export const allTools = [
     { href: "/ai-tools/content-calendar-planner" },
     { href: "/ai-tools/facebook-caption-generator" },
     { href: "/ai-tools/image-editor" },
+    { href: "/ai-tools/digital-stamp-maker" },
+    { href: "/ai-tools/ai-title-generator" },
 ];

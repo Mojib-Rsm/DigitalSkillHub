@@ -49,4 +49,5 @@ import '@/ai/flows/privacy-policy-generator.ts';
 import '@/ai/flows/terms-of-service-generator.ts';
 import '@/ai/flows/ai-title-generator.ts';
 import '@/ai/flows/image-editor.ts';
+import '@/ai/flows/digital-stamp-maker.ts';
 

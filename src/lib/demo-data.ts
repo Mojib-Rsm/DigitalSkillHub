@@ -1,5 +1,6 @@
 
-import { Layers, RefreshCcw, Sparkles, TowerControl, Users, Youtube, Clock, TrendingUp, Award, CheckCircle, FileText, ImageIcon, Link as LinkIcon, PenSquare, ShoppingCart, Languages, Hash, Mail, Lightbulb, BarChart, GraduationCap, HelpCircle, BookCheck, DollarSign, Wand, FileSignature, Globe, Film, MessageSquare, UserCircle as UserCircleIcon, Edit, Clapperboard, Receipt, Briefcase, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Quote, Search, Bot, Palette } from 'lucide-react';
+
+import { Layers, RefreshCcw, Sparkles, TowerControl, Users, Youtube, Clock, TrendingUp, Award, CheckCircle, FileText, ImageIcon, Link as LinkIcon, PenSquare, ShoppingCart, Languages, Hash, Mail, Lightbulb, BarChart, GraduationCap, HelpCircle, BookCheck, DollarSign, Wand, FileSignature, Globe, Film, MessageSquare, UserCircle as UserCircleIcon, Edit, Clapperboard, Receipt, Briefcase, LayoutTemplate, Megaphone, GitBranchPlus, List, PanelTopOpen, CalendarDays, BarChart2, Quote, Search, Bot, Palette, Stamp, Asterisk } from 'lucide-react';
 
 export type Tool = {
     id: string;
@@ -371,6 +372,17 @@ export const tools: Tool[] = [
         credits: 10,
     },
     {
+        id: "ai-title-generator",
+        title: "AI টাইটেল জেনারেটর",
+        description: "যেকোনো বিষয়ের জন্য আকর্ষণীয় এবং SEO-বান্ধব টাইটেল তৈরি করুন।",
+        href: "/ai-tools/ai-title-generator",
+        icon: "Asterisk",
+        category: "Content & Writing",
+        enabled: true,
+        isFree: true,
+        credits: 0,
+    },
+    {
         id: "blog-topic-generator",
         title: "ব্লগ টপিক জেনারেটর",
         description: "আপনার আগ্রহের উপর ভিত্তি করে সৃজনশীল ব্লগ পোস্টের ধারণা তৈরি করুন।",
@@ -556,6 +568,17 @@ export const tools: Tool[] = [
         enabled: true,
         isFree: false,
         credits: 5,
+    },
+     {
+        id: "digital-stamp-maker",
+        title: "ডিজিটাল স্ট্যাম্প মেকার",
+        description: "আপনার প্রতিষ্ঠান বা ব্যক্তিগত ব্যবহারের জন্য ডিজিটাল স্ট্যাম্প তৈরি করুন।",
+        href: "/ai-tools/digital-stamp-maker",
+        icon: "Stamp",
+        category: "Productivity & Business",
+        enabled: true,
+        isFree: false,
+        credits: 3,
     },
     {
         id: "video-generator",
