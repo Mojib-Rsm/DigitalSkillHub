@@ -47,7 +47,7 @@ export async function getActiveCoupons(): Promise<Coupon[]> {
         );
         return mapRowsToCoupons(rows);
     } catch (error) {
-        console.error("Error fetching active coupons from MySQL:", error);
+        console.error("Error fetching active coupons from MySQL. This might be because the table does not exist. Please run the seeding script (`npm run db:seed`).", error);
         return [];
     }
 }
