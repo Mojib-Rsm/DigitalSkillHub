@@ -4,10 +4,38 @@ import pool from "../src/lib/mysql";
 import bcrypt from 'bcrypt';
 
 async function seed() {
+  console.log("🌱 Starting database seeding...");
   try {
-    console.log("🌱 Starting database seeding...");
+    // Create tables first
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        password VARCHAR(255),
+        role ENUM('user', 'admin') DEFAULT 'user',
+        credits INT DEFAULT 100,
+        profile_image VARCHAR(255),
+        status VARCHAR(50) DEFAULT 'active',
+        plan_id VARCHAR(50),
+        bookmarks TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        phone VARCHAR(20)
+      );
+    `);
+    console.log("✔️ `users` table created or already exists.");
 
-    // Seed users
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS packages (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL UNIQUE,
+        description TEXT,
+        price DECIMAL(10, 2)
+      );
+    `);
+    console.log("✔️ `packages` table created or already exists.");
+
+    // Then seed the data
     const password = await bcrypt.hash('password123', 10);
     await pool.query(`
         INSERT INTO users (name, email, password, role) VALUES
@@ -18,8 +46,8 @@ async function seed() {
             password=VALUES(password),
             role=VALUES(role);
     `, [password, password]);
+    console.log("👤 Users seeded.");
 
-    // Seed packages
     await pool.query(`
         INSERT INTO packages (name, description, price) VALUES
         ("Shop Package", "Tools for printing/photo shops", 499),
@@ -28,6 +56,7 @@ async function seed() {
             description=VALUES(description), 
             price=VALUES(price);
     `);
+    console.log("📦 Packages seeded.");
 
     console.log("✅ Seeding complete");
   } catch (error) {
