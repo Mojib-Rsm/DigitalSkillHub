@@ -1,4 +1,5 @@
 
+
 import 'dotenv/config';
 import pool from "../src/lib/mysql";
 import bcrypt from 'bcrypt';
@@ -13,6 +14,134 @@ import {
 async function seed() {
   try {
     console.log("🌱 Starting database seeding...");
+
+    // Create tables if they don't exist
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL UNIQUE,
+        password VARCHAR(255),
+        role ENUM('user', 'admin') DEFAULT 'user',
+        credits INT DEFAULT 100,
+        profile_image VARCHAR(255),
+        status VARCHAR(50) DEFAULT 'active',
+        plan_id VARCHAR(50),
+        bookmarks TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        phone VARCHAR(20)
+      );
+    `);
+     console.log("✔️ `users` table created or already exists.");
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS packages (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL UNIQUE,
+        description TEXT,
+        price DECIMAL(10, 2)
+      );
+    `);
+    console.log("✔️ `packages` table created or already exists.");
+
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS tools (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            description TEXT,
+            href VARCHAR(255) NOT NULL,
+            icon VARCHAR(255),
+            category VARCHAR(255),
+            enabled BOOLEAN DEFAULT TRUE,
+            isFree BOOLEAN DEFAULT TRUE,
+            credits INT DEFAULT 0
+        );
+    `);
+    console.log("✔️ `tools` table created or already exists.");
+
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS courses (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            category VARCHAR(255),
+            instructor VARCHAR(255),
+            price DECIMAL(10, 2),
+            level VARCHAR(50),
+            duration VARCHAR(50),
+            image VARCHAR(255),
+            dataAiHint VARCHAR(255)
+        );
+    `);
+     console.log("✔️ `courses` table created or already exists.");
+
+     await pool.query(`
+        CREATE TABLE IF NOT EXISTS pricing_plans (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            price DECIMAL(10, 2),
+            originalPrice DECIMAL(10, 2),
+            discount VARCHAR(255),
+            description TEXT,
+            credits INT,
+            validity VARCHAR(255),
+            isPopular BOOLEAN DEFAULT FALSE,
+            features JSON
+        );
+     `);
+    console.log("✔️ `pricing_plans` table created or already exists.");
+
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS testimonials (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            feature VARCHAR(255),
+            quote TEXT,
+            metric VARCHAR(255),
+            authorName VARCHAR(255),
+            authorRole VARCHAR(255),
+            avatar VARCHAR(255),
+            dataAiHint VARCHAR(255)
+        );
+    `);
+    console.log("✔️ `testimonials` table created or already exists.");
+    
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS coupons (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            code VARCHAR(255) NOT NULL UNIQUE,
+            description TEXT,
+            discountPercentage DECIMAL(5, 2) NOT NULL,
+            isActive BOOLEAN DEFAULT TRUE,
+            validUntil DATETIME,
+            applicableTo TEXT
+        );
+    `);
+    console.log("✔️ `coupons` table created or already exists.");
+
+     await pool.query(`
+        CREATE TABLE IF NOT EXISTS history (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT,
+            tool VARCHAR(255),
+            input TEXT,
+            output TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+    `);
+    console.log("✔️ `history` table created or already exists.");
+    
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS notifications (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            message TEXT NOT NULL,
+            toolId VARCHAR(255),
+            sender VARCHAR(255),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+    `);
+    console.log("✔️ `notifications` table created or already exists.");
+
 
     // Seed users
     const password = await bcrypt.hash('password123', 10);

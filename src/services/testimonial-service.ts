@@ -20,7 +20,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
         const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM testimonials');
         return rows.map(row => ({...row, id: row.id.toString()})) as Testimonial[];
     } catch (error) {
-        console.error("Error fetching testimonials from MySQL:", error);
+        console.error("Error fetching testimonials from MySQL. This might be because the table does not exist. Please run the seeding script (`npm run db:seed`).", error);
         return [];
     }
 }

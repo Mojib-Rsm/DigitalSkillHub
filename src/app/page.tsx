@@ -12,11 +12,12 @@ import { getTrendingTools } from '@/services/tool-service';
 // This pattern optimizes for performance (fast initial load with server-rendered HTML)
 // while allowing for client-side interactivity in the child component.
 export default async function Home() {
+    // Gracefully fetch data, allowing the page to render even if some services fail (e.g., table not found)
     const [pricingPlans, testimonials, trendingTools, activeCoupons] = await Promise.all([
-        getPricingPlans(),
-        getTestimonials(),
-        getTrendingTools(4),
-        getActiveCoupons(),
+        getPricingPlans().catch(() => []),
+        getTestimonials().catch(() => []),
+        getTrendingTools(4).catch(() => []),
+        getActiveCoupons().catch(() => []),
     ]);
 
     return (
@@ -28,4 +29,3 @@ export default async function Home() {
         />
     );
 }
-
