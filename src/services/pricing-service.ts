@@ -22,7 +22,7 @@ function mapRowsToPlans(rows: RowDataPacket[]): PricingPlan[] {
         ...row,
         id: row.id.toString(),
         isPopular: !!row.isPopular,
-        features: JSON.parse(row.features),
+        features: row.features ? JSON.parse(row.features) : {},
     })) as PricingPlan[];
 }
 

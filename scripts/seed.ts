@@ -83,7 +83,7 @@ async function seed() {
             credits INT,
             validity VARCHAR(255),
             isPopular BOOLEAN DEFAULT FALSE,
-            features JSON
+            features TEXT
         );
      `);
     console.log("✔️ `pricing_plans` table created or already exists.");
