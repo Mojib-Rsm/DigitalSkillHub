@@ -31,7 +31,7 @@ export async function getPricingPlans(): Promise<PricingPlan[]> {
         const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM pricing_plans ORDER BY price');
         return mapRowsToPlans(rows);
     } catch (error) {
-        console.error("Error fetching pricing plans from MySQL:", error);
+        console.error("Error fetching pricing plans from MySQL. This might be because the table does not exist. Please run the seeding script (`npm run db:seed`).", error);
         return [];
     }
 }
