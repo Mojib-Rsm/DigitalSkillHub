@@ -337,9 +337,8 @@ export const testimonials = [
     }
 ];
 
-export const tools: Tool[] = [
+export const tools: Omit<Tool, 'id'>[] = [
     {
-        id: "one-click-writer-serp",
         title: "SERP Article",
         description: "Generate a full, SEO-optimized blog post with a rich editor and real-time feedback.",
         href: "/ai-tools/one-click-writer-serp",
@@ -350,7 +349,6 @@ export const tools: Tool[] = [
         credits: 15,
     },
      {
-        id: "one-click-writer",
         title: "One-Click Writer",
         description: "Generate a simple, complete article from just a title. Fast and easy.",
         href: "/ai-tools/one-click-writer",
@@ -361,7 +359,6 @@ export const tools: Tool[] = [
         credits: 10,
     },
      {
-        id: "ai-article-writer",
         title: "AI Article Writer",
         description: "Generate a simple, complete article from just a title. Fast and easy.",
         href: "/ai-tools/ai-article-writer",
@@ -372,7 +369,6 @@ export const tools: Tool[] = [
         credits: 10,
     },
     {
-        id: "ai-title-generator",
         title: "AI টাইটেল জেনারেটর",
         description: "যেকোনো বিষয়ের জন্য আকর্ষণীয় এবং SEO-বান্ধব টাইটেল তৈরি করুন।",
         href: "/ai-tools/ai-title-generator",
@@ -383,7 +379,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "blog-topic-generator",
         title: "ব্লগ টপিক জেনারেটর",
         description: "আপনার আগ্রহের উপর ভিত্তি করে সৃজনশীল ব্লগ পোস্টের ধারণা তৈরি করুন।",
         href: "/ai-tools/blog-topic-generator",
@@ -394,7 +389,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "product-description-generator",
         title: "পণ্যের বিবরণ জেনারেটর",
         description: "আপনার ই-কমার্স পণ্যের জন্য আকর্ষণীয় বিবরণ তৈরি করুন।",
         href: "/ai-tools/product-description-generator",
@@ -405,7 +399,6 @@ export const tools: Tool[] = [
         credits: 1,
     },
     {
-        id: "social-media-post-generator",
         title: "সোশ্যাল মিডিয়া পোস্ট জেনারেটর",
         description: "ফেসবুক, ইনস্টাগ্রাম এবং আরও অনেক কিছুর জন্য আকর্ষণীয় পোস্ট তৈরি করুন।",
         href: "/ai-tools/social-media-post-generator",
@@ -416,7 +409,6 @@ export const tools: Tool[] = [
         credits: 1,
     },
     {
-        id: "facebook-caption-generator",
         title: "ফেসবুক ক্যাপশন জেনারেটর",
         description: "আপনার ফেসবুক পোস্টের জন্য ছবি আপলোড করে আকর্ষণীয় ক্যাপশন তৈরি করুন।",
         href: "/ai-tools/facebook-caption-generator",
@@ -427,7 +419,6 @@ export const tools: Tool[] = [
         credits: 1,
     },
     {
-        id: "facebook-comment-generator",
         title: "ফেসবুক কমেন্ট জেনারেটর",
         description: "যেকোনো ফেসবুক পোস্টের জন্য প্রাসঙ্গিক কমেন্ট এবং রিপ্লাই তৈরি করুন।",
         href: "/ai-tools/facebook-comment-generator",
@@ -438,7 +429,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "messenger-reply-generator",
         title: "মেসেঞ্জার রিপ্লাই জেনারেটর",
         description: "যেকোনো মেসেঞ্জার কথোপকথনের জন্য প্রাসঙ্গিক রিপ্লাই তৈরি করুন।",
         href: "/ai-tools/messenger-reply-generator",
@@ -449,7 +439,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "cover-letter-generator",
         title: "কভার লেটার জেনারেটর",
         description: "কয়েক সেকেন্ডের মধ্যে একটি পেশাদার কভার লেটার তৈরি করুন।",
         href: "/ai-tools/cover-letter-generator",
@@ -460,7 +449,6 @@ export const tools: Tool[] = [
         credits: 2,
     },
     {
-        id: "ad-copy-generator",
         title: "বিজ্ঞাপনের কপি জেনারেটর",
         description: "আপনার পণ্যের জন্য আকর্ষণীয় বিজ্ঞাপনের কপি তৈরি করুন।",
         href: "/ai-tools/ad-copy-generator",
@@ -471,7 +459,6 @@ export const tools: Tool[] = [
         credits: 2,
     },
     {
-        id: "script-writer",
         title: "স্ক্রিপ্ট লেখক",
         description: "ইউটিউব বা টিকটক ভিডিওর জন্য আকর্ষণীয় স্ক্রিপ্ট তৈরি করুন।",
         href: "/ai-tools/script-writer",
@@ -482,7 +469,6 @@ export const tools: Tool[] = [
         credits: 5,
     },
     {
-        id: "story-plot-generator",
         title: "গল্পের প্লট জেনারেটর",
         description: "আপনার পরবর্তী গল্প বা উপন্যাসের জন্য প্লট আইডিয়া তৈরি করুন।",
         href: "/ai-tools/story-plot-generator",
@@ -493,7 +479,6 @@ export const tools: Tool[] = [
         credits: 3,
     },
     {
-        id: "poetry-lyrics-maker",
         title: "কবিতা ও গান লেখক",
         description: "আপনার অনুভূতি প্রকাশ করার জন্য কবিতা বা গান লিখুন।",
         href: "/ai-tools/poetry-lyrics-maker",
@@ -504,7 +489,6 @@ export const tools: Tool[] = [
         credits: 2,
     },
     {
-        id: "headline-generator",
         title: "শিরোনাম জেনারেটর",
         description: "আপনার ব্লগ বা ভিডিওর জন্য আকর্ষণীয় শিরোনাম তৈরি করুন।",
         href: "/ai-tools/headline-generator",
@@ -515,7 +499,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "content-calendar-planner",
         title: "কনটেন্ট ক্যালেন্ডার প্ল্যানার",
         description: "আপনার সোশ্যাল মিডিয়া বা ব্লগের জন্য একটি কনটেন্ট ক্যালেন্ডার তৈরি করুন।",
         href: "/ai-tools/content-calendar-planner",
@@ -526,7 +509,6 @@ export const tools: Tool[] = [
         credits: 4,
     },
     {
-        id: "image-generator",
         title: "এআই ইমেজ জেনারেটর",
         description: "পাঠ্য থেকে লোগো, ব্যানার এবং অন্যান্য ছবি তৈরি করুন।",
         href: "/ai-tools/image-generator",
@@ -537,7 +519,6 @@ export const tools: Tool[] = [
         credits: 5,
     },
     {
-        id: "image-editor",
         title: "এআই ইমেজ এডিটর",
         description: "প্রম্পট ব্যবহার করে আপনার ছবি সম্পাদনা করুন।",
         href: "/ai-tools/image-editor",
@@ -548,7 +529,6 @@ export const tools: Tool[] = [
         credits: 3,
     },
     {
-        id: "passport-photo-maker",
         title: "পাসপোর্ট সাইজ ছবি মেকার",
         description: "যেকোনো ছবিকে একটি পেশাদার পাসপোর্ট ছবিতে রূপান্তর করুন।",
         href: "/ai-tools/passport-photo-maker",
@@ -559,7 +539,6 @@ export const tools: Tool[] = [
         credits: 2,
     },
      {
-        id: "handwriting-extractor",
         title: "হাতের লেখা এক্সট্র্যাক্টর",
         description: "হাতে লেখা নোট থেকে টেক্সট এক্সট্র্যাক্ট করে Word, Excel বা PDF এ রূপান্তর করুন।",
         href: "/ai-tools/handwriting-extractor",
@@ -570,7 +549,6 @@ export const tools: Tool[] = [
         credits: 5,
     },
      {
-        id: "digital-stamp-maker",
         title: "ডিজিটাল স্ট্যাম্প মেকার",
         description: "আপনার প্রতিষ্ঠান বা ব্যক্তিগত ব্যবহারের জন্য ডিজিটাল স্ট্যাম্প তৈরি করুন।",
         href: "/ai-tools/digital-stamp-maker",
@@ -581,7 +559,6 @@ export const tools: Tool[] = [
         credits: 3,
     },
     {
-        id: "video-generator",
         title: "এআই ভিডিও জেনারেটর",
         description: "পাঠ্য প্রম্পট থেকে ছোট ভিডিও তৈরি করুন।",
         href: "/ai-tools/video-generator",
@@ -592,7 +569,6 @@ export const tools: Tool[] = [
         credits: 20,
     },
     {
-        id: "image-to-video-generator",
         title: "ইমেজ টু ভিডিও জেনারেটর",
         description: "একটি ছবি আপলোড করে এবং প্রম্পট দিয়ে ভিডিও তৈরি করুন।",
         href: "/ai-tools/image-to-video-generator",
@@ -603,7 +579,6 @@ export const tools: Tool[] = [
         credits: 15,
     },
     {
-        id: "prompt-generator",
         title: "প্রম্পট জেনারেটর",
         description: "ছবি, ভিডিও বা অডিওর জন্য বিস্তারিত এবং কার্যকর প্রম্পট তৈরি করুন।",
         href: "/ai-tools/prompt-generator",
@@ -614,7 +589,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "professional-email-writer",
         title: "পেশাদার ইমেল লেখক",
         description: "ক্লায়েন্ট এবং সহকর্মীদের জন্য পেশাদার ইমেল ড্রাফ্ট করুন।",
         href: "/ai-tools/professional-email-writer",
@@ -625,7 +599,6 @@ export const tools: Tool[] = [
         credits: 2,
     },
     {
-        id: "note-summarizer",
         title: "নোট সারাংশকারী",
         description: "দীর্ঘ পাঠ্যকে সংক্ষিপ্ত নোটে পরিণত করুন।",
         href: "/ai-tools/note-summarizer",
@@ -636,7 +609,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
      {
-        id: "bengali-translator",
         title: "বাংলা কনটেন্ট অনুবাদক",
         description: "ইংরেজি এবং বাংলার মধ্যে পাঠ্য অনুবাদ করুন।",
         href: "/ai-tools/bengali-translator",
@@ -647,7 +619,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "refund-policy-generator",
         title: "রিফান্ড পলিসি জেনারেটর",
         description: "আপনার ব্যবসার জন্য একটি কাস্টম রিফান্ড পলিসি তৈরি করুন।",
         href: "/ai-tools/refund-policy-generator",
@@ -658,7 +629,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "resume-helper",
         title: "জীবনবৃত্তান্ত/সিভি সহায়ক",
         description: "একটি পেশাদার এবং কার্যকর জীবনবৃত্তান্ত লিখতে সহায়তা পান।",
         href: "/ai-tools/resume-helper",
@@ -669,7 +639,6 @@ export const tools: Tool[] = [
         credits: 3,
     },
     {
-        id: "business-name-generator",
         title: "ব্যবসার নাম জেনারেটর",
         description: "আপনার নতুন ব্যবসা বা ব্র্যান্ডের জন্য সেরা নামটি খুঁজুন।",
         href: "/ai-tools/business-name-generator",
@@ -680,7 +649,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "website-blueprint-generator",
         title: "ওয়েবসাইট ব্লুপ্রিন্ট জেনারেটর",
         description: "আপনার ধারণার জন্য একটি পৃষ্ঠা এবং বৈশিষ্ট্যসহ একটি কাঠামো তৈরি করুন।",
         href: "/ai-tools/website-blueprint-generator",
@@ -691,7 +659,6 @@ export const tools: Tool[] = [
         credits: 5,
     },
     {
-        id: "seo-keyword-suggester",
         title: "এসইও কীওয়ার্ড সাজেশনকারী",
         description: "আপনার অনলাইন দৃশ্যমানতা উন্নত করতে কীওয়ার্ড আবিষ্কার করুন।",
         href: "/ai-tools/seo-keyword-suggester",
@@ -702,7 +669,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "seo-score-checker",
         title: "এসইও স্কোর চেকার",
         description: "আপনার কনটেন্টের এসইও স্কোর এবং উন্নতির জন্য পরামর্শ পান।",
         href: "/ai-tools/seo-score-checker",
@@ -713,7 +679,6 @@ export const tools: Tool[] = [
         credits: 2,
     },
     {
-        id: "interview-question-practice",
         title: "ইন্টারভিউ প্রশ্ন অনুশীলন",
         description: "আপনার পরবর্তী চাকরির ইন্টারভিউর জন্য অনুশীলন প্রশ্ন তৈরি করুন।",
         href: "/ai-tools/interview-question-practice",
@@ -724,7 +689,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "freelance-idea-generator",
         title: "ফ্রিল্যান্স আইডিয়া জেনারেটর",
         description: "আপনার দক্ষতার উপর ভিত্তি করে প্রকল্পের ধারণা পান।",
         href: "/ai-tools/freelance-idea-generator",
@@ -735,7 +699,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "price-rate-calculator",
         title: "মূল্য/রেট ক্যালকুলেটর",
         description: "আপনার ফ্রিল্যান্স পরিষেবার জন্য একটি ন্যায্য মূল্য গণনা করুন।",
         href: "/ai-tools/price-rate-calculator",
@@ -746,7 +709,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "domain-name-suggester",
         title: "ডোমেইন নেম সাজেশনকারী",
         description: "আপনার ব্যবসা বা ওয়েবসাইটের জন্য সেরা ডোমেইন নামটি খুঁজুন।",
         href: "/ai-tools/domain-name-suggester",
@@ -757,7 +719,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "course-recommender",
         title: "কোর্স রিকমেন্ডার",
         description: "আপনার আগ্রহের উপর ভিত্তি করে ব্যক্তিগতকৃত কোর্স সাজেশন পান।",
         href: "/ai-tools/course-recommender",
@@ -768,7 +729,6 @@ export const tools: Tool[] = [
         credits: 0,
     },
     {
-        id: "quiz-generator",
         title: "কুইজ জেনারেটর",
         description: "আপনার জ্ঞান পরীক্ষা করার জন্য যেকোনো পাঠ্য থেকে একটি কুইজ তৈরি করুন।",
         href: "/ai-tools/quiz-generator",
@@ -779,7 +739,6 @@ export const tools: Tool[] = [
         credits: 1,
     },
      {
-        id: "content-outline-generator",
         title: "কনটেন্ট আউটলাইন জেনারেটর",
         description: "যেকোনো বিষয়ের উপর ভিত্তি করে একটি সুগঠিত আউটলাইন তৈরি করুন।",
         href: "/ai-tools/content-outline-generator",
