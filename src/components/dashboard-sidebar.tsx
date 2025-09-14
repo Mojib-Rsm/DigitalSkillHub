@@ -37,6 +37,7 @@ import {
   User as UserIcon,
   Database,
   Ticket,
+  Server,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -122,6 +123,12 @@ export default function DashboardSidebar({
                                 <SidebarMenuSubButton href="/dashboard/admin/notifications">
                                     <Bell />
                                     <span>Notifications</span>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                            <SidebarMenuSubItem>
+                                <SidebarMenuSubButton href="/dashboard/admin/db-status">
+                                    <Server />
+                                    <span>DB Status</span>
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                               <SidebarMenuSubItem>
