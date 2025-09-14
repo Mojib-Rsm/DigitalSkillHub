@@ -1,5 +1,4 @@
 
-
 import 'dotenv/config';
 import pool from "../src/lib/mysql";
 import bcrypt from 'bcrypt';
@@ -12,9 +11,8 @@ import {
 } from '../src/lib/demo-data';
 
 async function seed() {
+  console.log("🌱 Starting database seeding...");
   try {
-    console.log("🌱 Starting database seeding...");
-
     // Create tables if they don't exist
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
