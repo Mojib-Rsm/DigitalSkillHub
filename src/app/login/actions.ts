@@ -10,8 +10,13 @@ export async function authenticate(
   try {
     await signIn('credentials', Object.fromEntries(formData))
   } catch (error) {
-    if ((error as Error).message.includes('CredentialsSignin')) {
-      return 'Invalid email or password.';
+    if (error instanceof Error) {
+      if (error.message.includes('NEXT_REDIRECT')) {
+        throw error;
+      }
+      if (error.message.includes('CredentialsSignin')) {
+        return 'Invalid email or password.';
+      }
     }
     // Return the specific error message from the authorize function
     return (error as Error).message;
