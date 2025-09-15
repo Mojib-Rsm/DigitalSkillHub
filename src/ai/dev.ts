@@ -42,7 +42,7 @@ import '@/ai/flows/content-calendar-planner.ts';
 import '@/ai/flows/facebook-caption-generator.ts';
 import '@/app/dashboard/admin/seed/actions.ts';
 import '@/app/dashboard/admin/coupons/actions.ts';
-import '@/app/dashboard/admin/db-status/actions.ts';
+import '@/app/db-status/actions.ts';
 import '@/app/dashboard/admin/transactions/actions.ts';
 import '@/app/dashboard/admin/testimonials/actions.ts';
 import '@/app/dashboard/admin/tools/actions.ts';

@@ -146,12 +146,6 @@ export default function DashboardSidebar({
                                     <span>Notifications</span>
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
-                            <SidebarMenuSubItem>
-                                <SidebarMenuSubButton href="/dashboard/admin/db-status">
-                                    <Server />
-                                    <span>DB Status</span>
-                                </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
                               <SidebarMenuSubItem>
                                 <SidebarMenuSubButton href="/dashboard/admin/seed">
                                     <Database />
