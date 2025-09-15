@@ -1,3 +1,4 @@
+
 import pool from "@/lib/mysql";
 import type { RowDataPacket, ResultSetHeader } from 'mysql2';
 
@@ -7,9 +8,9 @@ export type User = {
     name: string;
     email: string;
     password?: string; // Password might be sensitive and not always fetched
+    profile_image?: string | null;
     role?: 'admin' | 'user';
     credits?: number;
-    profile_image?: string;
     status?: 'active' | 'banned';
     plan_id?: string;
     bookmarks?: string;
@@ -20,8 +21,8 @@ export type User = {
 export const UserModel = {
   async create(user: Omit<User, 'id'>): Promise<number> {
     const [result] = await pool.query<ResultSetHeader>(
-      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-      [user.name, user.email, user.password]
+      "INSERT INTO users SET ?",
+      [user]
     );
     return result.insertId;
   },

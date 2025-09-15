@@ -1,8 +1,11 @@
 
-import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
+import SignupForm from '@/components/signup-form';
 
 export default function SignUpPage() {
-    // Redirect users to the login page where they can sign up with Google.
-    // This centralizes the authentication flow.
-    redirect('/login');
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <SignupForm />
+        </Suspense>
+    );
 }
