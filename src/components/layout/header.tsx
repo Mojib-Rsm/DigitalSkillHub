@@ -1,7 +1,8 @@
 
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Bot, Menu, ChevronDown, User, LogOut, LayoutDashboard, Coins, Settings, Star, Zap, X, Moon } from "lucide-react";
+import { Bot, Menu, ChevronDown, User, LogOut, LayoutDashboard, Coins, Settings, Star, Zap, X, Moon, Lightbulb } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -34,6 +35,7 @@ const navLinks = [
 const moreLinks = [
     { href: "/about", label: "About Us" },
     { href: "/ai-tools", label: "All Tools" },
+    { href: "/request-a-tool", label: "Request a Tool" },
 ]
 
 const NavLink = ({ href, label }: { href: string; label: string }) => (

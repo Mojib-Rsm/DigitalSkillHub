@@ -1,4 +1,5 @@
 
+
 import Link from "next/link";
 import Chatbot from "@/components/chatbot";
 import { Bot, Twitter, Github, Linkedin, MessageCircle } from "lucide-react";
@@ -13,6 +14,7 @@ const footerLinks = {
     ],
     support: [
         { label: "Contact Support", href: "/contact" },
+        { label: "Request a Tool", href: "/request-a-tool" },
     ],
     company: [
         { label: "About Us", href: "/about" },
