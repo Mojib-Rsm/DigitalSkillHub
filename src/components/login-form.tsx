@@ -10,18 +10,18 @@ import { Label } from "@/components/ui/label";
 import { Bot, Chrome, Sparkles } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { Separator } from './ui/separator';
-import { useActionState, useEffect } from 'react';
+import { useActionState } from 'react';
 import { authenticate } from '@/app/login/actions';
 import { useFormStatus } from 'react-dom';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { Checkbox } from './ui/checkbox';
 
 function LoginButton() {
     const { pending } = useFormStatus();
     return (
         <Button className="w-full" type="submit" aria-disabled={pending}>
             {pending && <Sparkles className="mr-2 h-4 w-4 animate-spin" />}
-            Sign In with Email
+            Sign In
         </Button>
     )
 }
@@ -59,8 +59,22 @@ function LoginFormContent() {
                                 <Input id="email" name="email" type="email" placeholder="name@example.com" required />
                             </div>
                              <div className="space-y-2">
-                                <Label htmlFor="password">Password</Label>
+                                 <div className="flex items-center justify-between">
+                                    <Label htmlFor="password">Password</Label>
+                                     <Link href="#" className="text-xs text-primary hover:underline">
+                                        Forgot password?
+                                    </Link>
+                                </div>
                                 <Input id="password" name="password" type="password" required />
+                            </div>
+                             <div className="flex items-center space-x-2">
+                                <Checkbox id="remember-me" />
+                                <label
+                                    htmlFor="remember-me"
+                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    Remember me
+                                </label>
                             </div>
                             <LoginButton />
                             {errorMessage && (
