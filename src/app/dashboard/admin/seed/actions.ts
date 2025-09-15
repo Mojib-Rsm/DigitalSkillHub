@@ -10,7 +10,7 @@ import {
   testimonials,
   users
 } from '@/lib/demo-data';
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 
 async function isTableEmpty(tableName: string): Promise<boolean> {
     try {
@@ -39,7 +39,7 @@ export async function seedDatabaseAction() {
 
         // Seed users
         if (await isTableEmpty('users')) {
-            const password = await bcrypt.hash('password123', 10);
+            const password = await bcryptjs.hash('password123', 10);
             const seededUsers = users.map(u => [u.name, u.email, password, u.role, u.credits, u.plan_id]);
             await pool.query(`
                 INSERT INTO users (name, email, password, role, credits, plan_id) VALUES ?
