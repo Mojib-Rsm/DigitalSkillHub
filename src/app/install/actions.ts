@@ -12,8 +12,6 @@ import {
 
 const SetupSchema = z.object({
     language: z.string(),
-    photo_size: z.string(),
-    bg_color: z.string(),
     max_file_size: z.number(),
     allowed_formats: z.array(z.string()),
     storage_provider: z.string(),
@@ -35,8 +33,12 @@ async function setupDatabase() {
 
     // Drop tables in reverse order of creation to handle foreign key constraints
     for (const table of tables) {
-        await pool.query(`DROP TABLE IF EXISTS ${'\'\'\''}${table}\'\'\'';`);
-        console.log(`✔️ Table ${table} dropped.`);
+        try {
+            await pool.query(`DROP TABLE IF EXISTS \`${table}\`;`);
+            console.log(`✔️ Table ${table} dropped.`);
+        } catch (error) {
+            console.warn(`Could not drop table ${table}. It might not exist.`);
+        }
     }
     
     // Create tables
@@ -59,7 +61,7 @@ async function setupDatabase() {
     console.log("✔️ `users` table created.");
 
     await pool.query(`
-        CREATE TABLE tools (
+        CREATE TABLE IF NOT EXISTS tools (
             id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) NOT NULL UNIQUE,
             description TEXT,
@@ -74,7 +76,7 @@ async function setupDatabase() {
     console.log("✔️ `tools` table created.");
     
     await pool.query(`
-        CREATE TABLE pricing_plans (
+        CREATE TABLE IF NOT EXISTS pricing_plans (
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
             price DECIMAL(10, 2),
@@ -90,20 +92,20 @@ async function setupDatabase() {
     console.log("✔️ `pricing_plans` table created.");
 
     await pool.query(`
-      CREATE TABLE settings (
+      CREATE TABLE IF NOT EXISTS settings (
         setting_key VARCHAR(255) PRIMARY KEY,
         setting_value TEXT
       );
     `);
     console.log("✔️ `settings` table created.");
 
-    await pool.query(`CREATE TABLE history (id INT AUTO_INCREMENT PRIMARY KEY, user_id INT, tool VARCHAR(255), input TEXT, output TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE);`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS history (id INT AUTO_INCREMENT PRIMARY KEY, user_id INT, tool VARCHAR(255), input TEXT, output TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE);`);
     console.log("✔️ `history` table created.");
     
-    await pool.query(`CREATE TABLE tool_requests (id INT AUTO_INCREMENT PRIMARY KEY, user_id INT, tool_name VARCHAR(255) NOT NULL, tool_description TEXT, use_case TEXT, status VARCHAR(50) DEFAULT 'pending', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL);`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS tool_requests (id INT AUTO_INCREMENT PRIMARY KEY, user_id INT, tool_name VARCHAR(255) NOT NULL, tool_description TEXT, use_case TEXT, status VARCHAR(50) DEFAULT 'pending', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL);`);
     console.log("✔️ `tool_requests` table created.");
     
-    await pool.query(`CREATE TABLE transactions (id INT AUTO_INCREMENT PRIMARY KEY, user_id INT, plan_id VARCHAR(255), amount DECIMAL(10, 2), status ENUM('Pending', 'Paid', 'Failed', 'Refunded') DEFAULT 'Pending', method ENUM('bKash', 'Nagad', 'Manual'), sender_number VARCHAR(20), transaction_id VARCHAR(255), screenshot_url VARCHAR(255), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL);`);
+    await pool.query(`CREATE TABLE IF NOT EXISTS transactions (id INT AUTO_INCREMENT PRIMARY KEY, user_id INT, plan_id VARCHAR(255), amount DECIMAL(10, 2), status ENUM('Pending', 'Paid', 'Failed', 'Refunded') DEFAULT 'Pending', method ENUM('bKash', 'Nagad', 'Manual'), sender_number VARCHAR(20), transaction_id VARCHAR(255), screenshot_url VARCHAR(255), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL);`);
     console.log("✔️ `transactions` table created.");
 
     // Seed initial data
@@ -135,8 +137,6 @@ export async function finishSetupAction(data: z.infer<typeof SetupSchema>) {
         // 1. Save settings to the database
         const settingsToSave = [
             ['language', settings.language],
-            ['photo_size_standard', settings.photo_size],
-            ['default_background_color', settings.bg_color],
             ['max_upload_size_mb', settings.max_file_size.toString()],
             ['allowed_formats', JSON.stringify(settings.allowed_formats)],
             ['storage_provider', settings.storage_provider],

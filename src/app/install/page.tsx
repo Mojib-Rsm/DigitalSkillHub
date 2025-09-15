@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -18,7 +19,7 @@ import { useRouter } from 'next/navigation';
 const StepIndicator = ({ currentStep }: { currentStep: number }) => {
     const steps = [
         { name: "Welcome", icon: <Bot/> },
-        { name: "Config", icon: <Languages/> },
+        { name: "General", icon: <Languages/> },
         { name: "Storage", icon: <HardDrive/> },
         { name: "Admin", icon: <Shield/> },
         { name: "Finish", icon: <CheckCircle/> }
@@ -46,7 +47,7 @@ const WelcomeStep = ({ onNext }: { onNext: () => void }) => (
         <Bot className="h-16 w-16 text-primary mx-auto mb-4"/>
         <h1 className="text-4xl font-bold font-headline">Welcome to TotthoAi</h1>
         <p className="text-muted-foreground mt-4 max-w-lg mx-auto">
-            Easily create passport size photos online with background removal & auto-cropping. Let's get your application set up in a few simple steps.
+            This wizard will guide you through the setup of your new AI-powered application. Let's get your site ready in a few simple steps.
         </p>
         <Button size="lg" className="mt-8" onClick={onNext}>
             Get Started <ChevronRight className="ml-2"/>
@@ -54,10 +55,10 @@ const WelcomeStep = ({ onNext }: { onNext: () => void }) => (
     </div>
 );
 
-const BasicConfigStep = ({ data, setData }: {data: any, setData: any}) => (
+const GeneralSettingsStep = ({ data, setData }: {data: any, setData: any}) => (
      <div className="space-y-6">
         <div className="space-y-2">
-            <Label>Default Language</Label>
+            <Label>Default Application Language</Label>
             <Select name="language" value={data.language} onValueChange={(value) => setData({...data, language: value})}>
                 <SelectTrigger><SelectValue placeholder="Select a language" /></SelectTrigger>
                 <SelectContent>
@@ -65,32 +66,6 @@ const BasicConfigStep = ({ data, setData }: {data: any, setData: any}) => (
                     <SelectItem value="en">English</SelectItem>
                 </SelectContent>
             </Select>
-        </div>
-        <div className="space-y-2">
-            <Label>Default Photo Size Standard</Label>
-            <Select name="photo_size" value={data.photo_size} onValueChange={(value) => setData({...data, photo_size: value})}>
-                <SelectTrigger><SelectValue placeholder="Select a standard" /></SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="BD">Bangladesh (2" x 2")</SelectItem>
-                    <SelectItem value="IN">India (2" x 2")</SelectItem>
-                    <SelectItem value="US">USA (2" x 2")</SelectItem>
-                    <SelectItem value="EU">European Union (35mm x 45mm)</SelectItem>
-                </SelectContent>
-            </Select>
-        </div>
-        <div className="space-y-2">
-            <Label>Default Background Color</Label>
-            <RadioGroup name="bg_color" value={data.bg_color} onValueChange={(value) => setData({...data, bg_color: value})} className="flex gap-4">
-                <div className="flex items-center gap-2">
-                    <RadioGroupItem value="white" id="white" /><Label htmlFor="white">White</Label>
-                </div>
-                 <div className="flex items-center gap-2">
-                    <RadioGroupItem value="light_blue" id="light_blue" /><Label htmlFor="light_blue">Light Blue</Label>
-                </div>
-                 <div className="flex items-center gap-2">
-                    <RadioGroupItem value="custom" id="custom" disabled /><Label htmlFor="custom" className="text-muted-foreground">Custom (Soon)</Label>
-                </div>
-            </RadioGroup>
         </div>
     </div>
 );
@@ -172,11 +147,9 @@ const AdminStep = ({ data, setData, issues }: {data: any, setData: any, issues: 
 const SummaryStep = ({ data }: {data: any}) => (
     <div className="space-y-4">
         <Card>
-            <CardHeader><CardTitle>Basic Configuration</CardTitle></CardHeader>
+            <CardHeader><CardTitle>General Settings</CardTitle></CardHeader>
             <CardContent className="text-sm space-y-2">
                 <p><strong>Language:</strong> {data.language === 'bn' ? 'বাংলা' : 'English'}</p>
-                <p><strong>Photo Size:</strong> {data.photo_size}</p>
-                <p><strong>Background Color:</strong> {data.bg_color}</p>
             </CardContent>
         </Card>
          <Card>
@@ -204,8 +177,6 @@ export default function InstallPage() {
     const [formIssues, setFormIssues] = useState<Record<string, string[]>>({});
     const [formData, setFormData] = useState({
         language: 'bn',
-        photo_size: 'BD',
-        bg_color: 'white',
         max_file_size: 5,
         allowed_formats: ['JPEG', 'PNG'],
         storage_provider: 'local',
@@ -268,7 +239,7 @@ export default function InstallPage() {
 
     const stepTitles: Record<number, string> = {
         1: "Welcome",
-        2: "Basic Configuration",
+        2: "General Settings",
         3: "Storage & Upload Settings",
         4: "Create Admin Account",
         5: "Final Confirmation"
@@ -286,7 +257,7 @@ export default function InstallPage() {
                     </CardHeader>
                     <CardContent className="min-h-[300px]">
                         {currentStep === 1 && <WelcomeStep onNext={handleNext} />}
-                        {currentStep === 2 && <BasicConfigStep data={formData} setData={setFormData} />}
+                        {currentStep === 2 && <GeneralSettingsStep data={formData} setData={setFormData} />}
                         {currentStep === 3 && <StorageStep data={formData} setData={setFormData} />}
                         {currentStep === 4 && <AdminStep data={formData} setData={setFormData} issues={formIssues}/>}
                         {currentStep === 5 && <SummaryStep data={formData} />}

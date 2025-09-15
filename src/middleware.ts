@@ -20,7 +20,9 @@ const publicOnlyPaths = [
 
 async function isAppInstalled() {
     try {
-        const [rows] = await pool.query<any[]>("SELECT * FROM settings WHERE setting_key = 'language'");
+        // A simple check to see if the settings table has any rows.
+        // A more specific key could be used, e.g., 'install_complete'
+        const [rows] = await pool.query<any[]>("SELECT * FROM settings LIMIT 1");
         return rows.length > 0;
     } catch (error) {
         // This likely means the 'settings' table doesn't exist yet.
@@ -31,17 +33,25 @@ async function isAppInstalled() {
 export default auth(async (req) => {
   const { pathname } = req.nextUrl;
   const isLoggedIn = !!req.auth;
-  const installed = await isAppInstalled();
 
-  // If app is not installed, redirect all requests to /install, except for /install itself and its assets
-  if (!installed && !pathname.startsWith('/install')) {
-      return NextResponse.redirect(new URL('/install', req.url));
+  // The /install path should always be accessible to check installation status.
+  if (pathname.startsWith('/install')) {
+    const installed = await isAppInstalled();
+    if (installed) {
+      // If already installed, redirect away from /install
+      return NextResponse.redirect(new URL(isLoggedIn ? '/dashboard' : '/', req.url));
+    }
+    // If not installed, allow access to /install
+    return NextResponse.next();
   }
   
-  // If app is installed, but user tries to access /install, redirect to dashboard or homepage
-  if (installed && pathname.startsWith('/install')) {
-       return NextResponse.redirect(new URL(isLoggedIn ? '/dashboard' : '/', req.url));
+  const installed = await isAppInstalled();
+  if (!installed) {
+    // If not installed, redirect everything else to /install
+    return NextResponse.redirect(new URL('/install', req.url));
   }
+  
+  // From here, we assume the app is installed.
 
   const isProtected = protectedPaths.some(path => pathname.startsWith(path));
   const isPublicOnly = publicOnlyPaths.some(path => pathname.startsWith(path));
@@ -62,7 +72,7 @@ export default auth(async (req) => {
   }
 
   // Allow the request to proceed if no rules match
-  return;
+  return NextResponse.next();
 });
  
 // Optionally, don't invoke Middleware on some paths
