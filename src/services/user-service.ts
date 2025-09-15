@@ -26,21 +26,6 @@ export async function registerUser(userData: User) {
     return await UserModel.create({ ...userData, password: hashedPassword });
 }
 
-export async function loginUser(email: string, password: string): Promise<User> {
-    const user = await UserModel.findByEmail(email);
-    if (!user) throw new Error("User not found");
-
-    if (!user.password) throw new Error("Password not set for this user.");
-
-    const isMatch = await bcryptjs.compare(password, user.password);
-    if (!isMatch) throw new Error("Invalid credentials");
-
-    // Return a plain object without sensitive data
-    const { password: _, ...userWithoutPassword } = user;
-    return userWithoutPassword;
-}
-
-
 export async function getCurrentUser(): Promise<UserProfile | null> {
   const session = await auth();
 

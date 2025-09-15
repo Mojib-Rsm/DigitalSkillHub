@@ -2,13 +2,28 @@
 import type { NextAuthConfig } from 'next-auth';
 import Google from 'next-auth/providers/google';
 import Credentials from 'next-auth/providers/credentials';
-import { UserModel } from '@/models/userModel';
+import { UserModel, type User } from '@/models/userModel';
 import bcryptjs from 'bcryptjs';
 import { z } from 'zod';
-import { loginUser } from './services/user-service';
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+
+// Moved loginUser function here to break circular dependency
+async function loginUser(email: string, password: string): Promise<User> {
+    const user = await UserModel.findByEmail(email);
+    if (!user) throw new Error("User not found");
+
+    if (!user.password) throw new Error("Password not set for this user.");
+
+    const isMatch = await bcryptjs.compare(password, user.password);
+    if (!isMatch) throw new Error("Invalid credentials");
+
+    // Return a plain object without sensitive data
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+}
+
 
 export const authConfig = {
   providers: [
@@ -27,7 +42,7 @@ export const authConfig = {
                 try {
                     const user = await loginUser(email, password);
                     if (user) {
-                        return { id: user.id.toString(), name: user.name, email: user.email, image: user.profile_image };
+                        return { id: user.id!.toString(), name: user.name, email: user.email, image: user.profile_image };
                     }
                 } catch (error) {
                     console.error("Login error:", error);
