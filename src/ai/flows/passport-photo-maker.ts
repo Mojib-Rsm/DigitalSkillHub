@@ -11,6 +11,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { googleAI } from '@genkit-ai/googleai';
 
 const PassportPhotoMakerInputSchema = z.object({
   photoDataUri: z
@@ -40,16 +41,17 @@ const passportPhotoMakerFlow = ai.defineFlow(
   async ({ photoDataUri, backgroundColor }) => {
     try {
       const {media} = await ai.generate({
-        model: 'googleai/gemini-2.0-flash-preview-image-generation',
-        prompt: `You are an expert passport photo processor. Your task is to convert the user's uploaded photo into a standard passport-size photo.
+        model: googleAI.model('gemini-2.5-flash-image-preview'),
+        prompt: `You are an expert passport photo processor. Your task is to edit the user's uploaded photo and convert it into a standard passport-size photo. Do NOT generate a new person or face. You must edit the original image provided.
 
         Follow these instructions precisely:
-        1.  **Face and Shoulders:** The output image must be a close-up of the person's head and shoulders.
-        2.  **Expression:** The person should have a neutral facial expression with their eyes open and looking directly at the camera. Do not add a smile.
-        3.  **Background:** Replace the existing background with a plain, uniform {{{backgroundColor}}} background. There should be no shadows or patterns.
-        4.  **No Accessories:** Remove any hats, sunglasses, or non-religious head coverings. Prescription glasses are acceptable but should not have glare.
-        5.  **Format:** The final image should be a high-quality portrait suitable for official documents.
-        6.  **Watermark:** Add a small, subtle 'TotthoAi' watermark in the bottom-right corner.
+        1.  **Face and Shoulders:** The output image must be a close-up of the person's head and shoulders from the original photo.
+        2.  **Background:** Replace the existing background with a plain, uniform ${backgroundColor} background. There should be no shadows or patterns.
+        3.  **Image Quality:** Automatically adjust brightness and contrast to make the photo clear and professional. Remove any minor spots, blemishes, or blurriness from the original photo to produce a clean and sharp final image.
+        4.  **Expression:** The person should have a neutral facial expression with their eyes open and looking directly at the camera.
+        5.  **No Accessories:** Remove any hats, sunglasses, or non-religious head coverings. Prescription glasses are acceptable but should not have glare.
+        6.  **Format:** The final image should be a high-quality portrait suitable for official documents.
+        7.  **Watermark:** Add a small, subtle 'TotthoAi' watermark in the bottom-right corner.
 
         User's photo to process:
         {{media url=photoDataUri}}`,
