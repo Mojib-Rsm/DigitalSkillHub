@@ -60,7 +60,7 @@ export default async function UsersPage() {
                                         <Badge variant="secondary">{user.plan_id}</Badge>
                                     </TableCell>
                                     <TableCell>
-                                        <UserRoleUpdater userId={user.id} currentRole={user.role} />
+                                        <UserRoleUpdater userId={user.id.toString()} currentRole={user.role} />
                                     </TableCell>
                                 </TableRow>
                             ))}
