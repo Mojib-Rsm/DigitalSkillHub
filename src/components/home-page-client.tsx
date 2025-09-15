@@ -179,52 +179,17 @@ const packages = [
   },
 ];
 
-const newPricingPlans = [
-    {
-        id: "free",
-        name: "Free Plan",
-        price: 0,
-        description: "দোকানদার ও ছোট ইউজারদের আকৃষ্ট করার জন্য।",
-        features: ["Limited use of some tools", "5 Generations per month"],
-        isPopular: false,
-    },
-    {
-        id: "starter",
-        name: "Starter",
-        price: 499,
-        description: "For individuals and small teams starting out.",
-        features: ["Access to 5 tools", "200 Generations per month", "Standard Support"],
-        isPopular: false,
-    },
-    {
-        id: "pro",
-        name: "Pro",
-        price: 999,
-        description: "For professionals who need more power.",
-        features: ["Access to 15 tools", "1000 Generations per month", "Priority Support", "Early access to new features"],
-        isPopular: true,
-    },
-    {
-        id: "business",
-        name: "Business",
-        price: 1999,
-        description: "For businesses and agencies with high demand.",
-        features: ["Access to all tools", "Unlimited Generations (basic)", "Priority Access & Support"],
-        isPopular: false,
-    }
-]
-
-
 interface HomePageClientProps {
+    pricingPlans: PricingPlan[];
     testimonials: Testimonial[];
     trendingTools: Tool[];
     activeCoupons: Coupon[];
 }
 
-export default function HomePageClient({ testimonials, trendingTools, activeCoupons }: HomePageClientProps) {
+export default function HomePageClient({ pricingPlans, testimonials, trendingTools, activeCoupons }: HomePageClientProps) {
   const [isMounted, setIsMounted] = React.useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  const loading = !testimonials || !trendingTools;
+  const loading = !pricingPlans || !testimonials || !trendingTools;
   const primaryCoupon = activeCoupons && activeCoupons.length > 0 ? activeCoupons[0] : null;
 
   React.useEffect(() => {
@@ -404,33 +369,57 @@ export default function HomePageClient({ testimonials, trendingTools, activeCoup
                       </p>
                   </div>
 
-                  <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-start">
-                      {newPricingPlans.map((plan, index) => (
-                      <Card key={plan.id} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
-                          {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR</Badge>}
-                          <CardHeader>
-                              <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-                              <p className="text-muted-foreground pt-2 h-12">{plan.description}</p>
-                              <div className="flex items-baseline gap-2 pt-4">
-                                  <p className="text-4xl font-bold text-primary">৳{plan.price}</p>
-                                  {plan.id !== 'free' && <span className="text-sm text-muted-foreground">/ মাস</span>}
-                              </div>
-                          </CardHeader>
-                          <CardContent className="flex-grow space-y-4">
-                              <ul className="space-y-3 text-sm">
-                                  {plan.features.map(feature => (
-                                      <li key={feature} className="flex items-center gap-2 text-muted-foreground"><CheckCircle className="w-4 h-4 text-green-500" /> {feature}</li>
-                                  ))}
-                              </ul>
-                          </CardContent>
-                          <CardFooter>
-                              <Button size="lg" className="w-full" asChild>
-                                  <Link href="/dashboard/pricing">{plan.id === 'free' ? 'Get Started' : 'Choose Plan'}</Link>
-                              </Button>
-                          </CardFooter>
-                      </Card>
-                      ))}
-                  </div>
+                  {loading ? (
+                    <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                        {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-[500px] w-full" />)}
+                    </div>
+                   ) : (
+                    <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                        {pricingPlans.map(plan => (
+                        <Card key={plan.id} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
+                            {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR</Badge>}
+                            <CardHeader>
+                                <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+                                <p className="text-muted-foreground pt-2 h-12">{plan.description}</p>
+                                <div className="flex items-baseline gap-2 pt-4">
+                                    <p className="text-4xl font-bold text-primary">৳{plan.price}</p>
+                                    {plan.originalPrice > plan.price && (
+                                        <>
+                                            <p className="text-xl font-medium text-muted-foreground line-through">৳{plan.originalPrice}</p>
+                                            <Badge variant="destructive">{plan.discount}</Badge>
+                                        </>
+                                    )}
+                                </div>
+                            </CardHeader>
+                            <CardContent className="flex-grow space-y-4">
+                                <div className={`p-3 rounded-lg text-center ${plan.isPopular ? 'bg-primary/10' : 'bg-muted'}`}>
+                                    <p className={`text-lg font-bold ${plan.isPopular ? 'text-primary' : ''}`}>{plan.credits} Credits</p>
+                                    <p className="text-sm text-muted-foreground">Valid for {plan.validity}</p>
+                                </div>
+                                <div className="space-y-3 text-sm">
+                                    {Object.entries(plan.features).map(([category, features]) => (
+                                        <div key={category}>
+                                            <h4 className="font-semibold text-base pt-2">{category}</h4>
+                                            <ul className="space-y-2">
+                                                {(features as string[]).map(feature => (
+                                                    <li key={feature} className="flex items-center gap-2 text-muted-foreground"><CheckCircle className="w-4 h-4 text-green-500" /> {feature}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                <Button size="lg" className="w-full" asChild>
+                                    <Link href={`/pricing/${plan.id}`}>
+                                        <Zap className="mr-2"/> Choose Plan
+                                    </Link>
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                        ))}
+                    </div>
+                  )}
               </div>
           </section>
         

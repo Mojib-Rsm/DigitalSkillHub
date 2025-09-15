@@ -36,6 +36,22 @@ export async function getPricingPlans(): Promise<PricingPlan[]> {
     }
 }
 
+
+export async function getPricingPlanById(id: string): Promise<PricingPlan | null> {
+    try {
+        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM pricing_plans WHERE id = ?', [id]);
+        if (rows.length > 0) {
+            const plans = mapRowsToPlans(rows);
+            return plans[0];
+        }
+        return null;
+    } catch (error) {
+        console.error(`Error fetching pricing plan with id ${id} from MySQL:`, error);
+        return null;
+    }
+}
+
+
 // Admin functions still interact with MySQL
 export async function addPricingPlan(planData: Omit<PricingPlan, 'id'>) {
     try {

@@ -15,41 +15,7 @@ import axios from 'axios';
 export default function PricingPage() {
     const [pricingPlans, setPricingPlans] = useState<PricingPlan[]>([]);
     const [loading, setLoading] = useState(true);
-    const [isRedirecting, setIsRedirecting] = useState<string | null>(null);
-    const { toast } = useToast();
     
-    const handleChoosePlan = async (plan: PricingPlan) => {
-        if (plan.price === 0) {
-            // Handle free plan logic if any
-            toast({ title: "You are on the Free Plan!"});
-            return;
-        }
-
-        setIsRedirecting(plan.id);
-
-        try {
-            const response = await axios.post('/api/bkash/payment/create', {
-                amount: plan.price,
-                planName: plan.name,
-            });
-
-            if (response.data.bkashURL) {
-                window.location.href = response.data.bkashURL;
-            } else {
-                throw new Error(response.data.error || 'Failed to get bKash URL');
-            }
-
-        } catch (error: any) {
-             const errorMessage = error.response?.data?.error || error.message || 'Could not initiate payment. Please try again.';
-             toast({
-                variant: 'destructive',
-                title: 'Payment Error',
-                description: errorMessage,
-            });
-            setIsRedirecting(null);
-        }
-    }
-
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
@@ -115,16 +81,10 @@ export default function PricingPage() {
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Button size="lg" className="w-full" onClick={() => handleChoosePlan(plan)} disabled={isRedirecting !== null}>
-                                {isRedirecting === plan.id ? (
-                                    <>
-                                        <Sparkles className="mr-2 animate-spin"/> Redirecting...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Zap className="mr-2"/> Choose Plan
-                                    </>
-                                )}
+                            <Button size="lg" className="w-full" asChild>
+                                <Link href={`/pricing/${plan.id}`}>
+                                    <Zap className="mr-2"/> Choose Plan
+                                </Link>
                             </Button>
                         </CardFooter>
                     </Card>
