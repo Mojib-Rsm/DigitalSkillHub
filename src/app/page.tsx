@@ -1,5 +1,4 @@
 
-
 import HomePageClient from "@/components/home-page-client";
 import { getPricingPlans } from '@/services/pricing-service';
 import { getTestimonials } from '@/services/testimonial-service';
