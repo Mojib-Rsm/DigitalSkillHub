@@ -5,8 +5,14 @@ const pool = mysql.createPool({
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASS || "",
   database: process.env.DB_NAME || "totthoai",
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
   waitForConnections: true,
   connectionLimit: 10,
+  queueLimit: 0,
+  ssl: {
+    // Required for TiDB Cloud and other secure MySQL connections
+    rejectUnauthorized: true,
+  }
 });
 
 export default pool;
