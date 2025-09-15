@@ -104,10 +104,10 @@ export default async function Header() {
                     <DropdownMenuSeparator/>
                      <form action={logoutAction} className="w-full">
                         <DropdownMenuItem asChild>
-                               <button type="submit" className="w-full cursor-pointer">
-                                <LogOut className="mr-2 h-4 w-4"/>
-                                <span>Logout</span>
-                               </button>
+                           <button type="submit" className="w-full text-left flex items-center cursor-pointer">
+                            <LogOut className="mr-2 h-4 w-4"/>
+                            <span>Logout</span>
+                           </button>
                         </DropdownMenuItem>
                     </form>
                 </DropdownMenuContent>
@@ -160,10 +160,10 @@ export default async function Header() {
                     <DropdownMenuSeparator/>
                      <form action={logoutAction} className="w-full">
                         <DropdownMenuItem asChild>
-                               <button type="submit" className="w-full cursor-pointer">
+                            <button type="submit" className="w-full text-left flex items-center cursor-pointer">
                                 <LogOut className="mr-2 h-4 w-4"/>
                                 <span>Logout</span>
-                               </button>
+                           </button>
                         </DropdownMenuItem>
                     </form>
                 </DropdownMenuContent>
