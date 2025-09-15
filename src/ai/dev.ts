@@ -45,6 +45,7 @@ import '@/app/dashboard/admin/coupons/actions.ts';
 import '@/app/dashboard/admin/db-status/actions.ts';
 import '@/app/dashboard/admin/transactions/actions.ts';
 import '@/app/dashboard/admin/testimonials/actions.ts';
+import '@/app/dashboard/admin/tools/actions.ts';
 import '@/ai/flows/ai-article-writer.ts';
 import '@/ai/flows/contact-support.ts';
 import '@/ai/flows/disclaimer-generator.ts';

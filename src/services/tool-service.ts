@@ -3,7 +3,7 @@
 
 import type { Tool } from '@/lib/demo-data';
 import pool from '@/lib/mysql';
-import { RowDataPacket } from 'mysql2';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
 // --- Public-facing functions use MySQL ---
 
@@ -30,7 +30,7 @@ export async function getTools(limit?: number): Promise<Tool[]> {
         const [rows] = await pool.query<RowDataPacket[]>(queryString);
         return mapRowsToTools(rows);
     } catch (error) {
-        console.error("Error fetching tools from MySQL:", error);
+        console.error("Error fetching tools from MySQL. This might be because the table does not exist. Please run the seeding script (`npm run db:seed`).", error);
         return [];
     }
 }
@@ -109,8 +109,8 @@ export async function getTrendingTools(limit: number = 4): Promise<Tool[]> {
 
 export async function addTool(toolData: Omit<Tool, 'id'>) {
     try {
-        const [result] = await pool.query('INSERT INTO tools SET ?', [toolData]);
-        return { success: true, id: (result as any).insertId.toString() };
+        const [result] = await pool.query<ResultSetHeader>('INSERT INTO tools SET ?', [toolData]);
+        return { success: true, id: result.insertId.toString() };
     } catch (error) {
         console.error("Error adding tool to MySQL:", error);
         return { success: false, message: (error as Error).message };
