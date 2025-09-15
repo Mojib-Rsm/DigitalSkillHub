@@ -41,27 +41,37 @@ const passportPhotoMakerFlow = ai.defineFlow(
   async ({ photoDataUri, backgroundColor }) => {
     try {
       const {media} = await ai.generate({
-        model: googleAI.model('gemini-pro'),
-        prompt: `You are an expert passport photo processor. Your task is to take the user's uploaded photo and generate a standard passport-size photo. Do NOT generate a new person or face. You must use the original image provided as a reference.
+        model: 'googleai/gemini-2.5-flash-image-preview',
+        prompt: [
+            {media: {url: photoDataUri}},
+            {text: `You are an expert passport photo processor. Your task is to take the user's uploaded photo and generate a standard passport-size photo. Do NOT generate a new person or face. You must use the original image provided as a reference.
 
-        Follow these instructions precisely:
-        1.  **Face and Shoulders:** The output image must be a close-up of the person's head and shoulders from the original photo.
-        2.  **Background:** The background must be a plain, uniform ${backgroundColor} background. There should be no shadows or patterns.
-        3.  **Image Quality:** Automatically adjust brightness and contrast to make the photo clear and professional. Remove any minor spots, blemishes, or blurriness from the original photo to produce a clean and sharp final image.
-        4.  **Expression:** The person should have a neutral facial expression with their eyes open and looking directly at the camera.
-        5.  **No Accessories:** Remove any hats, sunglasses, or non-religious head coverings. Prescription glasses are acceptable but should not have glare.
-        6.  **Format:** The final image should be a high-quality portrait suitable for official documents.
-        7.  **Watermark:** Add a small, subtle 'TotthoAi' watermark in the bottom-right corner.
-
-        User's photo to process:
-        {{media url=photoDataUri}}`,
+            Follow these instructions precisely:
+            1.  **Face and Shoulders:** The output image must be a close-up of the person's head and shoulders from the original photo.
+            2.  **Background:** The background must be a plain, uniform ${backgroundColor} background. There should be no shadows or patterns.
+            3.  **Image Quality:** Automatically adjust brightness and contrast to make the photo clear and professional. Remove any minor spots, blemishes, or blurriness from the original photo to produce a clean and sharp final image.
+            4.  **Expression:** The person should have a neutral facial expression with their eyes open and looking directly at the camera.
+            5.  **No Accessories:** Remove any hats, sunglasses, or non-religious head coverings. Prescription glasses are acceptable but should not have glare.
+            6.  **Format:** The final image should be a high-quality portrait suitable for official documents.
+            7.  **Watermark:** Add a small, subtle 'TotthoAi' watermark in the bottom-right corner.`},
+        ],
         config: {
           responseModalities: ['TEXT', 'IMAGE'],
+           safetySettings: [
+            {
+              category: 'HARM_CATEGORY_HATE_SPEECH',
+              threshold: 'BLOCK_ONLY_HIGH',
+            },
+            {
+              category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+              threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+            },
+          ],
         },
       });
       
       if (!media?.url) {
-          throw new Error('Image generation failed to produce a URL.');
+          throw new Error('Image generation failed to produce a valid URL. The model may have refused to generate the image based on the prompt.');
       }
 
       return {imageUrl: media.url};
