@@ -1,7 +1,6 @@
 
 
 import HomePageClient from "@/components/home-page-client";
-import { getActiveCoupons } from "@/services/coupon-service";
 import { getPricingPlans } from '@/services/pricing-service';
 import { getTestimonials } from '@/services/testimonial-service';
 import { getTrendingTools } from '@/services/tool-service';
@@ -13,19 +12,19 @@ import { getTrendingTools } from '@/services/tool-service';
 // while allowing for client-side interactivity in the child component.
 export default async function Home() {
     // Gracefully fetch data, allowing the page to render even if some services fail (e.g., table not found)
-    const [pricingPlans, testimonials, trendingTools, activeCoupons] = await Promise.all([
-        getPricingPlans().catch(() => []),
-        getTestimonials().catch(() => []),
-        getTrendingTools(4).catch(() => []),
-        getActiveCoupons().catch(() => []),
+    const [pricingPlans, testimonials, trendingTools] = await Promise.all([
+        getPricingPlans(),
+        getTestimonials(),
+        getTrendingTools(4),
     ]);
 
+    // Coupons are fetched client-side or on-demand to avoid blocking initial render if DB is slow/down
     return (
         <HomePageClient 
             pricingPlans={pricingPlans} 
             testimonials={testimonials} 
             trendingTools={trendingTools} 
-            activeCoupons={activeCoupons}
+            activeCoupons={[]} // Pass empty and fetch on client if needed
         />
     );
 }

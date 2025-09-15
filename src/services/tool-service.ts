@@ -1,9 +1,13 @@
 
 'use server';
 
-import type { Tool } from '@/lib/demo-data';
+import type { Tool as DemoTool } from '@/lib/demo-data';
+import { tools as demoTools } from '@/lib/demo-data';
 import pool from '@/lib/mysql';
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
+
+export type Tool = DemoTool;
+
 
 // --- Public-facing functions use MySQL ---
 
@@ -28,10 +32,13 @@ export async function getTools(limit?: number): Promise<Tool[]> {
             queryString += ` LIMIT ${limit}`;
         }
         const [rows] = await pool.query<RowDataPacket[]>(queryString);
+        if (rows.length === 0) {
+            return (demoTools as Tool[]).filter(t => t.enabled);
+        }
         return mapRowsToTools(rows);
     } catch (error) {
-        console.error("Error fetching tools from MySQL. This might be because the table does not exist. Please run the seeding script (`npm run db:seed`).", error);
-        return [];
+        console.error("Error fetching tools from MySQL. Falling back to demo data.", error);
+        return (demoTools as Tool[]).filter(t => t.enabled);
     }
 }
 
@@ -42,10 +49,10 @@ export async function getToolByHref(href: string): Promise<Tool | null> {
             const tools = await mapRowsToTools(rows);
             return tools[0];
         }
-        return null;
+        return (demoTools as Tool[]).find(t => t.href === href) || null;
     } catch (error) {
-        console.error(`Error fetching tool with href ${href} from MySQL:`, error);
-        return null;
+        console.error(`Error fetching tool with href ${href} from MySQL. Falling back to demo data.`, error);
+        return (demoTools as Tool[]).find(t => t.href === href) || null;
     }
 }
 
@@ -56,10 +63,10 @@ export async function getToolByTitle(title: string): Promise<Tool | null> {
             const tools = await mapRowsToTools(rows);
             return tools[0];
         }
-        return null;
+        return (demoTools as Tool[]).find(t => t.title === title) || null;
     } catch (error) {
-        console.error(`Error fetching tool with title ${title} from MySQL:`, error);
-        return null;
+        console.error(`Error fetching tool with title ${title} from MySQL. Falling back to demo data.`, error);
+        return (demoTools as Tool[]).find(t => t.title === title) || null;
     }
 }
 
@@ -70,10 +77,12 @@ export async function getToolById(id: string): Promise<Tool | null> {
             const tools = await mapRowsToTools(rows);
             return tools[0];
         }
-        return null;
+         // @ts-ignore
+        return (demoTools as Tool[]).find(t => t.id === id) || null;
     } catch (error) {
-        console.error(`Error fetching tool with id ${id} from MySQL:`, error);
-        return null;
+        console.error(`Error fetching tool with id ${id} from MySQL. Falling back to demo data.`, error);
+        // @ts-ignore
+        return (demoTools as Tool[]).find(t => t.id === id) || null;
     }
 }
 
@@ -83,10 +92,13 @@ export async function getRelatedTools(category: string, currentToolId: string): 
             'SELECT * FROM tools WHERE category = ? AND id != ? AND enabled = 1 LIMIT 3',
             [category, currentToolId]
         );
-        return mapRowsToTools(rows);
+        if (rows.length > 0) {
+            return mapRowsToTools(rows);
+        }
+        return (demoTools as Tool[]).filter(t => t.category === category && t.id !== currentToolId && t.enabled).slice(0, 3);
     } catch (error) {
-        console.error(`Error fetching related tools for category ${category} from MySQL:`, error);
-        return [];
+        console.error(`Error fetching related tools for category ${category} from MySQL. Falling back to demo data.`, error);
+        return (demoTools as Tool[]).filter(t => t.category === category && t.id !== currentToolId && t.enabled).slice(0, 3);
     }
 }
 
@@ -97,10 +109,13 @@ export async function getTrendingTools(limit: number = 4): Promise<Tool[]> {
             'SELECT * FROM tools WHERE enabled = 1 ORDER BY id DESC LIMIT ?',
             [limit]
         );
-        return mapRowsToTools(rows);
+        if (rows.length > 0) {
+            return mapRowsToTools(rows);
+        }
+        return (demoTools as Tool[]).slice(0, limit);
     } catch (error) {
-        console.error("Error fetching trending tools from MySQL:", error);
-        return [];
+        console.error("Error fetching trending tools from MySQL. Falling back to demo data.", error);
+        return (demoTools as Tool[]).slice(0, limit);
     }
 }
 

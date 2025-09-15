@@ -3,6 +3,7 @@
 
 import pool from '@/lib/mysql';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
+import { pricingPlans as demoPricingPlans } from '@/lib/demo-data';
 
 export type PricingPlan = {
     id: string;
@@ -29,10 +30,13 @@ function mapRowsToPlans(rows: RowDataPacket[]): PricingPlan[] {
 export async function getPricingPlans(): Promise<PricingPlan[]> {
     try {
         const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM pricing_plans ORDER BY price');
+        if (rows.length === 0) {
+            return demoPricingPlans;
+        }
         return mapRowsToPlans(rows);
     } catch (error) {
-        console.error("Error fetching pricing plans from MySQL. This might be because the table does not exist. Please run the seeding script (`npm run db:seed`).", error);
-        return [];
+        console.error("Error fetching pricing plans from MySQL. Falling back to demo data.", error);
+        return demoPricingPlans;
     }
 }
 
@@ -44,10 +48,11 @@ export async function getPricingPlanById(id: string): Promise<PricingPlan | null
             const plans = mapRowsToPlans(rows);
             return plans[0];
         }
-        return null;
+        // Fallback to demo data if not found in DB
+        return demoPricingPlans.find(p => p.id === id) || null;
     } catch (error) {
-        console.error(`Error fetching pricing plan with id ${id} from MySQL:`, error);
-        return null;
+        console.error(`Error fetching pricing plan with id ${id} from MySQL. Falling back to demo data.`, error);
+        return demoPricingPlans.find(p => p.id === id) || null;
     }
 }
 
