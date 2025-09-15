@@ -1,3 +1,4 @@
+
 import mysql from "mysql2/promise";
 
 const pool = mysql.createPool({
@@ -7,7 +8,7 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME || "totthoai",
   port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 3306,
   ssl: {
-    rejectUnauthorized: true,
+    rejectUnauthorized: false,
   },
   waitForConnections: true,
   connectionLimit: 10,
