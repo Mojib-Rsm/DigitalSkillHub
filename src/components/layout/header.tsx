@@ -25,6 +25,7 @@ import { ThemeToggleButton } from "../theme-toggle-button";
 import { logoutAction } from "@/app/logout/actions";
 import { Separator } from "../ui/separator";
 import { getActiveCoupons } from "@/services/coupon-service";
+import LanguageToggleButton from "../language-toggle";
 
 const navLinks = [
   { href: "/#features", label: "Features" },
@@ -72,6 +73,7 @@ export default async function Header() {
                 </Link>
             </Button>
             <ThemeToggleButton/>
+            <LanguageToggleButton />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-10 w-10 rounded-full">
@@ -116,6 +118,7 @@ export default async function Header() {
     return (
         <div className="flex items-center gap-2">
             <ThemeToggleButton />
+            <LanguageToggleButton />
              <Button asChild>
                 <Link href="/login">Sign In</Link>
              </Button>
@@ -225,6 +228,7 @@ export default async function Header() {
                         </Link>
                             <div className="flex items-center gap-2">
                             <ThemeToggleButton/>
+                            <LanguageToggleButton />
                             <SheetClose asChild>
                                 <Button variant="ghost" size="icon"><X className="w-5 h-5"/></Button>
                             </SheetClose>

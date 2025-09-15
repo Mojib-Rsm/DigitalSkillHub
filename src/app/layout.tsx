@@ -8,6 +8,7 @@ import Footer from '@/components/layout/footer';
 import Script from 'next/script';
 import { Hind_Siliguri, Tiro_Bangla } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import { LanguageProvider } from '@/contexts/language-context';
 
 const hindSiliguri = Hind_Siliguri({
   subsets: ['bengali'],
@@ -82,12 +83,14 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
+          <LanguageProvider>
             <div className="flex flex-col min-h-screen">
                 <Header />
                 <main className="flex-grow">{children}</main>
                 <Footer />
             </div>
             <Toaster />
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

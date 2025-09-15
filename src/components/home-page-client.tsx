@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import type { Coupon } from "@/services/coupon-service";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
+import T from "./t";
 
 const faqItems = [
     {
@@ -237,21 +239,21 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
           <div className="container mx-auto px-4 text-center">
              <div className="max-w-4xl mx-auto">
                 <h1 className="font-headline text-5xl md:text-7xl font-bold tracking-tight animate-fade-in-up">
-                আপনার কনটেন্ট তৈরি করুন ১০ গুণ দ্রুত, সম্পূর্ণ বাংলায়
+                  <T>Create Your Content 10x Faster, in Full Bengali</T>
                 </h1>
                 <p className="text-lg text-muted-foreground mt-6 max-w-3xl mx-auto animate-fade-in-up [animation-delay:200ms]">
-                TotthoAi ব্যবহার করে সময় ও অর্থ বাঁচান। SEO-অপ্টিমাইজড আর্টিকেল, সোশ্যাল মিডিয়া পোস্ট, এবং আকর্ষণীয় ছবি তৈরি করুন এক ক্লিকে।
+                  <T>Save time and money with TotthoAi. Generate SEO-optimized articles, social media posts, and stunning images with a single click.</T>
                 </p>
                 <div className="mt-8 flex justify-center gap-4 animate-fade-in-up [animation-delay:400ms]">
                     <Button size="lg" className="text-base" asChild>
                         <Link href="/login">
                             <Zap className="mr-2 h-5 w-5"/>
-                            বিনামূল্যে শুরু করুন
+                            <T>Start for Free</T>
                         </Link>
                     </Button>
                     <Button size="lg" variant="outline" className="text-base" asChild>
                         <Link href="/ai-tools">
-                           সকল টুলস দেখুন
+                           <T>Explore All Tools</T>
                         </Link>
                     </Button>
                 </div>
@@ -263,9 +265,9 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
         <section className="py-12 md:py-20">
             <div className="container mx-auto px-4">
                  <div className="text-center max-w-3xl mx-auto">
-                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">আপনার প্রয়োজন অনুযায়ী প্যাকেজ</h2>
+                    <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight"><T>Packages for Your Needs</T></h2>
                     <p className="text-lg text-muted-foreground mt-4">
-                        আপনার পেশা যাই হোক না কেন, আমাদের কাছে আপনার জন্য সঠিক টুলস এবং প্যাকেজ রয়েছে।
+                        <T>Whatever your profession, we have the right tools and packages for you.</T>
                     </p>
                 </div>
                 <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -278,25 +280,25 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                                         <div className="bg-primary/10 p-3 rounded-lg">
                                             <Icon className="w-8 h-8 text-primary"/>
                                         </div>
-                                        <CardTitle className="text-xl">{pkg.title}</CardTitle>
+                                        <CardTitle className="text-xl"><T>{pkg.title}</T></CardTitle>
                                     </div>
-                                    <p className="text-sm text-muted-foreground pt-2">{pkg.description}</p>
+                                    <p className="text-sm text-muted-foreground pt-2"><T>{pkg.description}</T></p>
                                 </CardHeader>
                                 <CardContent className="flex-grow px-6">
-                                  <h4 className="font-semibold text-sm mb-2">Included Tools:</h4>
+                                  <h4 className="font-semibold text-sm mb-2"><T>Included Tools:</T></h4>
                                    <ul className="space-y-1.5 text-xs text-muted-foreground">
                                         {pkg.tools.slice(0, 5).map(tool => (
                                             <li key={tool} className="flex items-center gap-2">
-                                                <CheckCircle className="w-3.5 h-3.5 text-green-500" /> {tool}
+                                                <CheckCircle className="w-3.5 h-3.5 text-green-500" /> <T>{tool}</T>
                                             </li>
                                         ))}
-                                        {pkg.tools.length > 5 && <li className="font-semibold">and {pkg.tools.length - 5} more...</li>}
+                                        {pkg.tools.length > 5 && <li className="font-semibold"><T>and</T> {pkg.tools.length - 5} <T>more...</T></li>}
                                     </ul>
                                 </CardContent>
                                 <CardFooter className="p-6 pt-4">
                                      <Button variant="link" className="p-0" asChild>
                                         <Link href={`/packages/${pkg.slug}`}>
-                                            Explore Package <ArrowRight className="ml-2 w-4 h-4"/>
+                                            <T>Explore Package</T> <ArrowRight className="ml-2 w-4 h-4"/>
                                         </Link>
                                      </Button>
                                 </CardFooter>
@@ -312,9 +314,9 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
         <section id="trending-tools" className="py-12 md:py-20 bg-muted/50">
           <div className="container mx-auto px-4">
               <div className="text-center max-w-3xl mx-auto">
-                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">ট্রেন্ডিং টুলস</h2>
+                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight"><T>Trending Tools</T></h2>
                   <p className="text-lg text-muted-foreground mt-4">
-                     আমাদের ব্যবহারকারীদের মধ্যে সবচেয়ে জনপ্রিয় এবং বহুল ব্যবহৃত টুলগুলো দেখুন।
+                     <T>Check out the most popular and widely used tools among our users.</T>
                   </p>
               </div>
               <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -331,11 +333,11 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                                                 <Icon className="w-8 h-8 text-primary" />
                                             </div>
                                             <div>
-                                                <CardTitle className="text-xl">{tool.title}</CardTitle>
+                                                <CardTitle className="text-xl"><T>{tool.title}</T></CardTitle>
                                             </div>
                                         </CardHeader>
                                         <CardContent>
-                                            <p className="text-muted-foreground text-sm">{tool.description}</p>
+                                            <p className="text-muted-foreground text-sm"><T>{tool.description}</T></p>
                                         </CardContent>
                                         <CardFooter className="p-4 pt-0 flex justify-end">
                                             <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -350,7 +352,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                    <Button size="lg" asChild>
                       <Link href="/ai-tools">
                           <Search className="mr-2 h-5 w-5"/>
-                          সকল টুল দেখুন
+                          <T>Explore All Tools</T>
                       </Link>
                   </Button>
               </div>
@@ -362,10 +364,10 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
               <div className="container mx-auto px-4">
                   <div className="text-center max-w-3xl mx-auto">
                       <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">
-                          Choose Your AI Content Creation Plan
+                          <T>Choose Your AI Content Creation Plan</T>
                       </h2>
                       <p className="text-lg text-muted-foreground mt-4">
-                          All tools on this site are free. However, if you need more power and features, consider our premium plans.
+                          <T>All tools on this site are free. However, if you need more power and features, consider our premium plans.</T>
                       </p>
                   </div>
 
@@ -377,32 +379,32 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                     <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
                         {pricingPlans.map(plan => (
                         <Card key={plan.id} className={`shadow-lg flex flex-col h-full transform hover:-translate-y-2 transition-transform duration-300 ${plan.isPopular ? 'border-2 border-primary' : ''}`}>
-                            {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">MOST POPULAR</Badge>}
+                            {plan.isPopular && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2"><T>MOST POPULAR</T></Badge>}
                             <CardHeader>
-                                <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
-                                <p className="text-muted-foreground pt-2 h-12">{plan.description}</p>
+                                <CardTitle className="text-2xl font-bold"><T>{plan.name}</T></CardTitle>
+                                <p className="text-muted-foreground pt-2 h-12"><T>{plan.description}</T></p>
                                 <div className="flex items-baseline gap-2 pt-4">
                                     <p className="text-4xl font-bold text-primary">৳{plan.price}</p>
                                     {plan.originalPrice > plan.price && (
                                         <>
                                             <p className="text-xl font-medium text-muted-foreground line-through">৳{plan.originalPrice}</p>
-                                            <Badge variant="destructive">{plan.discount}</Badge>
+                                            <Badge variant="destructive"><T>{plan.discount}</T></Badge>
                                         </>
                                     )}
                                 </div>
                             </CardHeader>
                             <CardContent className="flex-grow space-y-4">
                                 <div className={`p-3 rounded-lg text-center ${plan.isPopular ? 'bg-primary/10' : 'bg-muted'}`}>
-                                    <p className={`text-lg font-bold ${plan.isPopular ? 'text-primary' : ''}`}>{plan.credits} Credits</p>
-                                    <p className="text-sm text-muted-foreground">Valid for {plan.validity}</p>
+                                    <p className={`text-lg font-bold ${plan.isPopular ? 'text-primary' : ''}`}>{plan.credits} <T>Credits</T></p>
+                                    <p className="text-sm text-muted-foreground"><T>Valid for</T> {plan.validity}</p>
                                 </div>
                                 <div className="space-y-3 text-sm">
                                     {Object.entries(plan.features).map(([category, features]) => (
                                         <div key={category}>
-                                            <h4 className="font-semibold text-base pt-2">{category}</h4>
+                                            <h4 className="font-semibold text-base pt-2"><T>{category}</T></h4>
                                             <ul className="space-y-2">
                                                 {(features as string[]).map(feature => (
-                                                    <li key={feature} className="flex items-center gap-2 text-muted-foreground"><CheckCircle className="w-4 h-4 text-green-500" /> {feature}</li>
+                                                    <li key={feature} className="flex items-center gap-2 text-muted-foreground"><CheckCircle className="w-4 h-4 text-green-500" /> <T>{feature}</T></li>
                                                 ))}
                                             </ul>
                                         </div>
@@ -412,7 +414,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                             <CardFooter>
                                 <Button size="lg" className="w-full" asChild>
                                     <Link href={`/pricing/${plan.id}`}>
-                                        <Zap className="mr-2"/> Choose Plan
+                                        <Zap className="mr-2"/> <T>Choose Plan</T>
                                     </Link>
                                 </Button>
                             </CardFooter>
@@ -427,14 +429,14 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
           <section className="py-12 md:py-20 bg-muted/50">
               <div className="container mx-auto px-4">
               <div className="text-center max-w-3xl mx-auto">
-                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up">Success Stories with TotthoAi</h2>
+                  <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight animate-fade-in-up"><T>Success Stories with TotthoAi</T></h2>
                   <p className="text-lg text-muted-foreground mt-4 animate-fade-in-up [animation-delay:200ms]">
-                  Real Results from Real Users. See how content creators, marketers, and businesses are achieving extraordinary results with our features.
+                  <T>Real Results from Real Users. See how content creators, marketers, and businesses are achieving extraordinary results with our features.</T>
                   </p>
                   <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center animate-fade-in-up [animation-delay:400ms]">
-                      <p className="font-semibold text-lg">Avg. 90% time savings</p>
-                      <p className="font-semibold text-lg">300% faster creation</p>
-                      <p className="font-semibold text-lg">2x better SEO results</p>
+                      <p className="font-semibold text-lg"><T>Avg. 90% time savings</T></p>
+                      <p className="font-semibold text-lg"><T>300% faster creation</T></p>
+                      <p className="font-semibold text-lg"><T>2x better SEO results</T></p>
                   </div>
               </div>
                {loading ? (
@@ -446,11 +448,11 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                       {testimonials.map((testimonial, index) => (
                       <Card key={testimonial.id} className="shadow-lg animate-fade-in-up" style={{animationDelay: `${600 + index*100}ms`}}>
                           <CardHeader>
-                              <CardTitle className="text-xl">{testimonial.feature}</CardTitle>
+                              <CardTitle className="text-xl"><T>{testimonial.feature}</T></CardTitle>
                           </CardHeader>
                           <CardContent>
-                              <p className="text-muted-foreground text-sm italic">"{testimonial.quote}"</p>
-                              <p className="mt-4 font-bold text-primary">{testimonial.metric}</p>
+                              <p className="text-muted-foreground text-sm italic">"<T>{testimonial.quote}</T>"</p>
+                              <p className="mt-4 font-bold text-primary"><T>{testimonial.metric}</T></p>
                           </CardContent>
                           <CardFooter className="flex items-center gap-3">
                               <Avatar>
@@ -458,8 +460,8 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                                   <AvatarFallback>{testimonial.authorName.charAt(0)}</AvatarFallback>
                               </Avatar>
                               <div>
-                                  <p className="font-semibold">{testimonial.authorName}</p>
-                                  <p className="text-xs text-muted-foreground">{testimonial.authorRole}</p>
+                                  <p className="font-semibold"><T>{testimonial.authorName}</T></p>
+                                  <p className="text-xs text-muted-foreground"><T>{testimonial.authorRole}</T></p>
                               </div>
                           </CardFooter>
                       </Card>
@@ -469,7 +471,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
               <div className="text-center mt-12 animate-fade-in-up">
                       <Button size="lg" asChild>
                       <Link href="/dashboard/pricing">
-                          Start Your Success Story
+                          <T>Start Your Success Story</T>
                       </Link>
                   </Button>
               </div>
@@ -480,9 +482,9 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
           <section className="py-12 md:py-20">
               <div className="container mx-auto px-4">
                   <div className="text-center max-w-3xl mx-auto">
-                      <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight">Frequently Asked Questions</h2>
+                      <h2 className="font-headline text-4xl md:text-5xl font-bold tracking-tight"><T>Frequently Asked Questions</T></h2>
                       <p className="text-lg text-muted-foreground mt-4">
-                          Everything you need to know about TotthoAi and our content generation tools.
+                          <T>Everything you need to know about TotthoAi and our content generation tools.</T>
                       </p>
                   </div>
                   <div className="mt-12 max-w-4xl mx-auto">
@@ -494,9 +496,9 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                         <Accordion type="single" collapsible className="w-full">
                             {faqItems.map((item, index) => (
                                <AccordionItem value={`item-${index}`} key={index}>
-                                    <AccordionTrigger className="text-lg text-left font-semibold hover:no-underline">{item.question}</AccordionTrigger>
+                                    <AccordionTrigger className="text-lg text-left font-semibold hover:no-underline"><T>{item.question}</T></AccordionTrigger>
                                     <AccordionContent className="text-base text-muted-foreground">
-                                        {item.answer}
+                                        <T>{item.answer}</T>
                                     </AccordionContent>
                                 </AccordionItem>
                             ))}
@@ -504,7 +506,7 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
                       )}
                   </div>
                   <div className="text-center mt-8">
-                       <p className="text-muted-foreground">Still have questions? <Link href="/contact" className="text-primary font-semibold hover:underline">Contact our support team</Link></p>
+                       <p className="text-muted-foreground"><T>Still have questions?</T> <Link href="/contact" className="text-primary font-semibold hover:underline"><T>Contact our support team</T></Link></p>
                   </div>
               </div>
           </section>
