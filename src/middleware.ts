@@ -12,11 +12,6 @@ const protectedPaths = [
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   
-  // Middleware should not run on static files or API routes
-  if (pathname.startsWith('/_next') || pathname.startsWith('/api')) {
-      return;
-  }
-  
   const isProtected = protectedPaths.some(path => pathname.startsWith(path));
 
   if (isProtected && !req.auth) {

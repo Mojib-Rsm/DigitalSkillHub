@@ -2,14 +2,14 @@
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Loader, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import axios from 'axios';
 
-export default function BkashCallbackPage() {
+function BkashCallbackContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const paymentID = searchParams.get('paymentID');
@@ -45,7 +45,7 @@ export default function BkashCallbackPage() {
         };
 
         verifyPayment();
-    }, [paymentID, status]);
+    }, [paymentID, status, router]);
 
     return (
         <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[60vh]">
@@ -66,3 +66,13 @@ export default function BkashCallbackPage() {
         </div>
     );
 }
+
+
+export default function BkashCallbackPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <BkashCallbackContent />
+        </Suspense>
+    );
+}
+
