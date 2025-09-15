@@ -17,42 +17,11 @@ const publicOnlyPaths = [
     '/login',
     '/signup',
 ];
-
-async function isAppInstalled() {
-    try {
-        // A simple check to see if the settings table has any rows.
-        // A more specific key could be used, e.g., 'install_complete'
-        const [rows] = await pool.query<any[]>("SELECT * FROM settings LIMIT 1");
-        return rows.length > 0;
-    } catch (error) {
-        // This likely means the 'settings' table doesn't exist yet.
-        return false;
-    }
-}
  
 export default auth(async (req) => {
   const { pathname } = req.nextUrl;
   const isLoggedIn = !!req.auth;
-
-  // The /install path should always be accessible to check installation status.
-  if (pathname.startsWith('/install')) {
-    const installed = await isAppInstalled();
-    if (installed) {
-      // If already installed, redirect away from /install
-      return NextResponse.redirect(new URL(isLoggedIn ? '/dashboard' : '/', req.url));
-    }
-    // If not installed, allow access to /install
-    return NextResponse.next();
-  }
   
-  const installed = await isAppInstalled();
-  if (!installed) {
-    // If not installed, redirect everything else to /install
-    return NextResponse.redirect(new URL('/install', req.url));
-  }
-  
-  // From here, we assume the app is installed.
-
   const isProtected = protectedPaths.some(path => pathname.startsWith(path));
   const isPublicOnly = publicOnlyPaths.some(path => pathname.startsWith(path));
 
