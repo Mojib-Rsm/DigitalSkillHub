@@ -103,10 +103,10 @@ export default async function Header() {
                     </DropdownMenuItem>
                     <DropdownMenuSeparator/>
                      <form action={logoutAction} className="w-full">
-                        <DropdownMenuItem asChild>
-                           <button type="submit" className="w-full text-left flex items-center cursor-pointer">
-                            <LogOut className="mr-2 h-4 w-4"/>
-                            <span>Logout</span>
+                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                            <button type="submit" className="w-full text-left flex items-center cursor-pointer">
+                                <LogOut className="mr-2 h-4 w-4"/>
+                                <span>Logout</span>
                            </button>
                         </DropdownMenuItem>
                     </form>
