@@ -1,9 +1,12 @@
+
 "use client";
 
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle } from 'lucide-react';
+import { sendErrorNotification } from '@/services/email-service';
+import { usePathname } from 'next/navigation';
 
 export default function Error({
   error,
@@ -12,10 +15,15 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const pathname = usePathname();
+
   useEffect(() => {
-    // Log the error to an error reporting service
+    // Log the error to the console
     console.error(error);
-  }, [error]);
+    
+    // Send email notification
+    sendErrorNotification({ error, pathname });
+  }, [error, pathname]);
 
   return (
     <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[60vh]">
@@ -26,7 +34,7 @@ export default function Error({
                 </div>
                 <CardTitle className="text-3xl font-bold">Something went wrong!</CardTitle>
                 <CardDescription className="text-lg text-muted-foreground">
-                   We encountered an unexpected issue. Please try again.
+                   We encountered an unexpected issue. Our team has been notified.
                 </CardDescription>
             </CardHeader>
             <CardContent>
