@@ -41,12 +41,12 @@ const passportPhotoMakerFlow = ai.defineFlow(
   async ({ photoDataUri, backgroundColor }) => {
     try {
       const {media} = await ai.generate({
-        model: googleAI.model('gemini-2.5-flash-image-preview'),
-        prompt: `You are an expert passport photo processor. Your task is to edit the user's uploaded photo and convert it into a standard passport-size photo. Do NOT generate a new person or face. You must edit the original image provided.
+        model: googleAI.model('gemini-pro'),
+        prompt: `You are an expert passport photo processor. Your task is to take the user's uploaded photo and generate a standard passport-size photo. Do NOT generate a new person or face. You must use the original image provided as a reference.
 
         Follow these instructions precisely:
         1.  **Face and Shoulders:** The output image must be a close-up of the person's head and shoulders from the original photo.
-        2.  **Background:** Replace the existing background with a plain, uniform ${backgroundColor} background. There should be no shadows or patterns.
+        2.  **Background:** The background must be a plain, uniform ${backgroundColor} background. There should be no shadows or patterns.
         3.  **Image Quality:** Automatically adjust brightness and contrast to make the photo clear and professional. Remove any minor spots, blemishes, or blurriness from the original photo to produce a clean and sharp final image.
         4.  **Expression:** The person should have a neutral facial expression with their eyes open and looking directly at the camera.
         5.  **No Accessories:** Remove any hats, sunglasses, or non-religious head coverings. Prescription glasses are acceptable but should not have glare.
