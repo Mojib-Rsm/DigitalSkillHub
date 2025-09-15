@@ -1,7 +1,7 @@
 
 import 'dotenv/config';
 import pool from "../src/lib/mysql";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import {
   tools,
   allCourses,
@@ -83,7 +83,7 @@ async function seed() {
             credits INT,
             validity VARCHAR(255),
             isPopular BOOLEAN DEFAULT FALSE,
-            features JSON
+            features TEXT
         );
      `);
     console.log("✔️ `pricing_plans` table created or already exists.");

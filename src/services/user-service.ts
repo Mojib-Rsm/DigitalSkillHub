@@ -4,7 +4,7 @@
 
 import { auth } from '@/auth';
 import { UserModel } from '@/models/userModel';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import type { User } from '@/models/userModel';
 import pool from '@/lib/mysql';
 
@@ -86,4 +86,3 @@ export async function getAllUsers(): Promise<UserProfile[]> {
     const [rows] = await pool.query('SELECT * FROM users');
     return rows as UserProfile[];
 }
-
