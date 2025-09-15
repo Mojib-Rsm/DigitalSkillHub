@@ -39,6 +39,7 @@ import {
   Ticket,
   Server,
   CreditCard,
+  MessageSquare,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -118,6 +119,12 @@ export default function DashboardSidebar({
                                 <SidebarMenuSubButton href="/dashboard/admin/coupons">
                                     <Ticket />
                                     <span>Coupons</span>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                            <SidebarMenuSubItem>
+                                <SidebarMenuSubButton href="/dashboard/admin/testimonials">
+                                    <MessageSquare />
+                                    <span>Testimonials</span>
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                              <SidebarMenuSubItem>
