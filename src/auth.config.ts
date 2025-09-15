@@ -9,25 +9,25 @@ import { z } from 'zod';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
-// Moved loginUser function here to break circular dependency
-async function loginUser(email: string, password: string): Promise<Omit<User, 'password'>> {
+// This function now returns a result object instead of throwing errors directly
+async function loginUser(email: string, password: string): Promise<{ success: true, user: Omit<User, 'password'> } | { success: false, message: string }> {
     try {
         const user = await UserModel.findByEmail(email);
         if (!user || !user.password) {
-            throw new Error("No user found with this email.");
+            return { success: false, message: "No user found with this email." };
         }
 
         const isMatch = await bcryptjs.compare(password, user.password);
         if (!isMatch) {
-            throw new Error("Incorrect password.");
+            return { success: false, message: "Incorrect password." };
         }
 
         const { password: _, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+        return { success: true, user: userWithoutPassword };
 
     } catch (error) {
         console.error("Error in loginUser:", error);
-        throw error; // Re-throw the error to be caught by the authorize function
+        return { success: false, message: "An internal server error occurred." };
     }
 }
 
@@ -46,13 +46,16 @@ export const authConfig = {
             
             if (parsedCredentials.success) {
                 const { email, password } = parsedCredentials.data;
-                try {
-                    const user = await loginUser(email, password);
+                
+                const loginResult = await loginUser(email, password);
+
+                if (loginResult.success) {
+                    const user = loginResult.user;
                     // Return a plain object that can be serialized for the session
                     return { id: user.id!.toString(), name: user.name, email: user.email, image: user.profile_image };
-                } catch (error) {
-                    // Pass the specific error message to NextAuth
-                    throw error;
+                } else {
+                    // Throw a custom error that can be caught by the action
+                    throw new Error(loginResult.message);
                 }
             }
             // Return null if parsing fails, which NextAuth treats as a generic failure
