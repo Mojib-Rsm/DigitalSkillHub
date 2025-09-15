@@ -4,7 +4,7 @@
 
 import { auth } from '@/auth';
 import { UserModel } from '@/models/userModel';
-import bcrypt from 'bcryptjs';
+import bcryptjs from 'bcryptjs';
 import type { User } from '@/models/userModel';
 import pool from '@/lib/mysql';
 
@@ -22,7 +22,7 @@ export type UserProfile = {
 };
 
 export async function registerUser(userData: User) {
-    const hashedPassword = await bcrypt.hash(userData.password!, 10);
+    const hashedPassword = await bcryptjs.hash(userData.password!, 10);
     return await UserModel.create({ ...userData, password: hashedPassword });
 }
 
@@ -32,7 +32,7 @@ export async function loginUser(email: string, password: string): Promise<User> 
 
     if (!user.password) throw new Error("Password not set for this user.");
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcryptjs.compare(password, user.password);
     if (!isMatch) throw new Error("Invalid credentials");
 
     // Return a plain object without sensitive data
