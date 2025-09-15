@@ -8,8 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check, Zap, Sparkles, Loader, ArrowLeft } from "lucide-react";
-import { useToast } from '@/hooks/use-toast';
-import axios from 'axios';
 import Link from 'next/link';
 
 export default function PlanDetailsPage() {
@@ -17,8 +15,6 @@ export default function PlanDetailsPage() {
     const { id } = params;
     const [plan, setPlan] = useState<PricingPlan | null>(null);
     const [loading, setLoading] = useState(true);
-    const [isRedirecting, setIsRedirecting] = useState(false);
-    const { toast } = useToast();
 
     useEffect(() => {
         if (typeof id === 'string') {
@@ -32,35 +28,6 @@ export default function PlanDetailsPage() {
         }
     }, [id]);
 
-    const handleChoosePlan = async () => {
-        if (!plan || plan.price === 0) {
-            toast({ title: "This is a free plan!"});
-            return;
-        }
-
-        setIsRedirecting(true);
-
-        try {
-            const response = await axios.post('/api/bkash/payment/create', {
-                amount: plan.price,
-                planName: plan.name,
-            });
-
-            if (response.data.bkashURL) {
-                window.location.href = response.data.bkashURL;
-            } else {
-                throw new Error(response.data.error || 'Failed to get bKash URL');
-            }
-        } catch (error: any) {
-             const errorMessage = error.response?.data?.error || error.message || 'Could not initiate payment. Please try again.';
-             toast({
-                variant: 'destructive',
-                title: 'Payment Error',
-                description: errorMessage,
-            });
-            setIsRedirecting(null);
-        }
-    }
 
     if (loading) {
         return (
@@ -118,16 +85,10 @@ export default function PlanDetailsPage() {
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <Button size="lg" className="w-full text-lg" onClick={handleChoosePlan} disabled={isRedirecting}>
-                        {isRedirecting ? (
-                            <>
-                                <Sparkles className="mr-2 animate-spin"/> Redirecting to Payment...
-                            </>
-                        ) : (
-                            <>
-                                <Zap className="mr-2"/> Proceed to Payment
-                            </>
-                        )}
+                    <Button size="lg" className="w-full text-lg" asChild>
+                         <Link href={`/checkout/${plan.id}`}>
+                            <Zap className="mr-2"/> Proceed to Payment
+                        </Link>
                     </Button>
                 </CardFooter>
             </Card>

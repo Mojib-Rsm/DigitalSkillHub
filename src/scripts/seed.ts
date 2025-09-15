@@ -1,5 +1,4 @@
 
-
 import 'dotenv/config';
 import pool from "../src/lib/mysql";
 import bcryptjs from 'bcryptjs';
@@ -154,6 +153,24 @@ async function seed() {
         );
     `);
     console.log("✔️ `tool_requests` table created or already exists.");
+    
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS transactions (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT,
+            plan_id VARCHAR(255),
+            amount DECIMAL(10, 2),
+            status ENUM('Pending', 'Paid', 'Failed', 'Refunded') DEFAULT 'Pending',
+            method ENUM('bKash', 'Nagad', 'Manual'),
+            sender_number VARCHAR(20),
+            transaction_id VARCHAR(255),
+            screenshot_url VARCHAR(255),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+        );
+    `);
+    console.log("✔️ `transactions` table created or already exists.");
 
 
     // Seed users
