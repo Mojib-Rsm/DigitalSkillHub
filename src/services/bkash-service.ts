@@ -61,7 +61,11 @@ export const createBkashPayment = async (amount: number, orderId: string, planNa
         return response.data;
     } catch (error: any) {
         console.error("Error creating bKash payment:", error.response?.data || error.message);
-        throw new Error("Failed to create bKash payment.");
+        // Return error object instead of throwing
+        return {
+            statusCode: error.response?.data?.statusCode || '9999',
+            errorMessage: error.response?.data?.errorMessage || "Failed to create bKash payment link."
+        };
     }
 };
 

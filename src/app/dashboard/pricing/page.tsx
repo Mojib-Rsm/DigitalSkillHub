@@ -39,11 +39,12 @@ export default function PricingPage() {
                 throw new Error(response.data.error || 'Failed to get bKash URL');
             }
 
-        } catch (error) {
+        } catch (error: any) {
+             const errorMessage = error.response?.data?.error || error.message || 'Could not initiate payment. Please try again.';
              toast({
                 variant: 'destructive',
                 title: 'Payment Error',
-                description: (error as Error).message || 'Could not initiate payment. Please try again.',
+                description: errorMessage,
             });
             setIsRedirecting(null);
         }
