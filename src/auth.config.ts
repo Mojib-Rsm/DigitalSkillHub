@@ -10,18 +10,25 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
 // Moved loginUser function here to break circular dependency
-async function loginUser(email: string, password: string): Promise<User> {
-    const user = await UserModel.findByEmail(email);
-    if (!user) throw new Error("User not found");
+async function loginUser(email: string, password: string): Promise<Omit<User, 'password'> | null> {
+    try {
+        const user = await UserModel.findByEmail(email);
+        if (!user || !user.password) {
+            return null;
+        }
 
-    if (!user.password) throw new Error("Password not set for this user.");
+        const isMatch = await bcryptjs.compare(password, user.password);
+        if (!isMatch) {
+            return null;
+        }
 
-    const isMatch = await bcryptjs.compare(password, user.password);
-    if (!isMatch) throw new Error("Invalid credentials");
+        const { password: _, ...userWithoutPassword } = user;
+        return userWithoutPassword;
 
-    // Return a plain object without sensitive data
-    const { password: _, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    } catch (error) {
+        console.error("Error in loginUser:", error);
+        return null;
+    }
 }
 
 
@@ -39,15 +46,11 @@ export const authConfig = {
             
             if (parsedCredentials.success) {
                 const { email, password } = parsedCredentials.data;
-                try {
-                    const user = await loginUser(email, password);
-                    if (user) {
-                        return { id: user.id!.toString(), name: user.name, email: user.email, image: user.profile_image };
-                    }
-                } catch (error) {
-                    console.error("Login error:", error);
-                    return null;
-                }
+                const user = await loginUser(email, password);
+                if (!user) return null;
+
+                // Return a plain object that can be serialized for the session
+                return { id: user.id!.toString(), name: user.name, email: user.email, image: user.profile_image };
             }
             return null;
         }
