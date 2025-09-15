@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import CheckoutForm from "@/components/checkout-form";
 import { Badge } from "@/components/ui/badge";
+import { getPaymentMethods } from "@/services/settings-service";
+
 
 export default async function CheckoutPage({ params }: { params: { id: string } }) {
     const plan = await getPricingPlanById(params.id);
@@ -13,10 +15,7 @@ export default async function CheckoutPage({ params }: { params: { id: string } 
         notFound();
     }
 
-    const paymentMethods = [
-        { method: "bKash", type: "Personal", number: "01800000000" },
-        { method: "Nagad", type: "Personal", number: "01900000000" },
-    ]
+    const paymentMethods = await getPaymentMethods();
 
     return (
         <div className="container mx-auto px-4 py-12">
@@ -77,4 +76,3 @@ export default async function CheckoutPage({ params }: { params: { id: string } 
         </div>
     );
 }
-

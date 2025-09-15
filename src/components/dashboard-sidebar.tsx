@@ -40,6 +40,7 @@ import {
   Server,
   CreditCard,
   MessageSquare,
+  WalletCards,
 } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -101,6 +102,12 @@ export default function DashboardSidebar({
                                 <SidebarMenuSubButton href="/dashboard/admin/transactions">
                                     <CreditCard />
                                     <span>Transactions</span>
+                                </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                             <SidebarMenuSubItem>
+                                <SidebarMenuSubButton href="/dashboard/admin/payment-settings">
+                                    <WalletCards />
+                                    <span>Payment Settings</span>
                                 </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                             <SidebarMenuSubItem>

@@ -172,6 +172,23 @@ async function seed() {
     `);
     console.log("✔️ `transactions` table created or already exists.");
 
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS settings (
+        setting_key VARCHAR(255) PRIMARY KEY,
+        setting_value TEXT
+      );
+    `);
+    console.log("✔️ `settings` table created or already exists.");
+
+    // Seed settings
+    await pool.query(`
+      INSERT INTO settings (setting_key, setting_value) VALUES
+      ('payment_method_bkash', '{"number": "01800000000", "type": "Personal"}'),
+      ('payment_method_nagad', '{"number": "01900000000", "type": "Personal"}')
+      ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value);
+    `);
+    console.log("⚙️ Settings seeded.");
+
 
     // Seed users
     const password = await bcryptjs.hash('password123', 10);
