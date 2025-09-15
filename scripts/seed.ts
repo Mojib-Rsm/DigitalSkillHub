@@ -45,7 +45,7 @@ async function seed() {
     await pool.query(`
         CREATE TABLE IF NOT EXISTS tools (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            title VARCHAR(255) NOT NULL,
+            title VARCHAR(255) NOT NULL UNIQUE,
             description TEXT,
             href VARCHAR(255) NOT NULL,
             icon VARCHAR(255),
@@ -171,6 +171,23 @@ async function seed() {
         );
     `);
     console.log("✔️ `transactions` table created or already exists.");
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS settings (
+        setting_key VARCHAR(255) PRIMARY KEY,
+        setting_value TEXT
+      );
+    `);
+    console.log("✔️ `settings` table created or already exists.");
+
+    // Seed settings
+    await pool.query(`
+      INSERT INTO settings (setting_key, setting_value) VALUES
+      ('payment_method_bkash', '{"number": "01800000000", "type": "Personal"}'),
+      ('payment_method_nagad', '{"number": "01900000000", "type": "Personal"}')
+      ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value);
+    `);
+    console.log("⚙️ Settings seeded.");
 
 
     // Seed users
