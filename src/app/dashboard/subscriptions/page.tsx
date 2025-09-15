@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { getCurrentUser } from "@/services/user-service";
 import { CreditCard, Download, PlusCircle, Repeat } from "lucide-react";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import type { UserProfile } from "@/services/user-service";

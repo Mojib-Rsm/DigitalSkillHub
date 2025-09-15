@@ -76,7 +76,7 @@ export default function PricingPage() {
                         </CardContent>
                         <CardFooter>
                             <Button size="lg" className="w-full" asChild>
-                                <Link href="#">
+                                <Link href="/dashboard/subscriptions">
                                 <Zap className="mr-2"/>
                                 Choose Plan</Link>
                             </Button>
