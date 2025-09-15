@@ -170,7 +170,7 @@ export function PricingDialog({ isOpen, setIsOpen, plan, onSave }: PricingDialog
                     <FormItem className="grid grid-cols-4 items-center gap-4"><FormLabel className="text-right">Validity</FormLabel><FormControl className="col-span-3"><Input {...field} placeholder="e.g. 1 Month" /></FormControl><FormMessage className="col-span-4 pl-[calc(25%+1rem)]"/></FormItem>
                 )}/>
                  <FormField name="isPopular" control={form.control} render={({ field }) => (
-                    <FormItem className="flex items-center gap-4 pt-4"><FormLabel>Mark as Popular</FormLabel><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>
+                    <FormItem className="flex items-center justify-center gap-4 pt-4"><FormLabel>Mark as Popular</FormLabel><FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl></FormItem>
                 )}/>
                 <FormField name="features.Core Features" control={form.control} render={({ field }) => <FeatureInput field={field} title="Core Features" />} />
                 <FormField name="features.Advanced Features" control={form.control} render={({ field }) => <FeatureInput field={field} title="Advanced Features" />} />

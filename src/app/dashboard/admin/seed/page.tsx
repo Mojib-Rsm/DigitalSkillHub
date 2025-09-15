@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
@@ -60,7 +61,7 @@ export default function SeedDataPage() {
       <div>
         <h1 className="text-3xl font-bold">Database Seeding</h1>
         <p className="text-muted-foreground">
-          Populate your Firestore database with initial demo data.
+          Populate your MySQL database with initial demo data.
         </p>
       </div>
 
@@ -68,8 +69,7 @@ export default function SeedDataPage() {
         <CardHeader>
           <CardTitle>Seed Demo Data</CardTitle>
           <CardDescription>
-            Click the button below to add demo collections and documents to your
-            Firestore database.
+            Click the button below to add demo data to your MySQL database tables.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -77,9 +77,7 @@ export default function SeedDataPage() {
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Warning</AlertTitle>
             <AlertDescription>
-              This action may overwrite existing data if documents with the
-              same IDs exist. This operation should only be performed on a new
-              or empty database.
+              This action may not add data if tables are already populated. The seed script is designed to run on new or empty tables to prevent duplicates.
             </AlertDescription>
           </Alert>
 
