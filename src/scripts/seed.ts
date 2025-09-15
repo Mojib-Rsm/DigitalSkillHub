@@ -2,7 +2,7 @@
 
 import 'dotenv/config';
 import pool from "../src/lib/mysql";
-import bcrypt from 'bcryptjs';
+import bcryptjs from 'bcryptjs';
 import {
   tools,
   allCourses,
@@ -140,7 +140,7 @@ async function seed() {
         );
     `);
     console.log("✔️ `notifications` table created or already exists.");
-
+    
     await pool.query(`
         CREATE TABLE IF NOT EXISTS tool_requests (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -157,7 +157,7 @@ async function seed() {
 
 
     // Seed users
-    const password = await bcrypt.hash('password123', 10);
+    const password = await bcryptjs.hash('password123', 10);
     const seededUsers = users.map(u => [u.name, u.email, password, u.role, u.credits, u.plan_id]);
      await pool.query(`
         INSERT INTO users (name, email, password, role, credits, plan_id) VALUES ?
