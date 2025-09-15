@@ -2,8 +2,7 @@
 import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
 import { NextRequest, NextResponse } from 'next/server';
-import pool from './lib/mysql';
- 
+
 const { auth } = NextAuth(authConfig);
 
 // Paths that require authentication
