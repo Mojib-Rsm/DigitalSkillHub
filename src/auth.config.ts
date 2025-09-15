@@ -10,16 +10,16 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
 // Moved loginUser function here to break circular dependency
-async function loginUser(email: string, password: string): Promise<Omit<User, 'password'> | null> {
+async function loginUser(email: string, password: string): Promise<Omit<User, 'password'>> {
     try {
         const user = await UserModel.findByEmail(email);
         if (!user || !user.password) {
-            return null;
+            throw new Error("No user found with this email.");
         }
 
         const isMatch = await bcryptjs.compare(password, user.password);
         if (!isMatch) {
-            return null;
+            throw new Error("Incorrect password.");
         }
 
         const { password: _, ...userWithoutPassword } = user;
@@ -27,7 +27,7 @@ async function loginUser(email: string, password: string): Promise<Omit<User, 'p
 
     } catch (error) {
         console.error("Error in loginUser:", error);
-        return null;
+        throw error; // Re-throw the error to be caught by the authorize function
     }
 }
 
@@ -46,12 +46,16 @@ export const authConfig = {
             
             if (parsedCredentials.success) {
                 const { email, password } = parsedCredentials.data;
-                const user = await loginUser(email, password);
-                if (!user) return null;
-
-                // Return a plain object that can be serialized for the session
-                return { id: user.id!.toString(), name: user.name, email: user.email, image: user.profile_image };
+                try {
+                    const user = await loginUser(email, password);
+                    // Return a plain object that can be serialized for the session
+                    return { id: user.id!.toString(), name: user.name, email: user.email, image: user.profile_image };
+                } catch (error) {
+                    // Pass the specific error message to NextAuth
+                    throw error;
+                }
             }
+            // Return null if parsing fails, which NextAuth treats as a generic failure
             return null;
         }
     })
