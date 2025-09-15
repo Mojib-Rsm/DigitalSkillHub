@@ -3,10 +3,11 @@
 
 import { z } from 'zod';
 import { getCurrentUser } from '@/services/user-service';
-import { getFirestore, doc, updateDoc, getDoc } from 'firebase/firestore/lite';
-import { app } from '@/lib/firebase';
 import { revalidatePath } from 'next/cache';
 import ImageKit from 'imagekit';
+import pool from '@/lib/mysql';
+import bcryptjs from 'bcryptjs';
+import { RowDataPacket } from 'mysql2';
 
 const imagekit = new ImageKit({
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY!,
@@ -61,9 +62,6 @@ export async function updateUserProfileAction(
   }
   
   try {
-    const db = getFirestore(app);
-    const userRef = doc(db, 'users', currentUser.id);
-
     const dataToUpdate: Record<string, any> = {};
     
     if (validatedFields.data.name) {
@@ -86,7 +84,7 @@ export async function updateUserProfileAction(
     }
 
     if (Object.keys(dataToUpdate).length > 0) {
-        await updateDoc(userRef, dataToUpdate);
+        await pool.query('UPDATE users SET ? WHERE id = ?', [dataToUpdate, currentUser.id]);
     }
 
     revalidatePath('/dashboard/settings');
@@ -120,20 +118,24 @@ export async function changePasswordAction(
     };
   }
 
-  // NOTE: This is a simplified password check. In a real application,
-  // you would fetch the hashed password and use a library like bcrypt to compare.
-  // For this demo, we'll assume the password is plaintext (which is NOT secure).
-  const db = getFirestore(app);
-  const userRef = doc(db, 'users', currentUser.id);
-  const userDoc = await getDoc(userRef);
-
-  if (!userDoc.exists() || userDoc.data().password !== validatedFields.data.currentPassword) {
-      return { success: false, message: 'Incorrect current password.' };
-  }
-
   try {
-    await updateDoc(userRef, { password: validatedFields.data.newPassword });
+    const [rows] = await pool.query<RowDataPacket[]>('SELECT password FROM users WHERE id = ?', [currentUser.id]);
+    
+    if (rows.length === 0) {
+        return { success: false, message: 'User not found.' };
+    }
+    const user = rows[0];
+
+    const passwordMatch = await bcryptjs.compare(validatedFields.data.currentPassword, user.password);
+    if (!passwordMatch) {
+      return { success: false, message: 'Incorrect current password.' };
+    }
+
+    const newHashedPassword = await bcryptjs.hash(validatedFields.data.newPassword, 10);
+    await pool.query('UPDATE users SET password = ? WHERE id = ?', [newHashedPassword, currentUser.id]);
+
     return { success: true, message: 'Password changed successfully.' };
+
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred.";
     return { success: false, message: `Failed to change password: ${errorMessage}` };
