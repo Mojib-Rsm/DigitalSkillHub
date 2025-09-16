@@ -9,29 +9,6 @@ import { z } from 'zod';
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
-// This function now returns a result object instead of throwing errors directly
-async function loginUser(email: string, password: string): Promise<{ success: true, user: Omit<User, 'password'> } | { success: false, message: string }> {
-    try {
-        const user = await UserModel.findByEmail(email);
-        if (!user || !user.password) {
-            return { success: false, message: "No user found with this email." };
-        }
-
-        const isMatch = await bcryptjs.compare(password, user.password);
-        if (!isMatch) {
-            return { success: false, message: "Incorrect password." };
-        }
-
-        const { password: _, ...userWithoutPassword } = user;
-        return { success: true, user: userWithoutPassword };
-
-    } catch (error) {
-        console.error("Error in loginUser:", error);
-        return { success: false, message: "An internal server error occurred." };
-    }
-}
-
-
 export const authConfig = {
   providers: [
     Google({
@@ -47,18 +24,18 @@ export const authConfig = {
             if (parsedCredentials.success) {
                 const { email, password } = parsedCredentials.data;
                 
-                const loginResult = await loginUser(email, password);
-
-                if (loginResult.success) {
-                    const user = loginResult.user;
-                    // Return a plain object that can be serialized for the session
-                    return { id: user.id!.toString(), name: user.name, email: user.email, image: user.profile_image };
-                } else {
-                    // Throw a custom error that can be caught by the action
-                    throw new Error(loginResult.message);
+                const user = await UserModel.findByEmail(email);
+                if (!user || !user.password) {
+                    throw new Error("Invalid email or password.");
                 }
+
+                const isMatch = await bcryptjs.compare(password, user.password);
+                if (!isMatch) {
+                    throw new Error("Invalid email or password.");
+                }
+
+                return { id: user.id!.toString(), name: user.name, email: user.email, image: user.profile_image };
             }
-            // Return null if parsing fails, which NextAuth treats as a generic failure
             return null;
         }
     })
@@ -74,7 +51,7 @@ export const authConfig = {
                 const existingUser = await UserModel.findByEmail(user.email);
                 
                 if (!existingUser) {
-                    // New user, create a profile in MySQL
+                    // New user, create a profile in PostgreSQL
                     await UserModel.create({
                         name: user.name || 'New User',
                         email: user.email,
@@ -83,7 +60,7 @@ export const authConfig = {
                 }
                 return true; // Allow sign in
             } catch (error) {
-                console.error("Error during MySQL user check/creation in signIn callback:", error);
+                console.error("Error during PostgreSQL user check/creation in signIn callback:", error);
                 return false; // Prevent sign in on database error
             }
         }
