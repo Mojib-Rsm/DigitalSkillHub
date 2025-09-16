@@ -1,7 +1,7 @@
 
 'use server';
 
-import pool from '@/lib/mysql';
+import pool from '@/lib/db';
 import {
   tools,
   allCourses,
@@ -13,9 +13,8 @@ import bcryptjs from 'bcryptjs';
 
 async function isTableEmpty(tableName: string): Promise<boolean> {
     try {
-        const [rows] = await pool.query(`SELECT COUNT(*) as count FROM ${tableName}`);
-        // @ts-ignore
-        return rows[0].count === 0;
+        const result = await pool.query(`SELECT COUNT(*) as count FROM ${tableName}`);
+        return result.rows[0].count === '0';
     } catch (error) {
         console.warn(`Could not check if table ${tableName} is empty, it might not exist.`, error);
         // If table doesn't exist, it's "empty" for seeding purposes
@@ -33,10 +32,12 @@ export async function seedDatabaseAction() {
         // Seed users
         if (await isTableEmpty('users')) {
             const password = await bcryptjs.hash('password123', 10);
-            const seededUsers = users.map(u => [u.name, u.email, password, u.role, u.credits, u.plan_id]);
-            await pool.query(`
-                INSERT INTO users (name, email, password, role, credits, plan_id) VALUES ?
-            `, [seededUsers]);
+            for (const user of users) {
+                await pool.query(
+                    'INSERT INTO users (name, email, password, role, credits, plan_id) VALUES ($1, $2, $3, $4, $5, $6)',
+                    [user.name, user.email, password, user.role, user.credits, user.plan_id]
+                );
+            }
             documentsWritten += users.length;
             console.log("👤 Users seeded.");
         } else {
@@ -47,8 +48,8 @@ export async function seedDatabaseAction() {
         if (await isTableEmpty('packages')) {
             await pool.query(`
                 INSERT INTO packages (name, description, price) VALUES
-                ("Shop Package", "Tools for printing/photo shops", 499),
-                ("Creator Package", "Content creators tools", 999);
+                ('Shop Package', 'Tools for printing/photo shops', 499),
+                ('Creator Package', 'Content creators tools', 999)
             `);
             documentsWritten += 2;
             console.log("📦 Packages seeded.");
@@ -58,10 +59,12 @@ export async function seedDatabaseAction() {
         
         // Seed tools
         if (await isTableEmpty('tools')) {
-            const seededTools = tools.map(t => [t.title, t.description, t.href, t.icon, t.category, t.enabled, t.isFree, t.credits]);
-            await pool.query(`
-                INSERT INTO tools (title, description, href, icon, category, enabled, isFree, credits) VALUES ?
-            `, [seededTools]);
+            for (const tool of tools) {
+                await pool.query(
+                    'INSERT INTO tools (title, description, href, icon, category, enabled, isFree, credits) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+                    [tool.title, tool.description, tool.href, tool.icon, tool.category, tool.enabled, tool.isFree, tool.credits]
+                );
+            }
             documentsWritten += tools.length;
             console.log("🛠️ Tools seeded.");
         } else {
@@ -70,10 +73,12 @@ export async function seedDatabaseAction() {
 
         // Seed courses
         if (await isTableEmpty('courses')) {
-            const seededCourses = allCourses.map(c => [c.title, c.category, c.instructor, c.price, c.level, c.duration, c.image, c.dataAiHint]);
-            await pool.query(`
-                INSERT INTO courses (title, category, instructor, price, level, duration, image, dataAiHint) VALUES ?
-            `, [seededCourses]);
+             for (const course of allCourses) {
+                await pool.query(
+                    'INSERT INTO courses (title, category, instructor, price, level, duration, image, dataAiHint) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+                    [course.title, course.category, course.instructor, course.price, course.level, course.duration, course.image, course.dataAiHint]
+                );
+            }
             documentsWritten += allCourses.length;
             console.log("🎓 Courses seeded.");
         } else {
@@ -82,10 +87,12 @@ export async function seedDatabaseAction() {
 
         // Seed pricing plans
         if (await isTableEmpty('pricing_plans')) {
-            const seededPlans = pricingPlans.map(p => [p.name, p.price, p.originalPrice, p.discount, p.description, p.credits, p.validity, p.isPopular, JSON.stringify(p.features)]);
-            await pool.query(`
-                INSERT INTO pricing_plans (name, price, originalPrice, discount, description, credits, validity, isPopular, features) VALUES ?
-            `, [seededPlans]);
+            for (const plan of pricingPlans) {
+                await pool.query(
+                    'INSERT INTO pricing_plans (name, price, originalPrice, discount, description, credits, validity, isPopular, features) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+                    [plan.name, plan.price, plan.originalPrice, plan.discount, plan.description, plan.credits, plan.validity, plan.isPopular, JSON.stringify(plan.features)]
+                );
+            }
             documentsWritten += pricingPlans.length;
             console.log("💲 Pricing plans seeded.");
         } else {
@@ -94,10 +101,12 @@ export async function seedDatabaseAction() {
 
         // Seed testimonials
         if (await isTableEmpty('testimonials')) {
-            const seededTestimonials = testimonials.map(t => [t.feature, t.quote, t.metric, t.authorName, t.authorRole, t.avatar, t.dataAiHint]);
-            await pool.query(`
-                INSERT INTO testimonials (feature, quote, metric, authorName, authorRole, avatar, dataAiHint) VALUES ?
-            `, [seededTestimonials]);
+            for (const t of testimonials) {
+                await pool.query(
+                    'INSERT INTO testimonials (feature, quote, metric, authorName, authorRole, avatar, dataAiHint) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+                    [t.feature, t.quote, t.metric, t.authorName, t.authorRole, t.avatar, t.dataAiHint]
+                );
+            }
             documentsWritten += testimonials.length;
             console.log("💬 Testimonials seeded.");
         } else {
