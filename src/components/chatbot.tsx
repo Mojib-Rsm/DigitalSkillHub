@@ -18,7 +18,7 @@ type Message = {
 
 const initialBotMessage: Message = {
   role: "model",
-  content: "স্বাগতম! আমি আপনার ডিজিটাল স্কিল হাব সহকারী। আমি কীভাবে আপনাকে সাহায্য করতে পারি?",
+  content: "স্বাগতম! আমি আপনার TotthoAi সহকারী। আমি কীভাবে আপনাকে সাহায্য করতে পারি?",
 };
 
 export default function Chatbot() {

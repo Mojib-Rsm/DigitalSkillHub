@@ -2,7 +2,7 @@
 'use server';
 
 /**
- * @fileOverview A simple chatbot that answers questions about the Digital Skill Hub.
+ * @fileOverview A simple chatbot that answers questions about TotthoAi.
  *
  * - chatbot - A function that handles the chatbot conversation.
  */
@@ -15,7 +15,7 @@ import { freelanceIdeaGenerator } from './freelance-idea-generator';
 const getCourseInfoTool = ai.defineTool(
     {
         name: 'getCourseInfo',
-        description: 'Get information about available courses on the Digital Skill Hub platform. Use this to answer questions about course names, prices, categories, and other details.',
+        description: 'Get information about available courses on the TotthoAi platform. Use this to answer questions about course names, prices, categories, and other details.',
         inputSchema: z.object({
             courseName: z.string().optional().describe('The name of the course to get information about. If not provided, information about all courses will be returned.'),
         }),
