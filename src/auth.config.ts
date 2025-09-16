@@ -9,22 +9,19 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const protectedPaths = ['/dashboard', '/checkout', '/ai-tools'];
+      const protectedPaths = ['/dashboard', '/ai-tools', '/checkout'];
       const isProtected = protectedPaths.some(path => nextUrl.pathname.startsWith(path));
 
-      if (isProtected && !isLoggedIn) {
-        const redirectUrl = new URL('/login', nextUrl.origin);
-        redirectUrl.searchParams.append('redirect', nextUrl.pathname);
-        return Response.redirect(redirectUrl);
+      if (isProtected) {
+        if (isLoggedIn) return true;
+        return false; // Redirect unauthenticated users to login page
       }
       
       const publicOnlyPaths = ['/login', '/signup', '/forgot-password'];
       const isPublicOnly = publicOnlyPaths.some(path => nextUrl.pathname.startsWith(path));
 
       if (isLoggedIn && isPublicOnly) {
-        const url = nextUrl.clone();
-        url.pathname = '/dashboard';
-        return Response.redirect(url);
+        return Response.redirect(new URL('/dashboard', nextUrl));
       }
       
       return true;
