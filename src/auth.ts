@@ -47,11 +47,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 const existingUser = await UserModel.findByEmail(user.email);
                 
                 if (!existingUser) {
-                    // New user, create a profile in PostgreSQL
+                    // New user, create a profile in PostgreSQL with default values
                     await UserModel.create({
                         name: user.name || 'New User',
                         email: user.email,
                         profile_image: user.image,
+                        role: 'user', // Add default role
+                        plan_id: 'free', // Add default plan
                     });
                 }
                 return true; // Allow sign in
