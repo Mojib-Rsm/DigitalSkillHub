@@ -1,13 +1,12 @@
 
 import type { NextAuthConfig } from 'next-auth';
-
+ 
 export const authConfig = {
   pages: {
     signIn: '/login',
-    error: '/login', // Redirect to login page on error
+    error: '/login',
   },
   callbacks: {
-    // We can define authorized callback here as it's used by the middleware
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const protectedPaths = ['/dashboard', '/checkout'];
@@ -19,7 +18,17 @@ export const authConfig = {
         return Response.redirect(redirectUrl);
       }
       
+      const publicOnlyPaths = ['/login', '/signup', '/forgot-password'];
+      const isPublicOnly = publicOnlyPaths.some(path => nextUrl.pathname.startsWith(path));
+
+      if (isLoggedIn && isPublicOnly) {
+        const url = req.nextUrl.clone();
+        url.pathname = '/dashboard';
+        return Response.redirect(url);
+      }
+      
       return true;
     },
   },
+  providers: [], // Add an empty providers array to satisfy NextAuth config type
 } satisfies NextAuthConfig;

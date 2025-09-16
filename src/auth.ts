@@ -1,11 +1,11 @@
 
 import NextAuth from 'next-auth';
-import { authConfig } from './auth.config';
 import Google from 'next-auth/providers/google';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 import { UserModel } from '@/models/userModel';
 import bcryptjs from 'bcryptjs';
+import { authConfig } from './auth.config';
  
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -40,7 +40,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     })
   ],
   callbacks: {
-    ...authConfig.callbacks, // Inherit authorized callback
+    ...authConfig.callbacks, // Inherit authorized callback from auth.config
      async signIn({ user, account, profile }) {
         if (account?.provider === 'google' && user.email) {
             try {
