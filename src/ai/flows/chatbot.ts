@@ -10,6 +10,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 import { getCourses, Course } from '@/services/course-service';
+import { freelanceIdeaGenerator } from './freelance-idea-generator';
 
 const getCourseInfoTool = ai.defineTool(
     {
@@ -27,7 +28,27 @@ const getCourseInfoTool = ai.defineTool(
         }
         return courses;
     }
-)
+);
+
+const getFreelanceIdeasTool = ai.defineTool(
+    {
+        name: 'getFreelanceIdeas',
+        description: 'Suggest freelance project ideas based on a user\'s skills. Use this when the user asks for freelance ideas, what they can do with their skills, or how to start freelancing.',
+        inputSchema: z.object({
+            skills: z.string().describe('A comma-separated list of the user\'s skills.'),
+        }),
+        outputSchema: z.object({
+            ideas: z.array(z.object({
+                title: z.string(),
+                description: z.string(),
+            })),
+        }),
+    },
+    async (input) => {
+        return freelanceIdeaGenerator(input);
+    }
+);
+
 
 const ChatbotInputSchema = z.object({
   history: z.array(z.object({
@@ -51,7 +72,7 @@ const prompt = ai.definePrompt({
   name: 'chatbotPrompt',
   input: {schema: ChatbotInputSchema},
   output: {schema: ChatbotOutputSchema},
-  tools: [getCourseInfoTool],
+  tools: [getCourseInfoTool, getFreelanceIdeasTool],
   prompt: `You are a friendly, empathetic, and helpful chatbot for an online learning platform called "TotthoAi".
 Your purpose is to assist users, particularly women, youth, and people with disabilities in Bangladesh.
 Your primary language for communication is Bengali. Your responses should always sound natural, conversational, and human—avoid robotic or overly formal language.
@@ -67,16 +88,20 @@ You should be able to answer questions about the platform, such as:
 - How to enroll in a course
 - What courses are available and what are their prices
 - Information about the "Made in Cox's Bazar" marketplace
+- Suggest freelance ideas based on user skills.
 
 When asked about courses, use the getCourseInfo tool to get the most up-to-date information.
-After you get the information from the tool, present it to the user in a clear and helpful way. Use natural language.
+When a user asks for freelance ideas based on their skills (e.g., "I know graphic design, what can I do?"), use the getFreelanceIdeas tool.
+
+After you get information from a tool, present it to the user in a clear, helpful, and natural-sounding Bengali.
+
 For example, if the user asks for the price of "বাংলায় ফ্রিল্যান্সিং শুরু", you should respond naturally, like:
 "‘বাংলায় ফ্রিল্যান্সিং শুরু’ কোর্সটির মূল্য হচ্ছে $49.99।"
 
-If the user asks for information about multiple courses, list them clearly. For example:
-"অবশ্যই, এখানে কোর্সগুলোর তথ্য দেওয়া হলো:
-- বাংলায় ফ্রিল্যান্সিং শুরু: মূল্য $49.99, এটা নতুনদের জন্য।
-- স্মার্টফোন ও ইন্টারনেট বেসিকস: এটা সম্পূর্ণ ফ্রি একটি কোর্স, নতুনদের জন্য।"
+If you get freelance ideas, present them in a list format, like:
+"আপনার দক্ষতার উপর ভিত্তি করে, এখানে কিছু ফ্রিল্যান্স কাজের আইডিয়া দেওয়া হলো:
+- **আইডিয়ার শিরোনাম:** আইডিয়ার বর্ণনা।
+- **আইডিয়ার শিরোনাম:** আইডিয়ার বর্ণনা।"
 
 Here is the conversation history:
 {{#each history}}
