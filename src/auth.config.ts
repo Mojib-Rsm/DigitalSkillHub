@@ -9,7 +9,7 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const protectedPaths = ['/dashboard', '/checkout'];
+      const protectedPaths = ['/dashboard', '/checkout', '/ai-tools'];
       const isProtected = protectedPaths.some(path => nextUrl.pathname.startsWith(path));
 
       if (isProtected && !isLoggedIn) {
@@ -22,7 +22,7 @@ export const authConfig = {
       const isPublicOnly = publicOnlyPaths.some(path => nextUrl.pathname.startsWith(path));
 
       if (isLoggedIn && isPublicOnly) {
-        const url = req.nextUrl.clone();
+        const url = nextUrl.clone();
         url.pathname = '/dashboard';
         return Response.redirect(url);
       }
@@ -30,5 +30,5 @@ export const authConfig = {
       return true;
     },
   },
-  providers: [], // Add an empty providers array to satisfy NextAuth config type
+  providers: [],
 } satisfies NextAuthConfig;

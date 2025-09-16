@@ -1,10 +1,13 @@
 
-import NextAuth from 'next-auth';
-import { authConfig } from './auth.config';
- 
-export default NextAuth(authConfig).auth;
+import { withAuth } from "next-auth/middleware"
+
+export default withAuth({
+  callbacks: {
+    authorized: ({ token }) => !!token
+  }
+})
  
 // Optionally, don't invoke Middleware on some paths
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+  matcher: ['/dashboard/:path*', '/ai-tools/:path*', '/checkout/:path*'],
 };

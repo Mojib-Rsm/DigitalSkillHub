@@ -19,10 +19,10 @@ export type User = {
 
 export const UserModel = {
   async create(user: Omit<User, 'id'>): Promise<number> {
-    const { name, email, password, profile_image } = user;
+    const { name, email, password, profile_image, role, plan_id } = user;
     const result = await pool.query(
-      "INSERT INTO users (name, email, password, profile_image) VALUES ($1, $2, $3, $4) RETURNING id",
-      [name, email, password, profile_image]
+      "INSERT INTO users (name, email, password, profile_image, role, plan_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+      [name, email, password, profile_image, role, plan_id]
     );
     return result.rows[0].id;
   },

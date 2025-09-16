@@ -18,11 +18,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    allowedDevOrigins: [
-      'https://firebase-studio-1755339718682.cluster-b6gwurscprhn6qxr-wtrhvkf6.cloudworkstations.dev',
-    ],
-  },
   webpack: (config, { isServer }) => {
     config.resolve.alias.handlebars = 'handlebars/dist/handlebars.min.js';
     return config;

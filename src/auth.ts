@@ -24,14 +24,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 const { email, password } = parsedCredentials.data;
                 
                 const user = await UserModel.findByEmail(email);
-                if (!user || !user.password) {
-                    throw new Error("Invalid email or password.");
-                }
+                if (!user || !user.password) return null;
 
                 const isMatch = await bcryptjs.compare(password, user.password);
-                if (!isMatch) {
-                    throw new Error("Invalid email or password.");
-                }
+                if (!isMatch) return null;
 
                 return { id: user.id!.toString(), name: user.name, email: user.email, image: user.profile_image };
             }
@@ -40,7 +36,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     })
   ],
   callbacks: {
-    ...authConfig.callbacks, // Inherit authorized callback from auth.config
      async signIn({ user, account, profile }) {
         if (account?.provider === 'google' && user.email) {
             try {
