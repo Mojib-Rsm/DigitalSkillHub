@@ -38,4 +38,5 @@ export const allTools = [
     { href: "/ai-tools/image-editor" },
     { href: "/ai-tools/digital-stamp-maker" },
     { href: "/ai-tools/ai-title-generator" },
+    { href: "/ai-tools/ai-article-writer"},
 ];
