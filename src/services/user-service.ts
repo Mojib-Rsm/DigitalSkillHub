@@ -41,7 +41,7 @@ export async function loginUser(email: string, password: string): Promise<User> 
 
 
 export async function getCurrentUser(): Promise<UserProfile | null> {
-  const session = await auth();
+  const session = await auth;
 
   if (!session?.user?.email) {
     return null;
