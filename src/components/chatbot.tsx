@@ -33,12 +33,12 @@ export default function Chatbot() {
     // Load messages from session storage when component mounts
     try {
       const storedMessages = sessionStorage.getItem("chatMessages");
-      if (storedMessages && storedMessages.length > 0) { // Check if not null or empty
+      if (storedMessages && JSON.parse(storedMessages).length > 0) {
         setMessages(JSON.parse(storedMessages));
       }
     } catch (error) {
       console.error("Failed to parse messages from session storage", error);
-      sessionStorage.removeItem("chatMessages");
+      sessionStorage.removeItem("chatMessages"); // Clear corrupted data
     }
   }, []);
 
