@@ -7,7 +7,6 @@ import { useEffect, useState, useMemo } from "react";
 // Helper to detect if the string is likely Bengali
 const isBengali = (text: string) => {
     // This regex checks for a few common Bengali characters.
-    // A more robust solution might be needed for complex cases.
     return /[\u0980-\u09FF]/.test(text);
 }
 
@@ -20,13 +19,25 @@ export default function T({ children }: { children: string }) {
   useEffect(() => {
     let isMounted = true;
     
-    // If the component's text matches the target language, don't translate
-    if ((language === 'bn' && sourceLang === 'bn') || (language === 'en' && sourceLang === 'en')) {
-        if(isMounted) setTranslatedText(children);
+    // If the app language is Bengali ('bn'), and the source text is also Bengali,
+    // we don't need to do any translation. We can just render the original children.
+    if (language === 'bn' && sourceLang === 'bn') {
+        if(isMounted) {
+            setTranslatedText(children);
+        }
+        return;
+    }
+    
+    // If the app language is English ('en'), and the source text is also English,
+    // we also don't need to do any translation.
+    if (language === 'en' && sourceLang === 'en') {
+        if(isMounted) {
+            setTranslatedText(children);
+        }
         return;
     }
 
-    // Otherwise, perform translation
+    // Otherwise, we perform the translation.
     translate(children, sourceLang).then(result => {
         if (isMounted) {
             setTranslatedText(result);
