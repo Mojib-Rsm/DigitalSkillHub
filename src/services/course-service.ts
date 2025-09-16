@@ -1,8 +1,7 @@
 
 'use server';
 
-import pool from '@/lib/mysql';
-import { RowDataPacket } from 'mysql2';
+import pool from '@/lib/db';
 
 export type Course = {
     id?: string;
@@ -28,7 +27,7 @@ const slugify = (text: string) => {
     .replace(/-+$/, '');         // Trim - from end of text
 };
 
-async function mapRowsToCourses(rows: RowDataPacket[]): Promise<Course[]> {
+async function mapRowsToCourses(rows: any[]): Promise<Course[]> {
     return rows.map(row => ({
         id: row.id.toString(),
         title: row.title,
@@ -38,16 +37,16 @@ async function mapRowsToCourses(rows: RowDataPacket[]): Promise<Course[]> {
         level: row.level,
         duration: row.duration,
         image: row.image,
-        dataAiHint: row.dataAiHint,
+        dataAiHint: row.dataaihint,
     }));
 }
 
 export async function getCourses(): Promise<Course[]> {
     try {
-        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM courses');
-        return mapRowsToCourses(rows);
+        const result = await pool.query('SELECT * FROM courses');
+        return mapRowsToCourses(result.rows);
     } catch (error) {
-        console.error("Error fetching courses from MySQL:", error);
+        console.error("Error fetching courses from PostgreSQL:", error);
         return [];
     }
 }

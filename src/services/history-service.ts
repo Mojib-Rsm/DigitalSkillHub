@@ -2,8 +2,6 @@
 'use server';
 
 import { getCurrentUser } from './user-service';
-import pool from '@/lib/mysql';
-import { RowDataPacket } from 'mysql2';
 import { HistoryModel } from '@/models/historyModel';
 
 export type HistoryItem = {
@@ -31,16 +29,16 @@ export async function getHistory(): Promise<HistoryItem[]> {
     return historyRows.map(row => ({
         id: row.id.toString(),
         tool: row.tool,
-        input: JSON.parse(row.input),
-        output: JSON.parse(row.output),
+        input: row.input, // Already parsed by pg
+        output: row.output, // Already parsed by pg
         createdAt: new Date(row.created_at).toISOString(),
         uid: row.user_id,
-        userName: row.userName,
-        userImage: row.userImage,
+        userName: row.username,
+        userImage: row.userimage,
     }));
 
   } catch (error) {
-    console.error('Failed to get history from MySQL:', error);
+    console.error('Failed to get history from PostgreSQL:', error);
     return [];
   }
 }

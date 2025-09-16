@@ -1,12 +1,11 @@
 
-
 'use server';
 
 import { auth } from '@/auth';
 import { UserModel } from '@/models/userModel';
 import bcryptjs from 'bcryptjs';
 import type { User } from '@/models/userModel';
-import pool from '@/lib/mysql';
+import pool from '@/lib/db';
 
 export type UserProfile = {
   id: number;
@@ -47,27 +46,33 @@ export async function getCurrentUser(): Promise<UserProfile | null> {
             profile_image: user.profile_image || session.user.image || '/default-avatar.png',
             status: user.status === 'active' || user.status === 'banned' ? user.status : 'active',
             plan_id: user.plan_id || 'free',
-            bookmarks: user.bookmarks ? JSON.parse(user.bookmarks) : [],
+            bookmarks: user.bookmarks ? (user.bookmarks as any) : [],
        };
        return userProfile;
     } else {
-        console.warn(`User with email ${session.user.email} not found in MySQL database.`);
+        console.warn(`User with email ${session.user.email} not found in PostgreSQL database.`);
         return null;
     }
 
   } catch (error) {
-    console.error(`Failed to get user profile from MySQL:`, error);
+    console.error(`Failed to get user profile from PostgreSQL:`, error);
     return null;
   }
 }
 
 export async function updateUserProfile(userId: number, data: Partial<UserProfile>) {
-    const [result] = await pool.query('UPDATE users SET ? WHERE id = ?', [data, userId]);
+    const entries = Object.entries(data).filter(([_, v]) => v !== undefined);
+    const setClause = entries.map(([key], i) => `"${key.toLowerCase()}" = $${i + 2}`).join(', ');
+    const values = entries.map(([_, v]) => v);
+
+    if (entries.length === 0) return { success: true };
+
+    await pool.query(`UPDATE users SET ${setClause} WHERE id = $1`, [userId, ...values]);
     return { success: true };
 }
 
 
 export async function getAllUsers(): Promise<UserProfile[]> {
-    const [rows] = await pool.query('SELECT * FROM users');
-    return rows as UserProfile[];
+    const result = await pool.query('SELECT * FROM users');
+    return result.rows as UserProfile[];
 }

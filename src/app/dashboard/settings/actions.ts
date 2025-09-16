@@ -5,9 +5,8 @@ import { z } from 'zod';
 import { getCurrentUser } from '@/services/user-service';
 import { revalidatePath } from 'next/cache';
 import ImageKit from 'imagekit';
-import pool from '@/lib/mysql';
+import pool from '@/lib/db';
 import bcryptjs from 'bcryptjs';
-import { RowDataPacket } from 'mysql2';
 
 const imagekit = new ImageKit({
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY!,
@@ -84,7 +83,9 @@ export async function updateUserProfileAction(
     }
 
     if (Object.keys(dataToUpdate).length > 0) {
-        await pool.query('UPDATE users SET ? WHERE id = ?', [dataToUpdate, currentUser.id]);
+        const setClause = Object.keys(dataToUpdate).map((key, i) => `"${key}" = $${i + 2}`).join(', ');
+        const values = Object.values(dataToUpdate);
+        await pool.query(`UPDATE users SET ${setClause} WHERE id = $1`, [currentUser.id, ...values]);
     }
 
     revalidatePath('/dashboard/settings');
@@ -119,12 +120,12 @@ export async function changePasswordAction(
   }
 
   try {
-    const [rows] = await pool.query<RowDataPacket[]>('SELECT password FROM users WHERE id = ?', [currentUser.id]);
+    const result = await pool.query('SELECT password FROM users WHERE id = $1', [currentUser.id]);
     
-    if (rows.length === 0) {
+    if (result.rows.length === 0) {
         return { success: false, message: 'User not found.' };
     }
-    const user = rows[0];
+    const user = result.rows[0];
 
     const passwordMatch = await bcryptjs.compare(validatedFields.data.currentPassword, user.password);
     if (!passwordMatch) {
@@ -132,7 +133,7 @@ export async function changePasswordAction(
     }
 
     const newHashedPassword = await bcryptjs.hash(validatedFields.data.newPassword, 10);
-    await pool.query('UPDATE users SET password = ? WHERE id = ?', [newHashedPassword, currentUser.id]);
+    await pool.query('UPDATE users SET password = $1 WHERE id = $2', [newHashedPassword, currentUser.id]);
 
     return { success: true, message: 'Password changed successfully.' };
 

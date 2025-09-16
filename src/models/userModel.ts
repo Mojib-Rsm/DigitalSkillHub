@@ -1,6 +1,5 @@
 
-import pool from "@/lib/mysql";
-import type { RowDataPacket, ResultSetHeader } from 'mysql2';
+import pool from "@/lib/db";
 
 // Define the User type based on your DB schema
 export type User = {
@@ -13,27 +12,28 @@ export type User = {
     credits?: number;
     status?: 'active' | 'banned';
     plan_id?: string;
-    bookmarks?: string;
+    bookmarks?: object;
     created_at?: Date;
     phone?: string;
 };
 
 export const UserModel = {
   async create(user: Omit<User, 'id'>): Promise<number> {
-    const [result] = await pool.query<ResultSetHeader>(
-      "INSERT INTO users SET ?",
-      [user]
+    const { name, email, password, profile_image } = user;
+    const result = await pool.query(
+      "INSERT INTO users (name, email, password, profile_image) VALUES ($1, $2, $3, $4) RETURNING id",
+      [name, email, password, profile_image]
     );
-    return result.insertId;
+    return result.rows[0].id;
   },
 
   async findByEmail(email: string): Promise<User | undefined> {
-    const [rows] = await pool.query<RowDataPacket[]>("SELECT * FROM users WHERE email = ?", [email]);
-    return rows[0] as User | undefined;
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    return result.rows[0] as User | undefined;
   },
 
   async findById(id: number): Promise<User | undefined> {
-    const [rows] = await pool.query<RowDataPacket[]>("SELECT * FROM users WHERE id = ?", [id]);
-    return rows[0] as User | undefined;
+    const result = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
+    return result.rows[0] as User | undefined;
   },
 };

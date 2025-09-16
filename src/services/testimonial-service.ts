@@ -1,8 +1,7 @@
 
 'use server';
 
-import pool from '@/lib/mysql';
-import { RowDataPacket } from 'mysql2';
+import pool from '@/lib/db';
 import { testimonials as demoTestimonials } from '@/lib/demo-data';
 
 
@@ -19,14 +18,20 @@ export type Testimonial = {
 
 export async function getTestimonials(): Promise<Testimonial[]> {
     try {
-        const [rows] = await pool.query<RowDataPacket[]>('SELECT * FROM testimonials');
-        if (rows.length === 0) {
+        const result = await pool.query('SELECT * FROM testimonials');
+        if (result.rows.length === 0) {
             // If table is empty, return demo data
             return demoTestimonials;
         }
-        return rows.map(row => ({...row, id: row.id.toString()})) as Testimonial[];
+        return result.rows.map(row => ({
+            ...row, 
+            id: row.id.toString(),
+            authorName: row.authorname,
+            authorRole: row.authorrole,
+            dataAiHint: row.dataaihint,
+        })) as Testimonial[];
     } catch (error) {
-        console.error("Error fetching testimonials from MySQL. This might be because the table does not exist or a network issue. Falling back to demo data.", error);
+        console.error("Error fetching testimonials from PostgreSQL. This might be because the table does not exist. Falling back to demo data.", error);
         // Fallback to demo data if there's any error (e.g., connection failed)
         return demoTestimonials;
     }

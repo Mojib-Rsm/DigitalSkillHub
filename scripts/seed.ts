@@ -1,6 +1,6 @@
 
 import 'dotenv/config';
-import pool from "../src/lib/mysql";
+import pool from "../src/lib/db";
 import bcryptjs from 'bcryptjs';
 import {
   tools,
@@ -11,30 +11,33 @@ import {
 } from '../src/lib/demo-data';
 
 async function seed() {
-  console.log("🌱 Starting database seeding...");
+  console.log("🌱 Starting database seeding for PostgreSQL...");
+  const client = await pool.connect();
   try {
+    await client.query('BEGIN');
+
     // Create tables if they don't exist
-    await pool.query(`
+    await client.query(`
       CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255),
-        role ENUM('user', 'admin') DEFAULT 'user',
+        role VARCHAR(10) DEFAULT 'user',
         credits INT DEFAULT 100,
         profile_image VARCHAR(255),
         status VARCHAR(50) DEFAULT 'active',
         plan_id VARCHAR(50),
-        bookmarks TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        bookmarks JSONB,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         phone VARCHAR(20)
       );
     `);
      console.log("✔️ `users` table created or already exists.");
 
-    await pool.query(`
+    await client.query(`
       CREATE TABLE IF NOT EXISTS packages (
-        id INT AUTO_INCREMENT PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL UNIQUE,
         description TEXT,
         price DECIMAL(10, 2)
@@ -42,9 +45,9 @@ async function seed() {
     `);
     console.log("✔️ `packages` table created or already exists.");
 
-    await pool.query(`
+    await client.query(`
         CREATE TABLE IF NOT EXISTS tools (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             title VARCHAR(255) NOT NULL UNIQUE,
             description TEXT,
             href VARCHAR(255) NOT NULL,
@@ -57,9 +60,9 @@ async function seed() {
     `);
     console.log("✔️ `tools` table created or already exists.");
 
-    await pool.query(`
+    await client.query(`
         CREATE TABLE IF NOT EXISTS courses (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             category VARCHAR(255),
             instructor VARCHAR(255),
@@ -72,9 +75,9 @@ async function seed() {
     `);
      console.log("✔️ `courses` table created or already exists.");
 
-     await pool.query(`
+     await client.query(`
         CREATE TABLE IF NOT EXISTS pricing_plans (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
             price DECIMAL(10, 2),
             originalPrice DECIMAL(10, 2),
@@ -83,14 +86,14 @@ async function seed() {
             credits INT,
             validity VARCHAR(255),
             isPopular BOOLEAN DEFAULT FALSE,
-            features TEXT
+            features JSONB
         );
      `);
     console.log("✔️ `pricing_plans` table created or already exists.");
 
-    await pool.query(`
+    await client.query(`
         CREATE TABLE IF NOT EXISTS testimonials (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             feature VARCHAR(255),
             quote TEXT,
             metric VARCHAR(255),
@@ -102,186 +105,184 @@ async function seed() {
     `);
     console.log("✔️ `testimonials` table created or already exists.");
     
-    await pool.query(`
+    await client.query(`
         CREATE TABLE IF NOT EXISTS coupons (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             code VARCHAR(255) NOT NULL UNIQUE,
             description TEXT,
             discountPercentage DECIMAL(5, 2) NOT NULL,
             isActive BOOLEAN DEFAULT TRUE,
-            validUntil DATETIME,
-            applicableTo TEXT
+            validUntil TIMESTAMP,
+            applicableTo JSONB
         );
     `);
     console.log("✔️ `coupons` table created or already exists.");
 
-     await pool.query(`
+     await client.query(`
         CREATE TABLE IF NOT EXISTS history (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             user_id INT,
             tool VARCHAR(255),
-            input TEXT,
-            output TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            input JSONB,
+            output JSONB,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         );
     `);
     console.log("✔️ `history` table created or already exists.");
     
-    await pool.query(`
+    await client.query(`
         CREATE TABLE IF NOT EXISTS notifications (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             message TEXT NOT NULL,
             toolId VARCHAR(255),
             sender VARCHAR(255),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         );
     `);
     console.log("✔️ `notifications` table created or already exists.");
 
-    await pool.query(`
+    await client.query(`
         CREATE TABLE IF NOT EXISTS tool_requests (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             user_id INT,
             tool_name VARCHAR(255) NOT NULL,
             tool_description TEXT,
             use_case TEXT,
             status VARCHAR(50) DEFAULT 'pending',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
         );
     `);
     console.log("✔️ `tool_requests` table created or already exists.");
     
-    await pool.query(`
+    await client.query(`
         CREATE TABLE IF NOT EXISTS transactions (
-            id INT AUTO_INCREMENT PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             user_id INT,
             plan_id VARCHAR(255),
             amount DECIMAL(10, 2),
-            status ENUM('Pending', 'Paid', 'Failed', 'Refunded') DEFAULT 'Pending',
-            method ENUM('bKash', 'Nagad', 'Manual'),
+            status VARCHAR(20) DEFAULT 'Pending',
+            method VARCHAR(20),
             sender_number VARCHAR(20),
             transaction_id VARCHAR(255),
             screenshot_url VARCHAR(255),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         );
     `);
     console.log("✔️ `transactions` table created or already exists.");
 
-    await pool.query(`
+    await client.query(`
       CREATE TABLE IF NOT EXISTS settings (
         setting_key VARCHAR(255) PRIMARY KEY,
-        setting_value TEXT
+        setting_value JSONB
       );
     `);
     console.log("✔️ `settings` table created or already exists.");
 
     // Seed settings
-    await pool.query(`
+    await client.query(`
       INSERT INTO settings (setting_key, setting_value) VALUES
       ('payment_method_bkash', '{"number": "01800000000", "type": "Personal"}'),
       ('payment_method_nagad', '{"number": "01900000000", "type": "Personal"}')
-      ON DUPLICATE KEY UPDATE setting_value=VALUES(setting_value);
+      ON CONFLICT (setting_key) DO UPDATE SET setting_value = EXCLUDED.setting_value;
     `);
     console.log("⚙️ Settings seeded.");
 
 
     // Seed users
     const password = await bcryptjs.hash('password123', 10);
-    const seededUsers = users.map(u => [u.name, u.email, password, u.role, u.credits, u.plan_id]);
-     await pool.query(`
-        INSERT INTO users (name, email, password, role, credits, plan_id) VALUES ?
-        ON DUPLICATE KEY UPDATE 
-            name=VALUES(name),
-            password=VALUES(password),
-            role=VALUES(role),
-            credits=VALUES(credits),
-            plan_id=VALUES(plan_id)
-     `, [seededUsers]);
+    for (const user of users) {
+        await client.query(`
+            INSERT INTO users (name, email, password, role, credits, plan_id)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            ON CONFLICT (email) DO UPDATE SET
+            name = EXCLUDED.name,
+            password = EXCLUDED.password,
+            role = EXCLUDED.role,
+            credits = EXCLUDED.credits,
+            plan_id = EXCLUDED.plan_id;
+        `, [user.name, user.email, password, user.role, user.credits, user.plan_id]);
+    }
     console.log("👤 Users seeded.");
 
 
-    // Seed packages (if you have a packages table)
-    await pool.query(`
+    // Seed packages
+    await client.query(`
         INSERT INTO packages (name, description, price) VALUES
-        ("Shop Package", "Tools for printing/photo shops", 499),
-        ("Creator Package", "Content creators tools", 999)
-        ON DUPLICATE KEY UPDATE 
-            description=VALUES(description), 
-            price=VALUES(price);
+        ('Shop Package', 'Tools for printing/photo shops', 499),
+        ('Creator Package', 'Content creators tools', 999)
+        ON CONFLICT (name) DO UPDATE SET
+        description = EXCLUDED.description,
+        price = EXCLUDED.price;
     `);
     console.log("📦 Packages seeded.");
     
     // Seed tools
-    const seededTools = tools.map(t => [t.title, t.description, t.href, t.icon, t.category, t.enabled, t.isFree, t.credits]);
-    await pool.query(`
-        INSERT INTO tools (title, description, href, icon, category, enabled, isFree, credits) VALUES ?
-        ON DUPLICATE KEY UPDATE 
-            description=VALUES(description), 
-            href=VALUES(href),
-            icon=VALUES(icon),
-            category=VALUES(category),
-            enabled=VALUES(enabled),
-            isFree=VALUES(isFree),
-            credits=VALUES(credits)
-    `, [seededTools]);
+    for (const tool of tools) {
+        await client.query(`
+            INSERT INTO tools (title, description, href, icon, category, enabled, isFree, credits)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            ON CONFLICT (title) DO UPDATE SET
+            description = EXCLUDED.description,
+            href = EXCLUDED.href,
+            icon = EXCLUDED.icon,
+            category = EXCLUDED.category,
+            enabled = EXCLUDED.enabled,
+            isFree = EXCLUDED.isFree,
+            credits = EXCLUDED.credits;
+        `, [tool.title, tool.description, tool.href, tool.icon, tool.category, tool.enabled, tool.isFree, tool.credits]);
+    }
     console.log("🛠️ Tools seeded.");
 
     // Seed courses
-    const seededCourses = allCourses.map(c => [c.title, c.category, c.instructor, c.price, c.level, c.duration, c.image, c.dataAiHint]);
-     await pool.query(`
-        INSERT INTO courses (title, category, instructor, price, level, duration, image, dataAiHint) VALUES ?
-         ON DUPLICATE KEY UPDATE 
-            category=VALUES(category),
-            instructor=VALUES(instructor),
-            price=VALUES(price),
-            level=VALUES(level),
-            duration=VALUES(duration),
-            image=VALUES(image),
-            dataAiHint=VALUES(dataAiHint)
-    `, [seededCourses]);
+    for (const course of allCourses) {
+        await client.query(`
+            INSERT INTO courses (title, category, instructor, price, level, duration, image, dataAiHint)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            ON CONFLICT (id) DO NOTHING; -- Assuming title is not unique, using id
+        `, [course.title, course.category, course.instructor, course.price, course.level, course.duration, course.image, course.dataAiHint]);
+    }
     console.log("🎓 Courses seeded.");
 
     // Seed pricing plans
-    const seededPlans = pricingPlans.map(p => [p.name, p.price, p.originalPrice, p.discount, p.description, p.credits, p.validity, p.isPopular, JSON.stringify(p.features)]);
-    await pool.query(`
-        INSERT INTO pricing_plans (name, price, originalPrice, discount, description, credits, validity, isPopular, features) VALUES ?
-        ON DUPLICATE KEY UPDATE
-            price=VALUES(price),
-            originalPrice=VALUES(originalPrice),
-            discount=VALUES(discount),
-            description=VALUES(description),
-            credits=VALUES(credits),
-            validity=VALUES(validity),
-            isPopular=VALUES(isPopular),
-            features=VALUES(features)
-    `, [seededPlans]);
+    for (const plan of pricingPlans) {
+        await client.query(`
+            INSERT INTO pricing_plans (name, price, originalPrice, discount, description, credits, validity, isPopular, features)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            ON CONFLICT (name) DO UPDATE SET
+            price = EXCLUDED.price,
+            originalPrice = EXCLUDED.originalPrice,
+            discount = EXCLUDED.discount,
+            description = EXCLUDED.description,
+            credits = EXCLUDED.credits,
+            validity = EXCLUDED.validity,
+            isPopular = EXCLUDED.isPopular,
+            features = EXCLUDED.features;
+        `, [plan.name, plan.price, plan.originalPrice, plan.discount, plan.description, plan.credits, plan.validity, plan.isPopular, JSON.stringify(plan.features)]);
+    }
     console.log("💲 Pricing plans seeded.");
 
     // Seed testimonials
-    const seededTestimonials = testimonials.map(t => [t.feature, t.quote, t.metric, t.authorName, t.authorRole, t.avatar, t.dataAiHint]);
-    await pool.query(`
-        INSERT INTO testimonials (feature, quote, metric, authorName, authorRole, avatar, dataAiHint) VALUES ?
-        ON DUPLICATE KEY UPDATE
-            quote=VALUES(quote),
-            metric=VALUES(metric),
-            authorName=VALUES(authorName),
-            authorRole=VALUES(authorRole),
-            avatar=VALUES(avatar),
-            dataAiHint=VALUES(dataAiHint)
-    `, [seededTestimonials]);
+    for (const t of testimonials) {
+        await client.query(`
+            INSERT INTO testimonials (feature, quote, metric, authorName, authorRole, avatar, dataAiHint)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            ON CONFLICT (id) DO NOTHING; -- Assuming feature is not unique, using id
+        `, [t.feature, t.quote, t.metric, t.authorName, t.authorRole, t.avatar, t.dataAiHint]);
+    }
     console.log("💬 Testimonials seeded.");
 
-
+    await client.query('COMMIT');
     console.log("✅ Seeding complete");
   } catch (error) {
+    await client.query('ROLLBACK');
     console.error("❌ Seeding error:", error);
   } finally {
-    await pool.end(); // Close the connection pool
+    client.release();
+    await pool.end();
     process.exit();
   }
 }

@@ -1,8 +1,7 @@
 
 'use server';
 
-import pool from '@/lib/mysql';
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
+import pool from '@/lib/db';
 
 export type PaymentMethod = {
     method: 'bKash' | 'Nagad';
@@ -12,22 +11,21 @@ export type PaymentMethod = {
 
 async function getSetting(key: string): Promise<any | null> {
     try {
-        const [rows] = await pool.query<RowDataPacket[]>('SELECT setting_value FROM settings WHERE setting_key = ?', [key]);
-        if (rows.length > 0) {
-            return JSON.parse(rows[0].setting_value);
+        const result = await pool.query('SELECT setting_value FROM settings WHERE setting_key = $1', [key]);
+        if (result.rows.length > 0) {
+            return result.rows[0].setting_value;
         }
         return null;
     } catch (error) {
-        console.error(`Error fetching setting '${key}' from MySQL:`, error);
+        console.error(`Error fetching setting '${key}' from PostgreSQL:`, error);
         return null;
     }
 }
 
 async function updateSetting(key: string, value: any): Promise<void> {
-    const valueStr = JSON.stringify(value);
     await pool.query(
-        'INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = ?',
-        [key, valueStr, valueStr]
+        'INSERT INTO settings (setting_key, setting_value) VALUES ($1, $2) ON CONFLICT (setting_key) DO UPDATE SET setting_value = $2',
+        [key, value]
     );
 }
 

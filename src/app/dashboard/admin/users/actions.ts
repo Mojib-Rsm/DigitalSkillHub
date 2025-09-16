@@ -1,11 +1,10 @@
 
-
 'use server';
 
 import { z } from 'zod';
 import { getCurrentUser } from '@/services/user-service';
 import { revalidatePath } from 'next/cache';
-import pool from '@/lib/mysql';
+import pool from '@/lib/db';
 
 const UpdateRoleSchema = z.object({
   userId: z.string(),
@@ -30,7 +29,7 @@ export async function updateUserRole(userId: string, role: 'user' | 'admin') {
   }
 
   try {
-    await pool.query('UPDATE users SET role = ? WHERE id = ?', [role, userId]);
+    await pool.query('UPDATE users SET role = $1 WHERE id = $2', [role, userId]);
     
     revalidatePath('/dashboard/admin/users');
 
@@ -38,6 +37,6 @@ export async function updateUserRole(userId: string, role: 'user' | 'admin') {
   } catch (error) {
     console.error('Error updating user role:', error);
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-    return { success: false, message: `Failed to update role. Please check your permissions and MySQL setup.` };
+    return { success: false, message: `Failed to update role. Please check your permissions and PostgreSQL setup.` };
   }
 }
