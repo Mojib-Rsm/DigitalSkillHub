@@ -14,30 +14,21 @@ export default function T({ children }: { children: string }) {
   const { language, translate } = useLanguage();
   const [translatedText, setTranslatedText] = useState(children);
 
+  // Determine the source language based on the text content
   const sourceLang = useMemo(() => isBengali(children) ? 'bn' : 'en', [children]);
 
   useEffect(() => {
     let isMounted = true;
     
-    // If the app language is Bengali ('bn'), and the source text is also Bengali,
-    // we don't need to do any translation. We can just render the original children.
-    if (language === 'bn' && sourceLang === 'bn') {
-        if(isMounted) {
-            setTranslatedText(children);
-        }
-        return;
-    }
-    
-    // If the app language is English ('en'), and the source text is also English,
-    // we also don't need to do any translation.
-    if (language === 'en' && sourceLang === 'en') {
+    // If the app language is the same as the text's language, no translation needed.
+    if (language === sourceLang) {
         if(isMounted) {
             setTranslatedText(children);
         }
         return;
     }
 
-    // Otherwise, we perform the translation.
+    // Otherwise, perform the translation.
     translate(children, sourceLang).then(result => {
         if (isMounted) {
             setTranslatedText(result);

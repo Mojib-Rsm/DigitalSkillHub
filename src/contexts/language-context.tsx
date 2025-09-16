@@ -42,18 +42,23 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const cached = sessionStorage.getItem(cacheKey);
     if(cached) return cached;
     
-    let translatedText = text;
     try {
       const result = await bengaliTranslator({ 
         textToTranslate: text, 
         targetLanguage: targetLanguage === 'bn' ? 'Bengali' : 'English'
       });
-      translatedText = result.translatedText;
+      const translatedText = result.translatedText;
       sessionStorage.setItem(cacheKey, translatedText);
+      return translatedText;
     } catch (error) {
-        console.error("Translation failed:", error);
+        console.warn(`Translation failed for "${text}". Using fallback. Error:`, error);
+        // Fallback mechanism if API fails (e.g., rate limit)
+        // This provides a basic, understandable placeholder instead of crashing.
+        if (targetLanguage === 'bn') {
+            return `${text} (bn)`;
+        }
+        return `${text} (en)`;
     }
-    return translatedText;
   }, [language]);
 
 
