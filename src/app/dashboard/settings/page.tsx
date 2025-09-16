@@ -59,6 +59,8 @@ function ProfileForm({ user }: { user: UserProfile }) {
     }
   };
 
+  const planName = user.plan_id ? user.plan_id.charAt(0).toUpperCase() + user.plan_id.slice(1) : "Free";
+
 
   return (
     <form action={formAction}>
@@ -99,7 +101,7 @@ function ProfileForm({ user }: { user: UserProfile }) {
                     <Label>Current Plan</Label>
                     <div className="flex items-center gap-2">
                         <Star className="w-5 h-5 text-yellow-500" />
-                        <span className="font-semibold">{user.plan_id === 'beta' || user.plan_id === 'sigma' ? "Pro" : "Free"}</span>
+                        <span className="font-semibold">{planName}</span>
                         <Badge variant="secondary">{user.plan_id}</Badge>
                     </div>
                 </div>
@@ -364,9 +366,3 @@ export default function SettingsPage() {
 }
 
     
-
-    
-
-
-
-
