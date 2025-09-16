@@ -52,12 +52,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       return translatedText;
     } catch (error) {
         console.warn(`Translation failed for "${text}". Using fallback. Error:`, error);
-        // Fallback mechanism if API fails (e.g., rate limit)
-        // This provides a basic, understandable placeholder instead of crashing.
-        if (targetLanguage === 'bn') {
-            return `${text} (bn)`;
-        }
-        return `${text} (en)`;
+        // Fallback to original text if API fails.
+        return text;
     }
   }, [language]);
 
