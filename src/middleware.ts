@@ -15,6 +15,7 @@ const protectedPaths = [
 const publicOnlyPaths = [
     '/login',
     '/signup',
+    '/forgot-password',
 ];
  
 export default auth(async (req) => {

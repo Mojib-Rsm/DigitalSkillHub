@@ -74,5 +74,5 @@ export async function updateUserProfile(userId: number, data: Partial<UserProfil
 
 export async function getAllUsers(): Promise<UserProfile[]> {
     const result = await pool.query('SELECT * FROM users');
-    return result.rows as UserProfile[];
+    return (result.rows as UserProfile[]) || [];
 }
