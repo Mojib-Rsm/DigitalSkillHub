@@ -3,7 +3,7 @@
 
 import { auth } from '@/auth';
 import { UserModel } from '@/models/userModel';
-import bcryptjs from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import type { User } from '@/models/userModel';
 import pool from '@/lib/db';
 
@@ -21,9 +21,24 @@ export type UserProfile = {
 };
 
 export async function registerUser(userData: User) {
-    const hashedPassword = await bcryptjs.hash(userData.password!, 10);
+    const hashedPassword = await bcrypt.hash(userData.password!, 10);
     return await UserModel.create({ ...userData, password: hashedPassword });
 }
+
+export async function loginUser(email: string, password: string): Promise<User> {
+    const user = await UserModel.findByEmail(email);
+    if (!user || !user.password) {
+        throw new Error('User not found or password not set.');
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+        throw new Error('Invalid credentials');
+    }
+    // Don't return password hash
+    delete user.password;
+    return user;
+}
+
 
 export async function getCurrentUser(): Promise<UserProfile | null> {
   const session = await auth();

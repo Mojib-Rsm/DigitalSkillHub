@@ -1,7 +1,7 @@
 
 import 'dotenv/config';
 import pool from "../src/lib/db";
-import bcryptjs from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import {
   tools,
   allCourses,
@@ -193,7 +193,7 @@ async function seed() {
 
 
     // Seed users
-    const password = await bcryptjs.hash('password123', 10);
+    const password = await bcrypt.hash('password123', 10);
     for (const user of users) {
         await client.query(`
             INSERT INTO users (name, email, password, role, credits, plan_id)

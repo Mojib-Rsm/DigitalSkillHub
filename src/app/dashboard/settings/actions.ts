@@ -6,7 +6,7 @@ import { getCurrentUser } from '@/services/user-service';
 import { revalidatePath } from 'next/cache';
 import ImageKit from 'imagekit';
 import pool from '@/lib/db';
-import bcryptjs from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 
 const imagekit = new ImageKit({
     publicKey: process.env.IMAGEKIT_PUBLIC_KEY!,
@@ -127,12 +127,12 @@ export async function changePasswordAction(
     }
     const user = result.rows[0];
 
-    const passwordMatch = await bcryptjs.compare(validatedFields.data.currentPassword, user.password);
+    const passwordMatch = await bcrypt.compare(validatedFields.data.currentPassword, user.password);
     if (!passwordMatch) {
       return { success: false, message: 'Incorrect current password.' };
     }
 
-    const newHashedPassword = await bcryptjs.hash(validatedFields.data.newPassword, 10);
+    const newHashedPassword = await bcrypt.hash(validatedFields.data.newPassword, 10);
     await pool.query('UPDATE users SET password = $1 WHERE id = $2', [newHashedPassword, currentUser.id]);
 
     return { success: true, message: 'Password changed successfully.' };

@@ -1,3 +1,4 @@
+
 'use server';
 
 import { getCurrentUser } from '@/services/user-service';
@@ -9,7 +10,7 @@ import {
   testimonials,
   users
 } from '@/lib/demo-data';
-import bcryptjs from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 
 async function isTableEmpty(tableName: string): Promise<boolean> {
     try {
@@ -37,7 +38,7 @@ export async function seedDatabaseAction() {
 
         // Seed users
         if (await isTableEmpty('users')) {
-            const password = await bcryptjs.hash('password123', 10);
+            const password = await bcrypt.hash('password123', 10);
             for (const user of users) {
                 await pool.query(
                     'INSERT INTO users (name, email, password, role, credits, plan_id) VALUES ($1, $2, $3, $4, $5, $6)',

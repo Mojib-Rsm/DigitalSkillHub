@@ -4,7 +4,7 @@ import Google from 'next-auth/providers/google';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 import { UserModel } from '@/models/userModel';
-import bcryptjs from 'bcryptjs';
+import bcrypt from 'bcryptjs';
 import { authConfig } from './auth.config';
  
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -26,7 +26,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 const user = await UserModel.findByEmail(email);
                 if (!user || !user.password) return null;
 
-                const isMatch = await bcryptjs.compare(password, user.password);
+                const isMatch = await bcrypt.compare(password, user.password);
                 if (!isMatch) return null;
 
                 return { id: user.id!.toString(), name: user.name, email: user.email, image: user.profile_image };
