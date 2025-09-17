@@ -11,18 +11,15 @@ const PassportPhotoMakerActionSchema = z.object({
   backgroundColor: z.enum(['White', 'Light Blue', 'Grey']),
   photo: z
     .any()
-    .refine((file) => file?.size > 0, 'অনুগ্রহ করে একটি ছবি আপলোড করুন।')
-    .refine((file) => file?.size <= MAX_FILE_SIZE, `ছবির আকার 4MB এর বেশি হতে পারবে না।`)
-    .refine(
-      (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-      "শুধুমাত্র .jpg, .jpeg, .png এবং .webp ফরম্যাট সমর্থিত।"
-    ),
+    .refine((file) => file?.size > 0, 'অনুগ্রহ করে প্রথম ছবিটি আপলোড করুন।'),
+  photo2: z.any().optional(),
+  couplePhoto: z.boolean(),
 });
 
 type FormState = {
   message: string;
   imageUrl?: string;
-  fields?: Record<string, string>;
+  fields?: Record<string, string | boolean>;
   issues?: string[];
 };
 
@@ -30,9 +27,14 @@ export async function generatePassportPhoto(
   prevState: FormState,
   formData: FormData
 ): Promise<FormState> {
+
+  const couplePhoto = formData.get("couplePhoto") === "true";
+
   const validatedFields = PassportPhotoMakerActionSchema.safeParse({
     backgroundColor: formData.get("backgroundColor"),
     photo: formData.get("photo"),
+    photo2: formData.get("photo2"),
+    couplePhoto: couplePhoto,
   });
 
   if (!validatedFields.success) {
@@ -42,17 +44,31 @@ export async function generatePassportPhoto(
       issues: errors.map((issue) => issue.message),
       fields: {
         backgroundColor: formData.get("backgroundColor") as string,
+        couplePhoto: couplePhoto,
       }
     };
   }
   
   try {
-    const { backgroundColor, photo } = validatedFields.data;
+    const { backgroundColor, photo, photo2 } = validatedFields.data;
     
     const photoBuffer = Buffer.from(await photo.arrayBuffer());
     const photoDataUri = `data:${photo.type};base64,${photoBuffer.toString('base64')}`;
+    
+    let photoDataUri2;
+    if (couplePhoto && photo2 && photo2.size > 0) {
+        const photoBuffer2 = Buffer.from(await photo2.arrayBuffer());
+        photoDataUri2 = `data:${photo2.type};base64,${photoBuffer2.toString('base64')}`;
+    } else if (couplePhoto && (!photo2 || photo2.size === 0)) {
+        return { message: "যুগল ছবির জন্য অনুগ্রহ করে দ্বিতীয় ছবিটিও আপলোড করুন।" };
+    }
 
-    const result = await passportPhotoMaker({ backgroundColor, photoDataUri });
+    const result = await passportPhotoMaker({ 
+        backgroundColor, 
+        photoDataUri, 
+        photoDataUri2,
+        couplePhoto
+    });
 
     if (result.imageUrl) {
       return {
