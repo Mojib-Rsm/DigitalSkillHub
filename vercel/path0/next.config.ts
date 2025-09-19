@@ -18,6 +18,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config, { isServer }) => {
+    // This alias ensures that the server-side build of Next.js can find the correct version of Handlebars
+    // required by Genkit's dependencies, resolving the "Module not found" error.
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'handlebars/dist/cjs/handlebars.js': 'handlebars/dist/cjs/handlebars.js',
+    };
+    return config;
+  },
 };
 
 export default nextConfig;
