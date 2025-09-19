@@ -167,17 +167,13 @@ const packages = [
     icon: Briefcase,
     description: "আপনার দোকানের গ্রাহকদের জন্য আবেদনপত্র, সিভি, স্ট্যাম্প এবং অন্যান্য ডকুমেন্ট দ্রুত তৈরি করুন।",
     tools: [
-      "Application & Letter Generator (Job Application, Leave Letter, School/College Forms)",
-      "Resume & CV Builder (বাংলা + ইংরেজি টেমপ্লেট)",
-      "Stamp & Certificate Maker (Affidavit, Character Certificate, Agreement)",
-      "Contract/Agreement Writer (ভাড়ার কাগজ, চুক্তিপত্র, Power of Attorney)",
-      "OCR Typing Helper (Handwritten → Typed)",
-      "Passport Size Photo Maker (Auto Background Remove + Standard Size Export)",
-      "ID Card / Visiting Card Text Layout Generator",
-      "Notice & Office Memo Generator",
-      "General Templates Library (বায়োডাটা, আবেদন ফরম, ইত্যাদি)"
+        'Cover Letter Generator',
+        'Resume Helper',
+        'Digital Stamp Maker',
+        'Handwriting Extractor',
+        'Passport Photo Maker',
     ],
-    useCase: "যারা কম্পিউটার দোকান, টাইপিং শপ, প্রিন্টিং শপ চালায় তারা ৯০% কাজ তাড়াতাড়ি করতে পারবে। যেমন: কাস্টমারের সিভি, চাকরির আবেদন, ছবি প্রিন্ট, স্ট্যাম্প, সনদ, অফিস পেপার, সবকিছুই এক ক্লিকে তৈরি করা যাবে।"
+    useCase: 'যারা কম্পিউটার দোকান চালায়, typing + print service দেয়, stamp/affidavit বানায় — তারা দ্রুত কাস্টমারদের জন্য কনটেন্ট বানাতে পারবে।',
   },
 ];
 
@@ -477,6 +473,24 @@ export default function HomePageClient({ pricingPlans, testimonials, trendingToo
               </div>
               </div>
           </section>
+
+        {/* Promotional Banner Section */}
+        <section className="py-12 md:py-20">
+            <div className="container mx-auto px-4">
+                <Card className="bg-gradient-to-r from-primary/10 to-accent/10">
+                    <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+                        <div>
+                            <h2 className="font-headline text-3xl font-bold"><T>Unlock Your Full Potential with TotthoAi Pro!</T></h2>
+                            <p className="text-muted-foreground mt-2 max-w-2xl"><T>Upgrade today to get unlimited access to all tools, bulk content generation, advanced SEO features, and priority support.</T></p>
+                        </div>
+                        <div className="flex flex-col sm:flex-row gap-4 shrink-0">
+                            <Button size="lg" className="text-base" asChild><Link href="/#pricing"><T>View Pricing</T></Link></Button>
+                            <Button size="lg" variant="outline" className="text-base" asChild><Link href="/contact"><T>Contact Sales</T></Link></Button>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </section>
 
           {/* FAQ Section */}
           <section className="py-12 md:py-20">
