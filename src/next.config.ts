@@ -23,7 +23,7 @@ const nextConfig: NextConfig = {
     // required by Genkit's dependencies, resolving the "Module not found" error.
     config.resolve.alias = {
       ...config.resolve.alias,
-      'handlebars/dist/cjs/handlebars.js': 'handlebars/dist/cjs/handlebars.js',
+      'handlebars': 'handlebars/dist/cjs/handlebars.js',
     };
     return config;
   },
